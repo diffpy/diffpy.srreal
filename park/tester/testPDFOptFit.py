@@ -7,29 +7,11 @@ import numpy
 import unittest
 ##################################################################
 
-from testUtil import SetEnviron
-SetEnviron()
-##################################################################
-
-#from xmlModel import XmlModel
-from xmlFitting import XmlFitting
-from xmlOptimizer import XmlOptimizer
-#from pdfTheory import PDFTheory, PDFParameter
-#from pdfDataset import PDFDataset
-from testUtil import CHOICE, VERBISITY, EX_BASE_DIR
-
+from park.fit.xmlFitting import XmlFitting
+from park.fit.xmlOptimizer import XmlOptimizer
+from testUtil import CHOICE, VERBOSITY, EX_BASE_DIR
 from testPDFData import makePDFSource, EPS
 
-##################################################################
-
-#PARK =   os.path.dirname(os.path.dirname( os.path.dirname(os.path.dirname(__file__))))
-
-#print 'PARK:', PARK
-#OPT_PATH = os.path.join(PARK, 'services', 'optsvr')
-
-#if OPT_PATH not in sys.path:
-#    sys.path.append(OPT_PATH)
-    
 ##################################################################
 class PDFOptFittingTest(unittest.TestCase):
 
@@ -109,7 +91,7 @@ if __name__=='__main__':
     if (CHOICE == 1):
         suite = unittest.TestLoader().loadTestsFromTestCase(
                                    PDFOptFittingTest)
-        unittest.TextTestRunner(verbosity=VERBISITY).run(suite)
+        unittest.TextTestRunner(verbosity=VERBOSITY).run(suite)
     else:
         unittest.main()
 ##################################################################

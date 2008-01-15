@@ -7,18 +7,14 @@ import os, sys
 import unittest
 ##################################################################
 
-from testUtil import SetEnviron
-SetEnviron()
-##################################################################
-
-from xmlModel import XmlModel
-from xmlData import DATA_TAG
-from pdfData import PDFData, PDFInstrumentData
-from pdfDataset import PDFDataset
-from pdfTheory import PDFTheory, PDFParameter, getPDFParameters
-from utilIO import writeAsciiData, readAsciiData, isEqualArray
+from park.fit.xmlModel import XmlModel
+from park.fit.xmlData import DATA_TAG
+from SrReal.park.pdfData import PDFData, PDFInstrumentData
+from SrReal.park.pdfDataset import PDFDataset
+from SrReal.park.pdfTheory import PDFTheory, PDFParameter, getPDFParameters
+from park.theory.utilIO import writeAsciiData, readAsciiData, isEqualArray
     
-from testUtil import CHOICE, VERBISITY, EX_BASE_DIR
+from testUtil import CHOICE, VERBOSITY, EX_BASE_DIR
 ##################################################################
 EPS = 1.0e-8
 # 0.3 + 7*x**3 - 0.1*x**4
@@ -35,7 +31,7 @@ SCALE = 10.0
 def makeModel():
     model = XmlModel()
     model.name = 'M0' 
-    model.theory = 'pdfTheory.PDFTheory'
+    model.theory = 'SrReal.park.pdfTheory.PDFTheory'
     model.weight = 1.0
 
     from diffpy.pdffit2 import PdfFit
@@ -273,7 +269,7 @@ if __name__=='__main__':
     if (CHOICE == 1):
         suite = unittest.TestLoader().loadTestsFromTestCase(
                                    PDFDataTest)
-        unittest.TextTestRunner(verbosity=VERBISITY).run(suite)
+        unittest.TextTestRunner(verbosity=VERBOSITY).run(suite)
     else:
         unittest.main()
 ##################################################################

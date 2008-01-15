@@ -17,7 +17,7 @@ from pdfTheory import PDFTheory, getPDFParameters
 
 PDF_PARAM_NAME_PREFIX = "p"
 
-PDF_THEORY_CLASS_NAME = "pdfTheory.PDFTheory"
+PDF_THEORY_CLASS_NAME = "SrReal.park.pdfTheory.PDFTheory"
 
 PDF_GUI_TYPE_NAME = 'pdf'
 #####################################################################
@@ -39,7 +39,7 @@ class ParkPDFFit(ParkUniFit):
             constructor. 
             n: number of PDF models
             nparams: a list of n integers, indicating 
-                the number of PDFuan parameters.
+                the number of PDF parameters.
         """        
         super(self.__class__, self).__init__(nparams)
 #####################################################################

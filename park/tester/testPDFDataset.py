@@ -7,17 +7,13 @@ import numpy
 import unittest
 ##################################################################
 
-from testUtil import SetEnviron
-SetEnviron()
-##################################################################
 
-from xmlModel import XmlModel
-from pdfTheory import PDFTheory, PDFParameter
-from pdfData import PDFData, PDFInstrumentData
-from pdfDataset import PDFDataset
-
-from utilIO import isEqualArray
-from testUtil import CHOICE, VERBISITY, EX_BASE_DIR
+from park.fit.xmlModel import XmlModel
+from SrReal.park.pdfData import PDFData, PDFInstrumentData
+from SrReal.park.pdfDataset import PDFDataset
+from SrReal.park.pdfTheory import PDFTheory, PDFParameter, getPDFParameters
+from park.theory.utilIO import writeAsciiData, readAsciiData, isEqualArray
+from testUtil import CHOICE, VERBOSITY, EX_BASE_DIR
 from testPDFData import makePDFSource, EPS
 ##################################################################
 
@@ -122,7 +118,7 @@ if __name__=='__main__':
     if (CHOICE == 1):
         suite = unittest.TestLoader().loadTestsFromTestCase(
                                    PDFDatasetTest)
-        unittest.TextTestRunner(verbosity=VERBISITY).run(suite)
+        unittest.TextTestRunner(verbosity=VERBOSITY).run(suite)
     else:
         unittest.main()
 ##################################################################

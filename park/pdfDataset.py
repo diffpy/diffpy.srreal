@@ -20,6 +20,8 @@ from park.fit.xmlDataArray import XmlDataArray
 from park.xmlUtil.xmlHelper import setDefault as SetDefault
 from park.theory.utilIO import readAsciiData, writeAsciiData, joinData
 
+from pdfData import PDFData
+
 ################################################################
 from park.theory.chisq import getScaleMatch, getScaleMatchErrorbar
 ################################################################
@@ -32,9 +34,9 @@ PDF_ARRAY_LABELS = ('X', 'Y', 'dY')
 """ Data structure for pdf data. """
 #################################################################
 
-PDF_DATASRC_CLASSNAME = 'pdfDataset.PDFDataSource' 
+PDF_DATASRC_CLASSNAME = 'SrReal.park.pdfDataset.PDFDataSource' 
 
-PDF_DATASET_CLASSNAME = 'pdfDataset.PDFDataset'  
+PDF_DATASET_CLASSNAME = 'SrReal.park.pdfDataset.PDFDataset'  
 
 PDF_DATA_RESIDUAL_INDEX = [0, 1, 2, 3]
 #################################################################

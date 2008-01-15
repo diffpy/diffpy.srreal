@@ -31,7 +31,7 @@ PDF_ARRAY_LABELS = ('X', 'Y', 'dY')
 
 PDF_INSTRUMENT_DATA_TAG = 'pdf'
  
-PDF_DATA_CLASSNAME = 'pdfData.PDFData' 
+PDF_DATA_CLASSNAME = 'SrReal.park.pdfData.PDFData' 
 
 #################################################################        
 class PDFData(XmlData):  
