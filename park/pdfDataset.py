@@ -41,19 +41,35 @@ PDF_DATASET_CLASSNAME = 'SrReal.park.pdfDataset.PDFDataset'
 PDF_DATA_RESIDUAL_INDEX = [0, 1, 2, 3]
 #################################################################
 
+class PDFDataSource(XmlDataSource):
+    """ The data source for PDF functions. """
+    
+    def __init__(self):
+        super(PDFDataSource, self).__init__()
+        self.setClassName(PDF_DATASRC_CLASSNAME)        
+                   
+    def _getNodeObject(self, nodename):
+        if nodename == DATASET_TAG:
+            return GaussDataset() 
+        else:
+            return super(PDFDataSource, 
+                    self)._getNodeObject(nodename)
+    
+    def _getSelfObject(self):
+        """ return a copy of current object.  """
+        return GaussDataSource()
+
 #################################################################        
 class PDFDataset(XmlDataset):
     """ One dataset of PDF functions."""
-#################################################################    
+
     def __init__(self):
         super(PDFDataset, self).__init__()
         self.setClassName(PDF_DATASET_CLASSNAME)
-#################################################################
 
     def _getSelfObject(self):
         """ return a copy of current object.  """
         return PDFDataset()
-#################################################################
 
     def _getNodeObject(self, nodename):
         if nodename == DATA_TAG:
@@ -61,7 +77,6 @@ class PDFDataset(XmlDataset):
         else:
             return super(PDFDataset, 
                          self)._getNodeObject(nodename)        
-#################################################################
 
     def _checkXmlReductionData(self, reductionData):
         """ Check to make sure there is a valid reduction data"""
@@ -77,7 +92,6 @@ class PDFDataset(XmlDataset):
             reductionData.add(XmlDataArray())
         elif cnt == 2:
             reductionData.add(XmlDataArray())
-#################################################################
         
     def _updateXmlReductionData(self):#, datalist):
         """ Update the reduction data for the whole dataset. """
@@ -99,7 +113,6 @@ class PDFDataset(XmlDataset):
             print 'exception:', traceback.format_exc()
             return [None, None, None]
 
-#################################################################        
     def saveData(self, filename=None):
         if filename is None:
             myfilename = getattr(self, DATA_SOURCE_TAG)
@@ -113,7 +126,6 @@ class PDFDataset(XmlDataset):
             
         writeAsciiData(myfilename, data)
         
-#################################################################    
     def autoMatch(self, withoutbar = True):
         """ Automatch the dataset. """
         mydata = [] 
@@ -123,6 +135,7 @@ class PDFDataset(XmlDataset):
             orgdata = data.getXmlReductionData().getXmlDataObject()
             mydata.append(orgdata[0].getData())
             mydata.append(orgdata[1].getData())
+            mydata.append(orgdata[2].getData())
 
         scale = getScaleMatch(mydata)
                                
@@ -133,7 +146,6 @@ class PDFDataset(XmlDataset):
             
         self.update4Meta()
 
-#################################################################        
     def setOriginalScale(self):
         """ Set the origianl scaler, scaler=1.0 """
         for data in self.getXmlData():
@@ -141,7 +153,6 @@ class PDFDataset(XmlDataset):
             
         self.update4Meta()
     
-#################################################################
     def getResidualIndex(self):
         """ 
             Return an integer array indicate the X:Y:dY for
@@ -150,6 +161,7 @@ class PDFDataset(XmlDataset):
             the length of each repeated unit.
         """
         return PDF_DATA_RESIDUAL_INDEX    
+
 #################################################################    
     
 # For testing imports

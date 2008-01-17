@@ -141,10 +141,13 @@ def main():
 
     obj = XmlFitting()
     obj.parseString(fit.toStream())
+    opt = obj.getXmlOptimizer()
+    opt.optfunc = 'leastsq'
         
     res = obj.doFitting()
 
     #print 'result:', res
+
     return
         
 #####################################################################

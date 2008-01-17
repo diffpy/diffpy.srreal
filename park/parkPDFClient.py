@@ -24,9 +24,7 @@ def buildPDFFitting():
     P = PdfFit()
     P.read_struct(os.path.join(datadir, strufile))
 
-    p0 = [0]
-        
-    fit = ParkPDFFit(p0)
+    fit = ParkPDFFit([0])
     modelNames = fit.getModelNames()
     data = os.path.join(datadir, 'Ni_2-8.dat')
     fit.setDataSource(modelNames[0], [data])        

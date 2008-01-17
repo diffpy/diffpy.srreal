@@ -102,6 +102,13 @@ class PDFDatasetTest(unittest.TestCase):
         
         print 'obj', obj
         print self.model.getXmlDataset()
+        o1 = file("temp1.out", 'w')
+        o1.write(obj.__str__())
+        o1.close()
+        o2 = file("temp2.out", 'w')
+        o2.write(self.model.getXmlDataset().__str__())
+        o2.close()
+        import scipy.io
         self.assert_(self.model.getXmlDataset()==obj)
         
         ind = 0        
