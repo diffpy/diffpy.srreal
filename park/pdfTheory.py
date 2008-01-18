@@ -255,9 +255,6 @@ class PDFTheory(Theory):
             u = data[2].getData()
         except:
             u = data[2]
-        # FIXME: Sometimes the arrays are different sizes.
-        if len(dy) != len(u):
-            u = 1
         r = dy/u
         return numpy.dot(r, r)
 

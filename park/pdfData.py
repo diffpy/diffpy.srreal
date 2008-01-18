@@ -112,8 +112,10 @@ class PDFData(XmlData):
         data[0].setData(self._xx0)        
         if self._xy0 is None:
             data[1].setData(None)
+            data[2].setData(None)
         else:
             data[1].setData(self._xy0*self.getXmlInstrumentData().scale)
+            data[2].setData(self._xu0)
 #################################################################
     
     def _readRawData(self):
@@ -122,7 +124,7 @@ class PDFData(XmlData):
         filename = getattr(self,DATA_SOURCE_TAG)
         dvals = readAsciiData(filename)
         if len(dvals) > 3:
-            del dvals[2]
+            del dvals[3:]
         elif len(dvals) < 3:
             dvals.append( numpy.ones(len(dvals[0]), dtype=float) )
         return dvals[:3]
