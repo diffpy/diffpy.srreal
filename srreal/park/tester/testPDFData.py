@@ -9,9 +9,9 @@ import unittest
 
 from park.fit.xmlModel import XmlModel
 from park.fit.xmlData import DATA_TAG
-from SrReal.park.pdfData import PDFData, PDFInstrumentData
-from SrReal.park.pdfDataset import PDFDataset
-from SrReal.park.pdfTheory import PDFTheory, PDFParameter, getPDFParameters
+from diffpy.srreal.park.pdfData import PDFData, PDFInstrumentData
+from diffpy.srreal.park.pdfDataset import PDFDataset
+from diffpy.srreal.park.pdfTheory import PDFTheory, PDFParameter, getPDFParameters
 from park.theory.utilIO import writeAsciiData, readAsciiData, isEqualArray
     
 from testUtil import CHOICE, VERBOSITY, EX_BASE_DIR
@@ -31,7 +31,7 @@ SCALE = 10.0
 def makeModel():
     model = XmlModel()
     model.name = 'M0' 
-    model.theory = 'SrReal.park.pdfTheory.PDFTheory'
+    model.theory = 'diffpy.srreal.park.pdfTheory.PDFTheory'
     model.weight = 1.0
 
     from diffpy.pdffit2 import PdfFit

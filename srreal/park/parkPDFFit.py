@@ -17,7 +17,7 @@ from pdfTheory import PDFTheory, getPDFParameters
 
 PDF_PARAM_NAME_PREFIX = "p"
 
-PDF_THEORY_CLASS_NAME = "SrReal.park.pdfTheory.PDFTheory"
+PDF_THEORY_CLASS_NAME = "diffpy.srreal.park.pdfTheory.PDFTheory"
 
 PDF_GUI_TYPE_NAME = 'pdf'
 #####################################################################

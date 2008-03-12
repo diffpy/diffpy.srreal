@@ -8,8 +8,8 @@ import unittest
 ##################################################################
 
 from park.fit.xmlModel import XmlModel
-from SrReal.park.pdfTheory import PDFTheory, PDFParameter
-from SrReal.park.pdfDataset import PDFDataset
+from diffpy.srreal.park.pdfTheory import PDFTheory, PDFParameter
+from diffpy.srreal.park.pdfDataset import PDFDataset
 from testUtil import CHOICE, VERBOSITY, EX_BASE_DIR
 
 from testPDFData import makePDFSource, EPS

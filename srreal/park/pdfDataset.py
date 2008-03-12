@@ -34,9 +34,9 @@ PDF_ARRAY_LABELS = ('X', 'Y', 'dY')
 """ Data structure for pdf data. """
 #################################################################
 
-PDF_DATASRC_CLASSNAME = 'SrReal.park.pdfDataset.PDFDataSource' 
+PDF_DATASRC_CLASSNAME = 'diffpy.srreal.park.pdfDataset.PDFDataSource' 
 
-PDF_DATASET_CLASSNAME = 'SrReal.park.pdfDataset.PDFDataset'  
+PDF_DATASET_CLASSNAME = 'diffpy.srreal.park.pdfDataset.PDFDataset'  
 
 PDF_DATA_RESIDUAL_INDEX = [0, 1, 2, 3]
 #################################################################
