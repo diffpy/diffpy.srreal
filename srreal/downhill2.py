@@ -44,9 +44,8 @@ def smartDownhill():
     cost = rp["cost"]
     if rp["seed"] is not None:
         numpy.random.seed(rp["seed"])
-    allflips = dict.fromkeys([(i, j)
-        for i in range(ph1.countAtoms())
-            for j in range(i + 1, ph1.countAtoms())])
+    allflips = dict.fromkeys([(i, j) for i in range(ph1.countAtoms())
+                for j in range(i + 1, ph1.countAtoms())] )
     while True:
         c1 = cost(ph1)
         print "%.6f, %r" % (c1, ph1.getSiteColoring())
