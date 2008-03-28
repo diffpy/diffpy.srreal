@@ -15,7 +15,6 @@ class PairHistogram(object):
 
     resolution -- cutoff for distinguishing 2 close pair distances.
                   Default value 0.01.
-
     __pdffit   -- shared instance of PdfFit from diffpy.pdffit2
     """
 
@@ -56,6 +55,7 @@ class PairHistogram(object):
         # normalized scattering factor
         self._nmsf = {}
         self._meansf = None
+        self._customsf = {}
         self._sf_cached = False
         # finally assign arguments:
         self.setStructure(stru)
@@ -136,6 +136,24 @@ class PairHistogram(object):
         if not self._sf_cached:
             self._update_sf()
         return self._meansf
+
+
+    def setScatteringFactors(self, sfs):
+        """Set custom scattering factor values for atom species in the model.
+
+        sfs  -- dictionary of custom (element : scattering_factor) values.
+                Any elements contained in the sfs use associated value
+                as their scattering factor.  For all other atoms, the
+                scattering factor is looked up for active radiation type.
+                The element symbol in sfs may be arbitrary, for example
+                sfs = {"A" : 0.1, "B" : 0.9}.  Use sfs={} to remove custom
+                values.
+
+        No return value.
+        """
+        self._customsf = dict(sfs)
+        self._uncache('y', 'sf')
+        return
 
 
     def setStructure(self, stru):
@@ -428,7 +446,10 @@ class PairHistogram(object):
         self._nmsf = {}
         sfsum = 0.0
         for smbl in self._site_coloring:
-            sfa = pf.get_scat(radtp, smbl)
+            if smbl in self._customsf:
+                sfa = self._customsf[smbl]
+            else:
+                sfa = pf.get_scat(radtp, smbl)
             self._nmsf[smbl] = sfa
             sfsum += sfa
         # calculate mean scattering factor
@@ -479,7 +500,12 @@ class PairHistogram(object):
         of contributing atoms.
         """
         pf = self.__getPdfFit()
-        pf.add_structure(self._structure)
+        # Because, this method only evaluates geometry, let us use
+        # all carbon atoms so there are no problems with unknown types.
+        carbonstru = self.getStructure()
+        for a in carbonstru:
+            a.element = "C"
+        pf.add_structure(carbonstru)
         rmin = 1.0e-8
         rmax = self.getRmax()
         bldict = pf.bond_length_types('ALL', 'ALL', rmin, rmax)

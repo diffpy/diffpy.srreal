@@ -39,9 +39,9 @@ class TestPairHistogram(unittest.TestCase):
                 basename = name + ".cif"
                 stru = Structure(filename=testdata(basename))
                 ph = PairHistogram(stru, self.rmax)
-                setattr(self, name, stru)
-                setattr(self, "ph_" + name, ph)
-            self._data_loaded = True
+                setattr(TestPairHistogram, name, stru)
+                setattr(TestPairHistogram, "ph_" + name, ph)
+            TestPairHistogram._data_loaded = True
         # reset pair histograms to default values
         for name in datanames:
             ph = getattr(self, "ph_" + name)
@@ -149,6 +149,24 @@ class TestPairHistogram(unittest.TestCase):
         self.assertAlmostEqual(4.1507, phsi.meansf(), 2)
         # original should be untouched
         self.assertAlmostEqual(14, self.ph_silicon.meansf(), 4)
+        return
+
+    def test_setScatteringFactors(self,):
+        """check PairHistogram.setScatteringFactors()
+        """
+        ph = copy.copy(self.ph_sphalerite)
+        self.assertEqual(self.ph_sphalerite.y(), ph.y())
+        fZn = self.ph_sphalerite.nmsf('Zn')
+        fS = self.ph_sphalerite.nmsf('S')
+        ph.setScatteringFactors({'Zn' : 0.0, 'S' : 1.0})
+        self.assertEqual(0.0, ph.y()[0])
+        self.assertEqual(0.0, ph.nmsf('Zn'))
+        self.assertEqual(2.0, ph.nmsf('S'))
+        # reset back to the defaults
+        ph.setScatteringFactors({})
+        self.assertEqual(self.ph_sphalerite.y(), ph.y())
+        self.assertEqual(fZn, ph.nmsf('Zn'))
+        self.assertEqual(fS, ph.nmsf('S'))
         return
  
     def test_setStructure(self):
