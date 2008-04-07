@@ -13,7 +13,6 @@ from pdfTheory import getPDFParameters
 #####################################################################
 
 def buildPDFFitting():        
-    from park.fit.xmlFitting import XmlFitting
     from diffpy.pdffit2 import PdfFit, redirect_stdout
 
     datadir = os.path.abspath('examples')

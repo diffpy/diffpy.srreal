@@ -17,7 +17,7 @@ from pdfTheory import PDFTheory, getPDFParameters
 
 PDF_PARAM_NAME_PREFIX = "p"
 
-PDF_THEORY_CLASS_NAME = "diffpy.srreal.park.pdfTheory.PDFTheory"
+PDF_THEORY_CLASS_NAME = "SrReal.park.pdfTheory.PDFTheory"
 
 PDF_GUI_TYPE_NAME = 'pdf'
 #####################################################################
@@ -99,9 +99,7 @@ def main():
     P = PdfFit()
     P.read_struct(os.path.join(datadir, strufile))
 
-    p0 = [0]
-        
-    fit = ParkPDFFit(p0)
+    fit = ParkPDFFit([0])
     modelNames = fit.getModelNames()
     data = os.path.join(datadir, 'Ni_2-8.dat')
     fit.setDataSource(modelNames[0], [data])        
