@@ -9,18 +9,33 @@ from adps import AnisotropicAtomicDisplacementFactor as adp
 from RefinementAPI.utils import rebinArray
 
 class PDFCalculator(Calculator):
+    """Calculator class for generating a PDF signal.
+
+    This calls on pdffit2 to calculate a signal from the configured PDFData and
+    CrystalPhase.
+
+    Attributes
+    _comp       --  PDFComponent that contains this PDFCalculator. This is set
+                    by the PDFComponent on initialization.
+    _pdffit     --  An instance of the PdfFit class.
+    """
 
     def __init__(self):
         Calculator.__init__(self)
         self._pdffit = None
         self._comp = None
 
-    def teardown(self):
-        """Delete the _pdffit instance.
+    def __setstate__(self):
+        """Needed for pickling.
 
-        This should be called after optimization so that this remains
-        pickleable.
+        This sets the _pdffit attribute to None, since it is unpickleable.
         """
+        state = dict(self.__dict__)
+        state["_pdffit"] = None
+        return state
+
+    def clear(self):
+        """Delete the _pdffit instance."""
         self._pdffit = None
         return
 

@@ -9,8 +9,8 @@ from PDFAPI     import *
 
 # Fit
 fit   = Fit()
-#from RefinementAPI.park.ParkOptimizer import ParkOptimizer
-#fit.setOptimizer(ParkOptimizer())
+from RefinementAPI.park.ParkOptimizer import ParkOptimizer
+fit.setOptimizer(ParkOptimizer())
 # Set the number of refinement cycles
 fit.setNumCycles(-1)
 
@@ -23,13 +23,11 @@ fit.addComponent(comp)
 pat = PDFData()
 comp.setData(pat)
 pat.loadData("ni.dat", PDFParser())
-pat.setQmax(45.0)
-pat.setScatteringType('N')
 pat.qdamp = 0.001
 fit.mapVP("v_qdamp", pat, "qdamp")
 
 # setup the excluded region
-comp.setFitRange(1.5, 15.0, 0.05)
+comp.setFitRange(1.5, 20.0, 0.05)
 
 ### Instantiate the phase
 pha = CrystalPhase()
