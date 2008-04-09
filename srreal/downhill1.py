@@ -35,6 +35,7 @@ def busyDownhill():
         c2, i2, j2 = min(cij2)
         if not c2 < c1:     break
         ph1.flipSiteColoring(i2, j2)
+    return ph1
 
 def processArguments(args):
     rv = dict(rp)

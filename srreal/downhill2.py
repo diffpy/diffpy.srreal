@@ -53,6 +53,7 @@ def smartDownhill():
         while goodflips_cost:
             goodflips_cost = blitzdownhill(ph1, goodflips_cost)
         if not cost(ph1) < c1: break
+    return ph1
 
 
 def main():
