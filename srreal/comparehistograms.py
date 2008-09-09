@@ -6,6 +6,7 @@ __id__ = "$Id$"
 
 
 import bisect
+import math
 
 
 class CompareHistograms(object):
@@ -20,7 +21,7 @@ class CompareHistograms(object):
     """
 
     # class data
-    binsize = float('Inf')
+    _binsize = float('Inf')
 
 
     def __init__(self, refhist, modelhist=None, binsize=None):
@@ -42,19 +43,20 @@ class CompareHistograms(object):
         self._yref = []
         self._xmod = []
         self._ymod = []
-        self._binsize = CompareHistograms.binsize
+        self._binsize = CompareHistograms._binsize
         # generated data
-        self._xzeros = set()
-        self._xedges = []
-        self._xedges_cached = False
-        self._xmodbins = []
-        self._xmodbins_cached = False
+        self._xbins = []
+        self._xbinszero = set()
+        self._xbinsedges = []
+        self._xbins_cached = False
+        self._yrefbinned = []
+        self._yrefbinned_cached = False
         self._ymodbinned = []
         self._ymodbinned_cached = False
-        self._msdx = None
-        self._msdx_cached = False
-        self._msdy = None
-        self._msdy_cached = False
+        self._tsdx = None
+        self._tsdx_cached = False
+        self._tsdy = None
+        self._tsdy_cached = False
         # finally assign arguments:
         self.setReference(refhist)
         if modelhist is not None:
@@ -70,6 +72,8 @@ class CompareHistograms(object):
     def xref(self):
         """List of bin centers of the reference histogram.
 
+        See also setReference.
+
         Return a copy of the internal list.
         """
         return self._xref[:]
@@ -78,15 +82,18 @@ class CompareHistograms(object):
     def yref(self):
         """List of bin amplitudes of the reference histogram.
 
+        See also setReference.
+
         Return a copy of the internal list.
         """
         return self._yref[:]
-
-
+    
 
     def xmod(self):
         """List of bin centers of the model histogram that is compared
         to the reference.
+
+        See also setModel.
 
         Return a copy of the internal list.
         """
@@ -97,384 +104,302 @@ class CompareHistograms(object):
         """List of bin amplitudes of the model histogram that is compared
         to the reference.
 
+        See also setModel.
+
         Return a copy of the internal list.
         """
         return self._ymod[:]
     
 
-    # TODO: reviewed up to here.
+    def setReference(self, refhist):
+        """Specify the reference histogram.
+
+        refhist -- reference histogram.  It can be a tuple of (xlist, ylist)
+                   or a class instance with x() and y() methods.
+
+        See also setModel, xref, yref.
+
+        No return value.
+        Raise TypeError for invalid argument type.
+        """
+        tpl = CompareHistograms._histargToTuple(refhist)
+        self._xref, self._yref = tpl[0][:], tpl[1][:]
+        self._uncache('xbins', 'yrefbinned', 'ymodbinned', 'tsdx', 'tsdy')
+        return
 
 
+    def setModel(self, modhist):
+        """Specify the model histogram to be compared with the reference.
 
-#   def x(self):
-#       """List of unique pair distances.
-#
-#       Return a copy of internal list.
-#       """
-#       if not self._x_cached:
-#           self._update_x()
-#       return self._x[:]
-#
-#
-#   def y(self):
-#       """List of pair distance weights.
-#
-#       Return a copy of internal list.
-#       """
-#       if not self._y_cached:
-#           self._update_y()
-#       return self._y[:]
-#
-#
-#   def countBars(self):
-#       """Number of unique pair distances, same as len(self.x()).
-#
-#       Return int.
-#       """
-#       if not self._x_cached:
-#           self._update_x()
-#       return len(self._x)
-#
-#
-#   def countAtoms(self):
-#       """Number of atoms in the internal structure model.
-#
-#       Return int.
-#       """
-#       return len(self._structure)
-#
-#
-#   def nmsf(self, element):
-#       """Normalized scattering factor of specified element in structure.
-#       Returns scattering factor at the active radiation type normalized
-#       by the average factor of all atoms in the structure.
-#
-#       element  -- case-insensitive symbol for element or isotope.
-#                   Must be present in internal structure.
-#
-#       See also setRadiationType.
-#
-#       Return float.
-#       Raise ValueError if element is not present in the structure.
-#       """
-#       if not self._sf_cached:
-#           self._update_sf()
-#       if element not in self._nmsf:
-#           emsg = 'Structure does not contain any "%s"' % element
-#           raise ValueError, emsg
-#       return self._nmsf[element]
-#
-#
-#   def meansf(self):
-#       """Mean value of scattering factor for the active radiation type.
-#
-#       Return float.
-#       """
-#       if not self._sf_cached:
-#           self._update_sf()
-#       return self._meansf
-#
-#
-#   def setStructure(self, stru):
-#       """Specify structure model for which to calculate pair histogram.
-#
-#       stru -- structure model, instance of Structure from diffpy.Structure.
-#               Makes a copy of stru for internal storage.
-#
-#       No return value.
-#       """
-#       # Note: So far no handling of occupancies.
-#       for a in stru:
-#           assert a.occupancy == 1
-#       from diffpy.Structure import Structure
-#       self._uncache('x', 'y', 'sf')
-#       self._structure = Structure(stru)
-#       self._site_coloring = [a.element for a in self._structure]
-#       return
-#
-#
-#   def getStructure(self):
-#       """Structure model for which the pair histogram is calculated.
-#
-#       Return new instance of Structure, a copy of internal model.
-#       """
-#       from diffpy.Structure import Structure
-#       stru = Structure(self._structure)
-#       for a, smbl in zip(stru, self._site_coloring):
-#           a.element = smbl
-#       return stru
-#
-#
-#   def setSiteColoring(self, coloring):
-#       """Assign new atom types per each site in structure model.
-#
-#       coloring -- list of string symbols for elements or isotopes.
-#                   The length of coloring must be equal to countAtoms().
-#
-#       No return value.
-#       Raise ValueError for invalid argument.
-#       """
-#       if len(coloring) != self.countAtoms():
-#           emsg = "Invalid length of element list."
-#           raise ValueError, emsg
-#       # convert argument to a list
-#       newcoloring = list(coloring)
-#       # short circuit
-#       if self._site_coloring == newcoloring:
-#           return
-#       # is is probably more work to check for sf cache than to update it
-#       self._uncache('y', 'sf')
-#       # assign new coloring:
-#       self._site_coloring = newcoloring
-#       return
-#
-#
-#   def getSiteColoring(self):
-#       """List of atom types per each site in structure model.
-#
-#       Return list of string symbols for elements or isotopes.
-#       """
-#       rv = self._site_coloring[:]
-#       return rv
-#
-#
-#   def flipSiteColoring(self, i, j):
-#       """Exchange atom types at sites i and j.  This performs smart
-#       update of internal pair distance weights.
-#
-#       i   -- zero based index of the first site
-#       j   -- zero based index of the second site
-#
-#       No return value.
-#       Raise IndexError for invalid arguments.
-#       """
-#       # negative indices are valid in python
-#       if i < 0:   i += self.countAtoms()
-#       if j < 0:   j += self.countAtoms()
-#       smbi = self._site_coloring[i]
-#       smbj = self._site_coloring[j]
-#       if smbi == smbj: return
-#       # _site_coloring changes so we need to create a new copy
-#       self._site_coloring = self._site_coloring[:]
-#       self._site_coloring[i] = smbj
-#       self._site_coloring[j] = smbi
-#       # uncomment to disable quick update:
-#       # self._uncache('y')
-#       if not self._y_cached:
-#           return
-#       # Here y is up to date.  We can do quick update of weights.
-#       # This makes about 40% gain in speed, but is more tricky
-#       # to maintain, because _y gets updated at two places.
-#       sf1 = [self.nmsf(smbl) for smbl in self._site_coloring]
-#       # scattering factors before flip
-#       sf0 = sf1[:]
-#       sf0[j], sf0[i] = sf1[i], sf1[j]
-#       # build a set of all pairs containing i or j
-#       ithenj = [i] * self.countAtoms() + [j] * self.countAtoms()
-#       kalltwice = range(self.countAtoms()) * 2
-#       ijset = set(zip(ithenj, kalltwice) + zip(kalltwice, ithenj))
-#       ijset.remove((i, j))
-#       ijset.remove((j, i))
-#       # calculate change of y due to i, j swap
-#       ychange = self.countBars() * [0.0]
-#       for idx in range(self.countBars()):
-#           ijpairs = ijset.intersection(self._ij_count[idx])
-#           for ij1 in ijpairs:
-#               i1, j1 = ij1
-#               cnt = self._ij_count[idx][ij1]
-#               ychange[idx] -= sf0[i1] * sf0[j1] * cnt
-#               ychange[idx] += sf1[i1] * sf1[j1] * cnt
-#           # normalize
-#           ychange[idx] /= self.countAtoms()
-#       # _y must be assigned new list to allow cheap copy
-#       self._y = [self._y[idx] + ychange[idx]
-#                   for idx in range(self.countBars())]
-#       return
-#
-#
-#   def setRmax(self, rmax):
-#       """Change upper limit up to which the pair distances are calculated.
-#
-#       rmax -- new upper boundary for pair distances.
-#
-#       No return value.
-#       """
-#       # quick reduction of histogram if it is up to date
-#       if self._rmax and rmax < self._rmax and self._x_cached:
-#           idx = bisect.bisect_right(self._x, rmax)
-#           del self._x[idx:]
-#           del self._y[idx:]
-#       elif rmax > self._rmax:
-#           self._uncache('x', 'y')
-#       self._rmax = float(rmax)
-#       return
-#
-#
-#   def getRmax(self):
-#       """Upper radius limit for calculating pair distances.
-#
-#       Return float.
-#       """
-#       return self._rmax
-#
-#
-#   def setPBC(self, pbc):
-#       """Specify if periodic boundary conditions apply for structure model.
-#
-#       pbc  -- boolean flag for periodic boundary conditions
-#
-#       No return value.
-#       """
-#       pbcflag = bool(pbc)
-#       if pbcflag is not self._pbc:
-#           self._uncache('x', 'y')
-#       self._pbc = pbcflag
-#       return
-#
-#
-#   def getPBC(self):
-#       """True when periodic boundary conditions are in effect.
-#
-#       Return bool.
-#       """
-#       return self._pbc
-#
-#
-#   def setResolution(self, resolution):
-#       """Specify radius resolution for distinguishing two close distances.
-#       If a difference of two distances is less or equal resolution, they
-#       are merged together in the histogram.
-#
-#       resolution -- new distance resolution, must be non-negative.
-#
-#       No return value.
-#       Raise ValueError for invalid resolution.
-#       """
-#       res = float(resolution)
-#       if res < 0:
-#           emsg = "resolution must be non-negative."
-#           raise ValueError, emsg
-#       if res != self._resolution:
-#           self._uncache('x', 'y')
-#       self._resolution = res
-#       return
-#
-#
-#   def getResolution(self):
-#       """Radius resolution for separating two close distances.
-#
-#       Return float.
-#       """
-#       return self._resolution
-#
-#
-#   def setRadiationType(self, tp):
-#       """Specify radiation type for obtaining scattering factors.
-#       Default radiation type is "X".
-#
-#       tp   -- radiation type, "X" for x-rays or "N" for neutrons.
-#
-#       No return value.
-#       Raise ValueError for invalid argument.
-#       """
-#       if not tp in ("X", "N"):
-#           emsg = 'Radiation type must be "X" or "N".'
-#           raise ValueError, emsg
-#       if tp != self._radiation_type:
-#           self._uncache("y", "sf")
-#       self._radiation_type = tp
-#       return
-#
-#
-#   def getRadiationType(self):
-#       """Identify radiation type for obtaining scattering factors.
-#
-#       Return "X" for x-rays or "N" for neutrons.
-#       """
-#       return self._radiation_type
-#
-#
-#   # protected methods
-#
-#
-#   def _update_x(self):
-#       """Recalculate unique pair distances.
-#       Updates data in _x and _ij_count.
-#
-#       No return value.
-#       """
-#       self._x = []
-#       self._ij_count = []
-#       if self.getPBC():
-#           dstij = self._allPairsCrystal()
-#       else:
-#           dstij = self._allPairsCluster()
-#       # loop over all merged intervals
-#       dlast = -1e32
-#       dsums = []
-#       dcnts = []
-#       res = self.getResolution()
-#       for dij, i, j in dstij:
-#           if dij - dlast > res:
-#               dsums.append(0.0)
-#               dcnts.append(0)
-#               ijcnt = {}
-#               self._ij_count.append(ijcnt)
-#           dsums[-1] += dij
-#           dcnts[-1] += 1
-#           # ij is sorted tuple of pair indices
-#           ij = i <= j and (i, j) or (j, i)
-#           ijcnt[ij] = ijcnt.get(ij, 0) + 1
-#           dlast = dij
-#       # set x to mean values of merged distances
-#       self._x = [s/c for s, c in zip(dsums, dcnts)]
-#       assert len(self._x) == len(self._ij_count)
-#       self._x_cached = True
-#       return
-#
-#
-#   def _update_y(self):
-#       """Recalculate weighed counts of unique pair lengths.
-#       Updates data in _y.
-#
-#       No return value.
-#       """
-#       # array of weighed scattering factors of site i
-#       # call to nmsf makes sure scattering factors are up to date
-#       sf = [self.nmsf(smbl) for smbl in self._site_coloring]
-#       # call to countBars updates _x
-#       self._y = self.countBars() * [0.0]
-#       for idx in range(self.countBars()):
-#           for ij, cnt in self._ij_count[idx].iteritems():
-#               i, j = ij
-#               self._y[idx] += sf[i] * sf[j] * cnt
-#           # normalize by number of atoms in the structure
-#           self._y[idx] /= self.countAtoms()
-#       self._y_cached = True
-#       return
-#
-#
-#   def _update_sf(self):
-#       """Recalculate normalized scattering factor for elements in the
-#       internal structure.  Updates data in _nmsf, _meansf.
-#
-#       No return value.
-#       """
-#       pf = self.__getPdfFit()
-#       radtp = self.getRadiationType()
-#       self._nmsf = {}
-#       sfsum = 0.0
-#       for smbl in self._site_coloring:
-#           sfa = pf.get_scat(radtp, smbl)
-#           self._nmsf[smbl] = sfa
-#           sfsum += sfa
-#       # calculate mean scattering factor
-#       self._meansf = self.countAtoms() and sfsum/self.countAtoms() or 0.0
-#       # normalize scattering factors by their mean value
-#       for smbl in self._nmsf:
-#           self._nmsf[smbl] /= self._meansf
-#       self._sf_cached = True
-#       return
+        modhist -- model histogram.  It can be a tuple of (xlist, ylist)
+                   or a class instance with x() and y() methods.
+
+        See also setReference, xmod, ymod.
+
+        No return value.
+        Raise TypeError for invalid argument type.
+        """
+        tpl = CompareHistograms._histargToTuple(modhist)
+        self._xmod, self._ymod = tpl[0][:], tpl[1][:]
+        self._uncache('ymodbinned', 'tsdx', 'tsdy')
+        return
+
+
+    def getBinSize(self):
+        """Active cutoff for adding zero-amplitude bins when
+        neighboring x values in the reference are far apart.
+
+        See also setBinSize.
+
+        Return float.
+        """
+        return self._binsize
+
+
+    def setBinSize(self, binsize):
+        """Specify new cutoff for adding zero-amplitude bins when
+        neighboring x values in the reference are far apart.
+
+        See also getBinSize.
+
+        No return value.
+        """
+        self._binsize = float(binsize)
+        self._uncache('xbins', 'yrefbinned', 'ymodbinned', 'tsdx', 'tsdy')
+        return
+
+
+    def xbins(self):
+        """Reference to the internal list of x-bin centers.  Intended as
+        read-only, do not change the returned value.  When binsize is smaller
+        than the largest separation of neighboring xref, xbins contain
+        additional fake values with zero amplitudes.  The fake zero values
+        are stored in the xbinszero set.
+
+        See also setBinSize, xbinszero.
+
+        Return reference to the internal list.
+        """
+        if not self._xbins_cached:
+            self._update_xbins()
+        return self._xbins
+
+
+    def xbinszero(self):
+        """Set of extra zero elements in xbins that were inserted in
+        addition to values from xref.  Intended as read-only return
+        value, do not modify.
+
+        See also setBinSize, xbins.
+
+        Return reference to the internal set.
+        """
+        if not self._xbins_cached:
+            self._update_xbins()
+        return self._xbinszero
+
+
+    def xbinsedges(self):
+        """Reference to the internal list of x-bin boundaries.  Return value
+        is intended as read-only, do not modify.  The xbinsedges have one
+        element less than the xbins list.
+
+        See also xbins.
+
+        Return reference to the internal list.
+        """
+        if not self._xbins_cached:
+            self._update_xbins()
+        return self._xbinsedges
+
+
+    def countBins(self):
+        """Total number of x-bins used for comparison, i.e., all reference and
+        faked zero bins.  Same as the length of xbins.
+
+        See also xbins.
+
+        Return int.
+        """
+        return len(self.xbins())
+
+
+    def yrefbinned(self):
+        """Y-values from the reference histogram rebinned to xbins.  They may
+        include zero bins in addition to yref items.  Returned list is
+        read-only, do not modify.
+
+        See also binsize, xbins, ymodbinned.
+
+        Return reference to the internal list.
+        """
+        if not self._yrefbinned_cached:
+            self._update_yrefbinned()
+        return self._yrefbinned
+
+
+    def ymodbinned(self):
+        """Y-values from the model histogram rebineed to xbins.
+        Returned list is read-only, do not modify.
+
+        See also binsize, xbins, yrefbinned.
+
+        Return reference to the internal list.
+        """
+        if not self._ymodbinned_cached:
+            self._update_ymodbinned()
+        return self._ymodbinned
+
+
+    def tsdx(self):
+        """Total SquaredDifference in X.  Sum of squares of the
+        differences of the model X-values from the nearest
+        xbin center.
+
+        Return float.
+        """
+        if not self._tsdx_cached:
+            self._update_tsdx()
+        return self._tsdx
+
+
+    def tsdy(self):
+        """Total Squared Difference in Y.  Sum of squares of the
+        differences of the rebinned Y-values from the nearest
+        xbin center.
+
+        Return float.
+        """
+        if not self._tsdy_cached:
+            self._update_tsdy()
+        return self._tsdy
+
+
+    def msdx(self):
+        """Mean Squared Difference in X.  The msdx is calculated from the
+        differences between model and nearest reference X-values.
+
+        Return float.
+        """
+        if self.countBins() == 0:
+            rv = 0.0
+        else:
+            rv = self.tsdx() / self.countBins()
+        return rv
+
+
+    def msdy(self):
+        """Mean Squared Difference in Y.  The msdy is calculated from the
+        differences between model and reference histogram amplitudes.
+
+        Return float.
+        """
+        if self.countBins() == 0:
+            rv = 0.0
+        else:
+            rv = self.tsdy() / self.countBins()
+        return rv
+
+
+    # protected methods
+
+    def _update_xbins(self):
+        """Recalculate common x-bins from xref and active binsize.
+        Update data in _xbins, _xbinszero, _xbinsedges.
+
+        No return value.
+        Raise ValueError if _xref is not sorted.
+        """
+        self._xbins = []
+        self._xbinszero = set()
+        # build the _xbins list and _xbinszero set:
+        self._xbins += self._xref[:1]
+        for xhi in self._xref[1:]:
+            xlo = self._xbins[-1]
+            xstep = xhi - xlo
+            if xstep <= 0:
+                emsg = "Reference histogram must have sorted unique x-values."
+                raise ValueError, emsg
+            nzero = int(math.floor(xstep / self.getBinSize()))
+            xsepzero = xstep / (nzero + 1)
+            for i in range(nzero):
+                xzero = xlo + (i + 1)*xsepzero
+                self._xbins.append(xzero)
+                self._xbinszero.add(xzero)
+            self._xbins.append(xhi)
+        # calculate the edges:
+        self._xbinsedges = [ (self._xbins[i] + self._xbins[i + 1]) / 2.0
+                for i in range(0, len(self._xbins) - 1) ]
+        assert len(self._xbinszero) + len(self._xref) == len(self._xbins)
+        assert len(self._xbinsedges) + 1 == len(self._xbins)
+        self._xbins_cached = True
+        return
+
+
+    def _update_yrefbinned(self):
+        """Recalculate the list of rebinned Y-values from the reference
+        histogram.  The rebinned list may contain extra zero values. 
+        Update data in _yrefbinned.
+
+        No return value.
+        """
+        self._yrefbinned = []
+        xbz = self.xbinszero()
+        yri = iter(self.yref())
+        for x in self.xbins():
+            if x in xbz:
+                y = 0.0
+            else:
+                y = yri.next()
+            self._yrefbinned.append(y)
+        self._yrefbinned_cached = True
+        return
+
+
+    def _update_ymodbinned(self):
+        """Recalculate the list of rebinned Y-values from the model
+        histogram.  Update data in _ymodbinned.
+
+        No return value.
+        """
+        edges = self.xbinsedges()
+        self._ymodbinned = [0.0] * self.countBins()
+        for xm, ym in zip(self._xmod, self._ymod):
+            idx = bisect.bisect(edges, xm)
+            self._ymodbinned[idx] += ym
+        self._ymodbinned_cached = True
+        return
+
+
+    def _update_tsdx(self):
+        """Recalculate the total squared difference in X.
+        Update data in _tsdx.
+
+        No return value.
+        """
+        edges = self.xbinsedges()
+        xb = self.xbins()
+        self._tsdx = 0.0
+        for xm in self._xmod:
+            idx = bisect.bisect(edges, xm)
+            dx = xb[idx] - xm
+            self._tsdx += dx*dx
+        self._tsdx_cached = True
+        return
+
+
+    def _update_tsdy(self):
+        """Recalculate the total squared difference in Y.
+        Update data in _tsdy.
+
+        No return value.
+        """
+        self._tsdy = 0.0
+        for yrb, ymb in zip(self.yrefbinned(), self.ymodbinned()):
+            dy = yrb - ymb
+            self._tsdy += dy*dy
+        self._tsdy_cached = True
+        return
 
 
     def _uncache(self, *args):
@@ -489,6 +414,35 @@ class CompareHistograms(object):
             attrname = "_" + a + "_cached"
             setattr(self, attrname, False)
         return
+
+
+    # static class methods
+
+
+    @staticmethod
+    def _histargToTuple(histarg):
+        """Convert histogram argument to a tuple of (xlist, ylist).
+        This is a utility function is used by setReference and setModel.
+
+        histarg -- tuple of (xlist, ylist) or class instance that has
+                   x() and y() methods.
+
+        Return a tuple of x and y lists.
+        Raise TypeError for invalid argument type.
+        """
+        import types
+        rv = None
+        if type(histarg) is types.TupleType and len(histarg) == 2:
+            rv = histarg
+        else:
+            try:
+                rv = (histarg.x(), histarg.y())
+            except AttributeError:
+                pass
+        if rv is None:
+            emsg = "Argument must be a tuple or instance with x(), y() methods."
+            raise TypeError, emsg
+        return rv
 
 
 # End of class CompareHistograms
