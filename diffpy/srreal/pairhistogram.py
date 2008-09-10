@@ -441,7 +441,7 @@ class PairHistogram(object):
 
         No return value.
         """
-        pf = self.__getPdfFit()
+        pf = self._getPdfFit()
         radtp = self.getRadiationType()
         self._nmsf = {}
         sfsum = 0.0
@@ -499,7 +499,7 @@ class PairHistogram(object):
         Return sorted list of tuples (d, i, j), where i and j are indices
         of contributing atoms.
         """
-        pf = self.__getPdfFit()
+        pf = self._getPdfFit()
         # Because, this method only evaluates geometry, let us use
         # all carbon atoms so there are no problems with unknown types.
         carbonstru = self.getStructure()
@@ -515,7 +515,7 @@ class PairHistogram(object):
 
 
     @staticmethod
-    def __getPdfFit():
+    def _getPdfFit():
         """Common shared instance of PdfFit from diffpy.pdffit2.
         This methods shuts off PdfFit output and resets instance.
 
