@@ -17,6 +17,6 @@
 
 __id__ = "$Id$"
 
-from .version import __version__
+from diffpy.srreal.version import __version__
 
 # End of file
