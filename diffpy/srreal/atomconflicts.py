@@ -51,8 +51,9 @@ class AtomConflicts(object):
     def getConflicts(self):
         """List of all conflicting atom pairs in a crystal structure.
 
-        Return a list of tuples (i, j, dij), where i, j are atom indices and
-        dij their distance calculated with periodic boundary conditions.
+        Return a list of tuples (i, j, dij, ddij), where i, j are atom
+        indices, dij their distance and ddij=(dmin - dij).  Distances
+        dij are calculated with respect to periodic boundary conditions.
         """
         self._update_conflicts()
         return self._conflicts[:]
@@ -173,15 +174,15 @@ class AtomConflicts(object):
         return
 
 
-    def getDmax(self):
-        """Upper limit for calculating pair distances.  Dmax is double
-        the radius of the largest atom.
+    def getRmax(self):
+        """Radius of the largest atom in the structure or zero
+        for empty structure.
 
         Return float.
         """
         allradia = [self.atomRadius(smbl) for smbl in self._site_coloring]
-        dmax = 2 * max([0.0] + allradia)
-        return dmax
+        rmax = max([0.0] + allradia)
+        return rmax
 
 
     def atomRadius(self, elsmbl):
@@ -215,8 +216,9 @@ class AtomConflicts(object):
             smbi = self._site_coloring[i]
             smbj = self._site_coloring[j]
             dminij = self.atomRadius(smbi) + self.atomRadius(smbj)
-            if dij < dminij:
-                cnfls.append((i, j, dij))
+            ddij = dminij - dij
+            if ddij > 0:
+                cnfls.append((i, j, dij, ddij))
         self._conflicts = cnfls
         self._conflicts_cached = True
         return
@@ -239,7 +241,7 @@ class AtomConflicts(object):
             a.element = "C"
         pf.add_structure(carbonstru)
         dmin = 1.0e-8
-        dmax = self.getDmax()
+        dmax = 2 * self.getRmax()
         bldict = pf.bond_length_types('ALL', 'ALL', dmin, dmax)
         self._pair_lengths = [(i, j, dij)
                 for (i, j), dij in zip(bldict['ij0'], bldict['dij'])]

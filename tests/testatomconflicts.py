@@ -88,7 +88,7 @@ class TestAtomConflicts(unittest.TestCase):
         cnfls0 = self.cnfl_sphalerite.getConflicts()
         self.assertEqual(cnt0, len(cnfls0))
         # atom 0 should have 4 conflicts:
-        i0neighbors = [j for i, j, d in cnfls0 if i == 0]
+        i0neighbors = [ijdd[0] for ijdd in cnfls0 if ijdd[0] == 0]
         self.assertEqual(4, len(i0neighbors))
         # similar check for silicon
         self.assertEqual([], self.cnfl_silicon.getConflicts())
@@ -98,12 +98,16 @@ class TestAtomConflicts(unittest.TestCase):
         self.assertEqual(cnt1, len(cnfls1))
         # atom 0 has 4 neighbors
         # atom 0 should have 4 conflicts:
-        i0neighbors = [j for i, j, d in cnfls1 if i == 0]
+        i0neighbors = [ijdd[1] for ijdd in cnfls1 if ijdd[0] == 0]
         self.assertEqual(4, len(i0neighbors))
         # check the nearest conflict distance
-        d0 = cnfls1[0][-1]
+        d0 = cnfls1[0][2]
         dcheck = self.silicon.lattice.a * math.sqrt(3) / 4
         self.assertAlmostEqual(dcheck, d0, 8)
+        # check conflict magnitude
+        dd0 = cnfls1[0][3]
+        ddcheck = 2*bigradia['Si'] - dcheck
+        self.assertAlmostEqual(ddcheck, dd0, 8)
         return
 
     def test_countConflicts(self):
@@ -186,15 +190,15 @@ class TestAtomConflicts(unittest.TestCase):
         self.assertEqual(0, csi.countConflicts())
         return
 
-    def test_getDmax(self):
-        """check AtomConflicts.getDmax()
+    def test_getRmax(self):
+        """check AtomConflicts.getRmax()
         """
         csi = self.cnfl_silicon
-        self.assertAlmostEqual(2*getCovalentRadius('Si'), csi.getDmax(), 4)
+        self.assertAlmostEqual(getCovalentRadius('Si'), csi.getRmax(), 4)
         csi.setSiteColoring(['Na']*csi.countAtoms())
-        self.assertAlmostEqual(2*getCovalentRadius('Na'), csi.getDmax(), 4)
+        self.assertAlmostEqual(getCovalentRadius('Na'), csi.getRmax(), 4)
         csi.setAtomRadiaGetter({'Na' : 7}.get)
-        self.assertEqual(2*7, csi.getDmax())
+        self.assertEqual(7, csi.getRmax())
         return
 
 #   def test__update_conflicts(self):
