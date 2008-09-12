@@ -2,8 +2,8 @@
 #
 # diffpy.srreal     by DANSE Diffraction group
 #                   Simon J. L. Billinge
-#                   (c) 2008 FIXME
-#                   All rights reserved.
+#                   (c) 2008 Trustees of the Columbia University
+#                   in the city of New York.  All rights reserved.
 #
 # File coded by:    Pavol Juhas
 #
@@ -12,11 +12,12 @@
 #
 ########################################################################
 
+
 """Tools for real space structure analysis.
 """
 
-__id__ = "$Id$"
-
+# package version
 from diffpy.srreal.version import __version__
+
 
 # End of file

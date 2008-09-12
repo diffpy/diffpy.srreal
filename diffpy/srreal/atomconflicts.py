@@ -1,3 +1,18 @@
+########################################################################
+#
+# diffpy.srreal     by DANSE Diffraction group
+#                   Simon J. L. Billinge
+#                   (c) 2008 Trustees of the Columbia University
+#                   in the city of New York.  All rights reserved.
+#
+# File coded by:    Pavol Juhas
+#
+# See AUTHORS.txt for a list of people who contributed.
+# See LICENSE.txt for license information.
+#
+########################################################################
+
+
 """class PairHistogram -- weighed pair distance counts from a structure model.
 """
 
@@ -287,8 +302,10 @@ def getCovalentRadius(elsmbl):
     if __elements_periodic_table is None:
         import elements
         __elements_periodic_table = elements.periodic_table
-    e = getattr(__elements_periodic_table, elsmbl)
+    # adjust characters to standard case
+    smbl = elsmbl[:1].upper() + elsmbl[1:].lower().strip('+-012345678')
+    e = getattr(__elements_periodic_table, smbl)
     return e.covalent_radius
 
 
-# End of routines
+# End of file

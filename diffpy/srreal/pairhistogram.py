@@ -1,3 +1,18 @@
+########################################################################
+#
+# diffpy.srreal     by DANSE Diffraction group
+#                   Simon J. L. Billinge
+#                   (c) 2008 Trustees of the Columbia University
+#                   in the city of New York.  All rights reserved.
+#
+# File coded by:    Pavol Juhas
+#
+# See AUTHORS.txt for a list of people who contributed.
+# See LICENSE.txt for license information.
+#
+########################################################################
+
+
 """class PairHistogram -- weighed pair distance counts from a structure model.
 """
 
