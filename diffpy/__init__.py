@@ -3,7 +3,7 @@
 # diffpy            by DANSE Diffraction group
 #                   Simon J. L. Billinge
 #                   (c) 2008 Trustees of the Columbia University
-#                   in the city of New York.  All rights reserved.
+#                   in the City of New York.  All rights reserved.
 #
 # File coded by:    Pavol Juhas
 #
