@@ -17,7 +17,7 @@ dist = setup(
         name = "diffpy.srreal",
         version = "0.1a",
         namespace_packages = ['diffpy'],
-        packages = ['diffpy'],
+        packages = find_packages(exclude=['PDFAPI']),
         install_requires = [
             'diffpy.Structure',
             'diffpy.pdffit2',
