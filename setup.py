@@ -21,7 +21,6 @@ dist = setup(
         entry_points = {
             'console_scripts' : [
                 'downhill1=diffpy.srreal.applications.downhill1:main',
-                'downhill2=diffpy.srreal.applications.downhill2:main',
             ],
         },
         install_requires = [
