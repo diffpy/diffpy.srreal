@@ -18,6 +18,12 @@ dist = setup(
         version = "0.1a",
         namespace_packages = ['diffpy'],
         packages = find_packages(exclude=['PDFAPI']),
+        entry_points = {
+            'console_scripts' : [
+                'downhill1=diffpy.srreal.applications.downhill1:main',
+                'downhill2=diffpy.srreal.applications.downhill2:main',
+            ],
+        },
         install_requires = [
             'diffpy.Structure',
             'diffpy.pdffit2',
