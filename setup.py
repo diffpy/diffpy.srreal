@@ -21,6 +21,8 @@ dist = setup(
         entry_points = {
             'console_scripts' : [
                 'downhill1=diffpy.srreal.applications.downhill1:main',
+                'optimizeAtomOverlap=' + \
+                    'diffpy.srreal.applications.optimizeAtomOverlap:main',
             ],
         },
         install_requires = [
