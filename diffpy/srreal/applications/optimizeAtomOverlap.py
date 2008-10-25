@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
-"""optimizeAtomOverlap.py   assign atoms over sites to minimize their overlap
-Usage: optimizeAtomOverlap.py [options] structfile1 [structfile2]...
+"""SCRIPTNAME   assign atoms over sites to minimize their overlap
+Usage: SCRIPTNAME [options] structfile1 [structfile2]...
 
 When several structure files are specified return the one with
 minimum overlap.
 
 Options:
+
   -f, --formula=FORMULA     chemical formula of the unit cell, must be
                             commensurate with number of atom sites.  When
                             not specified, use composition from structfile1.
@@ -18,7 +19,10 @@ Options:
                             radia from the elements package.
       --repeats=N           Number of downhill optimizations from initial
                             random configurations.  By default 5.
+      --rotate              Scan all unique rotations for each of the repeats 
+                            initial configurations.  Might be slow.
       --rngseed=N           Specifie integer seed for random number generator.
+      --debug               Enter python debugger after catching an exception.
   -h, --help                display this message
   -V, --version             show script version
 """
@@ -37,6 +41,7 @@ gl_opts = [
         "",     "outfmt=",
         "r:",   "radia=",
         "",     "repeats=",
+        "",     "rotate",
         "",     "rngseed=",
         "h",    "help",
         "V",    "version",
@@ -48,6 +53,10 @@ gl_longopts = gl_opts[1::2]
 class OptimizeAtomOverlapScript:
     """Class for running overlap optimization script.
     """
+
+    # script documentation string
+    script_doc = gl_doc
+    script_version = __id__
 
     def __init__(self, argv):
         """Create the script instance and prepare it for running
@@ -65,7 +74,9 @@ class OptimizeAtomOverlapScript:
         self.outfmt = 'discus'
         self.radia = {}
         self.repeats = 5
+        self.rotate = False
         self.rngseed = None
+        self.debug = False
         # calculated data
         self.expanded_formula = []
         self.structures = []
@@ -74,6 +85,7 @@ class OptimizeAtomOverlapScript:
         # process command line arguments
         self._processCommandLineArgs(argv)
         self._loadStructFiles()
+        self._applyLatticeParameters()
         self._updateExpandedFormula()
         self._applyRandomSeed()
         return
@@ -154,6 +166,10 @@ class OptimizeAtomOverlapScript:
         col0 = ac0.getSiteColoring()
         ac1 = copy.copy(ac0)
         indices = range(ac0.countAtoms())
+        if self.rotate:
+            index_offsets = indices
+        else:
+            index_offsets = [0]
         while True:
             c1 = self.cost(ac1)
             col1 = ac1.getSiteColoring()
@@ -161,8 +177,8 @@ class OptimizeAtomOverlapScript:
             did_rotation = set()
             # loop over all unique rotations of the initial coloring col0
             ac2 = copy.copy(ac1)
-            for k in indices:
-                col2 = tuple(col1[k:] + col1[:k])
+            for offset in index_offsets:
+                col2 = tuple(col1[offset:] + col1[:offset])
                 if col2 in did_rotation:
                     continue
                 did_rotation.add(col2)
@@ -214,7 +230,7 @@ class OptimizeAtomOverlapScript:
         """
         import os
         myname = os.path.basename(self.mypath)
-        fullmsg = gl_doc.replace('optimizeAtomOverlap.py', myname)
+        fullmsg = self.script_doc.replace('SCRIPTNAME', myname)
         briefmsg = "\n".join([
             fullmsg.split('\n')[1],
             "Try '%s --help' for more information." % myname,
@@ -247,7 +263,7 @@ class OptimizeAtomOverlapScript:
         """
         import getopt
         self.mypath = argv[0]
-        opts, args = getopt.getopt(argv[1:], gl_shortopts, gl_longopts)
+        opts, args = getopt.gnu_getopt(argv[1:], gl_shortopts, gl_longopts)
         self.structfiles = args
         for o, a in opts:
             if o in ("-f", "--formula"):
@@ -258,20 +274,27 @@ class OptimizeAtomOverlapScript:
                 self.latpar = [float(w) for w in latparstrings]
             elif o in ("-o", "--outstru"):
                 self.outstru = a
+            elif o == "--outfmt":
+                self.outfmt = a
             elif o in ("-r", "--radia"):
-                words = a.strip.split(",")
+                words = a.strip().split(",")
                 for w in words:
                     elsmbl, value = w.split(":", 1)
                     self.radia[elsmbl] = float(value)
             elif o == "--repeats":
                 self.repeats = int(a)
+            elif o == "--rotate":
+                self.rotate = True
             elif o == "--rngseed":
                 self.rngseed = int(a)
+            elif o == "--debug":
+                # debug is handled in main()
+                pass
             elif o in ("-h", "--help"):
                 self.usage()
                 sys.exit()
             elif o in ("-V", "--version"):
-                print __id__
+                print self.script_version
                 sys.exit()
         if not self.structfiles:
             self.usage(brief=True)
@@ -300,6 +323,22 @@ class OptimizeAtomOverlapScript:
         return
 
 
+    def _applyLatticeParameters(self):
+        """Calculate fractional coordinates with respect to parameter latpar.
+        Updates all Structure instance in the structures attribute. 
+        No operation when parameter latpar was not provided.
+
+        No return value.
+        """
+        if self.latpar is None:
+            return
+        from diffpy.Structure import Lattice
+        lattice = Lattice(*self.latpar)
+        for stru in self.structures:
+            stru.placeInLattice(lattice)
+        return
+
+
     def _updateExpandedFormula(self):
         """Set expanded_formula either from the formula argument
         or from the first structure.
@@ -309,7 +348,7 @@ class OptimizeAtomOverlapScript:
         """
         composition0 = [a.element for a in self.structures[0]]
         if self.formula is not None:
-            fm = self._parseFormula(self.formula)
+            fm = parseChemicalFormula(self.formula)
         else:
             fm = composition0
         fmunits = len(composition0) / len(fm)
@@ -332,29 +371,31 @@ class OptimizeAtomOverlapScript:
         return
 
 
-    def _parseFormula(self):
-        """Parse chemical formula and return a list of elements"""
-        import re
-        # remove all blanks
-        fmbare = re.sub('\s', '', self.formula)
-        if not re.match('^[A-Z]', fmbare):
-            raise RuntimeError, "InvalidFormula '%s'" % fmbare
-        elcnt = re.split('([A-Z][a-z]?)', fmbare)[1:]
-        els = []
-        for el, scnt in zip(elcnt[::2], elcnt[1::2]):
-            cnt = (cnt == "") and 1 or int(cnt)
-            els.extend(cnt * [el])
-        return els
-
-
 # End of class OptimizeAtomOverlapScript
+
+def parseChemicalFormula(formula):
+    """Parse chemical formula and return a list of elements"""
+    import re
+    # remove all blanks
+    fmbare = re.sub('\s', '', formula)
+    if not re.match('^[A-Z]', fmbare):
+        raise RuntimeError, "InvalidFormula '%s'" % fmbare
+    elcnt = re.split('([A-Z][a-z]?)', fmbare)[1:]
+    els = []
+    for el, scnt in zip(elcnt[::2], elcnt[1::2]):
+        cnt = (scnt == "") and 1 or int(scnt)
+        els.extend(cnt * [el])
+    return els
+
 
 def main():
     try:
         oaos = OptimizeAtomOverlapScript(sys.argv)
         oaos.run()
     except Exception, err:
-        raise
+        if "--debug" in sys.argv:
+            import pdb
+            pdb.post_mortem(sys.exc_info()[-1])
         print >> sys.stderr, err
         sys.exit(2)
 
