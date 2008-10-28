@@ -251,7 +251,7 @@ class CrystalCoordinationScript(OptimizeAtomOverlapScript):
                 words = a.strip().split(",")
                 for w in words:
                     elsmbl, value = w.split(":", 1)
-                    self.radia[elsmbl] = float(value)
+                    self.radia[elsmbl.strip()] = float(value)
             elif o in ("-v", "--verbose"):
                 self.verbose = True
             elif o == "--debug":

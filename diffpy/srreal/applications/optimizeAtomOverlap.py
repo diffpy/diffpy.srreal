@@ -282,7 +282,7 @@ class OptimizeAtomOverlapScript:
                 words = a.strip().split(",")
                 for w in words:
                     elsmbl, value = w.split(":", 1)
-                    self.radia[elsmbl] = float(value)
+                    self.radia[elsmbl.strip()] = float(value)
             elif o == "--repeats":
                 self.repeats = int(a)
             elif o == "--rotate":
