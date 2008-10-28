@@ -51,7 +51,7 @@ gl_shortopts = "".join(gl_opts[0::2])
 gl_longopts = gl_opts[1::2]
 
 
-class OptimizeAtomOverlapScript:
+class ColorFromAtomOverlapScript:
     """Class for running overlap optimization script.
     """
 
@@ -102,7 +102,7 @@ class OptimizeAtomOverlapScript:
         for idx in range(len(self.structures)):
             f = self.structfiles[idx]
             stru = self.structures[idx]
-            ac = self.optimizeOverlap(stru)
+            ac = self.optimizeColoring(stru)
             optstru = ac.getStructure()
             self.optimized_structures.append(optstru)
             c = self.cost(ac)
@@ -207,7 +207,7 @@ class OptimizeAtomOverlapScript:
         return rv
 
 
-    def optimizeOverlap(self, stru):
+    def optimizeColoring(self, stru):
         """Perform repeated downhill minimizations of atom overlap in stru.
 
         stru    -- instance of initial Structure
@@ -386,7 +386,7 @@ class OptimizeAtomOverlapScript:
         return
 
 
-# End of class OptimizeAtomOverlapScript
+# End of class ColorFromAtomOverlapScript
 
 def parseChemicalFormula(formula):
     """Parse chemical formula and return a list of elements"""
@@ -405,8 +405,8 @@ def parseChemicalFormula(formula):
 
 def main():
     try:
-        oaos = OptimizeAtomOverlapScript(sys.argv)
-        oaos.run()
+        cfaos = ColorFromAtomOverlapScript(sys.argv)
+        cfaos.run()
     except Exception, err:
         if "--debug" in sys.argv:
             raise

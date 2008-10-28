@@ -36,9 +36,9 @@ gl_shortopts = "".join(gl_opts[0::2])
 gl_longopts = gl_opts[1::2]
 
 
-from optimizeAtomOverlap import OptimizeAtomOverlapScript
+from colorFromAtomOverlap import ColorFromAtomOverlapScript
 
-class CrystalCoordinationScript(OptimizeAtomOverlapScript):
+class CrystalCoordinationScript(ColorFromAtomOverlapScript):
     """Class for running coordination number evaluation.
     """
 
@@ -55,14 +55,14 @@ class CrystalCoordinationScript(OptimizeAtomOverlapScript):
 
         No return value.
         """
-        # define arguments that are not in the OptimizeAtomOverlapScript
+        # define arguments that are not in the ColorFromAtomOverlapScript
         # input parameters
         self.verbose = False
         # calculated parameters
         self.coordination_radia = {}
         self._filename_width = None
         # do original initialization and argument assignment
-        OptimizeAtomOverlapScript.__init__(self, argv)
+        ColorFromAtomOverlapScript.__init__(self, argv)
         return
 
 
@@ -172,6 +172,8 @@ class CrystalCoordinationScript(OptimizeAtomOverlapScript):
         for nl in neighlist:
             nl.sort()
         coloring = ac.getSiteColoring()
+        order_map = dict([(el, coloring.index(el)) for el in set(coloring)])
+        order_key = lambda tpl: order_map[tpl[0]]
         neighborhoods = {}
         for idx in indices:
             center = coloring[idx]
@@ -179,33 +181,18 @@ class CrystalCoordinationScript(OptimizeAtomOverlapScript):
             centerneighscounts = dict.fromkeys(centerneighs, 0)
             for cnsmbl in centerneighs:
                 centerneighscounts[cnsmbl] += 1
-            neighcnt = sorted(centerneighscounts.items())
+            neighcnt = centerneighscounts.items()
+            neighcnt.sort(key=order_key)
             keyl = [center, None] + sum([list(tpl) for tpl in neighcnt], [])
             key = tuple(keyl)
             neighborhoods[key] = neighborhoods.get(key, 0) + 1
         neighhist = [(key[0], value) + key[2:]
                 for key, value in neighborhoods.iteritems()]
-        neighhist.sort(key=lambda item: coloring.index(item[0]))
+        neighhist.sort(key=order_key)
         rv = {  "coloring" : coloring,
                 "neighlist" : neighlist,
                 "neighhist" : neighhist, }
         return rv
-
-
-    def optimizeOverlap(self, stru):
-        """Perform repeated downhill minimizations of atom overlap in stru.
-
-        stru    -- instance of initial Structure
-
-        Return the best of AtomConflicts instance after repeats runs.
-        """
-        all_acs = []
-        for i in range(self.repeats):
-            ac0 = self.initialAtomConflicts(stru)
-            ac1 = self.downhillOverlapMinimization(ac0)
-            all_acs.append(ac1)
-        best_ac = min(all_acs, key=self.cost)
-        return best_ac
 
 
     def usage(self, brief=False):
