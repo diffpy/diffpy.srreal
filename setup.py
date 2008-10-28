@@ -23,6 +23,8 @@ dist = setup(
                 'downhill1=diffpy.srreal.applications.downhill1:main',
                 'optimizeAtomOverlap=' + \
                     'diffpy.srreal.applications.optimizeAtomOverlap:main',
+                'crystalCoordination=' + \
+                    'diffpy.srreal.applications.crystalCoordination:main',
             ],
         },
         install_requires = [

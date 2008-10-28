@@ -43,6 +43,7 @@ gl_opts = [
         "",     "repeats=",
         "",     "rotate",
         "",     "rngseed=",
+        "",     "debug",
         "h",    "help",
         "V",    "version",
 ]
@@ -86,8 +87,6 @@ class OptimizeAtomOverlapScript:
         self._processCommandLineArgs(argv)
         self._loadStructFiles()
         self._applyLatticeParameters()
-        self._updateExpandedFormula()
-        self._applyRandomSeed()
         return
 
 
@@ -96,6 +95,9 @@ class OptimizeAtomOverlapScript:
 
         No return value.
         """
+        self._updateExpandedFormula()
+        self._checkStructures()
+        self._applyRandomSeed()
         cst_idx_ac = []
         for idx in range(len(self.structures)):
             f = self.structfiles[idx]
@@ -306,15 +308,28 @@ class OptimizeAtomOverlapScript:
         """Load all input structfiles and assign the structures attribute.
 
         No return value.
-        Raise RuntimeError for structures with diffent length or composition.
         """
         from diffpy.Structure import Structure
         composition = []
         for f in self.structfiles:
             stru = Structure(filename=f)
             self.structures.append(stru)
+        return
+
+
+    def _checkStructures(self):
+        """Verify that all structfiles have the same composition.
+
+        No return value.
+        Raise RuntimeError for structures with diffent composition.
+        """
+        composition = None
+        for idx in range(len(self.structures)):
+            f = self.structfiles[idx]
+            stru = self.structures[idx]
             if not composition:
                 composition = sorted([a.element for a in stru])
+                continue
             strucomp = sorted([a.element for a in stru])
             if composition != strucomp:
                 emsg = "Unit cell compositions differ in %s and %s." % \
@@ -394,8 +409,7 @@ def main():
         oaos.run()
     except Exception, err:
         if "--debug" in sys.argv:
-            import pdb
-            pdb.post_mortem(sys.exc_info()[-1])
+            raise
         print >> sys.stderr, err
         sys.exit(2)
 
