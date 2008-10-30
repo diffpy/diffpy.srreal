@@ -21,8 +21,10 @@ dist = setup(
         entry_points = {
             'console_scripts' : [
                 'downhill1=diffpy.srreal.applications.downhill1:main',
-                'colorFromAtomOverlap=' + \
-                    'diffpy.srreal.applications.colorFromAtomOverlap:main',
+                'colorFromOverlap=' + \
+                    'diffpy.srreal.applications.colorFromOverlap:main',
+                'colorFromOverlapCmpPDF=' + \
+                    'diffpy.srreal.applications.colorFromOverlapCmpPDF:main',
                 'crystalCoordination=' + \
                     'diffpy.srreal.applications.crystalCoordination:main',
             ],

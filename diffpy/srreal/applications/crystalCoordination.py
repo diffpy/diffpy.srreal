@@ -36,9 +36,9 @@ gl_shortopts = "".join(gl_opts[0::2])
 gl_longopts = gl_opts[1::2]
 
 
-from colorFromAtomOverlap import ColorFromAtomOverlapScript
+from colorFromOverlap import ColorFromOverlap
 
-class CrystalCoordinationScript(ColorFromAtomOverlapScript):
+class CrystalCoordinationScript(ColorFromOverlap):
     """Class for running coordination number evaluation.
     """
 
@@ -55,14 +55,15 @@ class CrystalCoordinationScript(ColorFromAtomOverlapScript):
 
         No return value.
         """
-        # define arguments that are not in the ColorFromAtomOverlapScript
+        # define arguments that are not in the ColorFromOverlap
         # input parameters
         self.verbose = False
         # calculated parameters
         self.coordination_radia = {}
         self._filename_width = None
-        # do original initialization and argument assignment
-        ColorFromAtomOverlapScript.__init__(self, argv)
+        # initialize from the base class
+        self.super = super(CrystalCoordinationScript, self)
+        ColorFromOverlap.__init__(self, argv)
         return
 
 

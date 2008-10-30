@@ -48,7 +48,7 @@ gl_opts = [
         "V",    "version",
 ]
 
-class ColorFromAtomOverlapScript(object):
+class ColorFromOverlap(object):
     """Class for running overlap optimization script.
     """
 
@@ -425,7 +425,7 @@ class ColorFromAtomOverlapScript(object):
 
     # end of command line parsers
 
-# End of class ColorFromAtomOverlapScript
+# End of class ColorFromOverlap
 
 def parseChemicalFormula(formula):
     """Parse chemical formula and return a list of elements"""
@@ -444,7 +444,7 @@ def parseChemicalFormula(formula):
 
 def main():
     try:
-        cfaos = ColorFromAtomOverlapScript(sys.argv)
+        cfaos = ColorFromOverlap(sys.argv)
         cfaos.run()
     except Exception, err:
         if "--debug" in sys.argv:

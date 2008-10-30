@@ -38,16 +38,16 @@ import sys
 gl_doc = __doc__
 
 
-from colorFromAtomOverlap import ColorFromAtomOverlapScript
+from colorFromOverlap import ColorFromOverlap
 
-class ColorFromOverlapCmpPDF(ColorFromAtomOverlapScript):
+class ColorFromOverlapCmpPDF(ColorFromOverlap):
     """Class for running overlap optimization script.
     """
 
     # script documentation string
     script_doc = gl_doc
     script_version = __id__
-    script_options = ColorFromAtomOverlapScript.script_options + [
+    script_options = ColorFromOverlap.script_options + [
                             "", "rmin=",
                             "", "rmax=",
                             "v", "verbose",
