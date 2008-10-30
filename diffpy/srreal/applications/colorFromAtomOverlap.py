@@ -21,7 +21,7 @@ Options:
                             random configurations.  By default 5.
       --rotate              Scan all unique rotations for each of the repeats 
                             initial configurations.  Might be slow.
-      --rngseed=N           Specifie integer seed for random number generator.
+      --rngseed=N           Specify integer seed for random number generator.
       --debug               Enter python debugger after catching an exception.
   -h, --help                display this message
   -V, --version             show script version
@@ -47,17 +47,15 @@ gl_opts = [
         "h",    "help",
         "V",    "version",
 ]
-gl_shortopts = "".join(gl_opts[0::2])
-gl_longopts = gl_opts[1::2]
 
-
-class ColorFromAtomOverlapScript:
+class ColorFromAtomOverlapScript(object):
     """Class for running overlap optimization script.
     """
 
     # script documentation string
     script_doc = gl_doc
     script_version = __id__
+    script_options = gl_opts
 
     def __init__(self, argv):
         """Create the script instance and prepare it for running
@@ -81,11 +79,11 @@ class ColorFromAtomOverlapScript:
         # calculated data
         self.expanded_formula = []
         self.structures = []
+        self.optimized_costs = []
         self.optimized_structures = []
-        self.best_index = None
         # process command line arguments
         self._processCommandLineArgs(argv)
-        self._loadStructFiles()
+        self._loadDataFiles()
         self._applyLatticeParameters()
         return
 
@@ -99,29 +97,24 @@ class ColorFromAtomOverlapScript:
         self._checkStructures()
         self._applyRandomSeed()
         cst_idx_ac = []
+        getcoloring = lambda stru: [a.element for a in stru]
         for idx in range(len(self.structures)):
             f = self.structfiles[idx]
             stru = self.structures[idx]
-            ac = self.optimizeColoring(stru)
-            optstru = ac.getStructure()
+            optcost, optstru = self.optimizeColoring(stru)
+            self.optimized_costs.append(optcost)
             self.optimized_structures.append(optstru)
-            c = self.cost(ac)
-            print f, c, ac.getSiteColoring()
-            cia = c, idx, ac
-            cst_idx_ac.append(cia)
-        cst_idx_ac.sort()
-        cbest = cst_idx_ac[0][0]
-        self.best_index = cst_idx_ac[0][1]
-        acbest = cst_idx_ac[0][2]
-        fbest = self.structfiles[self.best_index]
+            print f, optcost, getcoloring(optstru)
+        cbest, fbest, strubest = min(zip(
+            self.optimized_costs, self.structfiles, self.optimized_structures))
         print "# BEST " + (72 - 7) * '-'
-        print fbest, cbest, acbest.getSiteColoring()
+        print fbest, cbest, getcoloring(strubest)
         self.saveOutstru()
         return
 
 
     def cost(self, ac):
-        """Calculate due to overlapping atoms.
+        """Calculate cost due to overlapping atoms.
 
         ac  -- instance of AtomConflicts.
 
@@ -212,15 +205,16 @@ class ColorFromAtomOverlapScript:
 
         stru    -- instance of initial Structure
 
-        Return the best of AtomConflicts instance after repeats runs.
+        Return a tuple of (cost, colored_structure).
         """
-        all_acs = []
+        coststru = []
         for i in range(self.repeats):
             ac0 = self.initialAtomConflicts(stru)
             ac1 = self.downhillOverlapMinimization(ac0)
-            all_acs.append(ac1)
-        best_ac = min(all_acs, key=self.cost)
-        return best_ac
+            cs = (self.cost(ac1), ac1.getStructure())
+            coststru.append(cs)
+        rv = min(coststru)
+        return rv
 
 
     def usage(self, brief=False):
@@ -251,7 +245,9 @@ class ColorFromAtomOverlapScript:
         """
         if self.outstru is None:
             return
-        stru = self.optimized_structures[self.best_index]
+        from numpy import argmin
+        idx = argmin(self.optimized_costs)
+        stru = self.optimized_structures[idx]
         stru.write(self.outstru, format=self.outfmt)
         return
 
@@ -265,46 +261,22 @@ class ColorFromAtomOverlapScript:
         """
         import getopt
         self.mypath = argv[0]
-        opts, args = getopt.gnu_getopt(argv[1:], gl_shortopts, gl_longopts)
-        self.structfiles = args
+        shortopts = self.script_options[0::2]
+        longopts = self.script_options[1::2]
+        optmap = dict([(s.rstrip(':'), l.rstrip('='))
+            for s, l in zip(shortopts, longopts) if s])
+        opts, args = getopt.gnu_getopt(argv[1:], "".join(shortopts), longopts)
         for o, a in opts:
-            if o in ("-f", "--formula"):
-                self.formula = a
-            elif o in ("-l", "--latpar"):
-                latparstrings = a.strip().split(",")
-                assert len(latparstrings) == 6
-                self.latpar = [float(w) for w in latparstrings]
-            elif o in ("-o", "--outstru"):
-                self.outstru = a
-            elif o == "--outfmt":
-                self.outfmt = a
-            elif o in ("-r", "--radia"):
-                words = a.strip().split(",")
-                for w in words:
-                    elsmbl, value = w.split(":", 1)
-                    self.radia[elsmbl.strip()] = float(value)
-            elif o == "--repeats":
-                self.repeats = int(a)
-            elif o == "--rotate":
-                self.rotate = True
-            elif o == "--rngseed":
-                self.rngseed = int(a)
-            elif o == "--debug":
-                # debug is handled in main()
-                pass
-            elif o in ("-h", "--help"):
-                self.usage()
-                sys.exit()
-            elif o in ("-V", "--version"):
-                print self.script_version
-                sys.exit()
-        if not self.structfiles:
-            self.usage(brief=True)
-            sys.exit()
+            obare = o.lstrip('-')
+            oname = optmap.get(obare, obare)
+            pname = "_parseOption_" + oname
+            option_parser = getattr(self, pname)
+            option_parser(a)
+        self._parseArguments(args)
         return
 
 
-    def _loadStructFiles(self):
+    def _loadDataFiles(self):
         """Load all input structfiles and assign the structures attribute.
 
         No return value.
@@ -385,6 +357,73 @@ class ColorFromAtomOverlapScript:
         numpy.random.seed(self.rngseed)
         return
 
+    # parsers for command line options and arguments
+
+    def _parseOption_formula(self, a):
+        self.formula = a
+        return
+
+    def _parseOption_latpar(self, a):
+        latparstrings = a.strip().split(",")
+        assert len(latparstrings) == 6
+        self.latpar = [float(w) for w in latparstrings]
+        return
+
+    def _parseOption_outstru(self, a):
+        self.outstru = a
+        return
+
+    def _parseOption_outfmt(self, a):
+        self.outfmt = a
+        return
+
+    def _parseOption_radia(self, a):
+        words = a.strip().split(",")
+        for w in words:
+            elsmbl, value = w.split(":", 1)
+            self.radia[elsmbl.strip()] = float(value)
+        return
+
+    def _parseOption_repeats(self, a):
+        self.repeats = int(a)
+        return
+
+    def _parseOption_rotate(self, a):
+        self.rotate = True
+        return
+
+    def _parseOption_rngseed(self, a):
+        self.rngseed = int(a)
+        return
+
+    def _parseOption_debug(self, a):
+        """No operation, debug is handled in main().
+        """
+        return
+
+    def _parseOption_help(self, a):
+        self.usage()
+        sys.exit()
+
+    def _parseOption_version(self, a):
+        print self.script_version
+        sys.exit()
+
+    def _parseArguments(self, args):
+        """Process any non-option command line arguments.
+
+        args   -- list of command line arguments that are not options,
+                  excluding the script name.
+
+        No return value.
+        """
+        if not args:
+            self.usage(brief=True)
+            sys.exit()
+        self.structfiles = args
+        return
+
+    # end of command line parsers
 
 # End of class ColorFromAtomOverlapScript
 

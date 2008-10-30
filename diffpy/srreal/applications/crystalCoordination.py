@@ -10,7 +10,7 @@ Options:
   -l, --latpar=a,b,c,A,B,G  override lattice parameters in structfiles.
   -r, --radia=A1:r1,...     Redefine element radia.  By default use covalent
                             radia from the elements package.
-  -v, --verbose             prin all neighbours of every atom
+  -v, --verbose             print all neighbours of every atom
       --debug               Enter python debugger after catching an exception.
   -h, --help                display this message
   -V, --version             show script version
