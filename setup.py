@@ -32,6 +32,7 @@ dist = setup(
         install_requires = [
             'diffpy.Structure',
             'diffpy.pdffit2',
+            'elements',
         ],
         dependency_links = [
             "http://www.diffpy.org/packages/",
