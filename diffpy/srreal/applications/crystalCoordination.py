@@ -7,6 +7,12 @@ Atoms are considered neighbors when d12 < (r1 + r2)*(sqrt(2) + 1)/2.
 
 Options:
 
+  -f, --formula=FORMULA     chemical formula of the unit cell, must have the
+                            same number of elements as number of atom sites.
+                            Species are identified by a capital letter, thus
+                            it is critical to use standard capitalization of
+                            element symbols.  Order is important, for example,
+                            Na3Cl2NaCl2.
   -l, --latpar=a,b,c,A,B,G  override lattice parameters in structfiles.
   -r, --radia=A1:r1,...     Redefine element radia.  By default use covalent
                             radia from the elements package.
@@ -25,6 +31,7 @@ import math
 gl_doc = __doc__
 gl_opts = [
         # short long
+        "f:",   "formula=",
         "l:",   "latpar=",
         "r:",   "radia=",
         "v",    "verbose",
@@ -72,6 +79,7 @@ class CrystalCoordinationScript(ColorFromOverlap):
 
         No return value.
         """
+        self._updateExpandedFormula()
         indices = range(len(self.structures))
         for idx in indices:
             filename = self.structfiles[idx]
@@ -92,6 +100,8 @@ class CrystalCoordinationScript(ColorFromOverlap):
         """
         from diffpy.srreal.atomconflicts import AtomConflicts
         ac0 = AtomConflicts(stru)
+        if self.expanded_formula:
+            ac0.setSiteColoring(self.expanded_formula)
         unique_smbls = set(ac0.getSiteColoring())
         for elsmbl in unique_smbls:
             if elsmbl in self.radia:
@@ -255,6 +265,27 @@ class CrystalCoordinationScript(ColorFromOverlap):
             self.usage(brief=True)
             sys.exit()
         return
+
+
+    def _updateExpandedFormula(self):
+        """Set expanded_formula either from the formula argument
+        or from the first structure.
+
+        No return value.
+        Raise ValueError when formula expands to incorrect length.
+        """
+        if self.formula is not None:
+            from colorFromOverlap import parseChemicalFormula
+            fm = parseChemicalFormula(self.formula)
+            mismatched_structures = [stru for stru in self.structures
+                    if len(fm) != len(stru)]
+            if mismatched_structures:
+                emsg = "Incompatible length of chemical formula."
+                raise ValueError, emsg
+            self.expanded_formula = fm
+        print "self.expanded_formula =", self.expanded_formula
+        return
+
 
 # End of class CrystalCoordinationScript
 
