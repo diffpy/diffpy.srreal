@@ -283,7 +283,6 @@ class CrystalCoordinationScript(ColorFromOverlap):
                 emsg = "Incompatible length of chemical formula."
                 raise ValueError, emsg
             self.expanded_formula = fm
-        print "self.expanded_formula =", self.expanded_formula
         return
 
 
