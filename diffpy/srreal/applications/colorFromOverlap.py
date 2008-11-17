@@ -144,7 +144,11 @@ class ColorFromOverlap(object):
         if self.radia:
             unique_smbls = set(shuffle)
             for elsmbl in unique_smbls.difference(self.radia):
-                self.radia[elsmbl] = ac0.atomRadius(elsmbl)
+                bare_elsmbl = elsmbl.rstrip('12345678-+')
+                if bare_elsmbl in self.radia:
+                    self.radia[elsmbl] = self.radia[bare_elsmbl]
+                else:
+                    self.radia[elsmbl] = ac0.atomRadius(elsmbl)
             ac0.setAtomRadiaGetter(self.radia.get)
         return ac0
 

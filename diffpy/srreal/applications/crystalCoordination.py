@@ -104,8 +104,11 @@ class CrystalCoordinationScript(ColorFromOverlap):
             ac0.setSiteColoring(self.expanded_formula)
         unique_smbls = set(ac0.getSiteColoring())
         for elsmbl in unique_smbls:
+            bare_elsmbl = elsmbl.rstrip('12345678-+')
             if elsmbl in self.radia:
                 rsmbl = self.radia[elsmbl]
+            elif bare_elsmbl in self.radia:
+                rsmbl = self.radia[bare_elsmbl]
             else:
                 rsmbl = ac0.atomRadius(elsmbl)
             rcoord = self.COORDINATION_SCALE * rsmbl
