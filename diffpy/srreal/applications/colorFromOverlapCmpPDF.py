@@ -25,7 +25,7 @@ Options:
                             initial configurations.  Might be slow.
       --rngseed=N           Specify integer seed for random number generator.
   -v, --verbose             output coloring progress
-      --debug               Enter python debugger after catching an exception.
+      --debug               print extra information, do not catch exceptions.
   -h, --help                display this message
   -V, --version             show script version
 """

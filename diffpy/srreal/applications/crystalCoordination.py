@@ -16,6 +16,7 @@ Options:
   -l, --latpar=a,b,c,A,B,G  override lattice parameters in structfiles.
   -r, --radia=A1:r1,...     Redefine element radia.  By default use covalent
                             radia from the elements package.
+  -s, --sort=A1,A2,...      define sorting order for the chemical species
   -v, --verbose             print all neighbours of every atom
       --debug               Enter python debugger after catching an exception.
   -h, --help                display this message
@@ -34,6 +35,7 @@ gl_opts = [
         "f:",   "formula=",
         "l:",   "latpar=",
         "r:",   "radia=",
+        "s:",   "sort=",
         "v",    "verbose",
         "",     "debug",
         "h",    "help",
@@ -64,6 +66,7 @@ class CrystalCoordinationScript(ColorFromOverlap):
         """
         # define arguments that are not in the ColorFromOverlap
         # input parameters
+        self.sort_order = []
         self.verbose = False
         # calculated parameters
         self.coordination_radia = {}
@@ -186,7 +189,8 @@ class CrystalCoordinationScript(ColorFromOverlap):
         for nl in neighlist:
             nl.sort()
         coloring = ac.getSiteColoring()
-        order_map = dict([(el, coloring.index(el)) for el in set(coloring)])
+        order = self.sort_order + coloring
+        order_map = dict([(el, order.index(el)) for el in set(order)])
         order_key = lambda tpl: order_map[tpl[0]]
         neighborhoods = {}
         for idx in indices:
@@ -253,6 +257,8 @@ class CrystalCoordinationScript(ColorFromOverlap):
                 for w in words:
                     elsmbl, value = w.split(":", 1)
                     self.radia[elsmbl.strip()] = float(value)
+            elif o in ("-s", "--sort"):
+                self.sort_order = [w.strip() for w in a.split(',')]
             elif o in ("-v", "--verbose"):
                 self.verbose = True
             elif o == "--debug":
