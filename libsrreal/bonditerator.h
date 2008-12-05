@@ -5,75 +5,93 @@
 #ifndef BONDITERATOR_H
 #define BONDITERATOR_H
 
-namespace ObjCryst
-{
-    class Crystal;
-    class ScatteringComponent;
-    class RefinableObjClock;
-} // end namespace ObjCryst
+#include <vector>
+
+#include "ObjCryst/Crystal.h"
+#include "ObjCryst/Scatterer.h"
+#include "PointsInSphere.h"
 
 
 namespace SrReal
 {
 
-
-/* struct for a shifted scattering component */
+/* struct for a shifted scattering component 
+ *
+ * xyz are in cartesian coordinates.
+ * */
 struct ShiftedSC
 {
-   ShiftedSC(const ObjCryst::ScatteringComponent *ssc,
-           double _xyz[3]):
-   sc(ssc),xyz(_xyz);
-   {}
-   ShiftedSC(const ObjCryst::ScatteringComponent *ssc,
-           double x, double y, double z) :
-   sc(ssc);
-   {
-       xyz[0] = x;
-       xyz[1] = y;
-       xyz[2] = z;
-   }
 
-   /* Data members */
+    // id is for debugging
+    ShiftedSC(const ObjCryst::ScatteringComponent *_sc,
+        const float x, const float y, const float z, const int _id = 0) :
+    sc(_sc), id(_id)
+    {
+        //sc->Print();
+        xyz[0] = x;
+        xyz[1] = y;
+        xyz[2] = z;
+        //std::cout << x << ' ' << y << ' ' << z << endl;
+    }
 
-   // Pointer to a ScatteringComponent
-   const ObjCryst::ScatteringComponent *sc;
+    // Pointer to a ScatteringComponent
+    const ObjCryst::ScatteringComponent *sc;
 
-   /// Fractionnal coordinates
-   double xyz[3];
+    /// Fractionnal coordinates
+    float xyz[3];
+    int id;
 
-   /* Operators */
 
-   bool operator<(const ShiftedSC &rhs) const
-   {
-    return ((xyz[0] < rhs.xyz[0]) 
-        || (xyz[1] < rhs.xyz[1]) 
-        || (xyz[2] < rhs.xyz[2])
-        || (sc != rhs.sc));
-   }
+    /* Operators */
 
-   // Compares identity. This is needed for when atoms with different
-   // ScatteringComponents land on the same site, which is possible in a doped
-   // material.
-   bool operator==(const ShiftedSC &rhs) const
-   {
-    return ((xyz[0] == rhs.xyz[0]) 
-        && (xyz[1] == rhs.xyz[1]) 
-        && (xyz[2] == rhs.xyz[2])
-        && sc == rhs.sc);
-   }
+    bool operator<(const ShiftedSC &rhs) const
+    {
+
+        //std::cout << id << " vs " << rhs.id << endl;
+
+        return ((xyz[0] < rhs.xyz[0]) 
+            || (xyz[1] < rhs.xyz[1]) 
+            || (xyz[2] < rhs.xyz[2])
+            || (*sc != *(rhs.sc)));
+    }
+
+    // Compares equality.
+    bool operator==(const ShiftedSC &rhs) const
+    {
+
+        //std::cout << id << " vs " << rhs.id << endl;
+
+        return ((xyz[0] == rhs.xyz[0]) 
+            && (xyz[1] == rhs.xyz[1]) 
+            && (xyz[2] == rhs.xyz[2])
+            && (*sc == *(rhs.sc)));
+    }
    
 };
 
-/* struct for holding bond pair information for use with the BondIterator */
-struct BondPair
+std::ostream& operator<<(ostream &os, const ShiftedSC &sc)
 {
-    // Cartesian coordinates of the scatterers
-    double xyz1[3];
-    double xyz2[3];
-    ObjCryst::ScatteringComponent* sc1;
-    ObjCryst::ScatteringComponent* sc2;
-    size_t multiplicity;
+    os << sc.id << ": ";
+    os << sc.xyz[0] << " ";
+    os << sc.xyz[1] << " ";
+    os << sc.xyz[2];
+    return os;
 }
+
+/* struct for holding bond pair information for use with the BondIterator
+ *
+ * xyz are in cartesian coordinates.
+ */
+class BondPair
+{
+    public:
+    // Cartesian coordinates of the scatterers
+    float xyz1[3];
+    float xyz2[3];
+    const ObjCryst::ScatteringComponent* sc1;
+    const ObjCryst::ScatteringComponent* sc2;
+    size_t multiplicity;
+};
 
 
 class BondIterator
@@ -81,9 +99,12 @@ class BondIterator
     public:
 
     BondIterator
-        (ObjCryst::Crystal &_crystal, float _rmin, float _rmax);
+        (ObjCryst::Crystal &_crystal, 
+         const float _rmin, const float _rmax);
 
     BondIterator(const BondIterator &);
+
+    ~BondIterator();
 
     // Rewind the iterator
     void rewind();
@@ -96,18 +117,17 @@ class BondIterator
 
     // Update and reset the iterator given a status change in the crystal
     // structure or the calculation criteria.
-    void update(); 
+    void reset(); 
 
     // Get the current pair.
     BondPair getBondPair();
-    
 
     // Get the crystal and bounds on the iterator
     inline float getRmin() { return rmin; }
     inline float getRmax() { return rmax; }
-    inline ObjCryst::Crystal &getCrystal() { return crystal; }
+    inline const ObjCryst::Crystal &getCrystal() { return crystal; }
 
-    private:
+    //FIXME:TESTING private:
 
     // Initialize punit and sunit
     void init();
@@ -123,18 +143,27 @@ class BondIterator
     bool incrementpsi(); 
     // Bonds from sunit to image of sunit
     bool incrementssi(); 
+    
+    // Check if the sphere is at 0, 0, 0
+    inline bool sphAtOrigin() 
+    {
+        return (sph->mno[0]==0 && sph->mno[1]==0 && sph->mno[2]==0);
+    }
+
+    // Place cartesian coords in location defined by PointsInSphere iterator
+    void placeInSphere(float *xyz);
+
+    /**** Data members ****/
 
     // Reference to crystal
-    ObjCryst::Crystal &crystal;
+    const ObjCryst::Crystal &crystal;
 
     // Minimum and maximum r values
-    float rmin;
-    float rmax;
+    const float rmin;
+    const float rmax;
 
-    // For holding the ShiftedSC of the current pair.
-    ShiftedSC sc1;
-    ShiftedSC sc2;
-    size_t multiplicity;
+    // For holding the current BondPair
+    BondPair bp;
 
     // Holds ScatteringComponents in the primitive unit
     std::vector<ShiftedSC> punit;
@@ -143,16 +172,16 @@ class BondIterator
     std::vector<ShiftedSC> sunit;
 
     // Degeneracy of each primitive atom in the conventional cell
-    std::vector<size_t> degen;
+    std::map<ShiftedSC,size_t> degen;
 
     // Iterators for punit and sunit;
     std::vector<ShiftedSC>::iterator iteri;
     std::vector<ShiftedSC>::iterator iterj;
 
     // Points in sphere iterator
-    NS_POINTSINSPHERE::PointsInSphere sph;
+    NS_POINTSINSPHERE::PointsInSphere *sph;
 
-    // These enumerate the state of the iterator
+    // Enumerate the state of the iterator
     enum IncState {
         PP,
         PS,
@@ -161,10 +190,11 @@ class BondIterator
         PSI,
         SSI,
         FINISHED
-    }
+    };
 
-    // This record the current state of the iterator
+    // The current state of the iterator
     IncState state;
+    
 };
 
 } // end namespace SrReal
