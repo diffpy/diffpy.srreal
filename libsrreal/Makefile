@@ -9,7 +9,7 @@ endif
 
 # CFLAGS
 ifdef DEBUG
-CFLAGS = $(DEBUG) -fPIC -Wall
+CFLAGS = $(DEBUG)
 else
 CFLAGS = -fPIC -O3 -ffast-math -funroll-loops -Wall
 endif
@@ -65,7 +65,7 @@ test: $(TESTS)
 
 testsrreal: testsrreal.o
 	make install
-	$(LINK) $(CFLAGS) $(LINKFLAGS) -o $@ $^ -L. -lsrreal -lcryst -lCrystVector -lQuirks -lRefinableObj -lcctbx -lnewmat -lstructure
+	$(LINK) $(CFLAGS) $(LINKFLAGS) -o $@ $^ -L. -lsrreal -lcryst -lCrystVector -lQuirks -lRefinableObj -lcctbx -lnewmat
 
 .PHONY : clean
 clean: 

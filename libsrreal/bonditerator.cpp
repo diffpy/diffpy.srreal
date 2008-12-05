@@ -16,7 +16,6 @@
 using namespace SrReal;
 using std::vector;
 
-// FIXME - We're geting zero bond lengths in some structures. Find out why!
 
 namespace {
 
@@ -225,14 +224,13 @@ init()
     float x, y, z;
     float junk;
     CrystMatrix<float> symmetricsCoords;
-    vector<ShiftedSC> workvec;
+    vector<ShiftedSC> workvec(nbSymmetrics);
     vector<ShiftedSC>::iterator it1;
     vector<ShiftedSC>::iterator it2;
     // For each scattering component, find its position in the primitive cell
     // and expand that position. Record this as a ShiftedSC.
     for(size_t i=0;i<nbComponent;++i)
     {
-        workvec.clear();
 
         symmetricsCoords = crystal.GetSpaceGroup().GetAllSymmetrics(
             mScattCompList(i).mX, 
@@ -253,15 +251,20 @@ init()
             // Get this in cartesian
             crystal.FractionalToOrthonormalCoords(x,y,z);
             // Store it in the working vector
-            workvec.push_back( ShiftedSC(&mScattCompList(i),x,y,z,j) );
+            workvec[j] =  ShiftedSC(&mScattCompList(i),x,y,z,j);
         }
 
         // Now find the unique scatterers and record the degeneracy. It doesn't
         // matter if we record the actual primitive ssc in punit, as long as we
         // only put one there then we're fine.
-        stable_sort(workvec.begin(), workvec.end());
+        sort(workvec.begin(), workvec.end());
+        //for(it2=workvec.begin();it2!=workvec.end();++it2)
+        //    std::cout << *it2 << std::endl;
+        //std::cout << std::endl;
         it1 = unique(workvec.begin(), workvec.end());
-        it2 = workvec.begin();
+        //for(it2=workvec.begin();it2!=workvec.end();++it2)
+        //    std::cout << *it2 << std::endl;
+        //it2 = workvec.begin();
         // Put the first ssc in the punit
         if( it2 != it1 )
         {

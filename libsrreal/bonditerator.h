@@ -11,16 +11,44 @@
 #include "ObjCryst/Scatterer.h"
 #include "PointsInSphere.h"
 
+namespace
+{
+
+/* The sign of a value
+ * signof(-) == signof(0) == 0
+ * signof(+) == 1
+ */
+int signof(const float v)
+{
+    return v > 0 ? 1 : 0;
+}
+
+size_t quadrant(const float * _xyz)
+{
+    // Check if _xyz is at the origin
+    if( _xyz[0] == _xyz[1] &&
+        _xyz[1] == _xyz[2] &&
+        _xyz[2] == 0)
+        return 0;
+    // Return the quadrant
+    size_t q = 0;
+    for(size_t l = 0; l < 3; ++l)
+    {
+        q += signof(_xyz[l]) << l;
+    }
+    return q;
+}
+
+}
 
 namespace SrReal
 {
 
-/* struct for a shifted scattering component 
- *
- * xyz are in cartesian coordinates.
- * */
-struct ShiftedSC
+// Here's a private class
+class ShiftedSC
 {
+
+    private:
 
     // id is for debugging
     ShiftedSC(const ObjCryst::ScatteringComponent *_sc,
@@ -34,6 +62,14 @@ struct ShiftedSC
         //std::cout << x << ' ' << y << ' ' << z << endl;
     }
 
+    // Be careful of dangling references
+    ShiftedSC()
+    {
+        xyz[0] = xyz[1] = xyz[2] = 0;
+        id = -1;
+        sc = NULL;
+    }
+
     // Pointer to a ScatteringComponent
     const ObjCryst::ScatteringComponent *sc;
 
@@ -41,6 +77,7 @@ struct ShiftedSC
     float xyz[3];
     int id;
 
+    public:
 
     /* Operators */
 
@@ -48,11 +85,24 @@ struct ShiftedSC
     {
 
         //std::cout << id << " vs " << rhs.id << endl;
+        // FIXME - I need a more stable criterion
+        // Do this by quadrant first
+        // (0, 0, 0) < q1 < q2 < q3 ... < q8
+        // Then by distance
 
-        return ((xyz[0] < rhs.xyz[0]) 
-            || (xyz[1] < rhs.xyz[1]) 
-            || (xyz[2] < rhs.xyz[2])
-            || (*sc != *(rhs.sc)));
+        size_t q1, q2;
+        q1 = quadrant(xyz);
+        q2 = quadrant(rhs.xyz);
+
+        if( q1 != q2 ) return (q1 < q2);
+
+        float d1, d2;
+        for(size_t l = 0; l < 3; ++l)
+        {
+            d1 += xyz[l]*xyz[l];
+            d2 += rhs.xyz[l]*rhs.xyz[l];
+        }
+        return d1 < d2;
     }
 
     // Compares equality.
@@ -66,7 +116,12 @@ struct ShiftedSC
             && (xyz[2] == rhs.xyz[2])
             && (*sc == *(rhs.sc)));
     }
-   
+
+    /* Friends */
+    friend class BondIterator;
+    friend class std::vector<ShiftedSC>;
+    friend std::ostream& operator<<(ostream &os, const ShiftedSC &sc);
+
 };
 
 std::ostream& operator<<(ostream &os, const ShiftedSC &sc)
@@ -78,6 +133,10 @@ std::ostream& operator<<(ostream &os, const ShiftedSC &sc)
     return os;
 }
 
+/* struct for a shifted scattering component 
+ *
+ * xyz are in cartesian coordinates.
+ * */
 /* struct for holding bond pair information for use with the BondIterator
  *
  * xyz are in cartesian coordinates.
@@ -85,13 +144,81 @@ std::ostream& operator<<(ostream &os, const ShiftedSC &sc)
 class BondPair
 {
     public:
+
+    BondPair() 
+    {
+        for(size_t l = 0; l < 3; ++l)
+        {
+            xyz1[l] = xyz2[l] = 0;
+        }
+        sc1 = sc2 = NULL;
+        multiplicity = 0;
+    };
+
+    void setXYZ1(float* _xyz)
+    {
+        for(size_t l = 0; l < 3; ++l) xyz1[l] = _xyz[l];
+    }
+    float* getXYZ1() { return xyz1; }
+    float getXYZ1(size_t i) { return xyz1[i]; }
+
+    void setXYZ2(float* _xyz)
+    {
+        for(size_t l = 0; l < 3; ++l) xyz2[l] = _xyz[l];
+    }
+    float* getXYZ2() { return xyz2; }
+    float getXYZ2(size_t i) { return xyz2[i]; }
+
+    void setSC1(ObjCryst::ScatteringComponent *_sc1)
+    {
+        sc1 = _sc1;
+    }
+
+    const ObjCryst::ScatteringComponent* getSC1() { return sc1; }
+
+    void setSC2(ObjCryst::ScatteringComponent *_sc2)
+    {
+        sc2 = _sc2;
+    }
+
+    const ObjCryst::ScatteringComponent* getSC2() { return sc2; }
+
+    void setMultiplicity(size_t _m)
+    {
+        multiplicity = _m;
+    }
+
+    size_t getMultiplicity() { return multiplicity; }
+
+    private:
     // Cartesian coordinates of the scatterers
     float xyz1[3];
     float xyz2[3];
     const ObjCryst::ScatteringComponent* sc1;
     const ObjCryst::ScatteringComponent* sc2;
     size_t multiplicity;
+
+    /* Friends */
+    friend class BondIterator;
+    friend std::ostream& operator<<(ostream &os, const BondPair &bp);
+
 };
+
+std::ostream& operator<<(ostream &os, const BondPair &bp)
+{
+    os << "(" << bp.multiplicity << ") ";
+    os << "[";
+    os << bp.xyz1[0] << ", ";
+    os << bp.xyz1[1] << ", ";
+    os << bp.xyz1[2] << "]";
+    os << " -- ";
+    os << "[";
+    os << bp.xyz2[0] << ", ";
+    os << bp.xyz2[1] << ", ";
+    os << bp.xyz2[2] << "]";
+
+    return os;
+}
 
 
 class BondIterator
@@ -194,6 +321,7 @@ class BondIterator
 
     // The current state of the iterator
     IncState state;
+
     
 };
 

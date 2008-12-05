@@ -17,7 +17,6 @@ void test1()
     string estr("Ni");
 
     // Create the Ni structure
-    //ObjCryst::Crystal crystal(3.52, 3.52, 3.52, sgstr);
     ObjCryst::Crystal crystal(3.52, 3.52, 3.52, sgstr);
     ObjCryst::ScatteringPowerAtom sp(estr, estr);
     sp.SetBiso(8*M_PI*M_PI*0.003);
@@ -37,11 +36,12 @@ void test1()
 
         for(int i = 0; i < 3; ++i )
         {
-            dist += pow(bp.xyz1[i]-bp.xyz2[i],2);
+            dist += pow(bp.getXYZ1(i)-bp.getXYZ2(i),2);
         }
         dist = sqrt(dist);
 
-        cout << dist << endl;
+        //cout << dist << endl;
+        cout << bp << endl;
     }
 
 }
