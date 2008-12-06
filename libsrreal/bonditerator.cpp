@@ -16,12 +16,31 @@
 using namespace SrReal;
 using std::vector;
 
-
 namespace {
 
 float rtod = 180.0/M_PI;
 
+size_t quadrant(const float * _xyz)
+{
+    // Check if _xyz is at the origin
+    if( _xyz[0] == _xyz[1] &&
+        _xyz[1] == _xyz[2] &&
+        _xyz[2] == 0)
+        return 0;
+    // Return the quadrant
+    size_t q = 0;
+    for(size_t l = 0; l < 3; ++l)
+    {
+        q += (_xyz[l] > 0 ? 1 : 0 ) << l;
+    }
+    return q;
 }
+
+} // End anonymous namespace
+
+/******************************************************************************
+***** BondIterator implementation *********************************************
+******************************************************************************/
 
 BondIterator::
 BondIterator (ObjCryst::Crystal &_crystal, 
@@ -666,4 +685,66 @@ placeInSphere(float *xyz)
     return;
 }
 
+/******************************************************************************
+***** ShiftedSC implementation ************************************************
+******************************************************************************/
 
+ShiftedSC::
+ShiftedSC(const ObjCryst::ScatteringComponent *_sc,
+    const float x, const float y, const float z, const int _id) :
+    sc(_sc), id(_id)
+{
+    //sc->Print();
+    xyz[0] = x;
+    xyz[1] = y;
+    xyz[2] = z;
+    //std::cout << x << ' ' << y << ' ' << z << endl;
+}
+
+// Be careful of dangling references
+ShiftedSC::
+ShiftedSC()
+{
+    xyz[0] = xyz[1] = xyz[2] = 0;
+    id = -1;
+    sc = NULL;
+}
+
+bool
+ShiftedSC::
+operator<(const ShiftedSC &rhs) const
+{
+
+    //std::cout << id << " vs " << rhs.id << endl;
+    // FIXME - I need a more stable criterion
+    // Do this by quadrant first
+    // (0, 0, 0) < q1 < q2 < q3 ... < q8
+    // Then by distance
+
+    size_t q1, q2;
+    q1 = quadrant(xyz);
+    q2 = quadrant(rhs.xyz);
+
+    if( q1 != q2 ) return (q1 < q2);
+
+    float d1, d2;
+    for(size_t l = 0; l < 3; ++l)
+    {
+        d1 += xyz[l]*xyz[l];
+        d2 += rhs.xyz[l]*rhs.xyz[l];
+    }
+    return d1 < d2;
+}
+
+bool
+ShiftedSC::
+operator==(const ShiftedSC &rhs) const
+{
+
+    //std::cout << id << " vs " << rhs.id << endl;
+
+    return ((xyz[0] == rhs.xyz[0]) 
+        && (xyz[1] == rhs.xyz[1]) 
+        && (xyz[2] == rhs.xyz[2])
+        && (*sc == *(rhs.sc)));
+}

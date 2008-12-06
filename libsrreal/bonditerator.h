@@ -11,36 +11,6 @@
 #include "ObjCryst/Scatterer.h"
 #include "PointsInSphere.h"
 
-namespace
-{
-
-/* The sign of a value
- * signof(-) == signof(0) == 0
- * signof(+) == 1
- */
-int signof(const float v)
-{
-    return v > 0 ? 1 : 0;
-}
-
-size_t quadrant(const float * _xyz)
-{
-    // Check if _xyz is at the origin
-    if( _xyz[0] == _xyz[1] &&
-        _xyz[1] == _xyz[2] &&
-        _xyz[2] == 0)
-        return 0;
-    // Return the quadrant
-    size_t q = 0;
-    for(size_t l = 0; l < 3; ++l)
-    {
-        q += signof(_xyz[l]) << l;
-    }
-    return q;
-}
-
-}
-
 namespace SrReal
 {
 
@@ -52,23 +22,9 @@ class ShiftedSC
 
     // id is for debugging
     ShiftedSC(const ObjCryst::ScatteringComponent *_sc,
-        const float x, const float y, const float z, const int _id = 0) :
-    sc(_sc), id(_id)
-    {
-        //sc->Print();
-        xyz[0] = x;
-        xyz[1] = y;
-        xyz[2] = z;
-        //std::cout << x << ' ' << y << ' ' << z << endl;
-    }
+        const float x, const float y, const float z, const int _id = 0);
 
-    // Be careful of dangling references
-    ShiftedSC()
-    {
-        xyz[0] = xyz[1] = xyz[2] = 0;
-        id = -1;
-        sc = NULL;
-    }
+    ShiftedSC();
 
     // Pointer to a ScatteringComponent
     const ObjCryst::ScatteringComponent *sc;
@@ -81,41 +37,10 @@ class ShiftedSC
 
     /* Operators */
 
-    bool operator<(const ShiftedSC &rhs) const
-    {
-
-        //std::cout << id << " vs " << rhs.id << endl;
-        // FIXME - I need a more stable criterion
-        // Do this by quadrant first
-        // (0, 0, 0) < q1 < q2 < q3 ... < q8
-        // Then by distance
-
-        size_t q1, q2;
-        q1 = quadrant(xyz);
-        q2 = quadrant(rhs.xyz);
-
-        if( q1 != q2 ) return (q1 < q2);
-
-        float d1, d2;
-        for(size_t l = 0; l < 3; ++l)
-        {
-            d1 += xyz[l]*xyz[l];
-            d2 += rhs.xyz[l]*rhs.xyz[l];
-        }
-        return d1 < d2;
-    }
+    bool operator<(const ShiftedSC &rhs) const;
 
     // Compares equality.
-    bool operator==(const ShiftedSC &rhs) const
-    {
-
-        //std::cout << id << " vs " << rhs.id << endl;
-
-        return ((xyz[0] == rhs.xyz[0]) 
-            && (xyz[1] == rhs.xyz[1]) 
-            && (xyz[2] == rhs.xyz[2])
-            && (*sc == *(rhs.sc)));
-    }
+    bool operator==(const ShiftedSC &rhs) const;
 
     /* Friends */
     friend class BondIterator;
@@ -133,10 +58,7 @@ std::ostream& operator<<(ostream &os, const ShiftedSC &sc)
     return os;
 }
 
-/* struct for a shifted scattering component 
- *
- * xyz are in cartesian coordinates.
- * */
+
 /* struct for holding bond pair information for use with the BondIterator
  *
  * xyz are in cartesian coordinates.
@@ -155,40 +77,34 @@ class BondPair
         multiplicity = 0;
     };
 
-    void setXYZ1(float* _xyz)
+    inline void setXYZ1(float* _xyz)
     {
         for(size_t l = 0; l < 3; ++l) xyz1[l] = _xyz[l];
     }
-    float* getXYZ1() { return xyz1; }
-    float getXYZ1(size_t i) { return xyz1[i]; }
 
-    void setXYZ2(float* _xyz)
+    inline float* getXYZ1() { return xyz1; }
+
+    inline float getXYZ1(size_t i) { return xyz1[i]; }
+
+    inline void setXYZ2(float* _xyz)
     {
         for(size_t l = 0; l < 3; ++l) xyz2[l] = _xyz[l];
     }
-    float* getXYZ2() { return xyz2; }
-    float getXYZ2(size_t i) { return xyz2[i]; }
+    inline float* getXYZ2() { return xyz2; }
 
-    void setSC1(ObjCryst::ScatteringComponent *_sc1)
-    {
-        sc1 = _sc1;
-    }
+    inline float getXYZ2(size_t i) { return xyz2[i]; }
 
-    const ObjCryst::ScatteringComponent* getSC1() { return sc1; }
+    inline void setSC1(ObjCryst::ScatteringComponent *_sc1) { sc1 = _sc1; }
 
-    void setSC2(ObjCryst::ScatteringComponent *_sc2)
-    {
-        sc2 = _sc2;
-    }
+    inline const ObjCryst::ScatteringComponent* getSC1() { return sc1; }
 
-    const ObjCryst::ScatteringComponent* getSC2() { return sc2; }
+    inline void setSC2(ObjCryst::ScatteringComponent *_sc2) { sc2 = _sc2; }
 
-    void setMultiplicity(size_t _m)
-    {
-        multiplicity = _m;
-    }
+    inline const ObjCryst::ScatteringComponent* getSC2() { return sc2; }
 
-    size_t getMultiplicity() { return multiplicity; }
+    inline void setMultiplicity(size_t _m) { multiplicity = _m; }
+
+    inline size_t getMultiplicity() { return multiplicity; }
 
     private:
     // Cartesian coordinates of the scatterers
