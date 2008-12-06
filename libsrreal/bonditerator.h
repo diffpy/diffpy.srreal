@@ -11,6 +11,7 @@
 #include "ObjCryst/Scatterer.h"
 #include "PointsInSphere.h"
 
+
 namespace SrReal
 {
 
@@ -29,8 +30,10 @@ class ShiftedSC
     // Pointer to a ScatteringComponent
     const ObjCryst::ScatteringComponent *sc;
 
-    /// Fractionnal coordinates
+    // Fractionnal coordinates
     float xyz[3];
+
+    // Id for testing purposes
     int id;
 
     public:
@@ -49,6 +52,7 @@ class ShiftedSC
 
 };
 
+// I'm not sure why I need this here
 std::ostream& operator<<(ostream &os, const ShiftedSC &sc)
 {
     os << sc.id << ": ";
@@ -57,7 +61,6 @@ std::ostream& operator<<(ostream &os, const ShiftedSC &sc)
     os << sc.xyz[2];
     return os;
 }
-
 
 /* struct for holding bond pair information for use with the BondIterator
  *
@@ -242,5 +245,6 @@ class BondIterator
 };
 
 } // end namespace SrReal
+
 
 #endif

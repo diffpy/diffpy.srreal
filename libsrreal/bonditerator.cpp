@@ -716,7 +716,6 @@ operator<(const ShiftedSC &rhs) const
 {
 
     //std::cout << id << " vs " << rhs.id << endl;
-    // FIXME - I need a more stable criterion
     // Do this by quadrant first
     // (0, 0, 0) < q1 < q2 < q3 ... < q8
     // Then by distance
@@ -748,3 +747,4 @@ operator==(const ShiftedSC &rhs) const
         && (xyz[2] == rhs.xyz[2])
         && (*sc == *(rhs.sc)));
 }
+
