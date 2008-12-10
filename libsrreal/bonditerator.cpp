@@ -2,7 +2,7 @@
 * $Id$
 ***********************************************************************/
 
-#include <vector>
+#include <map>
 
 #include "bonditerator.h"
 #include "PointsInSphere.h"
@@ -14,7 +14,6 @@
 #include "assert.h"
 
 using namespace SrReal;
-using std::vector;
 
 namespace {
 
@@ -243,13 +242,14 @@ init()
     float x, y, z;
     float junk;
     CrystMatrix<float> symmetricsCoords;
-    vector<ShiftedSC> workvec(nbSymmetrics);
-    vector<ShiftedSC>::iterator it1;
-    vector<ShiftedSC>::iterator it2;
+    set<ShiftedSC> workset;
+    set<ShiftedSC>::iterator it1;
+    ShiftedSC workssc;
     // For each scattering component, find its position in the primitive cell
     // and expand that position. Record this as a ShiftedSC.
     for(size_t i=0;i<nbComponent;++i)
     {
+        workset.clear();
 
         symmetricsCoords = crystal.GetSpaceGroup().GetAllSymmetrics(
             mScattCompList(i).mX, 
@@ -269,35 +269,26 @@ init()
 
             // Get this in cartesian
             crystal.FractionalToOrthonormalCoords(x,y,z);
-            // Store it in the working vector
-            workvec[j] =  ShiftedSC(&mScattCompList(i),x,y,z,j);
+            // Store it in the scatterer map
+
+            workssc = ShiftedSC(&mScattCompList(i),x,y,z,j);
+            workset.insert(workssc);
         }
 
-        // Now find the unique scatterers and record the degeneracy. It doesn't
-        // matter if we record the actual primitive ssc in punit, as long as we
-        // only put one there then we're fine.
-        // sort is causing a segfault
-        stable_sort(workvec.begin(), workvec.end());
-        //for(it2=workvec.begin();it2!=workvec.end();++it2)
-        //    std::cout << *it2 << std::endl;
-        //std::cout << std::endl;
-        it1 = unique(workvec.begin(), workvec.end());
-        //for(it2=workvec.begin();it2!=workvec.end();++it2)
-        //    std::cout << *it2 << std::endl;
-        //it2 = workvec.begin();
-        // Put the first ssc in the punit
-        if( it2 != it1 )
+        // Now record the unique scatterers and the degeneracy.
+        it1 = workset.begin();
+        if(it1 != workset.end())
         {
-            degen[workvec[0]] = 1;
-            punit.push_back(*it2);
-            //std::cout << *it2 << std::endl;
-        }
-        // Put the rest in the sunit and count the degeneracy.
-        for(++it2; it2!=it1; ++it2)
-        {
-            ++degen[workvec[0]];
-            sunit.push_back(*it2);
-            //std::cout << *it2 << std::endl;
+            punit.push_back(*it1);
+            degen[*workset.begin()] = 1;
+
+            for(++it1; it1!=workset.end(); ++it1)
+            {
+
+                sunit.push_back(*it1);
+                ++degen[*workset.begin()];
+                //std::cout << *it2 << std::endl;
+            }
         }
     }
 

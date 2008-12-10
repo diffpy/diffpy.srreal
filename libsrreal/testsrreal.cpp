@@ -13,7 +13,7 @@ using namespace SrReal;
 
 void test1()
 {
-    string sgstr("225");
+    string sgstr("224");
     string estr("Ni");
 
     // Create the Ni structure
@@ -24,7 +24,7 @@ void test1()
     ObjCryst::Atom *atomp = new ObjCryst::Atom(0.0, 0.0, 0.0, estr, &sp);
     crystal.AddScatterer(atomp);
 
-    BondIterator biter(crystal, 0, 0);
+    BondIterator biter(crystal, 0, 10);
 
     BondPair bp;
 

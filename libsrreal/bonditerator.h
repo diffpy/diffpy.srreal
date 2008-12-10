@@ -6,6 +6,7 @@
 #define BONDITERATOR_H
 
 #include <vector>
+#include <map>
 
 #include "ObjCryst/Crystal.h"
 #include "ObjCryst/Scatterer.h"
@@ -49,12 +50,11 @@ class ShiftedSC
 
     /* Friends */
     friend class BondIterator;
-    friend class std::vector<ShiftedSC>;
+    friend class std::set<ShiftedSC>;
     friend std::ostream& operator<<(ostream &os, const ShiftedSC &sc);
 
 };
 
-// I'm not sure why I need this here
 std::ostream& operator<<(ostream &os, const ShiftedSC &sc)
 {
     os << sc.id << ": ";
@@ -220,7 +220,7 @@ class BondIterator
     std::vector<ShiftedSC> sunit;
 
     // Degeneracy of each primitive atom in the conventional cell
-    std::map<ShiftedSC,size_t> degen;
+    map<ShiftedSC,size_t> degen;
 
     // Iterators for punit and sunit;
     std::vector<ShiftedSC>::iterator iteri;
