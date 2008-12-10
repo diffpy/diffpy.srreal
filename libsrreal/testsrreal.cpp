@@ -25,23 +25,28 @@ void test1()
     crystal.AddScatterer(atomp);
 
     BondIterator biter(crystal, 0, 10);
-
+    ShiftedSC
     BondPair bp;
-
     double dist = 0;
-    for(biter.rewind(); !biter.finished(); biter.next())
+    for(size_t i=0; i < scl.GetNbComponent(); ++i)
     {
-        bp = biter.getBondPair();
-        dist = 0;
+        biter.setScatteringComponent(scl(i));
+        cout << "---- " << i << " ----" << endl;
 
-        for(int i = 0; i < 3; ++i )
+        for(biter.rewind(); !biter.finished(); biter.next())
         {
-            dist += pow(bp.getXYZ1(i)-bp.getXYZ2(i),2);
-        }
-        dist = sqrt(dist);
+            bp = biter.getBondPair();
+            dist = 0;
 
-        //cout << dist << endl;
-        cout << bp << endl;
+            for(int i = 0; i < 3; ++i )
+            {
+                dist += pow(bp.getXYZ1(i)-bp.getXYZ2(i),2);
+            }
+            dist = sqrt(dist);
+
+            cout << dist << " ";
+            cout << bp << endl;
+        }
     }
 
 }

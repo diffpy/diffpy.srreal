@@ -16,16 +16,24 @@
 namespace SrReal
 {
 
+class ShiftedSC;
+class BondPair;
+class BondIterator;
+
+// Very useful utility function
+std::vector<ShiftedSC> getUnitCell(const ObjCryst::Crystal &);
+
 class ShiftedSC
 {
 
-    private:
 
+    public:
     ShiftedSC(const ObjCryst::ScatteringComponent *_sc,
         const float x, const float y, const float z, const int _id = 0);
 
     ShiftedSC();
 
+    private:
     /* Data members */
 
     // Pointer to a ScatteringComponent
@@ -50,7 +58,6 @@ class ShiftedSC
 
     /* Friends */
     friend class BondIterator;
-    friend class std::set<ShiftedSC>;
     friend std::ostream& operator<<(ostream &os, const ShiftedSC &sc);
 
 };
@@ -154,6 +161,9 @@ class BondIterator
 
     ~BondIterator();
 
+    // Set one scatterer in the bond
+    void setScatteringComponent(ObjCryst::ScatteringComponent &_sc);
+
     // Rewind the iterator
     void rewind();
 
@@ -179,18 +189,8 @@ class BondIterator
 
     // Initialize punit and sunit
     void init();
-    // Bonds from punit to punit
-    bool incrementpp();
-    // Bonds from punit to sunit
-    bool incrementps();
-    // Bonds from sunit to sunit
-    bool incrementss();
-    // Bonds from punit to image of punit
-    bool incrementppi();
-    // Bonds from punit to image of sunit
-    bool incrementpsi(); 
-    // Bonds from sunit to image of sunit
-    bool incrementssi(); 
+    // Increment the iterator
+    bool increment();
     
     // Check if the sphere is at 0, 0, 0
     inline bool sphAtOrigin() 
@@ -206,6 +206,9 @@ class BondIterator
     // Reference to crystal
     const ObjCryst::Crystal &crystal;
 
+    // Reference to one scattering component in the bond
+    ObjCryst::ScatteringComponent *sc;
+
     // Minimum and maximum r values
     const float rmin;
     const float rmax;
@@ -213,37 +216,17 @@ class BondIterator
     // For holding the current BondPair
     BondPair bp;
 
+    // flag indicating when we're finished.
+    bool isfinished;
+
     // Holds ScatteringComponents in the primitive unit
-    std::vector<ShiftedSC> punit;
-    // Holds ScatteringComponents that are created from symmetry operations.
-    // This specifically excludes atoms in the punit.
-    std::vector<ShiftedSC> sunit;
-
-    // Degeneracy of each primitive atom in the conventional cell
-    map<ShiftedSC,size_t> degen;
-
+    std::vector<ShiftedSC> sscvec;
     // Iterators for punit and sunit;
     std::vector<ShiftedSC>::iterator iteri;
-    std::vector<ShiftedSC>::iterator iterj;
 
     // Points in sphere iterator
     NS_POINTSINSPHERE::PointsInSphere *sph;
 
-    // Enumerate the state of the iterator
-    enum IncState {
-        PP,
-        PS,
-        SS,
-        PPI,
-        PSI,
-        SSI,
-        FINISHED
-    };
-
-    // The current state of the iterator
-    IncState state;
-
-    
 };
 
 } // end namespace SrReal
