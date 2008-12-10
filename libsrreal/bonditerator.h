@@ -15,28 +15,30 @@
 namespace SrReal
 {
 
-// Here's a private class
 class ShiftedSC
 {
 
     private:
 
-    // id is for debugging
     ShiftedSC(const ObjCryst::ScatteringComponent *_sc,
         const float x, const float y, const float z, const int _id = 0);
 
     ShiftedSC();
 
+    /* Data members */
+
     // Pointer to a ScatteringComponent
     const ObjCryst::ScatteringComponent *sc;
 
-    // Fractionnal coordinates
+    // Fractional coordinates
     float xyz[3];
 
     // Id for testing purposes
     int id;
 
     public:
+
+    ShiftedSC(const ShiftedSC &_ssc);
 
     /* Operators */
 

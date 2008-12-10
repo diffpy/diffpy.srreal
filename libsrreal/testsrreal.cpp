@@ -9,11 +9,11 @@
 using namespace std;
 using namespace SrReal;
 
-// FIXME - there are some serious memory leaks in here!
+// FIXME 
 
 void test1()
 {
-    string sgstr("224");
+    string sgstr("225");
     string estr("Ni");
 
     // Create the Ni structure

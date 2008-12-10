@@ -276,7 +276,8 @@ init()
         // Now find the unique scatterers and record the degeneracy. It doesn't
         // matter if we record the actual primitive ssc in punit, as long as we
         // only put one there then we're fine.
-        sort(workvec.begin(), workvec.end());
+        // sort is causing a segfault
+        stable_sort(workvec.begin(), workvec.end());
         //for(it2=workvec.begin();it2!=workvec.end();++it2)
         //    std::cout << *it2 << std::endl;
         //std::cout << std::endl;
@@ -701,6 +702,18 @@ ShiftedSC(const ObjCryst::ScatteringComponent *_sc,
     //std::cout << x << ' ' << y << ' ' << z << endl;
 }
 
+ShiftedSC::
+ShiftedSC(const ShiftedSC &_ssc)
+{
+    id = 0;
+    sc = _ssc.sc;
+    //sc->Print();
+    xyz[0] = _ssc.xyz[0];
+    xyz[1] = _ssc.xyz[1];
+    xyz[2] = _ssc.xyz[2];
+    //std::cout << x << ' ' << y << ' ' << z << endl;
+}
+
 // Be careful of dangling references
 ShiftedSC::
 ShiftedSC()
@@ -720,13 +733,13 @@ operator<(const ShiftedSC &rhs) const
     // (0, 0, 0) < q1 < q2 < q3 ... < q8
     // Then by distance
 
-    size_t q1, q2;
+    static size_t q1, q2;
     q1 = quadrant(xyz);
     q2 = quadrant(rhs.xyz);
 
     if( q1 != q2 ) return (q1 < q2);
 
-    float d1, d2;
+    static float d1, d2;
     for(size_t l = 0; l < 3; ++l)
     {
         d1 += xyz[l]*xyz[l];
