@@ -15,7 +15,7 @@ import fix_setuptools_chmod
 # define distribution
 dist = setup(
         name = "diffpy.srreal",
-        version = "0.1a",
+        version = "0.1a0",
         namespace_packages = ['diffpy'],
         packages = find_packages(exclude=['PDFAPI']),
         entry_points = {
