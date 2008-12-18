@@ -5,6 +5,7 @@
 #include "ObjCryst/ScatteringPower.h" // From ObjCryst distribution
 
 #include <string>
+#include <vector>
 
 using namespace std;
 using namespace SrReal;
@@ -24,8 +25,9 @@ void test1()
     ObjCryst::Atom *atomp = new ObjCryst::Atom(0.0, 0.0, 0.0, estr, &sp);
     crystal.AddScatterer(atomp);
 
-    BondIterator biter(crystal, 0, 10);
-    ShiftedSC
+    BondIterator biter(crystal, 0, 5);
+    ObjCryst::ScatteringComponentList scl 
+        = crystal.GetScatteringComponentList();
     BondPair bp;
     double dist = 0;
     for(size_t i=0; i < scl.GetNbComponent(); ++i)
@@ -51,7 +53,39 @@ void test1()
 
 }
 
+void test2()
+{
+    string sgstr("P 63 m c");
+    string zstr("Zn");
+    string sstr("S");
+
+    // Create the ZnS structure
+    ObjCryst::Crystal crystal(3.811, 3.811, 6.234, 90, 90, 120, sgstr);
+    ObjCryst::ScatteringPowerAtom zsp(zstr, zstr);
+    ObjCryst::ScatteringPowerAtom ssp(sstr, sstr);
+    zsp.SetBiso(8*M_PI*M_PI*0.003);
+    ssp.SetBiso(8*M_PI*M_PI*0.003);
+    // Atoms only belong to one crystal. They must be allocated in the heap.
+    ObjCryst::Atom *zatomp = new ObjCryst::Atom(1.0/3, 2.0/3, 0.0, zstr, &zsp);
+    ObjCryst::Atom *satomp = new ObjCryst::Atom(1.0/3, 2.0/3, 0.385, sstr, &ssp);
+    crystal.AddScatterer(zatomp);
+    crystal.AddScatterer(satomp);
+
+    std::vector<ShiftedSC> uc = getUnitCell(crystal);
+
+    std::vector<ShiftedSC>::iterator ssciter;
+
+    for(ssciter=uc.begin(); ssciter!=uc.end(); ++ssciter)
+    {
+        cout << *ssciter << endl;
+    }
+
+
+}
+
+
 int main()
 {
     test1();
+    test2();
 }

@@ -31,9 +31,9 @@ class ShiftedSC
     ShiftedSC(const ObjCryst::ScatteringComponent *_sc,
         const float x, const float y, const float z, const int _id = 0);
 
+    ShiftedSC(const ShiftedSC &_ssc);
     ShiftedSC();
 
-    private:
     /* Data members */
 
     // Pointer to a ScatteringComponent
@@ -44,10 +44,6 @@ class ShiftedSC
 
     // Id for testing purposes
     int id;
-
-    public:
-
-    ShiftedSC(const ShiftedSC &_ssc);
 
     /* Operators */
 
@@ -223,6 +219,8 @@ class BondIterator
     std::vector<ShiftedSC> sscvec;
     // Iterators for punit and sunit;
     std::vector<ShiftedSC>::iterator iteri;
+    // degeneracy
+    size_t degen;
 
     // Points in sphere iterator
     NS_POINTSINSPHERE::PointsInSphere *sph;

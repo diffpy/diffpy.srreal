@@ -79,6 +79,13 @@ BondIterator::
 setScatteringComponent(ObjCryst::ScatteringComponent &_sc)
 {
     sc = &_sc;
+    // Calculate the degeneracy. 
+    // FIXME This is a slow way to do things, but it works for now.
+    degen = 0;
+    for(iteri=sscvec.begin(); iteri != sscvec.end(); ++iteri)
+    {
+        if( (*(iteri->sc)) == *sc ) ++degen;
+    }
     rewind();
     return;
 }
@@ -178,6 +185,7 @@ init()
     // Make sure the scvec is clear
     sscvec.clear();
     sscvec = getUnitCell(crystal);
+    degen = 0;
 
     // Set up the PointsInSphere iterator
     // FIXME - make sure that we're putting in the right rmin, rmax
@@ -216,6 +224,22 @@ increment()
     {
         return false;
     }
+    if( sph->mno[0] == 0 &&
+        sph->mno[0] == 0 &&
+        sph->mno[0] == 0 &&
+        *sc == (*(iteri->sc)))
+    {
+
+        // Increment sph
+        sph->next();
+        // If sph is finished, then we reset it and increment iteri
+        if( sph->finished() )
+        {
+            sph->rewind();
+            ++iteri;
+        }
+        return increment();
+    }
 
     // If we got here, then we can record the bond
     for(size_t l=0;l<3;++l)
@@ -224,7 +248,7 @@ increment()
     }
     placeInSphere(bp.xyz2);
     bp.sc2 = iteri->sc;
-    bp.multiplicity = 1;
+    bp.multiplicity = degen;
 
     // Increment sph
     sph->next();
