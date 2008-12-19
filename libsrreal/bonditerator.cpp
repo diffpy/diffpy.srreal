@@ -224,10 +224,12 @@ increment()
     {
         return false;
     }
+    // Skip this scatterer with itself
     if( sph->mno[0] == 0 &&
         sph->mno[0] == 0 &&
         sph->mno[0] == 0 &&
-        *sc == (*(iteri->sc)))
+        (*iteri) == (*sscvec.begin())
+      )
     {
 
         // Increment sph
@@ -408,8 +410,8 @@ getUnitCell(const ObjCryst::Crystal &crystal)
 
             // Get this in cartesian
             crystal.FractionalToOrthonormalCoords(x,y,z);
-            // Store it in the scatterer map
 
+            // Store it in the scatterer set
             workssc = ShiftedSC(&mScattCompList(i),x,y,z,j);
             //std::cout << workssc << std::endl;
             workset.insert(workssc);

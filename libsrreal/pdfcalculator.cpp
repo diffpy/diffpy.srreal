@@ -58,6 +58,8 @@ calculateRDF(BondIterator &bonditer,
     float *profile = new float[numpoints];
     for(size_t i = 0; i < numpoints; ++i) profile[i] = 0.0;
 
+    size_t nsc = bonditer.getNumScat();
+
     const ObjCryst::ScatteringComponentList &scl 
         = crystal.GetScatteringComponentList();
     for(int i=0; i < scl.GetNbComponent(); ++i)
@@ -82,6 +84,7 @@ calculateRDF(BondIterator &bonditer,
                 // calculate the gaussian 
                 gnorm = 1.0/(sqrt2pi*sigma);
                 gnorm *= bp.getMultiplicity();
+                gnorm /= nsc;
 
                 // calculate out to 5*sigma
                 grmin = d - 5*sigma;

@@ -171,6 +171,9 @@ class BondIterator
     inline float getRmax() { return rmax; }
     inline const ObjCryst::Crystal &getCrystal() { return crystal; }
 
+    // The number of unique scattering components in the expanded unit cell
+    inline size_t getNumScat() { return sscvec.size(); }
+
     //FIXME:TESTING private:
 
     // Initialize punit and sunit

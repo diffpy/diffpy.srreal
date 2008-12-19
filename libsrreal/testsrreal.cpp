@@ -136,5 +136,5 @@ void test3()
 
 int main()
 {
-    test1();
+    test3();
 }
