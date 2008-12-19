@@ -1,4 +1,5 @@
 #include "bonditerator.h"
+#include "pdfcalculator.h"
 
 #include "ObjCryst/Crystal.h" // From ObjCryst distribution
 #include "ObjCryst/Atom.h" // From ObjCryst distribution
@@ -14,7 +15,7 @@ using namespace SrReal;
 
 void test1()
 {
-    string sgstr("224");
+    string sgstr("225");
     string estr("Ni");
 
     // Create the Ni structure
@@ -29,8 +30,7 @@ void test1()
     ObjCryst::ScatteringComponentList scl 
         = crystal.GetScatteringComponentList();
     BondPair bp;
-    double dist = 0;
-    for(size_t i=0; i < scl.GetNbComponent(); ++i)
+    for(int i=0; i < scl.GetNbComponent(); ++i)
     {
         biter.setScatteringComponent(scl(i));
         cout << "---- " << i << " ----" << endl;
@@ -38,15 +38,8 @@ void test1()
         for(biter.rewind(); !biter.finished(); biter.next())
         {
             bp = biter.getBondPair();
-            dist = 0;
 
-            for(int i = 0; i < 3; ++i )
-            {
-                dist += pow(bp.getXYZ1(i)-bp.getXYZ2(i),2);
-            }
-            dist = sqrt(dist);
-
-            cout << dist << " ";
+            cout << bp.getDistance() << " ";
             cout << bp << endl;
         }
     }
@@ -90,7 +83,7 @@ void test2()
         = crystal.GetScatteringComponentList();
     BondPair bp;
     double dist = 0;
-    for(size_t i=0; i < scl.GetNbComponent(); ++i)
+    for(int i=0; i < scl.GetNbComponent(); ++i)
     {
         biter.setScatteringComponent(scl(i));
         cout << "---- " << i << " ----" << endl;
@@ -111,13 +104,37 @@ void test2()
         }
     }
 
-
-
 }
 
+void test3()
+{
+    string sgstr("225");
+    string estr("Ni");
+
+    // Create the Ni structure
+    ObjCryst::Crystal crystal(3.52, 3.52, 3.52, sgstr);
+    ObjCryst::ScatteringPowerAtom sp(estr, estr);
+    sp.SetBiso(8*M_PI*M_PI*0.003);
+    // Atoms only belong to one crystal. They must be allocated in the heap.
+    ObjCryst::Atom *atomp = new ObjCryst::Atom(0.0, 0.0, 0.0, estr, &sp);
+    crystal.AddScatterer(atomp);
+
+    float rmin, rmax, dr;
+    rmin = 0;
+    rmax = 10;
+    dr = 0.05;
+    BondIterator biter(crystal, rmin, rmax);
+    float *rdf = calculateRDF(biter, rmin, rmax, dr);
+    size_t numpoints = getNumPoints(rmin, rmax, dr);
+
+    for(size_t i=0; i<numpoints; ++i)
+    {
+        cout << rmin+dr*i << "  " << rdf[i] << endl;
+    }
+
+}
 
 int main()
 {
     test1();
-    test2();
 }

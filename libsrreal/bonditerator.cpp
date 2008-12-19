@@ -76,7 +76,7 @@ BondIterator::
 
 void 
 BondIterator::
-setScatteringComponent(ObjCryst::ScatteringComponent &_sc)
+setScatteringComponent(const ObjCryst::ScatteringComponent &_sc)
 {
     sc = &_sc;
     // Calculate the degeneracy. 
@@ -111,8 +111,7 @@ rewind()
     bp.xyz1[2] = sc->mZ;
     bp.sc1 = sc;
     
-    // Set the iterators up for the beginning of the next functions, which is
-    // nextss.
+    // Prepare for the incrementor.
     iteri = sscvec.begin();
     sph->rewind();
     isfinished = false;
@@ -162,6 +161,7 @@ reset()
         delete sph;
     }
     init();
+    setScatteringComponent(*sc);
     return;
 }
 
@@ -426,3 +426,33 @@ getUnitCell(const ObjCryst::Crystal &crystal)
 
     return workvec;
 }
+
+std::ostream& 
+SrReal::operator<<(ostream &os, const ShiftedSC &ssc)
+{
+    os << ssc.sc->mpScattPow->GetSymbol() << '(' << ssc.id << "): ";
+    os << ssc.xyz[0] << " ";
+    os << ssc.xyz[1] << " ";
+    os << ssc.xyz[2];
+    return os;
+}
+
+std::ostream& 
+SrReal::operator<<(ostream &os, const BondPair &bp)
+{
+    os << "(" << bp.multiplicity << ") ";
+    os << bp.sc1->mpScattPow->GetSymbol() << ' ';
+    os << "[";
+    os << bp.xyz1[0] << ", ";
+    os << bp.xyz1[1] << ", ";
+    os << bp.xyz1[2] << "]";
+    os << " -- ";
+    os << bp.sc2->mpScattPow->GetSymbol() << ' ';
+    os << "[";
+    os << bp.xyz2[0] << ", ";
+    os << bp.xyz2[1] << ", ";
+    os << bp.xyz2[2] << "]";
+
+    return os;
+}
+

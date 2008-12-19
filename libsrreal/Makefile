@@ -29,7 +29,7 @@ INCDIR = .
 
 # end of setup
 
-OBJ = bonditerator.o PointsInSphere.o
+OBJ = pdfcalculator.o bonditerator.o PointsInSphere.o
 SOBJ = libsrreal.so
 
 CC        = g++

@@ -23,6 +23,7 @@ class BondIterator;
 // Very useful utility function
 std::vector<ShiftedSC> getUnitCell(const ObjCryst::Crystal &);
 
+
 class ShiftedSC
 {
 
@@ -54,18 +55,11 @@ class ShiftedSC
 
     /* Friends */
     friend class BondIterator;
-    friend std::ostream& operator<<(ostream &os, const ShiftedSC &sc);
+    friend std::ostream& operator<<(ostream &os, const ShiftedSC &ssc);
 
 };
 
-std::ostream& operator<<(ostream &os, const ShiftedSC &sc)
-{
-    os << sc.id << ": ";
-    os << sc.xyz[0] << " ";
-    os << sc.xyz[1] << " ";
-    os << sc.xyz[2];
-    return os;
-}
+std::ostream& operator<<(ostream &os, const SrReal::ShiftedSC &ssc);
 
 /* struct for holding bond pair information for use with the BondIterator
  *
@@ -114,6 +108,17 @@ class BondPair
 
     inline size_t getMultiplicity() { return multiplicity; }
 
+    inline float getDistance()
+    {
+        static float d;
+        d = 0;
+        for(size_t l = 0; l < 3; ++l) 
+        {
+            d += pow(xyz1[l]-xyz2[l], 2);
+        }
+        return sqrt(d);
+    }
+
     private:
     // Cartesian coordinates of the scatterers
     float xyz1[3];
@@ -128,22 +133,7 @@ class BondPair
 
 };
 
-std::ostream& operator<<(ostream &os, const BondPair &bp)
-{
-    os << "(" << bp.multiplicity << ") ";
-    os << "[";
-    os << bp.xyz1[0] << ", ";
-    os << bp.xyz1[1] << ", ";
-    os << bp.xyz1[2] << "]";
-    os << " -- ";
-    os << "[";
-    os << bp.xyz2[0] << ", ";
-    os << bp.xyz2[1] << ", ";
-    os << bp.xyz2[2] << "]";
-
-    return os;
-}
-
+std::ostream& operator<<(ostream &os, const SrReal::BondPair &bp);
 
 class BondIterator
 {
@@ -158,7 +148,7 @@ class BondIterator
     ~BondIterator();
 
     // Set one scatterer in the bond
-    void setScatteringComponent(ObjCryst::ScatteringComponent &_sc);
+    void setScatteringComponent(const ObjCryst::ScatteringComponent &_sc);
 
     // Rewind the iterator
     void rewind();
@@ -203,7 +193,7 @@ class BondIterator
     const ObjCryst::Crystal &crystal;
 
     // Reference to one scattering component in the bond
-    ObjCryst::ScatteringComponent *sc;
+    const ObjCryst::ScatteringComponent *sc;
 
     // Minimum and maximum r values
     const float rmin;
