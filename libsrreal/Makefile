@@ -4,7 +4,7 @@
 
 # Objcryst headers
 ifndef OBJCRYST_HEADERS
-OBJCRYST_HEADERS=/home/chris/local/src/Fox-1.7.0.4-R864/ObjCryst
+OBJCRYST_HEADERS=/home/chris/local/src/ObjCryst/ObjCryst
 endif 
 
 # CFLAGS
@@ -16,7 +16,7 @@ endif
 
 # Shared libary for so files
 ifndef LIB
-LIB = .
+LIB = /home/chris/local/lib/
 endif
 
 # Shared library for python files

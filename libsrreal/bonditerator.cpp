@@ -302,7 +302,7 @@ ShiftedSC(const ObjCryst::ScatteringComponent *_sc,
 ShiftedSC::
 ShiftedSC(const ShiftedSC &_ssc)
 {
-    id = 0;
+    id = _ssc.id;
     sc = _ssc.sc;
     //sc->Print();
     xyz[0] = _ssc.xyz[0];
@@ -324,25 +324,24 @@ bool
 ShiftedSC::
 operator<(const ShiftedSC &rhs) const
 {
+    // The sign of A-B is equal the sign of the first non-zero component of the
+    // vector.
 
-    //std::cout << id << " vs " << rhs.id << endl;
-    // Do this by quadrant first
-    // (0, 0, 0) < q1 < q2 < q3 ... < q8
-    // Then by distance
+    static const float toler = 1e-5;
+    static size_t l;
 
-    static size_t q1, q2;
-    q1 = quadrant(xyz);
-    q2 = quadrant(rhs.xyz);
-
-    if( q1 != q2 ) return (q1 < q2);
-
-    static float d1, d2;
-    for(size_t l = 0; l < 3; ++l)
+    for(l = 0; l < 3; ++l)
     {
-        d1 += xyz[l]*xyz[l];
-        d2 += rhs.xyz[l]*rhs.xyz[l];
+        if( fabs(xyz[l] - rhs.xyz[l]) > toler )
+        {
+            return xyz[l] < rhs.xyz[l];
+        }
     }
-    return d1 < d2;
+
+    // If we get here then the vectors are equal. We compare the addresses of
+    // the ScatteringPower member of the ScatteringComponent
+    return sc->mpScattPow < rhs.sc->mpScattPow;
+
 }
 
 bool
@@ -412,10 +411,12 @@ getUnitCell(const ObjCryst::Crystal &crystal)
             // Store it in the scatterer map
 
             workssc = ShiftedSC(&mScattCompList(i),x,y,z,j);
+            //std::cout << workssc << std::endl;
             workset.insert(workssc);
         }
     }
 
+    //std::cout << "Unique Scatterers" << std::endl;
     // Now record the unique scatterers in workvec
     for(it1=workset.begin(); it1!=workset.end(); ++it1)
     {
