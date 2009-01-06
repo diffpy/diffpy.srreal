@@ -178,10 +178,7 @@ class BondIterator
     inline float getRmax() { return rmax; }
     inline const ObjCryst::Crystal &getCrystal() { return crystal; }
 
-    // The number of unique scattering components in the expanded unit cell
-    inline size_t getNumScat() { return sscvec.size(); }
-
-    // Get the unit cell.
+    // Get the unit cell calculated internally
     inline std::vector<ShiftedSC> getUnitCell() { return sscvec; }
 
     //FIXME:TESTING private:

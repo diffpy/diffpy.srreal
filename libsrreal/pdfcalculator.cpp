@@ -64,7 +64,9 @@ calculateRDF(BondIterator &bonditer,
     float *profile = new float[numpoints];
     for(size_t i = 0; i < numpoints; ++i) profile[i] = 0.0;
 
-    float totscatpow = getTotalScatPow(bonditer, ObjCryst::RAD_XRAY);
+    float avgscatpow = getAvgScatPow(bonditer, ObjCryst::RAD_XRAY);
+    float nsc = getOccupancy(bonditer);
+    std::cout << "avgscatpow = " << avgscatpow << std::endl;
 
     const ObjCryst::ScatteringComponentList &scl 
         = crystal.GetScatteringComponentList();
@@ -90,11 +92,13 @@ calculateRDF(BondIterator &bonditer,
             // Only continue if we're within five DW factors of the cutoff
             if( d > rmin-5*sigma and d < rmax+5*sigma ) {
 
+                //std::cout << "pairscapow = " << getPairScatPow(bp, ObjCryst::RAD_XRAY) << std::endl;
                 // calculate the gaussian 
                 gnorm = 1.0/(sqrt2pi*sigma);
                 gnorm *= bp.getMultiplicity();
                 gnorm *= getPairScatPow(bp, ObjCryst::RAD_XRAY);
-                gnorm /= totscatpow;
+                gnorm /= avgscatpow*avgscatpow;
+                gnorm /= nsc;
 
                 // calculate out to 5*sigma
                 grmin = d - 5*sigma;
@@ -168,18 +172,21 @@ getPairScatPow(BondPair &bp, const ObjCryst::RadiationType rt)
 
 inline float 
 SrReal::
-getTotalScatPow(BondIterator &bonditer, 
+getAvgScatPow(BondIterator &bonditer, 
         const ObjCryst::RadiationType rt)
 {
     std::vector<ShiftedSC> unitcell = bonditer.getUnitCell();
     std::vector<ShiftedSC>::iterator it1;
 
     float bavg = 0.0;
+    float nsc = 0.0;
     for(it1 = unitcell.begin(); it1 != unitcell.end(); ++it1)
     {
+        nsc += it1->sc->mOccupancy;
         bavg += it1->sc->mpScattPow->GetForwardScatteringFactor(rt) *
                 it1->sc->mOccupancy;
     }
+    bavg /= nsc;
     return bavg;
 }
 

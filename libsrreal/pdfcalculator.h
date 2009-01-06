@@ -23,8 +23,8 @@ float *calculatePDF(BondIterator &bonditer,
 // get the scattering power for a bond pair
 float getPairScatPow(BondPair &bp, const ObjCryst::RadiationType rt);
 
-// get the total scattering power for a unit cell of a crystal
-inline float getTotalScatPow(BondIterator &biter,
+// get the average scattering power for a unit cell of a crystal
+inline float getAvgScatPow(BondIterator &biter,
         const ObjCryst::RadiationType rt);
 
 // get the number of scatterers in the unit cell calculated from occupancy
