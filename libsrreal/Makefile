@@ -55,7 +55,6 @@ $(SOBJ):$(OBJ)
 %.o:%.cpp
 	$(CC) $(CFLAGS) -c $< -I$(INCDIR) -I$(OBJCRYST_HEADERS)
 
-
 # tests
 
 TESTS = testsrreal
@@ -65,7 +64,7 @@ test: $(TESTS)
 
 testsrreal: $(SOBJ) testsrreal.o
 	make install
-	$(LINK) $(CFLAGS) $(LINKFLAGS) -o $@ $^ -lsrreal -lcryst -lCrystVector -lQuirks -lRefinableObj -lcctbx -lnewmat
+	$(LINK) $(CFLAGS) $(LINKFLAGS) -o $@ $^ -lsrreal -lcryst -lCrystVector -lQuirks -lRefinableObj -lcctbx -lnewmat -lm
 
 .PHONY : clean
 clean: 

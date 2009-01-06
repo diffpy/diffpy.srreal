@@ -10,6 +10,7 @@
 
 #include "ObjCryst/Crystal.h"
 #include "ObjCryst/Scatterer.h"
+#include "ObjCryst/General.h"
 #include "PointsInSphere.h"
 
 
@@ -23,10 +24,9 @@ class BondIterator;
 // Very useful utility function
 std::vector<ShiftedSC> getUnitCell(const ObjCryst::Crystal &);
 
-
+// Container class, hence the public data members
 class ShiftedSC
 {
-
 
     public:
     ShiftedSC(const ObjCryst::ScatteringComponent *_sc,
@@ -180,6 +180,9 @@ class BondIterator
 
     // The number of unique scattering components in the expanded unit cell
     inline size_t getNumScat() { return sscvec.size(); }
+
+    // Get the unit cell.
+    inline std::vector<ShiftedSC> getUnitCell() { return sscvec; }
 
     //FIXME:TESTING private:
 

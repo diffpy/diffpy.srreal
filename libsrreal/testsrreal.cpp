@@ -121,7 +121,7 @@ void test3()
 
     float rmin, rmax, dr;
     rmin = 0;
-    rmax = 10;
+    rmax = 100;
     dr = 0.05;
     BondIterator biter(crystal, rmin, rmax);
     float *pdf = calculatePDF(biter, rmin, rmax, dr);

@@ -7,6 +7,7 @@
 #include "bonditerator.h"
 #include "pdfcalculator.h"
 #include "bondwidthcalculator.h"
+#include "ObjCryst/General.h"
 
 namespace {
 
@@ -46,6 +47,7 @@ calculateRDF(BondIterator &bonditer,
     size_t numpoints = static_cast<size_t>( (rmax-rmin)/dr );
     rmax = rmin + numpoints*dr;
 
+
     std::cout << "numpoints = " << numpoints << std::endl;
 
     BondPair bp;
@@ -62,14 +64,13 @@ calculateRDF(BondIterator &bonditer,
     float *profile = new float[numpoints];
     for(size_t i = 0; i < numpoints; ++i) profile[i] = 0.0;
 
-    size_t nsc = bonditer.getNumScat();
+    float totscatpow = getTotalScatPow(bonditer, ObjCryst::RAD_XRAY);
 
     const ObjCryst::ScatteringComponentList &scl 
         = crystal.GetScatteringComponentList();
 
     for(int i=0; i < scl.GetNbComponent(); ++i)
     {
-        std::cout << "i = " << i << std::endl;
         bonditer.setScatteringComponent(scl(i));
 
         for(bonditer.rewind(); !bonditer.finished(); bonditer.next())
@@ -92,7 +93,8 @@ calculateRDF(BondIterator &bonditer,
                 // calculate the gaussian 
                 gnorm = 1.0/(sqrt2pi*sigma);
                 gnorm *= bp.getMultiplicity();
-                gnorm /= nsc;
+                gnorm *= getPairScatPow(bp, ObjCryst::RAD_XRAY);
+                gnorm /= totscatpow;
 
                 // calculate out to 5*sigma
                 grmin = d - 5*sigma;
@@ -136,7 +138,7 @@ calculatePDF(BondIterator &bonditer,
     // calculate rdf/r - 4*pi*r*rho0;
     const ObjCryst::Crystal &crystal = bonditer.getCrystal();
     // Calculate density
-    float rho0 = bonditer.getNumScat() / crystal.GetVolume();
+    float rho0 = getOccupancy(bonditer) / crystal.GetVolume();
     float r = 0;
     size_t l = 0;
     // Don't want to divide by 0
@@ -150,3 +152,49 @@ calculatePDF(BondIterator &bonditer,
     return rdf;
 
 }
+
+float 
+SrReal::
+getPairScatPow(BondPair &bp, const ObjCryst::RadiationType rt)
+{
+    float scatpow = 1;
+    scatpow *= bp.getSC1()->mpScattPow->GetForwardScatteringFactor(rt);
+    scatpow *= bp.getSC1()->mOccupancy;
+    scatpow *= bp.getSC2()->mpScattPow->GetForwardScatteringFactor(rt);
+    scatpow *= bp.getSC2()->mOccupancy;
+
+    return scatpow;
+}
+
+inline float 
+SrReal::
+getTotalScatPow(BondIterator &bonditer, 
+        const ObjCryst::RadiationType rt)
+{
+    std::vector<ShiftedSC> unitcell = bonditer.getUnitCell();
+    std::vector<ShiftedSC>::iterator it1;
+
+    float bavg = 0.0;
+    for(it1 = unitcell.begin(); it1 != unitcell.end(); ++it1)
+    {
+        bavg += it1->sc->mpScattPow->GetForwardScatteringFactor(rt) *
+                it1->sc->mOccupancy;
+    }
+    return bavg;
+}
+
+inline float 
+SrReal::
+getOccupancy(BondIterator &bonditer)
+{
+    std::vector<ShiftedSC> unitcell = bonditer.getUnitCell();
+    std::vector<ShiftedSC>::iterator it1;
+
+    float nsc = 0.0;
+    for(it1 = unitcell.begin(); it1 != unitcell.end(); ++it1)
+    {
+        nsc += it1->sc->mOccupancy;
+    }
+    return nsc;
+}
+
