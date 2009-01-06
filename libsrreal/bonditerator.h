@@ -77,11 +77,13 @@ class BondPair
         }
         sc1 = sc2 = NULL;
         multiplicity = 0;
+        r = -1;
     };
 
     inline void setXYZ1(float* _xyz)
     {
         for(size_t l = 0; l < 3; ++l) xyz1[l] = _xyz[l];
+        r = -1;
     }
 
     inline float* getXYZ1() { return xyz1; }
@@ -91,6 +93,7 @@ class BondPair
     inline void setXYZ2(float* _xyz)
     {
         for(size_t l = 0; l < 3; ++l) xyz2[l] = _xyz[l];
+        r = -1;
     }
     inline float* getXYZ2() { return xyz2; }
 
@@ -110,13 +113,16 @@ class BondPair
 
     inline float getDistance()
     {
-        static float d;
-        d = 0;
-        for(size_t l = 0; l < 3; ++l) 
+        if(r == -1) 
         {
-            d += pow(xyz1[l]-xyz2[l], 2);
+            r = 0;
+            for(size_t l = 0; l < 3; ++l) 
+            {
+                r += pow(xyz1[l]-xyz2[l], 2);
+            }
+            r = sqrt(r);
         }
-        return sqrt(d);
+        return r;
     }
 
     private:
@@ -126,6 +132,7 @@ class BondPair
     const ObjCryst::ScatteringComponent* sc1;
     const ObjCryst::ScatteringComponent* sc2;
     size_t multiplicity;
+    float r;
 
     /* Friends */
     friend class BondIterator;

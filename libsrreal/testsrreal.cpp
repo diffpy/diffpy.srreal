@@ -124,12 +124,12 @@ void test3()
     rmax = 10;
     dr = 0.05;
     BondIterator biter(crystal, rmin, rmax);
-    float *rdf = calculateRDF(biter, rmin, rmax, dr);
+    float *pdf = calculatePDF(biter, rmin, rmax, dr);
     size_t numpoints = getNumPoints(rmin, rmax, dr);
 
     for(size_t i=0; i<numpoints; ++i)
     {
-        cout << rmin+dr*i << "  " << rdf[i] << endl;
+        cout << rmin+dr*i << "  " << pdf[i] << endl;
     }
 
 }

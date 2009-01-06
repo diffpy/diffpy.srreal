@@ -6,6 +6,7 @@
 
 #include "bonditerator.h"
 #include "pdfcalculator.h"
+#include "bondwidthcalculator.h"
 
 namespace {
 
@@ -50,6 +51,9 @@ calculateRDF(BondIterator &bonditer,
     BondPair bp;
     const ObjCryst::Crystal &crystal = bonditer.getCrystal();
 
+    JeongBWCalculator *bwcalc = new JeongBWCalculator;
+    bwcalc->delta2 = 5.0;
+
     // Calculate the bonds within the calculation range
     float d, sigma, r, gnorm;
     float grmin, grmax;
@@ -62,8 +66,10 @@ calculateRDF(BondIterator &bonditer,
 
     const ObjCryst::ScatteringComponentList &scl 
         = crystal.GetScatteringComponentList();
+
     for(int i=0; i < scl.GetNbComponent(); ++i)
     {
+        std::cout << "i = " << i << std::endl;
         bonditer.setScatteringComponent(scl(i));
 
         for(bonditer.rewind(); !bonditer.finished(); bonditer.next())
@@ -71,10 +77,12 @@ calculateRDF(BondIterator &bonditer,
             bp = bonditer.getBondPair();
 
             d = bp.getDistance();
+            if(d == 0) continue;
 
-            sigma = 0.1*sqrt(1-5/(d*d));
+            sigma = bwcalc->calculate(bp);
 
             //std::cout << "r = " << d << std::endl;
+            //std::cout << "sigma = " << sigma << std::endl;
             //std::cout << "rmin = " << rmin << std::endl;
             //std::cout << "rmax = " << rmax << std::endl;
 
@@ -103,6 +111,8 @@ calculateRDF(BondIterator &bonditer,
         }
     }
 
+    delete bwcalc;
+
     return profile;
 }
 
@@ -115,6 +125,27 @@ calculatePDF(BondIterator &bonditer,
 {
 
     float *rdf = calculateRDF(bonditer, _rmin, _rmax, _dr);
+
+    float rmin = _rmin;
+    rmin = ( rmin < 0 ? 0 : rmin );
+    float rmax = _rmax;
+    if(rmax < rmin) swap(rmin, rmax);
+    float dr = _dr;
+    if( dr <= 0 ) dr = 0.01;
+    size_t numpoints = static_cast<size_t>( (rmax-rmin)/dr );
+    // calculate rdf/r - 4*pi*r*rho0;
+    const ObjCryst::Crystal &crystal = bonditer.getCrystal();
+    // Calculate density
+    float rho0 = bonditer.getNumScat() / crystal.GetVolume();
+    float r = 0;
+    size_t l = 0;
+    // Don't want to divide by 0
+    if( rmin == 0 ) l = 1;
+    for(; l < numpoints; ++l)
+    {
+        r = rmin + dr*l;
+        rdf[l] = rdf[l]/r - 4 * M_PI * rho0 * r;
+    }
 
     return rdf;
 

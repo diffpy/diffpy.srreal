@@ -225,23 +225,24 @@ increment()
         return false;
     }
     // Skip this scatterer with itself
-    if( sph->mno[0] == 0 &&
-        sph->mno[0] == 0 &&
-        sph->mno[0] == 0 &&
-        (*iteri) == (*sscvec.begin())
-      )
-    {
+    // FIXME - this comparison is not right. Must create a ShiftedSC from the
+    // ScatteringComponent as is done in getUnitCell.
+    //if( sph->mno[0] == 0 &&
+    //    sph->mno[0] == 0 &&
+    //    sph->mno[0] == 0 &&
+    //  )
+    //{
 
-        // Increment sph
-        sph->next();
-        // If sph is finished, then we reset it and increment iteri
-        if( sph->finished() )
-        {
-            sph->rewind();
-            ++iteri;
-        }
-        return increment();
-    }
+    //    // Increment sph
+    //    sph->next();
+    //    // If sph is finished, then we reset it and increment iteri
+    //    if( sph->finished() )
+    //    {
+    //        sph->rewind();
+    //        ++iteri;
+    //    }
+    //    return increment();
+    //}
 
     // If we got here, then we can record the bond
     for(size_t l=0;l<3;++l)
