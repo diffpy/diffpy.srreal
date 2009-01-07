@@ -94,19 +94,8 @@ BondIterator::
 rewind()
 {
 
-    // reset the iterator if a change in the crystal dictates it.
-    const ObjCryst::RefinableObjClock &crystclock 
-        = crystal.GetClockMaster();
-    std::cout << "crystal clock: "; 
-    crystclock.Print();
-    std::cout << "iterator clock: ";
-    itclock.Print();
-    if( crystclock > itclock)
-    {
-        reset();
-        itclock = crystclock;
-
-    }
+    // update the iterator (if necessary).
+    update();
 
     if( sc == NULL ) 
     {
@@ -168,20 +157,45 @@ getBondPair()
 
 /*****************************************************************************/
 
-/* This expands primitive cell of the crystal and fills sscvec and then calls
+/* This expands primitive cell of the crystal and fills sscvec if the crystal
+ * clock is greater than the iterator clock.
  */
 void
 BondIterator::
-reset()
+update()
 {
-    // Make sure the scvec is clear
+    const ObjCryst::RefinableObjClock &crystclock 
+        = crystal.GetClockMaster();
+    const ObjCryst::RefinableObjClock &latclock 
+        = crystal.GetClockLatticePar();
+    std::cout << "crystal clock: "; 
+    crystclock.Print();
+    std::cout << "lattice clock: "; 
+    latclock.Print();
+    std::cout << "iterator clock: ";
+    itclock.Print();
+
+    // Get out of here if there's nothing to update
+    if( crystclock <= itcrystclock) return;
+
+    // Synchronize the clocks
+    itcrystclock = crystclock;
+
+    // Reset the sscvec 
     sscvec.clear();
     sscvec = SrReal::getUnitCell(crystal);
+
+    // Calculate the degeracy of sc in the new unit cell.
     calculateDegeneracy();
 
     // Set up the PointsInSphere iterator
+    if( latclock <= itlatclock ) return;
+
+    // Synchronize lattice clocks
+    itlatclock = latclock;
+
+    // FIXME - Only need a new iterator when the lattice changes
     if(sph != NULL) delete sph;
-    // FIXME - make sure that we're putting in the right rmin, rmax
     sph = new PointsInSphere((float) rmin, (float) rmax, 
         crystal.GetLatticePar(0),
         crystal.GetLatticePar(1),

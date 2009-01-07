@@ -180,12 +180,12 @@ class BondIterator
     inline const ObjCryst::Crystal &getCrystal() { return crystal; }
 
     // Get the unit cell calculated internally
-    inline std::vector<ShiftedSC> getUnitCell() { return sscvec; }
+    inline std::vector<ShiftedSC> getUnitCell() { update(); return sscvec; }
 
     //FIXME:TESTING private:
 
-    // Initialize punit and sunit
-    void reset();
+    // Update the iterator
+    void update();
 
     // Increment the iterator
     bool increment();

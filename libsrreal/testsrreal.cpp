@@ -136,7 +136,10 @@ void test3()
         cout << rmin+dr*i << "  " << pdf[i] << endl;
     }
 
-    sp.SetBiso(8*M_PI*M_PI*0.004);
+    //sp.SetBiso(8*M_PI*M_PI*0.004);
+    ObjCryst::RefinablePar Biso = sp.GetPar("Biso");
+    Biso.SetValue(8*M_PI*M_PI*0.004);
+
     cout << endl;
     pdf = calculatePDF(biter, rmin, rmax, dr);
     for(size_t i=0; i<numpoints; ++i)
