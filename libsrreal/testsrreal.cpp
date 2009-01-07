@@ -103,6 +103,10 @@ void test2()
             cout << bp << endl;
         }
     }
+    ObjCryst::RefinablePar x = zatomp->GetPar("x");
+    x.SetValue(0);
+    biter.rewind();
+    biter.rewind();
 
 }
 
@@ -121,12 +125,20 @@ void test3()
 
     float rmin, rmax, dr;
     rmin = 0;
-    rmax = 100;
+    rmax = 10;
     dr = 0.05;
     BondIterator biter(crystal, rmin, rmax);
     float *pdf = calculatePDF(biter, rmin, rmax, dr);
     size_t numpoints = getNumPoints(rmin, rmax, dr);
 
+    for(size_t i=0; i<numpoints; ++i)
+    {
+        cout << rmin+dr*i << "  " << pdf[i] << endl;
+    }
+
+    sp.SetBiso(8*M_PI*M_PI*0.004);
+    cout << endl;
+    pdf = calculatePDF(biter, rmin, rmax, dr);
     for(size_t i=0; i<numpoints; ++i)
     {
         cout << rmin+dr*i << "  " << pdf[i] << endl;

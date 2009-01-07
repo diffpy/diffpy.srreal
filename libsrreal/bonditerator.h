@@ -24,7 +24,11 @@ class BondIterator;
 // Very useful utility function
 std::vector<ShiftedSC> getUnitCell(const ObjCryst::Crystal &);
 
-// Container class, hence the public data members
+/* Container class for holding a "shifted" ScatteringComponent. It holds a
+ * reference to the ScatteringComponent and its shifted (Cartesian) position.
+ * This is used when expanding the scatterers in a crystal into the conventional
+ * unit cell.
+*/
 class ShiftedSC
 {
 
@@ -40,7 +44,7 @@ class ShiftedSC
     // Pointer to a ScatteringComponent
     const ObjCryst::ScatteringComponent *sc;
 
-    // Fractional coordinates
+    // Orthonormal coordinates
     float xyz[3];
 
     // Id for testing purposes
@@ -61,7 +65,7 @@ class ShiftedSC
 
 std::ostream& operator<<(ostream &os, const SrReal::ShiftedSC &ssc);
 
-/* struct for holding bond pair information for use with the BondIterator
+/* Container class for holding bond pair information
  *
  * xyz are in cartesian coordinates.
  */
@@ -157,7 +161,8 @@ class BondIterator
     // Set one scatterer in the bond
     void setScatteringComponent(const ObjCryst::ScatteringComponent &_sc);
 
-    // Rewind the iterator
+    // Rewind the iterator. This detects changes in the crystal and updates
+    // itself as necessary.
     void rewind();
 
     // Advance the iterator
@@ -165,10 +170,6 @@ class BondIterator
  
     // Check if the iterator is finished
     bool finished(); 
-
-    // Update and reset the iterator given a status change in the crystal
-    // structure or the calculation criteria.
-    void reset(); 
 
     // Get the current pair.
     BondPair getBondPair();
@@ -184,11 +185,12 @@ class BondIterator
     //FIXME:TESTING private:
 
     // Initialize punit and sunit
-    void init();
+    void reset();
+
     // Increment the iterator
     bool increment();
     
-    // Check if the sphere is at 0, 0, 0
+    // Check if the PointsInSphere is at 0, 0, 0
     inline bool sphAtOrigin() 
     {
         return (sph->mno[0]==0 && sph->mno[1]==0 && sph->mno[2]==0);
@@ -197,6 +199,8 @@ class BondIterator
     // Place cartesian coords in location defined by PointsInSphere iterator
     void placeInSphere(float *xyz);
 
+    // Calculate the degeneracy of the scattering component in the unit cell
+    void calculateDegeneracy();
     /**** Data members ****/
 
     // Reference to crystal
@@ -214,6 +218,9 @@ class BondIterator
 
     // flag indicating when we're finished.
     bool isfinished;
+
+    // Clock for comparing with crystal's clock
+    ObjCryst::RefinableObjClock itclock;
 
     // Holds ScatteringComponents in the primitive unit
     std::vector<ShiftedSC> sscvec;

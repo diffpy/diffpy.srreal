@@ -66,7 +66,7 @@ calculateRDF(BondIterator &bonditer,
 
     float avgscatpow = getAvgScatPow(bonditer, ObjCryst::RAD_XRAY);
     float nsc = getOccupancy(bonditer);
-    std::cout << "avgscatpow = " << avgscatpow << std::endl;
+    //std::cout << "avgscatpow = " << avgscatpow << std::endl;
 
     const ObjCryst::ScatteringComponentList &scl 
         = crystal.GetScatteringComponentList();

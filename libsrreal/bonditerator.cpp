@@ -11,6 +11,7 @@
 // From ObjCryst distribution
 #include "CrystVector/CrystVector.h"
 #include "ObjCryst/ScatteringPower.h"
+#include "ObjCryst/SpaceGroup.h"
 
 #include "assert.h"
 
@@ -21,22 +22,6 @@ using std::vector;
 namespace {
 
 float rtod = 180.0/M_PI;
-
-size_t quadrant(const float * _xyz)
-{
-    // Check if _xyz is at the origin
-    if( _xyz[0] == _xyz[1] &&
-        _xyz[1] == _xyz[2] &&
-        _xyz[2] == 0)
-        return 0;
-    // Return the quadrant
-    size_t q = 0;
-    for(size_t l = 0; l < 3; ++l)
-    {
-        q += (_xyz[l] > 0 ? 1 : 0 ) << l;
-    }
-    return q;
-}
 
 } // End anonymous namespace
 
@@ -52,7 +37,8 @@ BondIterator (ObjCryst::Crystal &_crystal,
 {
     sph = NULL;
     sc = NULL;
-    init();
+    itclock.Reset();
+    rewind();
 }
 
 
@@ -62,7 +48,8 @@ BondIterator(const BondIterator &other)
 {
     sph = NULL;
     sc = NULL;
-    init();
+    itclock.Reset();
+    rewind();
 }
 
 BondIterator::
@@ -74,42 +61,64 @@ BondIterator::
     }
 }
 
+
 void 
 BondIterator::
 setScatteringComponent(const ObjCryst::ScatteringComponent &_sc)
 {
     sc = &_sc;
-    // Calculate the degeneracy. 
-    // FIXME This is a slow way to do things, but it works for now.
-    degen = 0;
-    for(iteri=sscvec.begin(); iteri != sscvec.end(); ++iteri)
-    {
-        if( (*(iteri->sc)) == *sc ) ++degen;
-    }
-    rewind();
+    calculateDegeneracy();
+
+    // Assign the first half of the bp
+    float x, y, z;
+    x = sc->mX;
+    y = sc->mY;
+    z = sc->mZ;
+    crystal.FractionalToOrthonormalCoords(x,y,z);
+    bp.xyz1[0] = x;
+    bp.xyz1[1] = y;
+    bp.xyz1[2] = z;
+    bp.sc1 = sc;
+
+    //rewind();
     return;
 }
 
+/* Rewind the iterator.
+ *
+ * This detects changes in the crystal and regenerates the unit cell if
+ * necessary.
+ */
 void
 BondIterator::
 rewind()
 {
+
+    // reset the iterator if a change in the crystal dictates it.
+    const ObjCryst::RefinableObjClock &crystclock 
+        = crystal.GetClockMaster();
+    std::cout << "crystal clock: "; 
+    crystclock.Print();
+    std::cout << "iterator clock: ";
+    itclock.Print();
+    if( crystclock > itclock)
+    {
+        reset();
+        itclock = crystclock;
+
+    }
+
     if( sc == NULL ) 
     {
         isfinished = true;
         return;
     }
+
     if(sscvec.size() == 0) 
     {
         isfinished = true;
         return;
     }
-
-    // Assign the first half of the bp
-    bp.xyz1[0] = sc->mX;
-    bp.xyz1[1] = sc->mY;
-    bp.xyz1[2] = sc->mZ;
-    bp.sc1 = sc;
     
     // Prepare for the incrementor.
     iteri = sscvec.begin();
@@ -149,22 +158,6 @@ finished()
     return isfinished;
 }
 
-/* Resets everything and rewinds. 
- * Call this in response to a change in the crystal.
- */
-void
-BondIterator::
-reset()
-{
-    if( sph != NULL )
-    {
-        delete sph;
-    }
-    init();
-    setScatteringComponent(*sc);
-    return;
-}
-
 /* Get the bond pair from the iterator */
 BondPair
 BondIterator::
@@ -176,18 +169,18 @@ getBondPair()
 /*****************************************************************************/
 
 /* This expands primitive cell of the crystal and fills sscvec and then calls
- * rewind().
  */
 void
 BondIterator::
-init()
+reset()
 {
     // Make sure the scvec is clear
     sscvec.clear();
-    sscvec = getUnitCell(crystal);
-    degen = 0;
+    sscvec = SrReal::getUnitCell(crystal);
+    calculateDegeneracy();
 
     // Set up the PointsInSphere iterator
+    if(sph != NULL) delete sph;
     // FIXME - make sure that we're putting in the right rmin, rmax
     sph = new PointsInSphere((float) rmin, (float) rmax, 
         crystal.GetLatticePar(0),
@@ -197,10 +190,6 @@ init()
         rtod*crystal.GetLatticePar(4),
         rtod*crystal.GetLatticePar(5)
        );
-
-    // Get the iterators ready. This is placed here to guarantee a consistent
-    // state whenever init is called.
-    rewind();
 
     return;
 }
@@ -284,6 +273,28 @@ placeInSphere(float *xyz)
         xyz[l] += dxyz[l];
     }
     return;
+}
+
+/* Calculate the degeneracy of the ScatteringComponent */
+void 
+BondIterator::
+calculateDegeneracy()
+{
+    degen = 0;
+
+    if(sc == NULL) return;
+
+    if(crystal.GetSpaceGroup().GetName() == ObjCryst::SpaceGroup().GetName())
+    {
+        degen = 1;
+        return;
+    }
+
+    // FIXME This is a slow way to do things, but it works for now.
+    for(iteri=sscvec.begin(); iteri != sscvec.end(); ++iteri)
+    {
+        if( (*(iteri->sc)) == *sc ) ++degen;
+    }
 }
 
 /******************************************************************************
