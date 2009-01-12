@@ -29,9 +29,19 @@ float rtod = 180.0/M_PI;
 ***** BondIterator implementation *********************************************
 ******************************************************************************/
 
-BondIterator::
-BondIterator (ObjCryst::Crystal &_crystal, 
-    const float _rmin, const float _rmax)
+SrReal::BondIterator::
+BondIterator (ObjCryst::Crystal& _crystal)
+    : crystal(_crystal), rmin(0), rmax(0)
+    
+{
+    sph = NULL;
+    sc = NULL;
+    itclock.Reset();
+    rewind();
+}
+
+SrReal::BondIterator::
+BondIterator (ObjCryst::Crystal& _crystal, float _rmin, float _rmax)
     : crystal(_crystal), rmin(_rmin), rmax(_rmax)
     
 {
@@ -41,9 +51,8 @@ BondIterator (ObjCryst::Crystal &_crystal,
     rewind();
 }
 
-
-BondIterator::
-BondIterator(const BondIterator &other) 
+SrReal::BondIterator::
+BondIterator(const BondIterator& other) 
     : crystal(other.crystal), rmin(other.rmin), rmax(other.rmax)
 {
     sph = NULL;
@@ -52,7 +61,7 @@ BondIterator(const BondIterator &other)
     rewind();
 }
 
-BondIterator::
+SrReal::BondIterator::
 ~BondIterator()
 {
     if( sph != NULL )
@@ -61,10 +70,20 @@ BondIterator::
     }
 }
 
+void 
+SrReal::BondIterator::
+setBondRange(float _rmin, float _rmax)
+{
+    rmin = _rmin;
+    rmax = _rmax;
+    itclock.Reset();
+    rewind();
+    return;
+}
 
 void 
-BondIterator::
-setScatteringComponent(const ObjCryst::ScatteringComponent &_sc)
+SrReal::BondIterator::
+setScatteringComponent(const ObjCryst::ScatteringComponent& _sc)
 {
     sc = &_sc;
     calculateDegeneracy();
@@ -90,7 +109,7 @@ setScatteringComponent(const ObjCryst::ScatteringComponent &_sc)
  * necessary.
  */
 void
-BondIterator::
+SrReal::BondIterator::
 rewind()
 {
 
@@ -107,6 +126,11 @@ rewind()
     {
         isfinished = true;
         return;
+    }
+
+    if(rmax == 0)
+    {
+        isfinished = true;
     }
     
     // Prepare for the incrementor.
@@ -128,7 +152,7 @@ rewind()
  * successful.
  */
 void
-BondIterator::
+SrReal::BondIterator::
 next()
 {
 
@@ -141,7 +165,7 @@ next()
 }
 
 bool
-BondIterator::
+SrReal::BondIterator::
 finished()
 {
     return isfinished;
@@ -149,7 +173,7 @@ finished()
 
 /* Get the bond pair from the iterator */
 BondPair
-BondIterator::
+SrReal::BondIterator::
 getBondPair()
 {
     return bp;
@@ -161,25 +185,24 @@ getBondPair()
  * clock is greater than the iterator clock.
  */
 void
-BondIterator::
+SrReal::BondIterator::
 update()
 {
-    const ObjCryst::RefinableObjClock &crystclock 
+    const ObjCryst::RefinableObjClock& crystclock 
         = crystal.GetClockMaster();
-    const ObjCryst::RefinableObjClock &latclock 
-        = crystal.GetClockLatticePar();
     std::cout << "crystal clock: "; 
     crystclock.Print();
-    std::cout << "lattice clock: "; 
-    latclock.Print();
     std::cout << "iterator clock: ";
     itclock.Print();
 
     // Get out of here if there's nothing to update
-    if( crystclock <= itcrystclock) return;
+    if(crystclock <= itclock) return;
+
+    // Get out of here if there's no range to iterate over
+    if(rmax == 0) return;
 
     // Synchronize the clocks
-    itcrystclock = crystclock;
+    itclock = crystclock;
 
     // Reset the sscvec 
     sscvec.clear();
@@ -187,12 +210,6 @@ update()
 
     // Calculate the degeracy of sc in the new unit cell.
     calculateDegeneracy();
-
-    // Set up the PointsInSphere iterator
-    if( latclock <= itlatclock ) return;
-
-    // Synchronize lattice clocks
-    itlatclock = latclock;
 
     // FIXME - Only need a new iterator when the lattice changes
     if(sph != NULL) delete sph;
@@ -215,7 +232,7 @@ update()
  * Returns true when the incrementer progressed, false otherwise.
  */
 bool
-BondIterator::
+SrReal::BondIterator::
 increment()
 {
     /* iteri = slow iterator (outer loop)
@@ -273,10 +290,10 @@ increment()
  * iterator.
  */
 void
-BondIterator::
+SrReal::BondIterator::
 placeInSphere(float *xyz)
 { 
-    static float dxyz[3];
+    float dxyz[3];
     for(size_t l=0; l<3; ++l)
     {
         dxyz[l] = sph->mno[l];
@@ -291,7 +308,7 @@ placeInSphere(float *xyz)
 
 /* Calculate the degeneracy of the ScatteringComponent */
 void 
-BondIterator::
+SrReal::BondIterator::
 calculateDegeneracy()
 {
     degen = 0;
@@ -328,7 +345,7 @@ ShiftedSC(const ObjCryst::ScatteringComponent *_sc,
 }
 
 ShiftedSC::
-ShiftedSC(const ShiftedSC &_ssc)
+ShiftedSC(const ShiftedSC& _ssc)
 {
     id = _ssc.id;
     sc = _ssc.sc;
@@ -350,13 +367,13 @@ ShiftedSC()
 
 bool
 ShiftedSC::
-operator<(const ShiftedSC &rhs) const
+operator<(const ShiftedSC& rhs) const
 {
     // The sign of A-B is equal the sign of the first non-zero component of the
     // vector.
 
-    static const float toler = 1e-5;
-    static size_t l;
+    const float toler = 1e-5;
+    size_t l;
 
     for(l = 0; l < 3; ++l)
     {
@@ -374,7 +391,7 @@ operator<(const ShiftedSC &rhs) const
 
 bool
 ShiftedSC::
-operator==(const ShiftedSC &rhs) const
+operator==(const ShiftedSC& rhs) const
 {
 
     //std::cout << id << " vs " << rhs.id << endl;
@@ -389,11 +406,11 @@ operator==(const ShiftedSC &rhs) const
 
 vector<ShiftedSC> 
 SrReal::
-getUnitCell(const ObjCryst::Crystal &crystal)
+getUnitCell(const ObjCryst::Crystal& crystal)
 {
     // Expand each scattering component in the primitive cell and record the new
     // atoms.
-    const ObjCryst::ScatteringComponentList &mScattCompList 
+    const ObjCryst::ScatteringComponentList& mScattCompList 
         = crystal.GetScatteringComponentList();
 
     size_t nbComponent = mScattCompList.GetNbComponent();
@@ -456,7 +473,7 @@ getUnitCell(const ObjCryst::Crystal &crystal)
 }
 
 std::ostream& 
-SrReal::operator<<(ostream &os, const ShiftedSC &ssc)
+SrReal::operator<<(ostream& os, const ShiftedSC& ssc)
 {
     os << ssc.sc->mpScattPow->GetSymbol() << '(' << ssc.id << "): ";
     os << ssc.xyz[0] << " ";
@@ -466,7 +483,7 @@ SrReal::operator<<(ostream &os, const ShiftedSC &ssc)
 }
 
 std::ostream& 
-SrReal::operator<<(ostream &os, const BondPair &bp)
+SrReal::operator<<(ostream& os, const BondPair& bp)
 {
     os << "(" << bp.multiplicity << ") ";
     os << bp.sc1->mpScattPow->GetSymbol() << ' ';

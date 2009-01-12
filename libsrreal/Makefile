@@ -29,7 +29,7 @@ INCDIR = .
 
 # end of setup
 
-OBJ = pdfcalculator.o bondwidthcalculator.o bonditerator.o PointsInSphere.o
+OBJ = pdfcalculator.o profilecalculator.o bondwidthcalculator.o bonditerator.o PointsInSphere.o
 SOBJ = libsrreal.so
 
 CC        = g++
@@ -64,7 +64,7 @@ test: $(TESTS)
 
 testsrreal: $(SOBJ) testsrreal.o
 	make install
-	$(LINK) $(CFLAGS) $(LINKFLAGS) -o $@ $^ -lsrreal -lcryst -lCrystVector -lQuirks -lRefinableObj -lcctbx -lnewmat -lm
+	$(LINK) $(CFLAGS) $(LINKFLAGS) -o $@ $^ -lsrreal -lcryst -lCrystVector -lQuirks -lRefinableObj -lcctbx -lnewmat -lgsl -lgslcblas -lm 
 
 .PHONY : clean
 clean: 

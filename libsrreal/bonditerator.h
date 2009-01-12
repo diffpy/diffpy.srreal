@@ -22,7 +22,7 @@ class BondPair;
 class BondIterator;
 
 // Very useful utility function
-std::vector<ShiftedSC> getUnitCell(const ObjCryst::Crystal &);
+std::vector<ShiftedSC> getUnitCell(const ObjCryst::Crystal&);
 
 /* Container class for holding a "shifted" ScatteringComponent. It holds a
  * reference to the ScatteringComponent and its shifted (Cartesian) position.
@@ -36,7 +36,7 @@ class ShiftedSC
     ShiftedSC(const ObjCryst::ScatteringComponent *_sc,
         const float x, const float y, const float z, const int _id = 0);
 
-    ShiftedSC(const ShiftedSC &_ssc);
+    ShiftedSC(const ShiftedSC& _ssc);
     ShiftedSC();
 
     /* Data members */
@@ -52,18 +52,18 @@ class ShiftedSC
 
     /* Operators */
 
-    bool operator<(const ShiftedSC &rhs) const;
+    bool operator<(const ShiftedSC& rhs) const;
 
     // Compares equality.
-    bool operator==(const ShiftedSC &rhs) const;
+    bool operator==(const ShiftedSC& rhs) const;
 
     /* Friends */
     friend class BondIterator;
-    friend std::ostream& operator<<(ostream &os, const ShiftedSC &ssc);
+    friend std::ostream& operator<<(ostream& os, const ShiftedSC& ssc);
 
 };
 
-std::ostream& operator<<(ostream &os, const SrReal::ShiftedSC &ssc);
+std::ostream& operator<<(ostream& os, const SrReal::ShiftedSC& ssc);
 
 /* Container class for holding bond pair information
  *
@@ -140,26 +140,27 @@ class BondPair
 
     /* Friends */
     friend class BondIterator;
-    friend std::ostream& operator<<(ostream &os, const BondPair &bp);
+    friend std::ostream& operator<<(ostream& os, const BondPair& bp);
 
 };
 
-std::ostream& operator<<(ostream &os, const SrReal::BondPair &bp);
+std::ostream& operator<<(ostream& os, const SrReal::BondPair& bp);
 
 class BondIterator
 {
     public:
 
-    BondIterator
-        (ObjCryst::Crystal &_crystal, 
-         const float _rmin, const float _rmax);
-
-    BondIterator(const BondIterator &);
+    BondIterator(ObjCryst::Crystal& _crystal);
+    BondIterator(ObjCryst::Crystal& _crystal, float _rmin, float _rmax);
+    BondIterator(const BondIterator&);
 
     ~BondIterator();
 
+    // Set the range of the iterator
+    void setBondRange(float _rmin, float _rmax);
+
     // Set one scatterer in the bond
-    void setScatteringComponent(const ObjCryst::ScatteringComponent &_sc);
+    void setScatteringComponent(const ObjCryst::ScatteringComponent& _sc);
 
     // Rewind the iterator. This detects changes in the crystal and updates
     // itself as necessary.
@@ -177,7 +178,7 @@ class BondIterator
     // Get the crystal and bounds on the iterator
     inline float getRmin() { return rmin; }
     inline float getRmax() { return rmax; }
-    inline const ObjCryst::Crystal &getCrystal() { return crystal; }
+    inline const ObjCryst::Crystal& getCrystal() { return crystal; }
 
     // Get the unit cell calculated internally
     inline std::vector<ShiftedSC> getUnitCell() { update(); return sscvec; }
@@ -204,14 +205,14 @@ class BondIterator
     /**** Data members ****/
 
     // Reference to crystal
-    const ObjCryst::Crystal &crystal;
+    const ObjCryst::Crystal& crystal;
 
     // Reference to one scattering component in the bond
     const ObjCryst::ScatteringComponent *sc;
 
     // Minimum and maximum r values
-    const float rmin;
-    const float rmax;
+    float rmin;
+    float rmax;
 
     // For holding the current BondPair
     BondPair bp;

@@ -103,7 +103,7 @@ void test2()
             cout << bp << endl;
         }
     }
-    ObjCryst::RefinablePar x = zatomp->GetPar("x");
+    ObjCryst::RefinablePar x = crystal.GetScatt(zstr).GetPar("x");
     x.SetValue(0);
     biter.rewind();
     biter.rewind();
@@ -118,33 +118,38 @@ void test3()
     // Create the Ni structure
     ObjCryst::Crystal crystal(3.52, 3.52, 3.52, sgstr);
     ObjCryst::ScatteringPowerAtom sp(estr, estr);
-    sp.SetBiso(8*M_PI*M_PI*0.003);
+    sp.SetBiso(8*M_PI*M_PI*0.005);
     // Atoms only belong to one crystal. They must be allocated in the heap.
     ObjCryst::Atom *atomp = new ObjCryst::Atom(0.0, 0.0, 0.0, estr, &sp);
     crystal.AddScatterer(atomp);
 
+    // Create the calculation points
     float rmin, rmax, dr;
     rmin = 0;
     rmax = 10;
     dr = 0.05;
-    BondIterator biter(crystal, rmin, rmax);
-    float *pdf = calculatePDF(biter, rmin, rmax, dr);
-    size_t numpoints = getNumPoints(rmin, rmax, dr);
-
+    size_t numpoints = static_cast<size_t>(ceil((rmax-rmin)/dr));
+    float *rvals = new float [numpoints];
     for(size_t i=0; i<numpoints; ++i)
     {
-        cout << rmin+dr*i << "  " << pdf[i] << endl;
+        float dshift = (rand()%5)/10.0;
+        //rvals[i] = rmin + dr*(i+dshift);
+        rvals[i] = rmin + dr*i;
     }
 
-    //sp.SetBiso(8*M_PI*M_PI*0.004);
-    ObjCryst::RefinablePar Biso = sp.GetPar("Biso");
-    Biso.SetValue(8*M_PI*M_PI*0.004);
+    // Create the iterator and calculators
+    BondIterator biter(crystal);
+    JeongBWCalculator bwcalc;
+    bwcalc.GetPar("delta2").SetValue(5.0);
+    PDFCalculator pdfcalc(biter, bwcalc);
+    pdfcalc.setQmax(30.0);
+    pdfcalc.setCalculationPoints(rvals, numpoints);
 
-    cout << endl;
-    pdf = calculatePDF(biter, rmin, rmax, dr);
+    float *pdf = pdfcalc.getPDF();
+
     for(size_t i=0; i<numpoints; ++i)
     {
-        cout << rmin+dr*i << "  " << pdf[i] << endl;
+        cout << rvals[i] << "  " << pdf[i] << endl;
     }
 
 }
