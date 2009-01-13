@@ -498,6 +498,15 @@ setCalculationPoints(const float* _rvals, const size_t _numpoints)
     cnumpoints = static_cast<size_t>((crmax-crmin+eps)/cdr);
 
     // Create the arrays for handling the PDF and RDF
+    if( rdf != NULL )
+    {
+        delete [] rdf;
+    }
+    if( pdf != NULL )
+    {
+        delete [] pdf;
+    }
+
     rdf = new float [cnumpoints];
     pdf = new float [cnumpoints];
 
