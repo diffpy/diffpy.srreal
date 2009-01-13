@@ -218,7 +218,6 @@ update()
     if(latclock >= crystal.GetClockLatticePar()) return;
     latclock = crystal.GetClockLatticePar();
 
-    // FIXME - Only need a new iterator when the lattice changes
     if(sph != NULL) delete sph;
     sph = new PointsInSphere((float) rmin, (float) rmax, 
         crystal.GetLatticePar(0),

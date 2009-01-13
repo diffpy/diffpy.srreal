@@ -139,14 +139,14 @@ void test3()
     float rmin, rmax, dr;
     rmin = 0;
     rmax = 10;
-    dr = 0.01;
+    dr = 0.05;
     size_t numpoints = static_cast<size_t>(ceil((rmax-rmin)/dr));
     float *rvals = new float [numpoints];
     for(size_t i=0; i<numpoints; ++i)
     {
-        //float dshift = (rand()%5)/10.0;
-        //rvals[i] = rmin + dr*(i+dshift);
-        rvals[i] = rmin + dr*i;
+        float dshift = (rand()%9)/10.0;
+        rvals[i] = rmin + dr*(i+dshift);
+        //rvals[i] = rmin + dr*i;
     }
 
     // Create the iterator and calculators
@@ -162,6 +162,8 @@ void test3()
     {
         cout << rvals[i] << "  " << pdf[i] << endl;
     }
+
+    return;
 
     // Now change something
     cout << endl;

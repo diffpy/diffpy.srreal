@@ -173,7 +173,12 @@ getCorrectedProfile(float* df)
     // blank the fft array
     for (size_t i=0; i<2*fftlen; ++i) ffta[i] = 0.0;
     // copy df to real components of ffta
-    for (size_t i=0; i<cnumpoints; ++i) ffta[2*i] = df[i];
+    for (size_t i=0; i<cnumpoints; ++i) 
+    {
+        ffta[2*i] = df[i];
+        //std::cout << crmin + i*cdr << ' ' << df[i] << std::endl;
+    }
+    //std::cout << std::endl;
     applyTerminationRipples();
 
     /* interpolate from ffta to the profile over requested calculation range 
@@ -192,17 +197,18 @@ getCorrectedProfile(float* df)
             ++cridx;
             cr = crmin + cdr*cridx;
         }
-        //std::cout << "cridx = " << cridx; 
-        //std::cout << ", rvals[l] = " << rvals[l];
-        //std::cout <<  ", cr = " << cr << std::endl;
         assert(cridx < cnumpoints);
+        //std::cout << "cridx = " << cridx; 
+        //std::cout <<  ", cr-cdr = " << cr-cdr;
+        //std::cout << ", rvals[l] = " << rvals[l];
+        //std::cout <<  ", cr = " << cr;
+        //std::cout << std::endl;
 
-        // Interpolate (linear) the new data point base on profile values calculated
+        // Interpolate the new data point base on profile values calculated
         // below and above the requested r value.
-        // FIXME - This should use a cubic spline
         y1 = ffta[2*(cridx-1)];
         y2 = ffta[2*cridx];
-        profile[l] = y2 + (y1-y2) * (cr-rvals[l])/cdr;
+        profile[l] = y2 - (y2-y1) * (cr - rvals[l])/cdr;
 
         // Apply the resolution correction and scale factor
         profile[l] *= scale;
@@ -305,7 +311,7 @@ reshapeRDF()
     // Add current contribution
     for(size_t l=0; l<changeidx.size(); ++l)
     {
-        const ObjCryst::ScatteringComponentList &scl 
+        const ObjCryst::ScatteringComponentList& scl 
             = crystal.GetScatt(changeidx[l]).GetScatteringComponentList();
 
         buildRDF(scl, 1);
@@ -315,7 +321,7 @@ reshapeRDF()
     RestoreParamSet(lastsave);
     for(size_t l=0; l<changeidx.size(); ++l)
     {
-        const ObjCryst::ScatteringComponentList &scl 
+        const ObjCryst::ScatteringComponentList& scl 
             = crystal.GetScatt(changeidx[l]).GetScatteringComponentList();
 
         buildRDF(scl, -1);
@@ -331,11 +337,11 @@ SrReal::PDFCalculator::
 calculateRDF()
 {
 
-    for(size_t i = 0; i < numpoints; ++i) rdf[i] = 0.0;
+    for(size_t i = 0; i < cnumpoints; ++i) rdf[i] = 0.0;
 
     calcAvgScatPow();
 
-    const ObjCryst::ScatteringComponentList &scl 
+    const ObjCryst::ScatteringComponentList& scl 
         = crystal.GetScatteringComponentList();
 
     buildRDF(scl, 1);
@@ -345,11 +351,11 @@ calculateRDF()
 
 /* Build the RDF from a ObjCryst::ScatteringComponentList
  *
- * float pref  --  Multiplicative prefactor to the rdf contribution.
+ * float prefactor  --  Multiplicative prefactor to the rdf contribution.
  */
 void
 SrReal::PDFCalculator::
-buildRDF(const ObjCryst::ScatteringComponentList &scl, float pref)
+buildRDF(const ObjCryst::ScatteringComponentList& scl, float prefactor)
 {
     // Calculate the bonds within the calculation range
     float d, sigma, amp;
@@ -376,7 +382,7 @@ buildRDF(const ObjCryst::ScatteringComponentList &scl, float pref)
 
             // Only continue if we're within five DW factors of the cutoff
             if( d > crmin-5*sigma and d < crmax+5*sigma ) {
-                amp = pref;
+                amp = prefactor;
                 amp *= bp.getMultiplicity();
                 amp *= getPairScatPow(bp);
                 amp /= bavg*bavg;
@@ -389,6 +395,7 @@ buildRDF(const ObjCryst::ScatteringComponentList &scl, float pref)
     return;
 }
 
+/* Add a gaussian to the RDF */
 void
 SrReal::PDFCalculator::
 addGaussian(float d, float sigma, float amp)
@@ -409,6 +416,8 @@ addGaussian(float d, float sigma, float amp)
     //std::cout << "grminmax " << grmin << ' ' << grmax << std::endl;
     gimin = static_cast<size_t>( (grmin - crmin)/cdr );
     gimax = static_cast<size_t>( (grmax - crmin)/cdr );
+    assert(gimin <= cnumpoints);
+    assert(gimax <= cnumpoints);
     for(size_t l=gimin; l<gimax; ++l) {
         r = crmin + l*cdr;
         rdf[l] += gnorm * exp(-0.5*pow((r-d)/sigma,2));
@@ -432,7 +441,7 @@ calculatePDF()
     for(; l < cnumpoints; ++l)
     {
         r = crmin + l*cdr;
-        pdf[l] = rdf[l]/r - 4 * M_PI * rho0 * r;
+        pdf[l] = rdf[l]/r - 4.0 * M_PI * rho0 * r;
     }
 
     return;
@@ -453,7 +462,7 @@ setCalculationPoints(const float* _rvals, const size_t _numpoints)
     float diam;
     diam = pow((double) crystal.GetVolume(), (double) 1.0/3.0);
     bonditer.setBondRange(rmin-diam, rmax+diam);
-    // Prepare rvals
+    // Prepare rvals data member
     if( rvals != NULL )
     {
         delete [] rvals;
@@ -468,8 +477,9 @@ setCalculationPoints(const float* _rvals, const size_t _numpoints)
     for(size_t l=1; l<numpoints; ++l)
     {
         rvals[l] = _rvals[l];
-        dr = _rvals[l] - _rvals[l-1];
+        dr = rvals[l] - rvals[l-1];
         cdr = (dr < cdr ? dr : cdr);
+        assert( rvals[l] > rvals[l-1] );
     }
     if(cdr < eps)
     {
@@ -484,7 +494,7 @@ setCalculationPoints(const float* _rvals, const size_t _numpoints)
     const float _qmax = 15.0;
     float rext = nripples*2*M_PI/_qmax;
     crmin = max( (float) 0.0, rmin-rext);
-    crmax = cdr*int(ceil(rmax + rext)/cdr);
+    crmax = cdr*(ceil((rmax + rext)/cdr));
     cnumpoints = static_cast<size_t>((crmax-crmin+eps)/cdr);
 
     // Create the arrays for handling the PDF and RDF
@@ -522,7 +532,7 @@ setupFFT() {
 
     if( cnumpoints > 0 )
     {
-        // Want this to be a power of 2. 
+        // Length of fft array must be a power of 2. 
         // This also guarantees that fftlen >= cnumpoints.
         fftlen = static_cast<int>(pow(2.0, ceil(log2(2*cnumpoints))));
         //std::cout << "fftlen = " << fftlen << std::endl;
