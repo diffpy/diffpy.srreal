@@ -37,6 +37,7 @@ BondIterator (ObjCryst::Crystal& _crystal)
     sph = NULL;
     sc = NULL;
     itclock.Reset();
+    latclock.Reset();
     rewind();
 }
 
@@ -48,6 +49,7 @@ BondIterator (ObjCryst::Crystal& _crystal, float _rmin, float _rmax)
     sph = NULL;
     sc = NULL;
     itclock.Reset();
+    latclock.Reset();
     rewind();
 }
 
@@ -58,6 +60,7 @@ BondIterator(const BondIterator& other)
     sph = NULL;
     sc = NULL;
     itclock.Reset();
+    latclock.Reset();
     rewind();
 }
 
@@ -77,6 +80,7 @@ setBondRange(float _rmin, float _rmax)
     rmin = _rmin;
     rmax = _rmax;
     itclock.Reset();
+    latclock.Reset();
     rewind();
     return;
 }
@@ -188,28 +192,31 @@ void
 SrReal::BondIterator::
 update()
 {
-    const ObjCryst::RefinableObjClock& crystclock 
-        = crystal.GetClockMaster();
-    std::cout << "crystal clock: "; 
-    crystclock.Print();
-    std::cout << "iterator clock: ";
-    itclock.Print();
+    //std::cout << "crystal clock: "; 
+    //crystclock.Print();
+    //std::cout << "iterator clock: ";
+    //itclock.Print();
 
-    // Get out of here if there's nothing to update
-    if(crystclock <= itclock) return;
+    // Get out of here if there is nothing to update
+    if(itclock >= crystal.GetClockMaster()) return;
 
     // Get out of here if there's no range to iterate over
     if(rmax == 0) return;
 
     // Synchronize the clocks
-    itclock = crystclock;
+    itclock = crystal.GetClockMaster();
 
+    // FIXME - don't need to recalculate when only atom occupancies change.
+    
     // Reset the sscvec 
     sscvec.clear();
     sscvec = SrReal::getUnitCell(crystal);
 
     // Calculate the degeracy of sc in the new unit cell.
     calculateDegeneracy();
+
+    if(latclock >= crystal.GetClockLatticePar()) return;
+    latclock = crystal.GetClockLatticePar();
 
     // FIXME - Only need a new iterator when the lattice changes
     if(sph != NULL) delete sph;

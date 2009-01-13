@@ -59,6 +59,7 @@ class JeongBWCalculator
     // profile calculator using this instance.
     float delta1; // The low-temperature coefficient (of 1/r) 
     float delta2; // The high-temperature coefficient (of 1/r^2)
+    float qbroad; // A resolution-based broadening factor
 
 };
 

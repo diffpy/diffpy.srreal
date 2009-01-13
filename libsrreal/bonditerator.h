@@ -222,6 +222,9 @@ class BondIterator
 
     // Clock for comparing with crystal's clock
     ObjCryst::RefinableObjClock itclock;
+    // Clock for comparing with lattice clock
+    ObjCryst::RefinableObjClock latclock;
+
 
     // Holds ScatteringComponents in the primitive unit
     std::vector<ShiftedSC> sscvec;

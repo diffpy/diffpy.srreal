@@ -21,7 +21,8 @@ namespace {
 SrReal::PDFCalculator::
 PDFCalculator(
     SrReal::BondIterator& _bonditer, SrReal::BondWidthCalculator& _bwcalc)
-        : SrReal::ProfileCalculator(_bonditer, _bwcalc)
+        : SrReal::ProfileCalculator(_bonditer, _bwcalc),
+        crystal(_bonditer.getCrystal())
 {
     rdf = pdf = NULL;
     ffta = NULL;
@@ -30,25 +31,24 @@ PDFCalculator(
     bavg = 0;
     numscat = 0;
     qmaxidxlo = qmaxidxhi = qminidxhi = 0;
+    recalc = true;
 
-
-    qbroad = qdamp = 0.0;
-    scale = 1.0;
-
-    /* Create the RefinablePar objects for qbraod, qdamp and scale */
-    ResetParList();
-
-    // qbroad
+    crystclock.Reset();
+    bwclock.Reset();
+    latclock.Reset();
+    sclistclock.Reset();
+    scatclocks.resize(crystal.GetNbScatterer());
+    for(int i=0; i<crystal.GetNbScatterer(); ++i)
     {
-    ObjCryst::RefinablePar* tmp = new ObjCryst::RefinablePar("qbroad", &qbroad, 0.0, 1.0, 
-        &SrReal::profilerefpartype, ObjCryst::REFPAR_DERIV_STEP_ABSOLUTE, 
-        false, false, true, false, 1.0, 1);
-    tmp->AssignClock(mClockMaster);
-    AddPar(tmp);
-    // Share this with the bwcalculator
-    bwcalc.AddPar(tmp);
+        scatclocks[i].Reset();
     }
 
+    qdamp = 0.0;
+    scale = 1.0;
+
+    ResetParList();
+
+    /* Create the RefinablePar objects for qdamp and scale */
     // qdamp
     {
     ObjCryst::RefinablePar* tmp = new ObjCryst::RefinablePar("qdamp", &qdamp, 0.0, 1.0, 
@@ -66,6 +66,37 @@ PDFCalculator(
     tmp->AssignClock(mClockMaster);
     AddPar(tmp);
     }
+
+    /* Add all parameters from the crystal and bond width calculator. This will
+     * make it easier to save and restore their values.
+     */
+    AddPar(bwcalc);
+    AddPar(const_cast<ObjCryst::Crystal&>(crystal));
+    for(int l=0; l<crystal.GetNbScatterer(); ++l)
+    {
+        const ObjCryst::Scatterer& scat = crystal.GetScatt(l);
+        AddPar(const_cast<ObjCryst::Scatterer&>(scat));
+    }
+    
+    // Free these
+    UnFixAllPar();
+    
+    // Print for fun
+    for(int i=0; i<GetNbPar(); ++i)
+    {
+        ObjCryst::RefinablePar& par = GetPar(i);
+        par.Print();
+    }
+
+    // Don't delete the borrowed parameters.  We must delete the owned
+    // parameters by hand.
+    SetDeleteRefParInDestructor(false);
+
+    /* Make save slots for the parameters */
+    lastsave = CreateParamSet("last");
+    cursave = CreateParamSet("current");
+    //std::cout << "lastsave = " << lastsave << std::endl;
+    //std::cout << "cursave = " << cursave << std::endl;
 
 }
 
@@ -86,6 +117,13 @@ SrReal::PDFCalculator::
     {
         delete [] ffta;
     }
+
+    // Delete owned parameters manually
+    ObjCryst::RefinablePar* tmp;
+    tmp = &GetPar(&qdamp);
+    delete tmp;
+    tmp = &GetPar(&scale);
+    delete tmp;
 }
 
 /* Get the calculated RDF over the requested calculation range.
@@ -97,7 +135,7 @@ float*
 SrReal::PDFCalculator::
 getRDF()
 {
-    calculateRDF();
+    updateRDF();
     float* profile = getCorrectedProfile(rdf);
     return profile;
 }
@@ -179,24 +217,143 @@ getCorrectedProfile(float* df)
 
 void
 SrReal::PDFCalculator::
+updateRDF()
+{
+    // Recalculate if it is requested internally
+    if(recalc)
+    {
+        calculateRDF();
+    }
+    // If the bond-width calculator changes, then we recalculate the entire RDF,
+    // as each peak will be affected.
+    else if( bwclock < bwcalc.GetClockMaster() )
+    {
+        calculateRDF();
+    }
+    // If the crystal changes, then we must test specific cases
+    else if (crystclock < crystal.GetClockMaster() )
+    {
+        // If there is only one scattering component in the crystal, then
+        // recalculate.
+        if( crystal.GetNbScatterer() == 1
+            or // the lattice has changed
+            latclock < crystal.GetClockLatticePar()
+            or // the number of scattering components has changed
+            sclistclock < crystal.GetClockScattCompList()
+        )
+        {
+            calculateRDF();
+        }
+        // If we got here, then it must be the individual scatterers that have
+        // somehow changed. We will handle this externally.
+        else
+        {
+            reshapeRDF();
+        }
+
+    }
+    // Synchronize clocks
+    recalc = false;
+    crystclock = crystal.GetClockMaster();
+    latclock = crystal.GetClockLatticePar();
+    bwclock = bwcalc.GetClockMaster();
+    sclistclock = crystal.GetClockScattCompList();
+    for(int i=0; i<crystal.GetNbScatterer(); ++i)
+    {
+        scatclocks[i] = crystal.GetScatt(i).GetClockScatterer();
+    }
+
+    // Save the current parameter state
+    SaveParamSet(lastsave);
+    return;
+}
+
+/* Reshape the RDF in response to a change in scatterer positions.
+ */
+void
+SrReal::PDFCalculator::
+reshapeRDF()
+{
+    //std::cout << "reshapePDF" << std::endl;
+    // Save the current structural parameters
+    SaveParamSet(cursave);
+
+    // Identify which scatterers have changed
+    std::vector<int> changeidx;
+    for(int i=0; i<crystal.GetNbScatterer(); ++i)
+    {
+        if(scatclocks[i] < crystal.GetScatt(i).GetClockScatterer())
+        {
+            changeidx.push_back(i);
+            //std::cout << i << std::endl;
+        }
+    }
+
+    // If the number of changed scatterers is at least half of the total number
+    // of scatterers, then it would be just as fast to recalculate the whole
+    // thing. 
+    if( 2*changeidx.size() >= (size_t) crystal.GetNbScatterer() )
+    {
+        calculateRDF();
+        return;
+    }
+
+    /* For each altered scatterer, add the contributions from its scattering
+     * components and subtract those from the previous time step.
+    */ 
+    calcAvgScatPow();
+    // Add current contribution
+    for(size_t l=0; l<changeidx.size(); ++l)
+    {
+        const ObjCryst::ScatteringComponentList &scl 
+            = crystal.GetScatt(changeidx[l]).GetScatteringComponentList();
+
+        buildRDF(scl, 1);
+    }
+
+    // Subtract previous contribution
+    RestoreParamSet(lastsave);
+    for(size_t l=0; l<changeidx.size(); ++l)
+    {
+        const ObjCryst::ScatteringComponentList &scl 
+            = crystal.GetScatt(changeidx[l]).GetScatteringComponentList();
+
+        buildRDF(scl, -1);
+    }
+
+    // Restore the current parameters
+    RestoreParamSet(cursave);
+    return;
+}
+
+void
+SrReal::PDFCalculator::
 calculateRDF()
 {
-
-    const ObjCryst::Crystal &crystal = bonditer.getCrystal();
-
-    // Calculate the bonds within the calculation range
-    float r, d, sigma, gnorm;
-    float grmin, grmax;
-    size_t gimin, gimax;
 
     for(size_t i = 0; i < numpoints; ++i) rdf[i] = 0.0;
 
     calcAvgScatPow();
 
-    SrReal::BondPair bp;
-
     const ObjCryst::ScatteringComponentList &scl 
         = crystal.GetScatteringComponentList();
+
+    buildRDF(scl, 1);
+
+    return;
+}
+
+/* Build the RDF from a ObjCryst::ScatteringComponentList
+ *
+ * float pref  --  Multiplicative prefactor to the rdf contribution.
+ */
+void
+SrReal::PDFCalculator::
+buildRDF(const ObjCryst::ScatteringComponentList &scl, float pref)
+{
+    // Calculate the bonds within the calculation range
+    float d, sigma, amp;
+    SrReal::BondPair bp;
 
     for(int i=0; i < scl.GetNbComponent(); ++i)
     {
@@ -219,28 +376,42 @@ calculateRDF()
 
             // Only continue if we're within five DW factors of the cutoff
             if( d > crmin-5*sigma and d < crmax+5*sigma ) {
-
-                // calculate the gaussian 
-                gnorm = 1.0/(sqrt2pi*sigma);
-                gnorm *= bp.getMultiplicity();
-                gnorm *= getPairScatPow(bp);
-                gnorm /= bavg*bavg;
-                gnorm /= numscat;
-
-                // calculate out to 5*sigma
-                grmin = d - 5*sigma;
-                grmax = d + 5*sigma;
-                if(grmin < crmin) grmin = crmin;
-                if(grmax > crmax) grmax = crmax;
-                //std::cout << "grminmax " << grmin << ' ' << grmax << std::endl;
-                gimin = static_cast<size_t>( (grmin - crmin)/cdr );
-                gimax = static_cast<size_t>( (grmax - crmin)/cdr );
-                for(size_t l=gimin; l<gimax; ++l) {
-                    r = crmin + l*cdr;
-                    rdf[l] += gnorm * exp(-0.5*pow((r-d)/sigma,2));
-                }
+                amp = pref;
+                amp *= bp.getMultiplicity();
+                amp *= getPairScatPow(bp);
+                amp /= bavg*bavg;
+                amp /= numscat;
+                if(amp != 0) addGaussian(d, sigma, amp);
             }
         }
+    }
+
+    return;
+}
+
+void
+SrReal::PDFCalculator::
+addGaussian(float d, float sigma, float amp)
+{
+
+    float r, gnorm;
+    float grmin, grmax;
+    size_t gimin, gimax;
+
+    // normalize the gaussian
+    gnorm = amp/(sqrt2pi*sigma);
+
+    // calculate out to 5*sigma
+    grmin = d - 5*sigma;
+    grmax = d + 5*sigma;
+    if(grmin < crmin) grmin = crmin;
+    if(grmax > crmax) grmax = crmax;
+    //std::cout << "grminmax " << grmin << ' ' << grmax << std::endl;
+    gimin = static_cast<size_t>( (grmin - crmin)/cdr );
+    gimax = static_cast<size_t>( (grmax - crmin)/cdr );
+    for(size_t l=gimin; l<gimax; ++l) {
+        r = crmin + l*cdr;
+        rdf[l] += gnorm * exp(-0.5*pow((r-d)/sigma,2));
     }
 
     return;
@@ -251,9 +422,8 @@ SrReal::PDFCalculator::
 calculatePDF()
 {
 
-    calculateRDF();
+    updateRDF();
     // calculate rdf/r - 4*pi*r*rho0;
-    const ObjCryst::Crystal &crystal = bonditer.getCrystal();
     float rho0 = numscat / crystal.GetVolume();
     float r;
     // Avoid dividing by 0
@@ -272,6 +442,7 @@ void
 SrReal::PDFCalculator::
 setCalculationPoints(const float* _rvals, const size_t _numpoints)
 {
+    recalc = true;
     numpoints = _numpoints;
     float rmin = _rvals[0];
     float rmax = _rvals[numpoints-1];
@@ -279,7 +450,6 @@ setCalculationPoints(const float* _rvals, const size_t _numpoints)
     //std::cout << "rmin = " << rmin << std::endl;
     //std::cout << "numpoints = " << numpoints << std::endl;
     // Extend the range to include other bonds that may overlap
-    const ObjCryst::Crystal& crystal = bonditer.getCrystal();
     float diam;
     diam = pow((double) crystal.GetVolume(), (double) 1.0/3.0);
     bonditer.setBondRange(rmin-diam, rmax+diam);

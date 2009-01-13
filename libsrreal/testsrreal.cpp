@@ -112,27 +112,39 @@ void test2()
 
 void test3()
 {
-    string sgstr("225");
-    string estr("Ni");
+    string sgstr("P 63 m c");
+    string zstr("Zn");
+    string sstr("S");
+    string cstr("C");
 
-    // Create the Ni structure
-    ObjCryst::Crystal crystal(3.52, 3.52, 3.52, sgstr);
-    ObjCryst::ScatteringPowerAtom sp(estr, estr);
-    sp.SetBiso(8*M_PI*M_PI*0.005);
+    // Create the ZnS structure
+    ObjCryst::Crystal crystal(3.811, 3.811, 6.234, 90, 90, 120, sgstr);
+    ObjCryst::ScatteringPowerAtom zsp(zstr, zstr);
+    ObjCryst::ScatteringPowerAtom ssp(sstr, sstr);
+    ObjCryst::ScatteringPowerAtom csp(cstr, cstr);
+    zsp.SetBiso(8*M_PI*M_PI*0.003);
+    ssp.SetBiso(8*M_PI*M_PI*0.003);
+    csp.SetBiso(8*M_PI*M_PI*0.003);
     // Atoms only belong to one crystal. They must be allocated in the heap.
-    ObjCryst::Atom *atomp = new ObjCryst::Atom(0.0, 0.0, 0.0, estr, &sp);
-    crystal.AddScatterer(atomp);
+    ObjCryst::Atom *zatomp = new ObjCryst::Atom(1.0/3, 2.0/3, 0.0, zstr, &zsp);
+    ObjCryst::Atom *satomp = 
+        new ObjCryst::Atom(1.0/3, 2.0/3, 0.385, sstr, &ssp, 1);
+    ObjCryst::Atom *catomp = 
+        new ObjCryst::Atom(1.0/3, 2.0/3, 0.385, cstr, &csp, 0);
+    crystal.AddScatterer(zatomp);
+    crystal.AddScatterer(satomp);
+    crystal.AddScatterer(catomp);
 
     // Create the calculation points
     float rmin, rmax, dr;
     rmin = 0;
     rmax = 10;
-    dr = 0.05;
+    dr = 0.01;
     size_t numpoints = static_cast<size_t>(ceil((rmax-rmin)/dr));
     float *rvals = new float [numpoints];
     for(size_t i=0; i<numpoints; ++i)
     {
-        float dshift = (rand()%5)/10.0;
+        //float dshift = (rand()%5)/10.0;
         //rvals[i] = rmin + dr*(i+dshift);
         rvals[i] = rmin + dr*i;
     }
@@ -142,7 +154,6 @@ void test3()
     JeongBWCalculator bwcalc;
     bwcalc.GetPar("delta2").SetValue(5.0);
     PDFCalculator pdfcalc(biter, bwcalc);
-    pdfcalc.setQmax(30.0);
     pdfcalc.setCalculationPoints(rvals, numpoints);
 
     float *pdf = pdfcalc.getPDF();
@@ -151,6 +162,21 @@ void test3()
     {
         cout << rvals[i] << "  " << pdf[i] << endl;
     }
+
+    // Now change something
+    cout << endl;
+
+    satomp->SetOccupancy(0.5);
+
+    pdf = pdfcalc.getPDF();
+
+    for(size_t i=0; i<numpoints; ++i)
+    {
+        cout << rvals[i] << "  " << pdf[i] << endl;
+    }
+
+    delete [] rvals;
+    delete [] pdf;
 
 }
 

@@ -31,13 +31,9 @@ calculate(SrReal::BondPair& bp)
 SrReal::JeongBWCalculator::
 JeongBWCalculator()
 {
-    delta1 = delta2 = 0.0;
+    delta1 = delta2 = qbroad = 0.0;
 
     ResetParList();
-
-    // Delete the reference pars explicitly in the destructor since qbroad is
-    // "borrowed".
-    SetDeleteRefParInDestructor(false);
 
     /* Create the RefinablePar objects for delta1 and delta2 */
     // delta1
@@ -57,23 +53,20 @@ JeongBWCalculator()
     tmp->AssignClock(mClockMaster);
     AddPar(tmp);
     }
+
+    // qbroad
+    {
+    ObjCryst::RefinablePar* tmp = new ObjCryst::RefinablePar("qbroad", &qbroad, 0.0, 1.0, 
+        &SrReal::bwrefpartype, ObjCryst::REFPAR_DERIV_STEP_ABSOLUTE, 
+        false, false, true, false, 1.0, 1);
+    tmp->AssignClock(mClockMaster);
+    AddPar(tmp);
+    }
 }
 
 SrReal::JeongBWCalculator::
 ~JeongBWCalculator() 
-{
-
-    // Delete the "Owned" refinable parameters explicitly.
-    {
-    ObjCryst::RefinablePar* tmp = &GetPar(&delta1);
-    delete tmp;
-    }
-    {
-    ObjCryst::RefinablePar* tmp = &GetPar(&delta2);
-    delete tmp;
-    }
-
-}
+{}
 
 float
 SrReal::JeongBWCalculator::
@@ -83,7 +76,6 @@ calculate(SrReal::BondPair& bp)
     // Only isotropic scattering factors are supported right now.  Only one of
     // delta1 or delta2 should be used. This is not enforced.
     float r, sigma, corr;
-    float qbroad = GetPar("qbroad").GetValue();
     sigma = SrReal::BondWidthCalculator::calculate(bp);
     r = bp.getDistance();
     corr = 1.0 - delta1/r - delta2/(r*r) + pow(qbroad*r, 2);

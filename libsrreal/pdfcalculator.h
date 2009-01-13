@@ -5,6 +5,8 @@
 #ifndef PDFCALCULATOR_H
 #define PDFCALCULATOR_H
 
+#include <vector>
+
 #include "profilecalculator.h"
 #include "bonditerator.h"
 #include "bondwidthcalculator.h"
@@ -67,13 +69,23 @@ class PDFCalculator : public SrReal::ProfileCalculator
      * float qmin, qmax;
     */
 
-    // Calculate the RDF over the internal calculation range. This is extended
-    // beyond the requested calculation range so peaks centered outside of the
-    // calculation range that overlap with the calculation range are included.
+    // Calculate the RDF over the internal calculation range from scratch. This
+    // is extended beyond the requested calculation range so peaks centered
+    // outside of the calculation range that overlap with the calculation range
+    // are included.
     void calculateRDF();
+    // Add contributions to the RDF from a ObjCryst::ScatteringComponentList
+    void buildRDF(const ObjCryst::ScatteringComponentList &scl, float pref);
+    // Update the RDF. This checks for changes in the parameters and then either
+    // reshapes the RDF or recalculates it.
+    void updateRDF();
+    // Reshape the RDF by adding changes in scattering components.
+    void reshapeRDF();
     // Calculate the PDF over the internal calculation range.
     void calculatePDF();
 
+    // Add a gaussian to the rdf
+    void addGaussian(float d, float sigma, float amp);
     // Calculate the average scattering power in the unit cell
     void calcAvgScatPow();
     // Get the scattering power of a pair of scatterers
@@ -85,11 +97,27 @@ class PDFCalculator : public SrReal::ProfileCalculator
     // Setup the FFT for termination ripples
     void setupFFT();
 
+    /* Clocks for tracking changes */
+    // Compare this clock with the crystal
+    ObjCryst::RefinableObjClock crystclock;
+    // Compare this clock with the crystal lattice
+    ObjCryst::RefinableObjClock latclock;
+    // Compare this clock with the scattering component clock
+    ObjCryst::RefinableObjClock sclistclock;
+    // Compare this clock with the bond width calculator
+    ObjCryst::RefinableObjClock bwclock;
+    // These compare with the scatterers
+    std::vector<ObjCryst::RefinableObjClock> scatclocks;
+
+    // flag for recalculation
+    bool recalc;
+
+    // handle to the crystal
+    const ObjCryst::Crystal &crystal;
 
     /* Refinable parameters */
     // These are accessible through the refinable parameter interface inherited
     // from RefinableObj
-    float qbroad;
     float qdamp;
     float scale;
 
@@ -116,6 +144,10 @@ class PDFCalculator : public SrReal::ProfileCalculator
     float bavg; 
     // The number of scatterers in the unit cell, calculated from occupancy
     float numscat; 
+
+    // Ids for accessing saved crystal parameters
+    size_t lastsave;
+    size_t cursave;
 
 };
 
