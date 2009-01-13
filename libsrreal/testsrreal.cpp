@@ -13,20 +13,88 @@ using namespace SrReal;
 
 // FIXME 
 
+ObjCryst::Crystal* makeNi()
+{
+    // Create the Ni structure
+    ObjCryst::Crystal* crystal = new ObjCryst::Crystal(3.52, 3.52, 3.52, "225");
+    ObjCryst::ScatteringPowerAtom* sp
+        = new ObjCryst::ScatteringPowerAtom("Ni", "Ni");
+    sp->SetBiso(8*M_PI*M_PI*0.003);
+    // Atoms only belong to one crystal. They must be allocated in the heap.
+    ObjCryst::Atom *atomp = new ObjCryst::Atom(0.0, 0.0, 0.0, "Ni", sp);
+    crystal->AddScatterer(atomp);
+    return crystal;
+}
+
+ObjCryst::Crystal* makeLaMnO3()
+{
+    ObjCryst::Crystal* crystal = 
+        new ObjCryst::Crystal(5.486341, 5.619215, 7.628206, 90, 90, 90, "P b n m");
+    ObjCryst::ScatteringPowerAtom* sp;
+    ObjCryst::Atom *atomp;
+    // Add the atoms
+    // La1
+    sp = new ObjCryst::ScatteringPowerAtom("La1", "La");
+    sp->SetBiso(8*M_PI*M_PI*0.003);
+    atomp = new ObjCryst::Atom(0.996096, 0.0321494, 0.25, "La1", sp);
+    crystal->AddScatterer(atomp);
+    // Mn1
+    sp = new ObjCryst::ScatteringPowerAtom("Mn1", "Mn");
+    sp->SetBiso(8*M_PI*M_PI*0.003);
+    atomp = new ObjCryst::Atom(0, 0.5, 0, "Mn1", sp);
+    crystal->AddScatterer(atomp);
+    // O1
+    sp = new ObjCryst::ScatteringPowerAtom("O1", "O");
+    sp->SetBiso(8*M_PI*M_PI*0.003);
+    atomp = new ObjCryst::Atom(0.0595746, 0.496164, 0.25, "O1", sp);
+    crystal->AddScatterer(atomp);
+    // O2
+    sp = new ObjCryst::ScatteringPowerAtom("O2", "O");
+    sp->SetBiso(8*M_PI*M_PI*0.003);
+    atomp = new ObjCryst::Atom(0.720052, 0.289387, 0.0311126, "O2", sp);
+    crystal->AddScatterer(atomp);
+
+    return crystal;
+}
+
+ObjCryst::Crystal* makeZnS()
+{
+    // Create the ZnS structure
+    ObjCryst::Crystal* crystal 
+        = new ObjCryst::Crystal(3.811, 3.811, 6.234, 90, 90, 120, "P 63 m c");
+    ObjCryst::ScatteringPowerAtom* zsp 
+        = new ObjCryst::ScatteringPowerAtom("Zn", "Zn");
+    ObjCryst::ScatteringPowerAtom* ssp 
+        = new ObjCryst::ScatteringPowerAtom("S", "S");
+    ObjCryst::ScatteringPowerAtom* csp 
+        = new ObjCryst::ScatteringPowerAtom("C", "C");
+    zsp->SetBiso(8*M_PI*M_PI*0.003);
+    ssp->SetBiso(8*M_PI*M_PI*0.003);
+    csp->SetBiso(8*M_PI*M_PI*0.003);
+    // Atoms only belong to one crystal. They must be allocated in the heap.
+    ObjCryst::Atom *zatomp = 
+        new ObjCryst::Atom(1.0/3, 2.0/3, 0.0, "Zn", zsp);
+    ObjCryst::Atom *satomp = 
+        new ObjCryst::Atom(1.0/3, 2.0/3, 0.385, "S", ssp, 1);
+    ObjCryst::Atom *catomp = 
+        new ObjCryst::Atom(1.0/3, 2.0/3, 0.385, "C", csp, 0);
+    crystal->AddScatterer(zatomp);
+    crystal->AddScatterer(satomp);
+    crystal->AddScatterer(catomp);
+    return crystal;
+}
+
 void test1()
 {
-    string sgstr("225");
-    string estr("Ni");
-
-    // Create the Ni structure
-    ObjCryst::Crystal crystal(3.52, 3.52, 3.52, sgstr);
-    ObjCryst::ScatteringPowerAtom sp(estr, estr);
-    sp.SetBiso(8*M_PI*M_PI*0.003);
-    // Atoms only belong to one crystal. They must be allocated in the heap.
-    ObjCryst::Atom *atomp = new ObjCryst::Atom(0.0, 0.0, 0.0, estr, &sp);
-    crystal.AddScatterer(atomp);
+    ObjCryst::Crystal& crystal = *makeLaMnO3();
 
     BondIterator biter(crystal, 0, 5);
+    vector<ShiftedSC> unitcell = biter.getUnitCell();
+    for(size_t i=0; i<unitcell.size(); ++i)
+    {
+        cout << unitcell[i] << endl;
+    }
+
     ObjCryst::ScatteringComponentList scl 
         = crystal.GetScatteringComponentList();
     BondPair bp;
@@ -48,26 +116,7 @@ void test1()
 
 void test2()
 {
-    string sgstr("P 63 m c");
-    string zstr("Zn");
-    string sstr("S");
-    string cstr("C");
-
-    // Create the ZnS structure
-    ObjCryst::Crystal crystal(3.811, 3.811, 6.234, 90, 90, 120, sgstr);
-    ObjCryst::ScatteringPowerAtom zsp(zstr, zstr);
-    ObjCryst::ScatteringPowerAtom ssp(sstr, sstr);
-    ObjCryst::ScatteringPowerAtom csp(cstr, cstr);
-    zsp.SetBiso(8*M_PI*M_PI*0.003);
-    ssp.SetBiso(8*M_PI*M_PI*0.003);
-    csp.SetBiso(8*M_PI*M_PI*0.003);
-    // Atoms only belong to one crystal. They must be allocated in the heap.
-    ObjCryst::Atom *zatomp = new ObjCryst::Atom(1.0/3, 2.0/3, 0.0, zstr, &zsp);
-    ObjCryst::Atom *satomp = new ObjCryst::Atom(1.0/3, 2.0/3, 0.385, sstr, &ssp);
-    ObjCryst::Atom *catomp = new ObjCryst::Atom(1.0/3, 2.0/3, 0.385, cstr, &csp);
-    crystal.AddScatterer(zatomp);
-    crystal.AddScatterer(satomp);
-    crystal.AddScatterer(catomp);
+    ObjCryst::Crystal& crystal = *makeZnS();
 
     std::vector<ShiftedSC> uc = getUnitCell(crystal);
 
@@ -103,7 +152,7 @@ void test2()
             cout << bp << endl;
         }
     }
-    ObjCryst::RefinablePar x = crystal.GetScatt(zstr).GetPar("x");
+    ObjCryst::RefinablePar x = crystal.GetScatt("Zn").GetPar("x");
     x.SetValue(0);
     biter.rewind();
     biter.rewind();
@@ -112,47 +161,28 @@ void test2()
 
 void test3()
 {
-    string sgstr("P 63 m c");
-    string zstr("Zn");
-    string sstr("S");
-    string cstr("C");
 
-    // Create the ZnS structure
-    ObjCryst::Crystal crystal(3.811, 3.811, 6.234, 90, 90, 120, sgstr);
-    ObjCryst::ScatteringPowerAtom zsp(zstr, zstr);
-    ObjCryst::ScatteringPowerAtom ssp(sstr, sstr);
-    ObjCryst::ScatteringPowerAtom csp(cstr, cstr);
-    zsp.SetBiso(8*M_PI*M_PI*0.003);
-    ssp.SetBiso(8*M_PI*M_PI*0.003);
-    csp.SetBiso(8*M_PI*M_PI*0.003);
-    // Atoms only belong to one crystal. They must be allocated in the heap.
-    ObjCryst::Atom *zatomp = new ObjCryst::Atom(1.0/3, 2.0/3, 0.0, zstr, &zsp);
-    ObjCryst::Atom *satomp = 
-        new ObjCryst::Atom(1.0/3, 2.0/3, 0.385, sstr, &ssp, 1);
-    ObjCryst::Atom *catomp = 
-        new ObjCryst::Atom(1.0/3, 2.0/3, 0.385, cstr, &csp, 0);
-    crystal.AddScatterer(zatomp);
-    crystal.AddScatterer(satomp);
-    crystal.AddScatterer(catomp);
+    ObjCryst::Crystal& crystal = *makeLaMnO3();
 
     // Create the calculation points
     float rmin, rmax, dr;
     rmin = 0;
     rmax = 10;
-    dr = 0.05;
+    dr = 0.01;
     size_t numpoints = static_cast<size_t>(ceil((rmax-rmin)/dr));
     float *rvals = new float [numpoints];
     for(size_t i=0; i<numpoints; ++i)
     {
-        float dshift = (rand()%9)/10.0;
-        rvals[i] = rmin + dr*(i+dshift);
-        //rvals[i] = rmin + dr*i;
+        // Test a non-uniform grid
+        // float dshift = (rand()%9)/10.0;
+        // rvals[i] = rmin + dr*(i+dshift);
+        rvals[i] = rmin + dr*i;
     }
 
     // Create the iterator and calculators
     BondIterator biter(crystal);
     JeongBWCalculator bwcalc;
-    bwcalc.GetPar("delta2").SetValue(5.0);
+    bwcalc.GetPar("delta2").SetValue(0.0);
     PDFCalculator pdfcalc(biter, bwcalc);
     pdfcalc.setCalculationPoints(rvals, numpoints);
 
@@ -163,22 +193,10 @@ void test3()
         cout << rvals[i] << "  " << pdf[i] << endl;
     }
 
-    return;
-
-    // Now change something
-    cout << endl;
-
-    satomp->SetOccupancy(0.5);
-
-    pdf = pdfcalc.getPDF();
-
-    for(size_t i=0; i<numpoints; ++i)
-    {
-        cout << rvals[i] << "  " << pdf[i] << endl;
-    }
-
     delete [] rvals;
     delete [] pdf;
+
+    return;
 
 }
 

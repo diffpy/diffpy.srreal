@@ -22,6 +22,7 @@ using std::vector;
 namespace {
 
 float rtod = 180.0/M_PI;
+const float toler = 1e-6;
 
 } // End anonymous namespace
 
@@ -197,36 +198,37 @@ update()
     //std::cout << "iterator clock: ";
     //itclock.Print();
 
-    // Get out of here if there is nothing to update
-    if(itclock >= crystal.GetClockMaster()) return;
+    if(itclock < crystal.GetClockMaster()) 
+    {
+        // Reset the sscvec 
+        sscvec.clear();
+        sscvec = SrReal::getUnitCell(crystal);
 
-    // Get out of here if there's no range to iterate over
-    if(rmax == 0) return;
+        // Calculate the degeracy of sc in the unit cell.
+        calculateDegeneracy();
 
-    // Synchronize the clocks
-    itclock = crystal.GetClockMaster();
+        // Synchronize the clocks
+        itclock = crystal.GetClockMaster();
+    }
 
-    // FIXME - don't need to recalculate when only atom occupancies change.
+    if(rmax != 0)
+    {
+
+        // FIXME - don't need to recalculate when only atom occupancies change.
     
-    // Reset the sscvec 
-    sscvec.clear();
-    sscvec = SrReal::getUnitCell(crystal);
+        if(latclock >= crystal.GetClockLatticePar()) return;
+        latclock = crystal.GetClockLatticePar();
 
-    // Calculate the degeracy of sc in the new unit cell.
-    calculateDegeneracy();
-
-    if(latclock >= crystal.GetClockLatticePar()) return;
-    latclock = crystal.GetClockLatticePar();
-
-    if(sph != NULL) delete sph;
-    sph = new PointsInSphere((float) rmin, (float) rmax, 
-        crystal.GetLatticePar(0),
-        crystal.GetLatticePar(1),
-        crystal.GetLatticePar(2),
-        rtod*crystal.GetLatticePar(3),
-        rtod*crystal.GetLatticePar(4),
-        rtod*crystal.GetLatticePar(5)
-       );
+        if(sph != NULL) delete sph;
+        sph = new PointsInSphere((float) rmin, (float) rmax, 
+            crystal.GetLatticePar(0),
+            crystal.GetLatticePar(1),
+            crystal.GetLatticePar(2),
+            rtod*crystal.GetLatticePar(3),
+            rtod*crystal.GetLatticePar(4),
+            rtod*crystal.GetLatticePar(5)
+           );
+    }
 
     return;
 }
@@ -378,7 +380,6 @@ operator<(const ShiftedSC& rhs) const
     // The sign of A-B is equal the sign of the first non-zero component of the
     // vector.
 
-    const float toler = 1e-5;
     size_t l;
 
     for(l = 0; l < 3; ++l)
@@ -421,14 +422,9 @@ getUnitCell(const ObjCryst::Crystal& crystal)
 
     size_t nbComponent = mScattCompList.GetNbComponent();
 
-    // Get the origin of the primitive unit
-    const float x0 = crystal.GetSpaceGroup().GetAsymUnit().Xmin();
-    const float y0 = crystal.GetSpaceGroup().GetAsymUnit().Ymin();
-    const float z0 = crystal.GetSpaceGroup().GetAsymUnit().Zmin();
-
     size_t nbSymmetrics = crystal.GetSpaceGroup().GetNbSymmetrics();
-    std::cout << "nbComponent = " << nbComponent << std::endl;
-    std::cout << "nbSymmetrics = " << nbSymmetrics << std::endl;
+    //std::cout << "nbComponent = " << nbComponent << std::endl;
+    //std::cout << "nbSymmetrics = " << nbSymmetrics << std::endl;
 
     float x, y, z;
     float junk;
@@ -450,12 +446,17 @@ getUnitCell(const ObjCryst::Crystal& crystal)
         // Put each symmetric position in the unit cell
         for(size_t j=0;j<nbSymmetrics;++j)
         {
-            x=modf(symmetricsCoords(j,0)-x0,&junk);
-            y=modf(symmetricsCoords(j,1)-y0,&junk);
-            z=modf(symmetricsCoords(j,2)-z0,&junk);
+            x=modf(symmetricsCoords(j,0),&junk);
+            y=modf(symmetricsCoords(j,1),&junk);
+            z=modf(symmetricsCoords(j,2),&junk);
+            if(fabs(x) < toler) x = 0;
+            if(fabs(y) < toler) y = 0;
+            if(fabs(z) < toler) z = 0;
             if(x<0) x += 1.;
             if(y<0) y += 1.;
             if(z<0) z += 1.;
+
+            //std::cout << j << ' ' << x << ' ' << y << ' ' << z << std::endl;
 
             // Get this in cartesian
             crystal.FractionalToOrthonormalCoords(x,y,z);

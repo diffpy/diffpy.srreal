@@ -96,6 +96,8 @@ class PDFCalculator : public SrReal::ProfileCalculator
     void applyTerminationRipples();
     // Setup the FFT for termination ripples
     void setupFFT();
+    // Calculate the diameter of the sphere that can encompass the crystal.
+    float phaseDiameter() const;
 
     /* Clocks for tracking changes */
     // Compare this clock with the crystal

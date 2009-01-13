@@ -82,11 +82,11 @@ PDFCalculator(
     UnFixAllPar();
     
     // Print for fun
-    for(int i=0; i<GetNbPar(); ++i)
-    {
-        ObjCryst::RefinablePar& par = GetPar(i);
-        par.Print();
-    }
+    //for(int i=0; i<GetNbPar(); ++i)
+    //{
+    //    ObjCryst::RefinablePar& par = GetPar(i);
+    //    par.Print();
+    //}
 
     // Don't delete the borrowed parameters.  We must delete the owned
     // parameters by hand.
@@ -458,10 +458,6 @@ setCalculationPoints(const float* _rvals, const size_t _numpoints)
     //std::cout << "rmax = " << rmax << std::endl;
     //std::cout << "rmin = " << rmin << std::endl;
     //std::cout << "numpoints = " << numpoints << std::endl;
-    // Extend the range to include other bonds that may overlap
-    float diam;
-    diam = pow((double) crystal.GetVolume(), (double) 1.0/3.0);
-    bonditer.setBondRange(rmin-diam, rmax+diam);
     // Prepare rvals data member
     if( rvals != NULL )
     {
@@ -496,6 +492,12 @@ setCalculationPoints(const float* _rvals, const size_t _numpoints)
     crmin = max( (float) 0.0, rmin-rext);
     crmax = cdr*(ceil((rmax + rext)/cdr));
     cnumpoints = static_cast<size_t>((crmax-crmin+eps)/cdr);
+
+    // Extend the range to include overlapping bonds. This should be enough.
+    float diam = 1+phaseDiameter();
+    bonditer.setBondRange(crmin-diam, crmax+diam);
+    //std::cout << "diam = " << diam << std::endl;
+    //std::cout << "crmax+diam = " << crmax+diam << std::endl;
 
     // Create the arrays for handling the PDF and RDF
     if( rdf != NULL )
@@ -639,6 +641,7 @@ calcAvgScatPow() {
                 it1->sc->mOccupancy;
     }
     bavg /= numscat;
+    std::cout << "numscat = " << numscat << std::endl;
     return;
 }
 
@@ -654,3 +657,34 @@ getPairScatPow(SrReal::BondPair &bp)
 
     return scatpow;
 }
+
+// Calculate the diameter of the sphere that can encompass the crystal.
+float 
+SrReal::PDFCalculator::
+phaseDiameter() const
+{
+    float center[3] = {0.0, 0.0, 0.0};
+    std::vector<ShiftedSC> unitcell = bonditer.getUnitCell();
+    float d = 0, maxd = 0;
+
+    for(int i=0; i < unitcell.size(); ++i)
+    {
+        for(int j=0; j<3; ++j)
+        {
+            center[j] += unitcell[i].xyz[j] / unitcell.size();
+        }
+    }
+    for(int i=0; i < unitcell.size(); ++i)
+    {
+        d = 0;
+        for(int j=0; j<3; ++j)
+        {
+            d += pow(center[j]-unitcell[i].xyz[j], 2);
+        }
+        maxd = (d > maxd ? d : maxd);
+    }
+    return 2*sqrt(maxd);
+}
+
+
+
