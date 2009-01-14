@@ -36,8 +36,8 @@ class BasePairQuantity
     public:
 
         // constructors
-        BasePairQuantity();
-        BasePairQuantity(const BaseStructure&);
+        BasePairQuantity() { }
+        BasePairQuantity(const BaseStructure&) { }
         virtual ~BasePairQuantity()  { }
 
         // methods
