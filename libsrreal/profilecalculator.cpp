@@ -67,8 +67,8 @@ setCalculationPoints(
         delete [] rvals;
     }
 
-    rvals = new float[numpoints];
     numpoints = _numpoints;
+    rvals = new float[numpoints];
 }
 
 // This may return NULL!

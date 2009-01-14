@@ -55,8 +55,7 @@ class JeongBWCalculator
 
     /* Refinable parameters */
     // These are accessible through the refinable parameter interface inherited
-    // from RefinableObj. The parameter qbroad is also shared with the
-    // profile calculator using this instance.
+    // from RefinableObj. 
     float delta1; // The low-temperature coefficient (of 1/r) 
     float delta2; // The high-temperature coefficient (of 1/r^2)
     float qbroad; // A resolution-based broadening factor

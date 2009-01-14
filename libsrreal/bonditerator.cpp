@@ -389,6 +389,7 @@ operator<(const ShiftedSC& rhs) const
             return xyz[l] < rhs.xyz[l];
         }
     }
+    if(sc == NULL or rhs.sc == NULL) return false;
 
     // If we get here then the vectors are equal. We compare the addresses of
     // the ScatteringPower member of the ScatteringComponent
@@ -403,10 +404,15 @@ operator==(const ShiftedSC& rhs) const
 
     //std::cout << id << " vs " << rhs.id << endl;
 
-    return ((xyz[0] == rhs.xyz[0]) 
+    bool poseq = ((xyz[0] == rhs.xyz[0]) 
         && (xyz[1] == rhs.xyz[1]) 
-        && (xyz[2] == rhs.xyz[2])
-        && (*sc == *(rhs.sc)));
+        && (xyz[2] == rhs.xyz[2]));
+
+    bool sceq;
+    if(sc == NULL or rhs.sc == NULL) sceq = true;
+    else sceq = (*sc == *(rhs.sc));
+
+    return poseq && sceq;
 }
 
 /* Utility functions */

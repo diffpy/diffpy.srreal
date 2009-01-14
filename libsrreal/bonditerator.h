@@ -33,7 +33,7 @@ class ShiftedSC
 {
 
     public:
-    ShiftedSC(const ObjCryst::ScatteringComponent *_sc,
+    ShiftedSC(const ObjCryst::ScatteringComponent* _sc,
         const float x, const float y, const float z, const int _id = 0);
 
     ShiftedSC(const ShiftedSC& _ssc);
@@ -42,7 +42,7 @@ class ShiftedSC
     /* Data members */
 
     // Pointer to a ScatteringComponent
-    const ObjCryst::ScatteringComponent *sc;
+    const ObjCryst::ScatteringComponent* sc;
 
     // Orthonormal coordinates
     float xyz[3];
@@ -90,6 +90,12 @@ class BondPair
         r = -1;
     }
 
+    inline void setXYZ1(size_t i, float val)
+    {
+        xyz1[i] = val;
+        r = -1;
+    }
+
     inline float* getXYZ1() { return xyz1; }
 
     inline float getXYZ1(size_t i) { return xyz1[i]; }
@@ -99,15 +105,22 @@ class BondPair
         for(size_t l = 0; l < 3; ++l) xyz2[l] = _xyz[l];
         r = -1;
     }
+
+    inline void setXYZ2(size_t i, float val)
+    {
+        xyz2[i] = val;
+        r = -1;
+    }
+
     inline float* getXYZ2() { return xyz2; }
 
     inline float getXYZ2(size_t i) { return xyz2[i]; }
 
-    inline void setSC1(ObjCryst::ScatteringComponent *_sc1) { sc1 = _sc1; }
+    inline void setSC1(ObjCryst::ScatteringComponent* _sc1) { sc1 = _sc1; }
 
     inline const ObjCryst::ScatteringComponent* getSC1() { return sc1; }
 
-    inline void setSC2(ObjCryst::ScatteringComponent *_sc2) { sc2 = _sc2; }
+    inline void setSC2(ObjCryst::ScatteringComponent* _sc2) { sc2 = _sc2; }
 
     inline const ObjCryst::ScatteringComponent* getSC2() { return sc2; }
 
@@ -198,7 +211,7 @@ class BondIterator
     }
 
     // Place cartesian coords in location defined by PointsInSphere iterator
-    void placeInSphere(float *xyz);
+    void placeInSphere(float* xyz);
 
     // Calculate the degeneracy of the scattering component in the unit cell
     void calculateDegeneracy();
@@ -208,7 +221,7 @@ class BondIterator
     const ObjCryst::Crystal& crystal;
 
     // Reference to one scattering component in the bond
-    const ObjCryst::ScatteringComponent *sc;
+    const ObjCryst::ScatteringComponent* sc;
 
     // Minimum and maximum r values
     float rmin;
@@ -234,7 +247,7 @@ class BondIterator
     size_t degen;
 
     // Points in sphere iterator
-    NS_POINTSINSPHERE::PointsInSphere *sph;
+    NS_POINTSINSPHERE::PointsInSphere* sph;
 
 };
 

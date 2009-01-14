@@ -48,8 +48,9 @@ install: lib
 lib: $(SOBJ)
 
 # Make the profile library
+# The objcryst libraries are included in the srreal library
 $(SOBJ):$(OBJ)
-	$(LINK) -shared $(LINKFLAGS) -o $(SOBJ) $(OBJ)
+	$(LINK) -shared $(LINKFLAGS) -o $(SOBJ) $(OBJ) -lcryst -lRefinableObj -lCrystVector -lQuirks -lCrystVector -lRefinableObj -lcryst -lRefinableObj -lCrystVector -lQuirks -lcctbx -lnewmat -lgsl -lgslcblas -lm 
 
 # rules for compiling libraries
 %.o:%.cpp
@@ -64,8 +65,7 @@ test: $(TESTS)
 
 testsrreal: $(SOBJ) testsrreal.o
 	make install
-	$(LINK) $(CFLAGS) $(LINKFLAGS) -o $@ $^ -lsrreal -lcryst -lCrystVector -lQuirks -lRefinableObj -lcctbx -lnewmat -lgsl -lgslcblas -lm 
-
+	$(LINK) $(CFLAGS) $(LINKFLAGS) -o $@ $^ -lsrreal 
 .PHONY : clean
 clean: 
 	-rm -f *.so *.o $(TESTS)
