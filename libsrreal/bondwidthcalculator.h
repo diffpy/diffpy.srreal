@@ -51,6 +51,13 @@ class JeongBWCalculator
 
     virtual float calculate(SrReal::BondPair& bp);
 
+    float getDelta1();
+    float getDelta2();
+    float getQbroad();
+    void setDelta1(float val);
+    void setDelta2(float val);
+    void setQbroad(float val);
+
     protected:
 
     /* Refinable parameters */

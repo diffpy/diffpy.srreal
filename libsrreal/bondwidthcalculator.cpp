@@ -85,3 +85,50 @@ calculate(SrReal::BondPair& bp)
     }
     return sigma;
 }
+
+float
+SrReal::JeongBWCalculator::
+getDelta1()
+{
+    // Called this way in case the parameter is constrained
+    return GetPar(&delta1).GetValue();
+}
+
+float
+SrReal::JeongBWCalculator::
+getDelta2()
+{
+    return GetPar(&delta2).GetValue();
+}
+
+float
+SrReal::JeongBWCalculator::
+getQbroad()
+{
+    return GetPar(&qbroad).GetValue();
+}
+
+void
+SrReal::JeongBWCalculator::
+setDelta1(float val)
+{
+    GetPar(&delta1).SetValue(val);
+    return;
+}
+
+void
+SrReal::JeongBWCalculator::
+setDelta2(float val)
+{
+    GetPar(&delta2).SetValue(val);
+    return;
+}
+
+void
+SrReal::JeongBWCalculator::
+setQbroad(float val)
+{
+    GetPar(&qbroad).SetValue(val);
+    return;
+}
+

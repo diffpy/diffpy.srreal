@@ -182,7 +182,7 @@ void test3()
     // Create the iterator and calculators
     BondIterator biter(crystal);
     JeongBWCalculator bwcalc;
-    bwcalc.GetPar("delta2").SetValue(0.0);
+    bwcalc.setDelta2(0.0);
     PDFCalculator pdfcalc(biter, bwcalc);
     pdfcalc.setCalculationPoints(rvals, numpoints);
 

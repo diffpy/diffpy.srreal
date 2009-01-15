@@ -40,11 +40,15 @@ def printPDF():
     bwcalc = JeongBWCalculator()
 
     pdfcalc = PDFCalculator(biter, bwcalc)
+    pdfcalc.setQmax(30)
     pdfcalc.setCalculationPoints(rvals)
-    pdf = pdfcalc.getPDF()
+    bwcalc.setDelta2(0)
+    pdf1 = pdfcalc.getPDF()
+    bwcalc.setDelta2(5)
+    pdf2 = pdfcalc.getPDF()
 
     from pylab import plot, show
-    plot(rvals, pdf)
+    plot(rvals, pdf1, rvals, pdf2)
     show()
 
 if __name__ == "__main__":

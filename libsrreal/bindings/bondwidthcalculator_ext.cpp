@@ -40,28 +40,6 @@ class BondWidthCalculatorWrap
     }
 }; // BondWidthCalculatorWrap
    
-class JeongBWCalculatorWrap 
-    : public JeongBWCalculator, public wrapper<JeongBWCalculator>
-{
-
-    public: 
-
-    JeongBWCalculatorWrap() : JeongBWCalculator() {}
-
-    float default_calculate(BondPair& bp)
-    { return JeongBWCalculator::calculate(bp); }
-
-    float calculate(BondPair& bp)
-    {
-        if (override calculate 
-                = this->get_override("calculate")) 
-        {
-            return calculate(bp);
-        }
-        return default_calculate(bp);
-    }
-}; // JeongBWCalculator
-
 } // anonymous namespace
 
 
@@ -74,9 +52,12 @@ BOOST_PYTHON_MODULE(_bondwidthcalculator)
             &BondWidthCalculatorWrap::default_calculate)
         ;
 
-    class_<JeongBWCalculatorWrap, boost::noncopyable, 
-        bases<BondWidthCalculator> >("JeongBWCalculator")
-        .def("calculate", &JeongBWCalculator::calculate, 
-            &JeongBWCalculatorWrap::default_calculate)
+    class_<JeongBWCalculator, bases<BondWidthCalculator> >("JeongBWCalculator")
+        .def("getDelta1", &JeongBWCalculator::getDelta1)
+        .def("getDelta2", &JeongBWCalculator::getDelta2)
+        .def("getQbroad", &JeongBWCalculator::getQbroad)
+        .def("setDelta1", &JeongBWCalculator::setDelta1)
+        .def("setDelta2", &JeongBWCalculator::setDelta2)
+        .def("setQbroad", &JeongBWCalculator::setQbroad)
         ;
 }
