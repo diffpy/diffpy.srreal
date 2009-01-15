@@ -26,6 +26,8 @@
 
 namespace diffpy {
 
+class BaseBondIterator;
+class BaseBondPair;
 
 class PairQuantity : public BasePairQuantity
 {
@@ -48,7 +50,12 @@ class PairQuantity : public BasePairQuantity
 
         // methods
         virtual void init();
-        virtual void updateValue(bool derivate=false);
+        virtual void resizeValue(size_t);
+        virtual void updateValue();
+        virtual void resetValue();
+        virtual void configureBondIterator(BaseBondIterator*) { }
+        virtual void addPairContribution(const BaseBondPair&) { }
+        virtual bool structureChanged() const; 
         void uncache();
 
         // data
@@ -56,6 +63,7 @@ class PairQuantity : public BasePairQuantity
         QuantityType mvalue;
         bool mvalue_cached;
         QuantityType mderivative;
+        bool mderivative_needed;
         bool mderivative_cached;
 
     private:

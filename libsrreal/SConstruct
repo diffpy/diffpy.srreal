@@ -1,6 +1,9 @@
+# This requires scons 0.98 or higher
+
+
 # Customizable compile variables
 vars = Variables('sconsvars.py')
-vars.Add('Tests', 'Custom list of unit test sources', '')
+vars.Add('tests', 'Custom list of unit test sources', 'all')
 
 
 # Default build environment
@@ -8,9 +11,7 @@ env = DefaultEnvironment(variables=vars)
 Help(vars.GenerateHelpText(env))
 
 # Library target
-src_lib = Split('''
-    PairQuantity.cpp
-    ''')
+src_lib = [f for f in Glob('*.cpp') if not str(f).startswith('Test')]
 
 libsrreal = SharedLibrary('libsrreal', src_lib)
 lib = Alias('lib', libsrreal)
@@ -22,12 +23,14 @@ env_test.Append(LIBS='libsrreal', LIBPATH='.')
 env_test.AppendENVPath('LD_LIBRARY_PATH', '.')
 
 # alltests - the unit test driver
-src_tests = Split(env_test['Tests']) or Glob('Test*.cpp')
+if env_test['tests'] == 'all':
+    src_tests = Glob('Test*.cpp')
+else:
+    src_tests = Split(env_test['tests']) 
 alltests = env_test.Program('alltests', ['alltests.cpp'] + src_tests)
 
 # alias for executing unit test modules
 test = env_test.Alias('test', [alltests], alltests[0].abspath)
-# test = env_test.Alias('test', [alltests], 'env')
 AlwaysBuild(test)
 
 Default(alltests)

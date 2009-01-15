@@ -20,17 +20,19 @@
 ***********************************************************************/
 
 
+#include <memory>
+
 #include "PairQuantity.hpp"
 #include "BaseStructure.hpp"
+#include "BaseBondIterator.hpp"
+#include "BaseBondPair.hpp"
 
 using namespace std;
 using namespace diffpy;
 
-
 //////////////////////////////////////////////////////////////////////////////
 // Constructors
 //////////////////////////////////////////////////////////////////////////////
-
 
 PairQuantity::PairQuantity()
 {
@@ -46,14 +48,13 @@ PairQuantity::PairQuantity(const BaseStructure& stru)
     this->setStructure(stru);
 }
 
-
 //////////////////////////////////////////////////////////////////////////////
 // Public Methods
 //////////////////////////////////////////////////////////////////////////////
 
-
 const QuantityType& PairQuantity::getValue()
 {
+    mderivative_needed = false;
     this->updateValue();
     return mvalue;
 }
@@ -61,7 +62,8 @@ const QuantityType& PairQuantity::getValue()
 
 const QuantityType& PairQuantity::getDerivative()
 {
-    this->updateValue(true);
+    mderivative_needed = true;
+    this->updateValue();
     return mderivative;
 }
 
@@ -78,11 +80,9 @@ void PairQuantity::setStructure(const BaseStructure& stru)
     mstructure.reset(&stru);
 }
 
-
 //////////////////////////////////////////////////////////////////////////////
 // Protected Methods
 //////////////////////////////////////////////////////////////////////////////
-
 
 void PairQuantity::init()
 { 
@@ -90,19 +90,47 @@ void PairQuantity::init()
 }
 
 
-void PairQuantity::updateValue(bool derivate)
+void PairQuantity::resizeValue(size_t sz)
 {
-    mvalue.resize(1);
-    mvalue[0] = 0.0;
-    mvalue_cached = true;
-    if (derivate)
-    {
-        mderivative.resize(1);
-        mderivative[0] = 0.0;
-        mderivative_cached = true;
-    }
+    mvalue.resize(sz);
 }
 
+
+void PairQuantity::updateValue()
+{
+    bool iscached = mvalue_cached && !this->structureChanged() &&
+        (mderivative_cached || !mderivative_needed);
+    if (iscached)    return;
+    this->resetValue();
+    auto_ptr<BaseBondIterator> bnds;
+    bnds.reset(mstructure->createBondIterator());
+    this->configureBondIterator(bnds.get());
+    int nsites = mstructure->countSites();
+    for (int i0 = 0; i0 < nsites; ++i0)
+    {
+        bnds->selectAnchorSite(i0);
+        bnds->selectSiteRange(0, i0 + 1);
+        for (bnds->rewind(); !bnds->finished(); bnds->next())
+        {
+            const BaseBondPair& bp = bnds->getBondPair();
+            this->addPairContribution(bp);
+        }
+    }
+    mvalue_cached = true;
+    mderivative_cached = mderivative_needed;
+}
+
+
+void PairQuantity::resetValue()
+{
+    fill(mvalue.begin(), mvalue.end(), 0.0);
+    if (mderivative_needed)
+    {
+        mderivative.resize(mvalue.size());
+        fill(mderivative.begin(), mderivative.end(), 0.0);
+    }
+}
+        
 
 void PairQuantity::uncache()
 {
@@ -111,10 +139,15 @@ void PairQuantity::uncache()
 }
 
 
+bool PairQuantity::structureChanged() const
+{
+    // base implementation recalculates everything from scratch every time.
+    return true;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // Private Methods
 //////////////////////////////////////////////////////////////////////////////
-
 
 const BaseStructure& PairQuantity::getBlankStructure() const
 {
