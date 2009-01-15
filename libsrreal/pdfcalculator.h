@@ -100,12 +100,10 @@ class PDFCalculator : public SrReal::ProfileCalculator
     float phaseDiameter() const;
 
     /* Clocks for tracking changes */
-    // Compare this clock with the crystal
-    ObjCryst::RefinableObjClock crystclock;
     // Compare this clock with the crystal lattice
     ObjCryst::RefinableObjClock latclock;
-    // Compare this clock with the scattering component clock
-    ObjCryst::RefinableObjClock sclistclock;
+    // Compare this clock with the scattering list clock
+    ObjCryst::RefinableObjClock slclock;
     // Compare this clock with the bond width calculator
     ObjCryst::RefinableObjClock bwclock;
     // These compare with the scatterers

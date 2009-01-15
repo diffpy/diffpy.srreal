@@ -112,7 +112,7 @@ void
 SrReal::JeongBWCalculator::
 setDelta1(float val)
 {
-    GetPar(&delta1).SetValue(val);
+    GetPar(&delta1).MutateTo(val);
     return;
 }
 
@@ -120,7 +120,7 @@ void
 SrReal::JeongBWCalculator::
 setDelta2(float val)
 {
-    GetPar(&delta2).SetValue(val);
+    GetPar(&delta2).MutateTo(val);
     return;
 }
 
@@ -128,7 +128,7 @@ void
 SrReal::JeongBWCalculator::
 setQbroad(float val)
 {
-    GetPar(&qbroad).SetValue(val);
+    GetPar(&qbroad).MutateTo(val);
     return;
 }
 

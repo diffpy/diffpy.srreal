@@ -233,7 +233,7 @@ class BondIterator
     // flag indicating when we're finished.
     bool isfinished;
 
-    // Clock for comparing with crystal's clock
+    // Clock for comparing with scattering components
     ObjCryst::RefinableObjClock itclock;
     // Clock for comparing with lattice clock
     ObjCryst::RefinableObjClock latclock;

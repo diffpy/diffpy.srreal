@@ -33,10 +33,9 @@ PDFCalculator(
     qmaxidxlo = qmaxidxhi = qminidxhi = 0;
     recalc = true;
 
-    crystclock.Reset();
     bwclock.Reset();
     latclock.Reset();
-    sclistclock.Reset();
+    slclock.Reset();
     scatclocks.resize(crystal.GetNbScatterer());
     for(int i=0; i<crystal.GetNbScatterer(); ++i)
     {
@@ -225,6 +224,8 @@ void
 SrReal::PDFCalculator::
 updateRDF()
 {
+    const ObjCryst::ScatteringComponentList& scl 
+        = crystal.GetScatteringComponentList();
     // Recalculate if it is requested internally
     if(recalc)
     {
@@ -236,34 +237,61 @@ updateRDF()
     {
         calculateRDF();
     }
-    // If the crystal changes, then we must test specific cases
-    else if (crystclock < crystal.GetClockMaster() )
+    // If the number of scatterers or changes, then we recalculate
+    else if (slclock < crystal.GetClockScattererList()
+            or
+            latclock < crystal.GetClockLatticePar())
     {
-        // If there is only one scattering component in the crystal, then
-        // recalculate.
-        if( crystal.GetNbScatterer() == 1
-            or // the lattice has changed
-            latclock < crystal.GetClockLatticePar()
-            or // the number of scattering components has changed
-            sclistclock < crystal.GetClockScattCompList()
-        )
+        calculateRDF();
+    }
+    // Now we check the scatterers
+    // FIXME - We're not detecting a change in Biso. I think this is a bug in
+    // ObjCryst, as the scatterer clock should detect changes in the scattering
+    // power.
+    else
+    {
+        bool reshape = 0;
+        bool recalc = 0;
+        // If any scatterers have changed, we modify the RDF
+        for(int i=0; i<crystal.GetNbScatterer(); ++i)
+        {
+            if( scatclocks[i] < crystal.GetScatt(i).GetClockScatterer())
+            {
+
+                if( scl.GetNbComponent() > 1 )
+                {
+                    reshape = 1;
+                }
+                // We're better off recalculating when there's only one
+                // scatteing component
+                else
+                {
+                    recalc = 1;
+                }
+                break;
+            }
+        }
+
+        if(recalc)
         {
             calculateRDF();
         }
-        // If we got here, then it must be the individual scatterers that have
-        // somehow changed. We will handle this externally.
-        else
+        else if (reshape)
         {
             reshapeRDF();
         }
+        else // FIXME workaround until Biso issue is fixed
+        {
+            calculateRDF();
+        }
 
     }
+
     // Synchronize clocks
     recalc = false;
-    crystclock = crystal.GetClockMaster();
+    slclock = crystal.GetClockScattererList();
     latclock = crystal.GetClockLatticePar();
     bwclock = bwcalc.GetClockMaster();
-    sclistclock = crystal.GetClockScattCompList();
     for(int i=0; i<crystal.GetNbScatterer(); ++i)
     {
         scatclocks[i] = crystal.GetScatt(i).GetClockScatterer();
@@ -280,25 +308,26 @@ void
 SrReal::PDFCalculator::
 reshapeRDF()
 {
-    //std::cout << "reshapePDF" << std::endl;
+    //std::cout << "reshapeRDF" << std::endl;
     // Save the current structural parameters
     SaveParamSet(cursave);
 
     // Identify which scatterers have changed
+    // FIXME - We're not picking up consecutive changes on the same parameter.
+    // I've checked the parameters by printing them, and they are reflecting the
+    // changes. I suspect the problem is in the clocks.
     std::vector<int> changeidx;
     for(int i=0; i<crystal.GetNbScatterer(); ++i)
     {
         if(scatclocks[i] < crystal.GetScatt(i).GetClockScatterer())
         {
             changeidx.push_back(i);
-            //std::cout << i << std::endl;
+            std::cout << i << " of " << crystal.GetNbScatterer() << std::endl;
         }
     }
 
-    // If the number of changed scatterers is at least half of the total number
-    // of scatterers, then it would be just as fast to recalculate the whole
-    // thing. 
-    if( 2*changeidx.size() >= (size_t) crystal.GetNbScatterer() )
+    //std::cout << changeidx.size() << ' ' << crystal.GetNbScatterer() << std::endl;
+    if( 2*changeidx.size() > (size_t) crystal.GetNbScatterer() )
     {
         calculateRDF();
         return;
@@ -319,6 +348,11 @@ reshapeRDF()
 
     // Subtract previous contribution
     RestoreParamSet(lastsave);
+    //for(int i=0; i<GetNbPar(); ++i)
+    //{
+    //    ObjCryst::RefinablePar& par = GetPar(i);
+    //    par.Print();
+    //}
     for(size_t l=0; l<changeidx.size(); ++l)
     {
         const ObjCryst::ScatteringComponentList& scl 
@@ -329,6 +363,11 @@ reshapeRDF()
 
     // Restore the current parameters
     RestoreParamSet(cursave);
+    //for(int i=0; i<GetNbPar(); ++i)
+    //{
+    //    ObjCryst::RefinablePar& par = GetPar(i);
+    //    par.Print();
+    //}
     return;
 }
 
@@ -642,6 +681,7 @@ calcAvgScatPow() {
     }
     bavg /= numscat;
     //std::cout << "numscat = " << numscat << std::endl;
+    //std::cout << "cell size = " << unitcell.size() << std::endl;
     return;
 }
 

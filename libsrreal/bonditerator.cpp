@@ -4,6 +4,7 @@
 
 #include <map>
 #include <vector>
+#include <algorithm>
 
 #include "bonditerator.h"
 #include "PointsInSphere.h"
@@ -22,7 +23,7 @@ using std::vector;
 namespace {
 
 float rtod = 180.0/M_PI;
-const float toler = 1e-6;
+const float toler = 1e-5;
 
 } // End anonymous namespace
 
@@ -39,7 +40,7 @@ BondIterator (ObjCryst::Crystal& _crystal)
     sc = NULL;
     itclock.Reset();
     latclock.Reset();
-    rewind();
+    //rewind();
 }
 
 SrReal::BondIterator::
@@ -51,7 +52,7 @@ BondIterator (ObjCryst::Crystal& _crystal, float _rmin, float _rmax)
     sc = NULL;
     itclock.Reset();
     latclock.Reset();
-    rewind();
+    //rewind();
 }
 
 SrReal::BondIterator::
@@ -62,7 +63,7 @@ BondIterator(const BondIterator& other)
     sc = NULL;
     itclock.Reset();
     latclock.Reset();
-    rewind();
+    //rewind();
 }
 
 SrReal::BondIterator::
@@ -82,7 +83,7 @@ setBondRange(float _rmin, float _rmax)
     rmax = _rmax;
     itclock.Reset();
     latclock.Reset();
-    rewind();
+    //rewind();
     return;
 }
 
@@ -198,8 +199,10 @@ update()
     //std::cout << "iterator clock: ";
     //itclock.Print();
 
-    if(itclock < crystal.GetClockMaster()) 
+    // FIXME - don't need to recalculate when only atom occupancies change.
+    if(itclock < crystal.GetClockScattCompList()) 
     {
+        //std::cout << "crystal changed" << std::endl;
         // Reset the sscvec 
         sscvec.clear();
         sscvec = SrReal::getUnitCell(crystal);
@@ -214,7 +217,6 @@ update()
     if(rmax != 0)
     {
 
-        // FIXME - don't need to recalculate when only atom occupancies change.
     
         if(latclock >= crystal.GetClockLatticePar()) return;
         latclock = crystal.GetClockLatticePar();
@@ -417,6 +419,11 @@ operator==(const ShiftedSC& rhs) const
 
 /* Utility functions */
 
+/* Get the conventional unit cell from the crystal.
+ *
+ * FIXME - This is the slowest part of the PDF calculation. It is worthwhile to
+ * find ways to speed it up.
+ */
 vector<ShiftedSC> 
 SrReal::
 getUnitCell(const ObjCryst::Crystal& crystal)
@@ -441,8 +448,16 @@ getUnitCell(const ObjCryst::Crystal& crystal)
     ShiftedSC workssc;
     // For each scattering component, find its position in the primitive cell
     // and expand that position. Record this as a ShiftedSC.
+    // NOTE - I've also tried this algorithm by finding the unique elements in a
+    // vector. The speed of that method is comparable to this one.
     for(size_t i=0;i<nbComponent;++i)
     {
+        // NOTE - there is an option in GetAllSymmetrics to return only distinct
+        // atom positions. The way it is done below is faster.
+        // NOTE - this identifies unique atoms by their scattering power.
+        // Therefore, if multiple atoms exist on the same site and have the
+        // same ScatteringPower, then only one will make it into the unit cell.
+        // This will seldom be a problem.
         symmetricsCoords = crystal.GetSpaceGroup().GetAllSymmetrics(
             mScattCompList(i).mX, 
             mScattCompList(i).mY, 
