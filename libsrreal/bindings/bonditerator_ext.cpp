@@ -4,7 +4,6 @@
 * Boost.python bindings to BondWidthCalculator. 
 ***********************************************************************/
 #include "bonditerator.h"
-#include "converters.h"
 
 #include <boost/utility.hpp>
 #include <boost/python.hpp>
@@ -13,7 +12,6 @@
 #include <boost/python/def.hpp>
 #include <boost/python/list.hpp>
 
-#include <string>
 #include <iostream>
 
 using namespace boost::python;

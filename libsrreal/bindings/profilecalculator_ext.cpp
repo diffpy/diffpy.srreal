@@ -3,6 +3,9 @@
 *
 * Boost.python bindings to ProfileCalculator. 
 ***********************************************************************/
+#define PY_ARRAY_UNIQUE_SYMBOL srreal_ARRAY_API
+//#define NO_IMPORT_ARRAY
+
 #include "profilecalculator.h"
 #include "converters.h"
 
@@ -12,13 +15,17 @@
 #include <boost/python/module.hpp>
 #include <boost/python/def.hpp>
 
+#include <numpy/arrayobject.h>
+
 #include <string>
 #include <iostream>
+
 
 using namespace boost::python;
 using namespace SrReal;
 
 namespace {
+
 
 class ProfileCalculatorWrap 
     : public ProfileCalculator, public wrapper<ProfileCalculator>
@@ -38,25 +45,9 @@ class ProfileCalculatorWrap
         return this->get_override("getPDF")();
     }
 
-    PyObject* getPDFNdArray()
-    {
-        float* pdf = this->getPDF();
-        size_t numpoints = this->getNumPoints();
-        std::vector<int> dims(1, numpoints);
-        return makeNdArray(pdf, dims);
-    }
-
     float* getRDF()
     {
         return this->get_override("getRDF")();
-    }
-
-    PyObject* getRDFNdArray()
-    {
-        float* rdf = this->getRDF();
-        size_t numpoints = this->getNumPoints();
-        std::vector<int> dims(1, numpoints);
-        return makeNdArray(rdf, dims);
     }
 
     // virtual functions
@@ -143,14 +134,6 @@ class ProfileCalculatorWrap
         return default_getCalculationPoints();
     }
 
-    PyObject* getCalculationPointsNdArray()
-    {
-        const float* rvals = this->getCalculationPoints();
-        size_t numpoints = this->getNumPoints();
-        std::vector<int> dims(1, numpoints);
-        return makeNdArray(const_cast<float*>(rvals), dims);
-    }
-
     size_t default_getNumPoints()
     { return ProfileCalculator::getNumPoints(); }
 
@@ -220,12 +203,54 @@ class ProfileCalculatorWrap
    
 }; // ProfileCalculatorWrap
 
+void setCalculationPointsNdArray(ProfileCalculator& pc, object& obj)
+{
+
+    size_t numpoints = extract<size_t>(obj.attr("__len__")());
+    float *rvals = new float [numpoints];
+    for(int i=0; i<numpoints; ++i)
+    {
+        rvals[i] = extract<float>(obj.attr("__getitem__")(i));
+    }
+
+    pc.setCalculationPoints(rvals, numpoints);
+    delete rvals;
+}
+
+static PyObject* getCalculationPointsNdArray(ProfileCalculator& pc)
+{
+    const float* rvals = pc.getCalculationPoints();
+    size_t numpoints = pc.getNumPoints();
+    std::vector<int> dims(1, numpoints);
+    return makeNdArray(const_cast<float*>(rvals), dims);
+}
+
+static PyObject* getPDFNdArray(ProfileCalculator& pc)
+{
+    float* pdf = pc.getPDF();
+    size_t numpoints = pc.getNumPoints();
+    //for(size_t i=0; i<numpoints; ++i)
+    //    std::cout << pdf[i] << std::endl;
+    std::vector<int> dims(1, numpoints);
+    return makeNdArray(pdf, dims);
+}
+
+static PyObject* getRDFNdArray(ProfileCalculator& pc)
+{
+    float* rdf = pc.getRDF();
+    size_t numpoints = pc.getNumPoints();
+    std::vector<int> dims(1, numpoints);
+    return makeNdArray(rdf, dims);
+}
+
 } // anonymous namespace
 
 
 BOOST_PYTHON_MODULE(_profilecalculator)
 {
 
+    import_array();
+    
     class_<ProfileCalculatorWrap, boost::noncopyable, 
         bases<ObjCryst::RefinableObj> >
         ("ProfileCalculator", init<BondIterator&,BondWidthCalculator&>())
@@ -239,9 +264,8 @@ BOOST_PYTHON_MODULE(_profilecalculator)
             &ProfileCalculatorWrap::default_setScatType)
         .def("getScatType", &ProfileCalculator::getScatType, 
             &ProfileCalculatorWrap::default_getScatType)
-        .def("getCalculationPoints", &ProfileCalculatorWrap::getCalculationPointsNdArray)
-        .def("setCalculationPoints", &ProfileCalculator::setCalculationPoints, 
-            &ProfileCalculatorWrap::default_setCalculationPoints)
+        .def("getCalculationPoints", &getCalculationPointsNdArray)
+        .def("setCalculationPoints", &setCalculationPointsNdArray)
         .def("getNumPoints", &ProfileCalculator::getNumPoints, 
             &ProfileCalculatorWrap::default_getNumPoints)
         .def("setQmax", &ProfileCalculator::setQmax, 
@@ -252,7 +276,7 @@ BOOST_PYTHON_MODULE(_profilecalculator)
             &ProfileCalculatorWrap::default_setQmin)
         .def("getQmin", &ProfileCalculator::getQmin, 
             &ProfileCalculatorWrap::default_getQmin)
-        .def("getRDF", &ProfileCalculatorWrap::getRDFNdArray)
-        .def("getPDF", &ProfileCalculatorWrap::getPDFNdArray)
+        .def("getRDF", &getRDFNdArray)
+        .def("getPDF", &getPDFNdArray)
         ;
 }

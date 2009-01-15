@@ -641,7 +641,7 @@ calcAvgScatPow() {
                 it1->sc->mOccupancy;
     }
     bavg /= numscat;
-    std::cout << "numscat = " << numscat << std::endl;
+    //std::cout << "numscat = " << numscat << std::endl;
     return;
 }
 
@@ -667,14 +667,14 @@ phaseDiameter() const
     std::vector<ShiftedSC> unitcell = bonditer.getUnitCell();
     float d = 0, maxd = 0;
 
-    for(int i=0; i < unitcell.size(); ++i)
+    for(size_t i=0; i < unitcell.size(); ++i)
     {
-        for(int j=0; j<3; ++j)
+        for(size_t j=0; j<3; ++j)
         {
             center[j] += unitcell[i].xyz[j] / unitcell.size();
         }
     }
-    for(int i=0; i < unitcell.size(); ++i)
+    for(size_t i=0; i < unitcell.size(); ++i)
     {
         d = 0;
         for(int j=0; j<3; ++j)

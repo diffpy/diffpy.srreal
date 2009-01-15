@@ -7,14 +7,16 @@ import pyobjcryst
 # Register all converters
 from registerconverters import *
 
+# bonditerator
+from bonditerator import *
+
+# bondwidthcalculator
+from bondwidthcalculator import *
+
 # profilecalculator
 from profilecalculator import *
 
 # pdfcalculator
 from pdfcalculator import *
 
-# bondwidthcalculator
-from bondwidthcalculator import *
 
-# bonditerator
-from bonditerator import *

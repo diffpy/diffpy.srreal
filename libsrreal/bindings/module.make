@@ -24,7 +24,8 @@ endif
 # NUMPY_INCDIR
 ifndef NUMPY_INCDIR
 #NUMPY_INCDIR = $(shell python -c "import numpy; import os.path; print os.path.split(numpy.__file__)[0] + '/core/include'")
-NUMPY_INCDIR = /usr/lib/python$(PYTHON_VERSION)/site-packages/numpy/core/include
+#NUMPY_INCDIR = /usr/lib/python$(PYTHON_VERSION)/site-packages/numpy/core/include
+NUMPY_INCDIR=/home/chris/local/include/
 endif
 
 # Objcryst headers

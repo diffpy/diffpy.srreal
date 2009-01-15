@@ -4,16 +4,12 @@
 * Boost.python bindings to BondWidthCalculator. 
 ***********************************************************************/
 #include "bondwidthcalculator.h"
-#include "converters.h"
 
 #include <boost/utility.hpp>
 #include <boost/python.hpp>
 #include <boost/python/class.hpp>
 #include <boost/python/module.hpp>
 #include <boost/python/def.hpp>
-
-#include <string>
-#include <iostream>
 
 using namespace boost::python;
 using namespace SrReal;
@@ -79,7 +75,7 @@ BOOST_PYTHON_MODULE(_bondwidthcalculator)
         ;
 
     class_<JeongBWCalculatorWrap, boost::noncopyable, 
-        bases<ObjCryst::RefinableObj> >("JeongBWCalculator")
+        bases<BondWidthCalculator> >("JeongBWCalculator")
         .def("calculate", &JeongBWCalculator::calculate, 
             &JeongBWCalculatorWrap::default_calculate)
         ;
