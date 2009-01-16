@@ -255,7 +255,9 @@ updateRDF()
         // If any scatterers have changed, we modify the RDF
         for(int i=0; i<crystal.GetNbScatterer(); ++i)
         {
-            if( scatclocks[i] < crystal.GetScatt(i).GetClockScatterer())
+            // This is a workaround for the python clock problem
+            if( scatclocks[i] < crystal.GetScatt(i).GetClockScatterer()
+            or scatclocks[i] > crystal.GetScatt(i).GetClockScatterer())
             {
 
                 if( scl.GetNbComponent() > 1 )
@@ -315,15 +317,21 @@ reshapeRDF()
     // Identify which scatterers have changed
     // FIXME - We're not picking up consecutive changes on the same parameter.
     // I've checked the parameters by printing them, and they are reflecting the
-    // changes. I suspect the problem is in the clocks.
+    // changes. The problem seems to be in the python bindings, since this only
+    // occurs from a python script.
     std::vector<int> changeidx;
+    std::cout << "-- Initial --" << std::endl;
     for(int i=0; i<crystal.GetNbScatterer(); ++i)
     {
-        if(scatclocks[i] < crystal.GetScatt(i).GetClockScatterer())
+        // This is a workaround for the python clock problem
+        if( scatclocks[i] < crystal.GetScatt(i).GetClockScatterer()
+        or scatclocks[i] > crystal.GetScatt(i).GetClockScatterer())
         {
             changeidx.push_back(i);
-            std::cout << i << " of " << crystal.GetNbScatterer() << std::endl;
+            //std::cout << i << " of " << crystal.GetNbScatterer() << std::endl;
         }
+        std::cout << i << ": ";
+        crystal.GetScatt(i).GetClockScatterer().Print();
     }
 
     //std::cout << changeidx.size() << ' ' << crystal.GetNbScatterer() << std::endl;
@@ -348,6 +356,12 @@ reshapeRDF()
 
     // Subtract previous contribution
     RestoreParamSet(lastsave);
+    std::cout << "-- Restore previous --" << std::endl;
+    for(int i=0; i<crystal.GetNbScatterer(); ++i)
+    {
+        std::cout << i << ": ";
+        crystal.GetScatt(i).GetClockScatterer().Print();
+    }
     //for(int i=0; i<GetNbPar(); ++i)
     //{
     //    ObjCryst::RefinablePar& par = GetPar(i);
@@ -363,6 +377,12 @@ reshapeRDF()
 
     // Restore the current parameters
     RestoreParamSet(cursave);
+    std::cout << "-- Restore initial --" << std::endl;
+    for(int i=0; i<crystal.GetNbScatterer(); ++i)
+    {
+        std::cout << i << ": ";
+        crystal.GetScatt(i).GetClockScatterer().Print();
+    }
     //for(int i=0; i<GetNbPar(); ++i)
     //{
     //    ObjCryst::RefinablePar& par = GetPar(i);

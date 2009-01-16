@@ -101,7 +101,6 @@ def timeCalculation(pdfcalc):
 def speedTest():
     """Make some changes to the crystal and calculate the PDF each time."""
 
-
     crystal = getLaMnO3()
     rvals = numpy.arange(0, 10, 0.05)
     biter = BondIterator(crystal)
@@ -114,12 +113,12 @@ def speedTest():
 
     print "Times are in ms"
 
-    print "Initial calculation = ",
+    print "Initial calculation"
     pdf1 = timeCalculation(pdfcalc)
 
     # Change the bwcalc. This should take about the same time.
     bwcalc.setDelta2(5)
-    print "Change in BW calculator = ",
+    print "Change in BW calculator"
     pdf2 = timeCalculation(pdfcalc)
 
     # Change an x-coordinate
@@ -127,14 +126,14 @@ def speedTest():
     scatla.GetClockScatterer().Print()
     scatla.SetX(0.8)
     scatla.GetClockScatterer().Print()
-    print "Change in atom coordinate = ",
+    print "Change in atom 0"
     pdf3 = timeCalculation(pdfcalc)
 
     # Change an thermal parameter
     pi = numpy.pi
     sp = crystal.GetScatteringPower("La1")
     sp.SetBiso(8*pi*pi*0.008)
-    print "Change in Biso = ",
+    print "Change in atom 0"
     pdf4 = timeCalculation(pdfcalc)
 
     # Change another atom
@@ -142,44 +141,17 @@ def speedTest():
     scato1.GetClockScatterer().Print()
     scato1.SetX(0.05)
     scato1.GetClockScatterer().Print()
-    print "Change in atom coordinate = ",
+    print "Change in atom 2"
     pdf5 = timeCalculation(pdfcalc)
 
+    cla = scatla.GetClockScatterer()
+    co1 = scato1.GetClockScatterer()
     # Change properties of two atoms. Should
-    #print scatla.GetX()
-    scatla.GetClockScatterer().Print()
     scatla.SetX(0.9)
-    scatla.GetClockScatterer().Print()
-    #print scatla.GetX()
-    #scatla.SetX(0.8)
-    #print scatla.GetX()
-    #scatla.SetX(0.9)
-    #print scatla.GetX()
-    #scato1.SetX(0.07)
-    #print scato1.GetX()
-    #scato1.SetX(0.06)
-    #print scato1.GetX()
-    #print scato1.GetX()
-    scato1.GetClockScatterer().Print()
     scato1.SetX(0.07)
-    scato1.GetClockScatterer().Print()
-    scato1.SetX(0.071)
-    scato1.GetClockScatterer().Print()
-    scato1.SetX(0.072)
-    scato1.GetClockScatterer().Print()
-    scato1.SetX(0.073)
-    scato1.GetClockScatterer().Print()
-    scato1.SetX(0.074)
-    scato1.GetClockScatterer().Print()
-    #print scato1.GetX()
-    print "Change in two atoms = ",
+    print "Change in atoms 0 and 2"
     pdf6 = timeCalculation(pdfcalc)
 
-    if 0:
-        from pylab import plot, show
-        plot(rvals, pdf1, rvals, pdf2, rvals, pdf3, rvals, pdf4, 
-                rvals, pdf5, rvals, pdf6)
-        show()
     return
 
 def scalingTest():
@@ -197,6 +169,9 @@ def scalingTest():
         pdfcalc.setCalculationPoints(rvals)
         print "%-2i scatterers"%(i+1,), 
         pdf = timeCalculation(pdfcalc)
+        scat = c.GetScatt("Ni0")
+        scat.SetOccupancy(1)
+        pdf = timeCalculation(pdfcalc)
 
     print "Unit cell generation"
     import time
@@ -207,9 +182,116 @@ def scalingTest():
         t2 = time.time()
         print 1000*(t2-t1)
 
+def consistencyTest():
+    """Make some changes to the crystal and calculate the PDF each time."""
+
+    crystal = getLaMnO3()
+    rvals = numpy.arange(0, 10, 0.05)
+    biter = BondIterator(crystal)
+    bwcalc = JeongBWCalculator()
+
+    pdfcalc = PDFCalculator(biter, bwcalc)
+    pdfcalc.setQmax(30)
+    pdfcalc.setCalculationPoints(rvals)
+    bwcalc.setDelta2(0)
+
+    print "Initial calculation"
+    pdf1 = pdfcalc.getPDF()
+
+    # Change the bwcalc. This should take about the same time.
+    bwcalc.setDelta2(5)
+    print "Change in BW calculator"
+    pdf2 = pdfcalc.getPDF()
+
+    # Change an x-coordinate
+    scatla = crystal.GetScatt("La1")
+    scatla.SetX(0.8)
+    scatla.SetX(0.81)
+    #scatla.SetX(0.82)
+    scatla.SetX(0.8)
+    print "Change in atom 0"
+    pdf3 = pdfcalc.getPDF()
+
+    # Change an thermal parameter
+    pi = numpy.pi
+    sp = crystal.GetScatteringPower("La1")
+    sp.SetBiso(8*pi*pi*0.008)
+    print "Change in atom 0 Biso"
+    pdf4 = pdfcalc.getPDF()
+
+    # Change another atom
+    scato1 = crystal.GetScatt("O1")
+    scato1.SetX(0.05)
+    print "Change in atom 2"
+    pdf5 = pdfcalc.getPDF()
+
+    # Change properties of two atoms. Should
+    scatla.SetX(0.9)
+    scato1.SetX(0.07)
+    print "Change in atoms 0 and 2"
+    pdf6 = pdfcalc.getPDF()
+
+    return
+
+def scalingTest():
+    
+    rvals = numpy.arange(0, 10, 0.05)
+    bwcalc = JeongBWCalculator()
+
+    print "PDF calculation"
+    for i in range(10):
+        c = getNi(i+1)
+        biter = BondIterator(c)
+
+        pdfcalc = PDFCalculator(biter, bwcalc)
+        pdfcalc.setQmax(30)
+        pdfcalc.setCalculationPoints(rvals)
+        print "%-2i scatterers"%(i+1,), 
+        pdf = timeCalculation(pdfcalc)
+        scat = c.GetScatt("Ni0")
+        scat.SetOccupancy(1)
+        pdf = timeCalculation(pdfcalc)
+
+    print "Unit cell generation"
+    import time
+    for i in range(10):
+        c = getNi(i+1)
+        t1 = time.time()
+        getUnitCell(c)
+        t2 = time.time()
+        print 1000*(t2-t1)
+
+def clockTest():
+    
+    c1 = RefinableObjClock()
+    c2 = RefinableObjClock()
+    c3 = RefinableObjClock()
+    c1.AddChild(c2)
+    c3.AddChild(c2)
+
+
+    print "Clock 1"
+    for i in range(3):
+        print "c1 ", 
+        c1.Print()
+        print "c2 ", 
+        c2.Print()
+        c1.Click();
+
+    print "Clock 2"
+    for i in range(9):
+        print "c1 ", 
+        c1.Print()
+        print "c2 ", 
+        c2.Print()
+        c2.Click();
+        
+    c3.Print()
 
 if __name__ == "__main__":
     
     #scalingTest()
     speedTest()
+    #consistencyTest()
+    #clockTest()
 

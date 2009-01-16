@@ -23,6 +23,7 @@ ObjCryst::Crystal* makeNi()
     // Atoms only belong to one crystal. They must be allocated in the heap.
     ObjCryst::Atom *atomp = new ObjCryst::Atom(0.0, 0.0, 0.0, "Ni", sp);
     crystal->AddScatterer(atomp);
+    crystal->AddScatteringPower(sp);
     return crystal;
 }
 
@@ -38,21 +39,25 @@ ObjCryst::Crystal* makeLaMnO3()
     sp->SetBiso(8*M_PI*M_PI*0.003);
     atomp = new ObjCryst::Atom(0.996096, 0.0321494, 0.25, "La1", sp);
     crystal->AddScatterer(atomp);
+    crystal->AddScatteringPower(sp);
     // Mn1
     sp = new ObjCryst::ScatteringPowerAtom("Mn1", "Mn");
     sp->SetBiso(8*M_PI*M_PI*0.003);
     atomp = new ObjCryst::Atom(0, 0.5, 0, "Mn1", sp);
     crystal->AddScatterer(atomp);
+    crystal->AddScatteringPower(sp);
     // O1
     sp = new ObjCryst::ScatteringPowerAtom("O1", "O");
     sp->SetBiso(8*M_PI*M_PI*0.003);
     atomp = new ObjCryst::Atom(0.0595746, 0.496164, 0.25, "O1", sp);
     crystal->AddScatterer(atomp);
+    crystal->AddScatteringPower(sp);
     // O2
     sp = new ObjCryst::ScatteringPowerAtom("O2", "O");
     sp->SetBiso(8*M_PI*M_PI*0.003);
     atomp = new ObjCryst::Atom(0.720052, 0.289387, 0.0311126, "O2", sp);
     crystal->AddScatterer(atomp);
+    crystal->AddScatteringPower(sp);
 
     return crystal;
 }
@@ -200,7 +205,72 @@ void test3()
 
 }
 
+void speedTest()
+{
+
+    ObjCryst::Crystal& crystal = *makeLaMnO3();
+    // Create the calculation points
+    float rmin, rmax, dr;
+    rmin = 0;
+    rmax = 10;
+    dr = 0.01;
+    size_t numpoints = static_cast<size_t>(ceil((rmax-rmin)/dr));
+    float *rvals = new float [numpoints];
+    for(size_t i=0; i<numpoints; ++i)
+    {
+        // Test a non-uniform grid
+        // float dshift = (rand()%9)/10.0;
+        // rvals[i] = rmin + dr*(i+dshift);
+        rvals[i] = rmin + dr*i;
+    }
+
+    BondIterator biter(crystal);
+    JeongBWCalculator bwcalc;
+
+    PDFCalculator pdfcalc(biter, bwcalc);
+    pdfcalc.setCalculationPoints(rvals, numpoints);
+
+    // Change the bwcalc.
+    cout << "change delta2" << endl;
+    bwcalc.setDelta2(5);
+    pdfcalc.getPDF();
+
+    // Change an x-coordinate
+    cout << "change 1 scatt" << endl;
+    ObjCryst::Scatterer& scatla = crystal.GetScatt("La1");
+    scatla.GetClockScatterer().Print();
+    scatla.SetX(0.8);
+    scatla.GetClockScatterer().Print();
+    pdfcalc.getPDF();
+
+    // Change an thermal parameter
+    cout << "Change Biso" << endl;
+    ObjCryst::ScatteringPower& sp = crystal.GetScatteringPower("La1");
+    sp.SetBiso(8*M_PI*M_PI*0.008);
+    pdfcalc.getPDF();
+
+    // Change another atom
+    cout << "Change in atom coordinate" << endl;
+    ObjCryst::Scatterer& scato1 = crystal.GetScatt("O1");
+    scato1.GetClockScatterer().Print();
+    scato1.SetX(0.05);
+    scato1.GetClockScatterer().Print();
+    pdfcalc.getPDF();
+
+    // Change properties of two atoms. Should
+    cout << "Change in two atoms" << endl;
+    scatla.GetClockScatterer().Print();
+    scatla.SetX(0.9);
+    scatla.GetClockScatterer().Print();
+    scato1.GetClockScatterer().Print();
+    scato1.SetX(0.07);
+    scato1.GetClockScatterer().Print();
+    pdfcalc.getPDF();
+
+    return;
+}
+
 int main()
 {
-    test3();
+    speedTest();
 }
