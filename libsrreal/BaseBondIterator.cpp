@@ -1,5 +1,5 @@
 #include "BaseBondIterator.hpp"
-#include "BaseStructure.hpp"
+#include "StructureAdapter.hpp"
 
 using namespace std;
 using namespace diffpy;
@@ -8,7 +8,7 @@ using namespace diffpy;
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
 
-BaseBondIterator::BaseBondIterator(const BaseStructure* stru)
+BaseBondIterator::BaseBondIterator(const StructureAdapter* stru)
 {
     mstructure = stru;
     this->includeSelfPairs(false);

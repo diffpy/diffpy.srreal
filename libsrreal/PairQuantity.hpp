@@ -36,7 +36,7 @@ class PairQuantity : public BasePairQuantity
         PairQuantity();
 
         // methods
-        virtual const QuantityType& eval(const BaseStructure&);
+        virtual const QuantityType& eval(const StructureAdapter&);
         template <class T> const QuantityType& eval(const T&);
         virtual const QuantityType& value() const;
 
@@ -52,7 +52,7 @@ class PairQuantity : public BasePairQuantity
 
         // data
         QuantityType mvalue;
-        const BaseStructure* mstructure;
+        const StructureAdapter* mstructure;
 
 };
 
@@ -65,7 +65,7 @@ class PairQuantity : public BasePairQuantity
 template <class T>
 const QuantityType& PairQuantity::eval(const T& stru)
 {
-    std::auto_ptr<BaseStructure> bstru(createPQAdaptor(stru));
+    std::auto_ptr<StructureAdapter> bstru(createPQAdapter(stru));
     return this->eval(*bstru);
 }
 

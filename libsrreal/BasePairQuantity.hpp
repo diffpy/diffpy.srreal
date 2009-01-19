@@ -29,7 +29,7 @@ namespace diffpy {
 
 
 typedef std::vector<double> QuantityType;
-class BaseStructure;
+class StructureAdapter;
 
 class BasePairQuantity
 {
@@ -40,7 +40,7 @@ class BasePairQuantity
         virtual ~BasePairQuantity()  { }
 
         // methods
-        virtual const QuantityType& eval(const BaseStructure&) = 0;
+        virtual const QuantityType& eval(const StructureAdapter&) = 0;
         virtual const QuantityType& value() const = 0;
 
 };

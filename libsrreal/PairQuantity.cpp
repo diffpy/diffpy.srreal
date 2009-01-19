@@ -23,7 +23,7 @@
 #include <memory>
 
 #include "PairQuantity.hpp"
-#include "BaseStructure.hpp"
+#include "StructureAdapter.hpp"
 #include "BaseBondIterator.hpp"
 
 using namespace std;
@@ -42,7 +42,7 @@ PairQuantity::PairQuantity()
 // Public Methods
 //////////////////////////////////////////////////////////////////////////////
 
-const QuantityType& PairQuantity::eval(const BaseStructure& stru)
+const QuantityType& PairQuantity::eval(const StructureAdapter& stru)
 {
     mstructure = &stru;
     this->updateValue();

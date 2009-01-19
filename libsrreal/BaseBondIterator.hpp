@@ -1,19 +1,18 @@
 #ifndef BASEBONDITERATOR_HPP_INCLUDED
 #define BASEBONDITERATOR_HPP_INCLUDED
 
-#include <memory>
 #include "R3linalg.hpp"
 
 namespace diffpy {
 
-class BaseStructure;
+class StructureAdapter;
 
 class BaseBondIterator
 {
     public:
 
         // constructor
-        BaseBondIterator(const BaseStructure*);
+        BaseBondIterator(const StructureAdapter*);
 
         // methods
         // loop control
@@ -39,7 +38,7 @@ class BaseBondIterator
         int msite_last;
         int msite_current;
         bool minclude_self_pairs;
-        const BaseStructure* mstructure;
+        const StructureAdapter* mstructure;
 
         // bond data
         R3::Vector mbond_r0;

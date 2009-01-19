@@ -11,7 +11,8 @@ vars.Add(EnumVariable('build', 'compiler settings', 'debug',
 env = DefaultEnvironment(variables=vars)
 Help(vars.GenerateHelpText(env))
 if env['build'] == 'debug':
-    env.Append(CCFLAGS = '-g')
+    env.Append(CCFLAGS='-g')
+env.Append(CCFLAGS='-Wall')
 
 # Library target
 src_lib = [f for f in Glob('*.cpp') if not str(f).startswith('Test')]

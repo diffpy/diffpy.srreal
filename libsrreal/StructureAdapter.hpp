@@ -1,12 +1,12 @@
-#ifndef BASESTRUCTURE_HPP_INCLUDED
-#define BASESTRUCTURE_HPP_INCLUDED
+#ifndef STRUCTUREADAPTER_HPP_INCLUDED
+#define STRUCTUREADAPTER_HPP_INCLUDED
 
 namespace diffpy {
 
 class BaseBondIterator;
 
 
-class BaseStructure
+class StructureAdapter
 {
     public:
 
@@ -19,4 +19,4 @@ class BaseStructure
 
 }   // namespace diffpy
 
-#endif  // BASESTRUCTURE_HPP_INCLUDED
+#endif  // STRUCTUREADAPTER_HPP_INCLUDED

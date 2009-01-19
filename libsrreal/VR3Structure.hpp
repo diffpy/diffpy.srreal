@@ -3,20 +3,20 @@
 
 #include <vector>
 #include "R3linalg.hpp"
-#include "BaseStructure.hpp"
+#include "StructureAdapter.hpp"
 #include "BaseBondIterator.hpp"
 
 namespace diffpy {
 
 typedef std::vector<R3::Vector> VR3Structure;
 
-class VR3Adaptor : public BaseStructure
+class VR3Adapter : public StructureAdapter
 {
     public:
 
         class VR3BondIterator;
         // constructors
-        VR3Adaptor(const VR3Structure& vr3s)
+        VR3Adapter(const VR3Structure& vr3s)
         {
             mvr3structure = &vr3s;
         }
@@ -37,7 +37,7 @@ class VR3Adaptor : public BaseStructure
         {
             public:
 
-                VR3BondIterator(const VR3Adaptor* stru) : BaseBondIterator(stru)
+                VR3BondIterator(const VR3Adapter* stru) : BaseBondIterator(stru)
                 { 
                     mvr3structure = stru->mvr3structure;
                 }
@@ -65,10 +65,10 @@ class VR3Adaptor : public BaseStructure
 };
 
 
-inline BaseStructure* createPQAdaptor(const VR3Structure& vr3stru)
+inline StructureAdapter* createPQAdapter(const VR3Structure& vr3stru)
 {
-    BaseStructure* adaptor = new VR3Adaptor(vr3stru);
-    return adaptor;
+    StructureAdapter* adapter = new VR3Adapter(vr3stru);
+    return adapter;
 }
 
 
