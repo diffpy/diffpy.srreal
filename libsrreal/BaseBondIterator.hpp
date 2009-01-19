@@ -1,9 +1,31 @@
+/*****************************************************************************
+*
+* diffpy.srreal     by DANSE Diffraction group
+*                   Simon J. L. Billinge
+*                   (c) 2009 Trustees of the Columbia University
+*                   in the City of New York.  All rights reserved.
+*
+* File coded by:    Pavol Juhas
+*
+* See AUTHORS.txt for a list of people who contributed.
+* See LICENSE.txt for license information.
+*
+******************************************************************************
+*
+* class BaseBondIterator -- semi-abstract class for an iterator
+*     over all atom pairs containing specified anchor atom.
+*
+* $Id$
+*
+*****************************************************************************/
+
 #ifndef BASEBONDITERATOR_HPP_INCLUDED
 #define BASEBONDITERATOR_HPP_INCLUDED
 
 #include "R3linalg.hpp"
 
 namespace diffpy {
+namespace srreal {
 
 class StructureAdapter;
 
@@ -56,6 +78,7 @@ class BaseBondIterator
 };
 
 
+}   // namespace srreal
 }   // namespace diffpy
 
 #endif  // BASEBONDITERATOR_HPP_INCLUDED

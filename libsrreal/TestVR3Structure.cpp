@@ -1,14 +1,24 @@
-/***********************************************************************
-* Short Title: unit tests for R3linalg
+/*****************************************************************************
 *
-* Comments:
+* diffpy.srreal     by DANSE Diffraction group
+*                   Simon J. L. Billinge
+*                   (c) 2009 Trustees of the Columbia University
+*                   in the City of New York.  All rights reserved.
+*
+* File coded by:    Pavol Juhas
+*
+* See AUTHORS.txt for a list of people who contributed.
+* See LICENSE.txt for license information.
+*
+******************************************************************************
+*
+* class TestVR3Structure -- unit tests for using simple structure class
+*     VR3Structure with pair quantity calculators
 *
 * $Id$
 *
-* <license text>
-***********************************************************************/
+*****************************************************************************/
 
-#include <stdexcept>
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -17,6 +27,7 @@
 
 using namespace std;
 using namespace diffpy;
+using namespace diffpy::srreal;
 
 class TestVR3Structure : public CppUnit::TestFixture
 {

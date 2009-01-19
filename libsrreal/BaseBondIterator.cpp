@@ -1,12 +1,31 @@
+/*****************************************************************************
+*
+* diffpy.srreal     by DANSE Diffraction group
+*                   Simon J. L. Billinge
+*                   (c) 2009 Trustees of the Columbia University
+*                   in the City of New York.  All rights reserved.
+*
+* File coded by:    Pavol Juhas
+*
+* See AUTHORS.txt for a list of people who contributed.
+* See LICENSE.txt for license information.
+*
+******************************************************************************
+*
+* class BaseBondIterator -- semi-abstract class for iterator
+*     over all atom pairs containing specified anchor atom.
+*
+* $Id$
+*
+*****************************************************************************/
+
 #include "BaseBondIterator.hpp"
 #include "StructureAdapter.hpp"
 
 using namespace std;
-using namespace diffpy;
+using namespace diffpy::srreal;
 
-//////////////////////////////////////////////////////////////////////////////
-// Constructor
-//////////////////////////////////////////////////////////////////////////////
+// Constructor ---------------------------------------------------------------
 
 BaseBondIterator::BaseBondIterator(const StructureAdapter* stru)
 {
@@ -16,9 +35,7 @@ BaseBondIterator::BaseBondIterator(const StructureAdapter* stru)
     this->selectSiteRange(0, mstructure->countSites());
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// Public Methods
-//////////////////////////////////////////////////////////////////////////////
+// Public Methods ------------------------------------------------------------
 
 // loop control
 
@@ -72,18 +89,14 @@ double BaseBondIterator::distance() const
     return d;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// Protected Methods
-//////////////////////////////////////////////////////////////////////////////
+// Protected Methods ---------------------------------------------------------
 
 bool BaseBondIterator::iterateSymmetry()
 {
     return false;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// Private Methods
-//////////////////////////////////////////////////////////////////////////////
+// Private Methods -----------------------------------------------------------
 
 void BaseBondIterator::skipSelfPair()
 {
@@ -96,3 +109,5 @@ void BaseBondIterator::setFinishedFlag()
 {
     msite_current = msite_last;
 }
+
+// End of file

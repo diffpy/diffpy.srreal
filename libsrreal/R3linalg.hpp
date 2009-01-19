@@ -1,16 +1,26 @@
-/***********************************************************************
-* Short Title: linear algebra functions on R3
+/*****************************************************************************
 *
-* Comments: declaration of necessary linear algebra functions for
-*     blitz::TinyVector  and  blitz::TinyMatrix
+* diffpy.srreal     by DANSE Diffraction group
+*                   Simon J. L. Billinge
+*                   (c) 2009 Trustees of the Columbia University
+*                   in the City of New York.  All rights reserved.
+*
+* File coded by:    Pavol Juhas
+*
+* See AUTHORS.txt for a list of people who contributed.
+* See LICENSE.txt for license information.
+*
+******************************************************************************
+*
+* R3linalg -- vector and matrix types and linar algebra
+*     operations in R3 space
 *
 * $Id$
 *
-* <license text>
-***********************************************************************/
+*****************************************************************************/
 
-#ifndef R3VECTOR_HPP_INCLUDED
-#define R3VECTOR_HPP_INCLUDED
+#ifndef R3LINALG_HPP_INCLUDED
+#define R3LINALG_HPP_INCLUDED
 
 #include <blitz/tinyvec-et.h>
 #include <blitz/tinymat.h>
@@ -18,20 +28,16 @@
 namespace diffpy {
 namespace R3 {
 
-////////////////////////////////////////////////////////////////////////
-// Declarations
-////////////////////////////////////////////////////////////////////////
-
-// constants
+// Constants
 
 const int Ndim = 3;
 
-// types
+// Types
 
 typedef blitz::TinyMatrix<double,Ndim,Ndim> Matrix;
 typedef blitz::TinyVector<double,Ndim> Vector;
 
-// functions
+// Functions
 
 Matrix transpose(const Matrix& A);
 
@@ -49,10 +55,7 @@ template <class V>
     bool VectorsAlmostEqual(const V& A, const V& B, double precision=0.0);
 
 
-////////////////////////////////////////////////////////////////////////
-// Definitions
-////////////////////////////////////////////////////////////////////////
-
+// Template functions --------------------------------------------------------
 
 template <class V>
 double norm(const V& u)
@@ -140,4 +143,4 @@ bool VectorsAlmostEqual(const V& u, const V& v, double precision)
 }   // namespace R3
 }   // namespace diffpy
 
-#endif  // R3VECTOR_HPP_INCLUDED
+#endif  // R3LINALG_HPP_INCLUDED

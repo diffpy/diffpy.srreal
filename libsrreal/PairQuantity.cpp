@@ -1,4 +1,4 @@
-/***********************************************************************
+/*****************************************************************************
 *
 * diffpy.srreal     by DANSE Diffraction group
 *                   Simon J. L. Billinge
@@ -10,15 +10,13 @@
 * See AUTHORS.txt for a list of people who contributed.
 * See LICENSE.txt for license information.
 *
-************************************************************************
+******************************************************************************
 *
-* class PairQuantity -- abstract base class for brute force
-*     pair quantity calculator
+* class PairQuantity -- brute force pair quantity calculator
 *
 * $Id$
 *
-***********************************************************************/
-
+*****************************************************************************/
 
 #include <memory>
 
@@ -27,20 +25,16 @@
 #include "BaseBondIterator.hpp"
 
 using namespace std;
-using namespace diffpy;
+using namespace diffpy::srreal;
 
-//////////////////////////////////////////////////////////////////////////////
-// Constructors
-//////////////////////////////////////////////////////////////////////////////
+// Constructors --------------------------------------------------------------
 
 PairQuantity::PairQuantity()
 {
     this->init();
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// Public Methods
-//////////////////////////////////////////////////////////////////////////////
+// Public Methods ------------------------------------------------------------
 
 const QuantityType& PairQuantity::eval(const StructureAdapter& stru)
 {
@@ -56,9 +50,7 @@ const QuantityType& PairQuantity::value() const
     return mvalue;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// Protected Methods
-//////////////////////////////////////////////////////////////////////////////
+// Protected Methods ---------------------------------------------------------
 
 void PairQuantity::init()
 { 
@@ -95,3 +87,5 @@ void PairQuantity::updateValue()
         }
     }
 }
+
+// End of file

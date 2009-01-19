@@ -1,8 +1,8 @@
-/***********************************************************************
+/*****************************************************************************
 *
 * diffpy.srreal     by DANSE Diffraction group
 *                   Simon J. L. Billinge
-*                   (c) 2009 trustees of the Michigan State University
+*                   (c) 2006 Trustees of the Michigan State University.
 *                   All rights reserved.
 *
 * File coded by:    Pavol Juhas
@@ -10,14 +10,13 @@
 * See AUTHORS.txt for a list of people who contributed.
 * See LICENSE.txt for license information.
 *
-************************************************************************
+******************************************************************************
 *
 * Unit tests driver
 *
 * $Id$
 *
-***********************************************************************/
-
+*****************************************************************************/
 
 #include <cstdlib>
 #include <cppunit/CompilerOutputter.h>
@@ -48,3 +47,5 @@ int main()
     // Return error code 1 if the one of test failed.
     return wasSucessful ? EXIT_SUCCESS : EXIT_FAILURE;
 }
+
+// End of file
