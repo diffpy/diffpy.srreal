@@ -4,7 +4,6 @@
 namespace diffpy {
 
 class BaseBondIterator;
-class BaseBondPair;
 
 
 class BaseStructure
@@ -12,9 +11,8 @@ class BaseStructure
     public:
 
         // methods
-        int countSites() const;
-        BaseBondIterator* createBondIterator() const;
-        BaseBondPair* createBondPair() const;
+        virtual int countSites() const = 0;
+        virtual BaseBondIterator* createBondIterator() const = 0;
 
 };
 

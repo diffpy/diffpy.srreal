@@ -37,14 +37,11 @@ class BasePairQuantity
 
         // constructors
         BasePairQuantity() { }
-        BasePairQuantity(const BaseStructure&) { }
         virtual ~BasePairQuantity()  { }
 
         // methods
-        virtual const QuantityType& getValue() = 0;
-        virtual const QuantityType& getDerivative() = 0;
-        virtual const BaseStructure& getStructure() const = 0;
-        virtual void setStructure(const BaseStructure&) = 0;
+        virtual const QuantityType& eval(const BaseStructure&) = 0;
+        virtual const QuantityType& value() const = 0;
 
 };
 

@@ -2,11 +2,11 @@
 #define BASEBONDITERATOR_HPP_INCLUDED
 
 #include <memory>
+#include "R3linalg.hpp"
 
 namespace diffpy {
 
 class BaseStructure;
-class BaseBondPair;
 
 class BaseBondIterator
 {
@@ -17,16 +17,19 @@ class BaseBondIterator
 
         // methods
         // loop control
-        virtual void rewind();
+        void rewind();
         bool finished() const;
-        virtual void next();
+        void next();
 
         // configuration
         void selectAnchorSite(int);
         void selectSiteRange(int first, int last);
+        void includeSelfPairs(bool);
 
         // get data
-        const BaseBondPair& getBondPair() const;
+        virtual const R3::Vector& r0() const = 0;
+        virtual const R3::Vector& r1() const = 0;
+        double distance() const;
 
     protected:
 
@@ -35,8 +38,12 @@ class BaseBondIterator
         int msite_first;
         int msite_last;
         int msite_current;
+        bool minclude_self_pairs;
         const BaseStructure* mstructure;
-        std::auto_ptr<BaseBondPair> mbond_pair;
+
+        // bond data
+        R3::Vector mbond_r0;
+        R3::Vector mbond_r1;
 
         // methods
         virtual bool iterateSymmetry();
@@ -44,6 +51,7 @@ class BaseBondIterator
     private:
 
         // methods
+        void skipSelfPair();
         void setFinishedFlag();
 
 };

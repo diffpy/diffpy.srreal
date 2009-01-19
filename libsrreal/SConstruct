@@ -4,11 +4,14 @@
 # Customizable compile variables
 vars = Variables('sconsvars.py')
 vars.Add('tests', 'Custom list of unit test sources', 'all')
-
+vars.Add(EnumVariable('build', 'compiler settings', 'debug',
+                      allowed_values=('debug', 'fast')))
 
 # Default build environment
 env = DefaultEnvironment(variables=vars)
 Help(vars.GenerateHelpText(env))
+if env['build'] == 'debug':
+    env.Append(CCFLAGS = '-g')
 
 # Library target
 src_lib = [f for f in Glob('*.cpp') if not str(f).startswith('Test')]

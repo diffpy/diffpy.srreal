@@ -1,5 +1,4 @@
 #include "BaseBondIterator.hpp"
-#include "BaseBondPair.hpp"
 #include "BaseStructure.hpp"
 
 using namespace std;
@@ -12,7 +11,7 @@ using namespace diffpy;
 BaseBondIterator::BaseBondIterator(const BaseStructure* stru)
 {
     mstructure = stru;
-    mbond_pair.reset(stru->createBondPair());
+    this->includeSelfPairs(false);
     this->selectAnchorSite(0);
     this->selectSiteRange(0, mstructure->countSites());
 }
@@ -26,6 +25,7 @@ BaseBondIterator::BaseBondIterator(const BaseStructure* stru)
 void BaseBondIterator::rewind()
 {
     msite_current = msite_first;
+    this->skipSelfPair();
 }
 
 
@@ -33,12 +33,13 @@ void BaseBondIterator::next()
 {
     if (this->iterateSymmetry())  return;
     msite_current += 1;
+    this->skipSelfPair();
 }
 
 
 bool BaseBondIterator::finished() const
 {
-    return msite_current < msite_last;
+    return msite_current >= msite_last;
 }
 
 // configuration
@@ -57,11 +58,18 @@ void BaseBondIterator::selectSiteRange(int first, int last)
     this->setFinishedFlag();
 }
 
+
+void BaseBondIterator::includeSelfPairs(bool flag)
+{
+    minclude_self_pairs = flag;
+}
+
 // data query
 
-const BaseBondPair& BaseBondIterator::getBondPair() const
+double BaseBondIterator::distance() const
 {
-    return *mbond_pair;
+    double d = R3::distance(this->r0(), this->r1());
+    return d;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -76,6 +84,13 @@ bool BaseBondIterator::iterateSymmetry()
 //////////////////////////////////////////////////////////////////////////////
 // Private Methods
 //////////////////////////////////////////////////////////////////////////////
+
+void BaseBondIterator::skipSelfPair()
+{
+    if (minclude_self_pairs)    return;
+    if (msite_anchor == msite_current)    msite_current += 1;
+}
+
 
 void BaseBondIterator::setFinishedFlag()
 {

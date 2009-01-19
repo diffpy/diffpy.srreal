@@ -27,7 +27,6 @@
 namespace diffpy {
 
 class BaseBondIterator;
-class BaseBondPair;
 
 class PairQuantity : public BasePairQuantity
 {
@@ -35,42 +34,40 @@ class PairQuantity : public BasePairQuantity
 
         // constructors
         PairQuantity();
-        PairQuantity(const BaseStructure&);
 
         // methods
-        virtual const std::vector<double>& getValue();
-        virtual const std::vector<double>& getDerivative();
-        virtual const BaseStructure& getStructure() const;
-        virtual void setStructure(const BaseStructure&);
+        virtual const QuantityType& eval(const BaseStructure&);
+        template <class T> const QuantityType& eval(const T&);
+        virtual const QuantityType& value() const;
 
     protected:
-
-        // types
-        typedef boost::shared_ptr<const BaseStructure> StructurePtr;
 
         // methods
         virtual void init();
         virtual void resizeValue(size_t);
-        virtual void updateValue();
         virtual void resetValue();
+        virtual void updateValue();
         virtual void configureBondIterator(BaseBondIterator*) { }
-        virtual void addPairContribution(const BaseBondPair&) { }
-        virtual bool structureChanged() const; 
-        void uncache();
+        virtual void addPairContribution(const BaseBondIterator*) { }
 
         // data
-        StructurePtr mstructure;
         QuantityType mvalue;
-        bool mvalue_cached;
-        QuantityType mderivative;
-        bool mderivative_needed;
-        bool mderivative_cached;
+        const BaseStructure* mstructure;
 
-    private:
-
-        // methods
-        const BaseStructure& getBlankStructure() const;
 };
+
+//////////////////////////////////////////////////////////////////////////////
+// Definitions
+//////////////////////////////////////////////////////////////////////////////
+
+// template methods
+
+template <class T>
+const QuantityType& PairQuantity::eval(const T& stru)
+{
+    std::auto_ptr<BaseStructure> bstru(createPQAdaptor(stru));
+    return this->eval(*bstru);
+}
 
 
 }   // namespace diffpy
