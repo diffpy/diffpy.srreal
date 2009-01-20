@@ -19,8 +19,8 @@
 *
 *****************************************************************************/
 
-#include "BaseBondIterator.hpp"
-#include "StructureAdapter.hpp"
+#include <diffpy/srreal/BaseBondIterator.hpp>
+#include <diffpy/srreal/StructureAdapter.hpp>
 
 using namespace std;
 using namespace diffpy::srreal;

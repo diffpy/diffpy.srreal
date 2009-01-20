@@ -22,8 +22,8 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "VR3Structure.hpp"
-#include "PairCounter.hpp"
+#include <diffpy/srreal/VR3Structure.hpp>
+#include <diffpy/srreal/PairCounter.hpp>
 
 using namespace std;
 using namespace diffpy;

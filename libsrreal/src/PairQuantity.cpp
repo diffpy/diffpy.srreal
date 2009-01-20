@@ -20,9 +20,9 @@
 
 #include <memory>
 
-#include "PairQuantity.hpp"
-#include "StructureAdapter.hpp"
-#include "BaseBondIterator.hpp"
+#include <diffpy/srreal/PairQuantity.hpp>
+#include <diffpy/srreal/StructureAdapter.hpp>
+#include <diffpy/srreal/BaseBondIterator.hpp>
 
 using namespace std;
 using namespace diffpy::srreal;

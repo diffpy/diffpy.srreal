@@ -1,42 +1,54 @@
-# This requires scons 0.98 or higher
-
+Environment().EnsureSConsVersion(0, 98)
+import os.path
 
 # Customizable compile variables
 vars = Variables('sconsvars.py')
+
 vars.Add('tests', 'Custom list of unit test sources', 'all')
 vars.Add(EnumVariable('build', 'compiler settings', 'debug',
                       allowed_values=('debug', 'fast')))
+vars.Add(PathVariable('prefix',
+    'installation prefix directory', '/usr/local'))
+vars.Add(PathVariable('libdir',
+    'object code library directory [prefix/lib]', '',
+    validator=PathVariable.PathAccept))
+vars.Add(PathVariable('includedir',
+    'installation directory for C++ header files [prefix/include]', '',
+    validator=PathVariable.PathAccept))
 
 # Default build environment
 env = DefaultEnvironment(variables=vars)
 Help(vars.GenerateHelpText(env))
+
 if env['build'] == 'debug':
-    env.Append(CCFLAGS='-g')
+   env.Append(CCFLAGS='-g')
 env.Append(CCFLAGS='-Wall')
+env.PrependUnique(CPPPATH='#/include')
 
-# Library target
-src_lib = [f for f in Glob('*.cpp') if not str(f).startswith('Test')]
+Export('env')
 
-libsrreal = SharedLibrary('libsrreal', src_lib)
-lib = Alias('lib', libsrreal)
+# Execute subsidiary sconscripts
 
-# Environment for building unit test driver
-env_test = env.Clone()
-env_test.ParseConfig('pkg-config --cflags --libs cppunit')
-env_test.Append(LIBS='libsrreal', LIBPATH='.')
-env_test.AppendENVPath('LD_LIBRARY_PATH', '.')
+# shared library object
+lib = SConscript('src/SConscript')
+# unit tests
+SConscript('tests/SConscript')
 
-# alltests - the unit test driver
-if env_test['tests'] == 'all':
-    src_tests = Glob('Test*.cpp')
-else:
-    src_tests = Split(env_test['tests']) 
-alltests = env_test.Program('alltests', ['alltests.cpp'] + src_tests)
+# Installation targets
 
-# alias for executing unit test modules
-test = env_test.Alias('test', [alltests], alltests[0].abspath)
-AlwaysBuild(test)
+# library object
+prefix = env['prefix']
+libdir = env['libdir'] or \
+        Dir(os.path.join(prefix, 'lib'))
+Alias('install-lib', Install(libdir, lib))
 
-Default(alltests)
+# includes
+includedir = env['includedir'] or \
+        Dir(os.path.join(env['prefix'], 'include/diffpy/srreal'))
+include_sources = Glob('include/diffpy/srreal/*.hpp')
+Alias('install-include', Install(includedir, include_sources))
+
+# everything
+Alias('install', ['install-include', 'install-lib'])
 
 # vim: ft=python

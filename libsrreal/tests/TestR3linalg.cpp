@@ -21,7 +21,7 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "R3linalg.hpp"
+#include <diffpy/srreal/R3linalg.hpp>
 
 using namespace std;
 using namespace diffpy;

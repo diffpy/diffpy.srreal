@@ -1,0 +1,7 @@
+src_lib = Glob('*.cpp')
+libsrreal = SharedLibrary('libsrreal', src_lib)
+lib = Alias('lib', libsrreal)
+
+Return('libsrreal')
+
+# vim: ft=python

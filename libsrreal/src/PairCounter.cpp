@@ -18,7 +18,7 @@
 *
 *****************************************************************************/
 
-#include "PairCounter.hpp"
+#include <diffpy/srreal/PairCounter.hpp>
 
 using namespace diffpy::srreal;
 
