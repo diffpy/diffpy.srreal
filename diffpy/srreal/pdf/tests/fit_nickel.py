@@ -13,6 +13,10 @@ Alternate scenerios:
 __id__ = "$Id$"
 
 def fitNickelFromFile(dataname, stype):
+    """Fit nickel data contained in a file.
+
+    See the bottom of this file for invocation examples.
+    """
 
     import park
     import numpy
@@ -87,28 +91,14 @@ def fitNickelFromFile(dataname, stype):
     result.print_summary(ofile)
     ofile.close()
 
-    # Plot the fit
-    diff = dat.fit_y - dat.calc_y + 1.25*min(dat.fit_y)
-    import pylab
-    pylab.clf()
-    pylab.plot(dat.fit_x, dat.fit_y, "bo", label = "data")
-    pylab.plot(dat.fit_x, dat.calc_y, "r-", label = "fit", linewidth=2)
-    pylab.plot(dat.fit_x, diff, "g-", label = "difference", linewidth=2)
-    pylab.legend()
-    pylab.title("Park fit to %s using pdffit2 as calculator"%dataname)
-    pylab.xlabel("$r (\AA)$")
-    pylab.ylabel("$G (\AA^{-2})$")
-    pylab.xlim(0, 10)
-    pylab.ylim(-15, 25)
-    pylab.savefig("%s.fit.png"%outname)
-
-    # Save the refined
+    # Save the refined structure
     stru = structureFromPhase(phase)
     stru.write("%s.rstr"%outname, "pdffit")
     return
 
 
 def fitTwoNickel():
+    """Fit the x-ray and neutron nickel data simultaneously."""
 
     import park
     import numpy
@@ -195,30 +185,6 @@ def fitTwoNickel():
     ofile = file("%s.res"%outname, 'w')
     result.print_summary(ofile)
     ofile.close()
-
-    # Plot the fit
-    diffX = datX.fit_y - datX.calc_y + 1.25*min(datX.fit_y)
-    diffN = datN.fit_y - datN.calc_y + 1.25*min(datN.fit_y)
-    offset = 20*int(1+max(datX.fit_y)/10)
-    import pylab
-    pylab.clf()
-    pylab.plot(datX.fit_x, datX.fit_y, "bo", label = "x-ray data")
-    pylab.plot(datX.fit_x, datX.calc_y, "r-", label = "x-ray fit", linewidth=2)
-    pylab.plot(datX.fit_x, diffX, "g-", label = "x-ray difference", linewidth=2)
-    pylab.plot(datN.fit_x, offset+datN.fit_y, "bo", label = "neutron data")
-    pylab.plot(datN.fit_x, offset+datN.calc_y, "r-", label = "neutron fit", linewidth=2)
-    pylab.plot(datN.fit_x, offset+diffN, "g-", label = "neutron difference", linewidth=2)
-    pylab.legend()
-    pylab.title("Park fit to nickel data using pdffit2 as calculator")
-    pylab.xlabel("$r (\AA)$")
-    pylab.ylabel("$G (\AA^{-2})$")
-    pylab.xlim(0, 10)
-    pylab.ylim(-15, 100)
-    pylab.savefig("%s.fit.png"%outname)
-
-    # Save the refined
-    stru = structureFromPhase(phase)
-    stru.write("%s.rstr"%outname, "pdffit")
 
     return
 

@@ -7,6 +7,9 @@ two-phase model is refined or used to calculate a PDF.
 __id__ = "$Id$"
 
 def fitSiNi():
+    """Fit a physical mixture of Silicon and Nickel, while finding the mixing
+    ratio (pscale).
+    """
 
     import park
     import numpy
@@ -133,6 +136,7 @@ def fitSiNi():
     return
 
 def calcSiNi():
+    """Calculate a PDF pattern from a physical mixture of Silicon and Nickel."""
 
     import park
     import numpy
@@ -187,6 +191,6 @@ def calcSiNi():
 
 if __name__ == "__main__":
 
-    #calcSiNi()
+    calcSiNi()
     fitSiNi()
 
