@@ -2,7 +2,7 @@
 *
 * diffpy.srreal     by DANSE Diffraction group
 *                   Simon J. L. Billinge
-*                   (c) 2008 Trustees of the Columbia University
+*                   (c) 2009 Trustees of the Columbia University
 *                   in the City of New York.  All rights reserved.
 *
 * File coded by:    Pavol Juhas
@@ -23,7 +23,6 @@
 #define BASEPAIRQUANTITY_HPP_INCLUDED
 
 #include <vector>
-#include <boost/shared_ptr.hpp>
 
 namespace diffpy {
 namespace srreal {
