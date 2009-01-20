@@ -3,7 +3,7 @@ Import('env')
 # Environment for building unit test driver
 env_test = env.Clone()
 env_test.ParseConfig('pkg-config --cflags --libs cppunit')
-lib_dir = Dir('../src').abspath
+lib_dir = Dir('../lib').abspath
 env_test.PrependUnique(LIBS='libsrreal', LIBPATH=lib_dir)
 env_test.PrependENVPath('LD_LIBRARY_PATH', lib_dir)
 

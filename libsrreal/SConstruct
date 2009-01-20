@@ -30,7 +30,7 @@ Export('env')
 # Execute subsidiary sconscripts
 
 # shared library object
-lib = SConscript('src/SConscript')
+lib = SConscript('lib/SConscript')
 # unit tests
 SConscript('tests/SConscript')
 
