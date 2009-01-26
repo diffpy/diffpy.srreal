@@ -111,28 +111,6 @@ def fitSiNi():
     result.print_summary(ofile)
     ofile.close()
 
-    # Plot the fit
-    if 0:
-        diff = dat.fit_y - dat.calc_y + 1.35*min(dat.fit_y)
-        import pylab
-        pylab.clf()
-        pylab.plot(dat.fit_x, dat.fit_y, "bo", label = "data")
-        pylab.plot(dat.fit_x, dat.calc_y, "r-", label = "fit", linewidth=2)
-        pylab.plot(dat.fit_x, diff, "g-", label = "difference", linewidth=2)
-        pylab.legend()
-        pylab.title("Park fit to sini using pdffit2 as calculator")
-        pylab.xlabel("$r (\AA)$")
-        pylab.ylabel("$G (\AA^{-2})$")
-        pylab.xlim(0, 20)
-        pylab.ylim(-10, 15)
-        pylab.savefig("sini.fit.png")
-
-        # Save the refined structures
-        nistru = structureFromPhase(niphase)
-        nistru.write("ni.rstr", "pdffit")
-        sistru = structureFromPhase(siphase)
-        sistru.write("si.rstr", "pdffit")
-
     return
 
 def calcSiNi():
