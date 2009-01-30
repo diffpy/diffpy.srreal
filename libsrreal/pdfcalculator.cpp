@@ -245,9 +245,9 @@ updateRDF()
         calculateRDF();
     }
     // Now we check the scatterers
-    // FIXME - We're not detecting a change in Biso. I think this is a bug in
-    // ObjCryst, as the scatterer clock should detect changes in the scattering
-    // power.
+    // FIXME - We're not detecting a change in Biso. We need to investigate the
+    // individual scattering power clocks, which can be retrieved through the
+    // ScatteringComponentList.
     else
     {
         bool reshape = 0;
@@ -255,9 +255,7 @@ updateRDF()
         // If any scatterers have changed, we modify the RDF
         for(int i=0; i<crystal.GetNbScatterer(); ++i)
         {
-            // This is a workaround for the python clock problem
-            if( scatclocks[i] < crystal.GetScatt(i).GetClockScatterer()
-            or scatclocks[i] > crystal.GetScatt(i).GetClockScatterer())
+            if( scatclocks[i] < crystal.GetScatt(i).GetClockScatterer())
             {
 
                 if( scl.GetNbComponent() > 1 )
@@ -297,6 +295,12 @@ updateRDF()
     for(int i=0; i<crystal.GetNbScatterer(); ++i)
     {
         scatclocks[i] = crystal.GetScatt(i).GetClockScatterer();
+        // FIXME - workaround for python scatterer clock issue
+        ObjCryst::RefinableObjClock& temp = 
+            const_cast<ObjCryst::RefinableObjClock&>(
+            crystal.GetScatt(i).GetClockScatterer());
+        temp.Reset();
+        scatclocks[i].Reset();
     }
 
     // Save the current parameter state
@@ -320,18 +324,17 @@ reshapeRDF()
     // changes. The problem seems to be in the python bindings, since this only
     // occurs from a python script.
     std::vector<int> changeidx;
-    std::cout << "-- Initial --" << std::endl;
+    //std::cout << "-- Initial --" << std::endl;
     for(int i=0; i<crystal.GetNbScatterer(); ++i)
     {
         // This is a workaround for the python clock problem
-        if( scatclocks[i] < crystal.GetScatt(i).GetClockScatterer()
-        or scatclocks[i] > crystal.GetScatt(i).GetClockScatterer())
+        if( scatclocks[i] < crystal.GetScatt(i).GetClockScatterer())
         {
             changeidx.push_back(i);
             //std::cout << i << " of " << crystal.GetNbScatterer() << std::endl;
         }
-        std::cout << i << ": ";
-        crystal.GetScatt(i).GetClockScatterer().Print();
+        //std::cout << i << ": ";
+        //crystal.GetScatt(i).GetClockScatterer().Print();
     }
 
     //std::cout << changeidx.size() << ' ' << crystal.GetNbScatterer() << std::endl;
@@ -356,12 +359,12 @@ reshapeRDF()
 
     // Subtract previous contribution
     RestoreParamSet(lastsave);
-    std::cout << "-- Restore previous --" << std::endl;
-    for(int i=0; i<crystal.GetNbScatterer(); ++i)
-    {
-        std::cout << i << ": ";
-        crystal.GetScatt(i).GetClockScatterer().Print();
-    }
+    //std::cout << "-- Restore previous --" << std::endl;
+    //for(int i=0; i<crystal.GetNbScatterer(); ++i)
+    //{
+    //    std::cout << i << ": ";
+    //    crystal.GetScatt(i).GetClockScatterer().Print();
+    //}
     //for(int i=0; i<GetNbPar(); ++i)
     //{
     //    ObjCryst::RefinablePar& par = GetPar(i);
@@ -377,12 +380,12 @@ reshapeRDF()
 
     // Restore the current parameters
     RestoreParamSet(cursave);
-    std::cout << "-- Restore initial --" << std::endl;
-    for(int i=0; i<crystal.GetNbScatterer(); ++i)
-    {
-        std::cout << i << ": ";
-        crystal.GetScatt(i).GetClockScatterer().Print();
-    }
+    //std::cout << "-- Restore initial --" << std::endl;
+    //for(int i=0; i<crystal.GetNbScatterer(); ++i)
+    //{
+    //    std::cout << i << ": ";
+    //    crystal.GetScatt(i).GetClockScatterer().Print();
+    //}
     //for(int i=0; i<GetNbPar(); ++i)
     //{
     //    ObjCryst::RefinablePar& par = GetPar(i);
@@ -404,6 +407,12 @@ calculateRDF()
         = crystal.GetScatteringComponentList();
 
     buildRDF(scl, 1);
+
+    //for(int i=0; i<crystal.GetNbScatterer(); ++i)
+    //{
+    //    std::cout << i << ": ";
+    //    crystal.GetScatt(i).GetClockScatterer().Print();
+    //}
 
     return;
 }
