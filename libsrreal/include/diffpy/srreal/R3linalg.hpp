@@ -26,11 +26,13 @@
 #include <blitz/tinymat.h>
 
 namespace diffpy {
+namespace srreal {
 namespace R3 {
 
 // Constants
 
 const int Ndim = 3;
+using blitz::product;
 
 // Types
 
@@ -39,14 +41,16 @@ typedef blitz::TinyVector<double,Ndim> Vector;
 
 // Functions
 
+double determinant(const Matrix& A);
+Matrix inverse(const Matrix& A);
 Matrix transpose(const Matrix& A);
 
 template <class V> double norm(const V&);
 template <class V> double distance(const V& u, const V& v);
 template <class V> double dot(const V& u, const V& v);
 template <class V> Vector cross(const V& u, const V& v);
-template <class V> const Vector& product(const Matrix&, const V&);
-template <class V> const Vector& product(const V&, const Matrix&);
+template <class V> const Vector& mxvproduct(const Matrix&, const V&);
+template <class V> const Vector& mxvproduct(const V&, const Matrix&);
 
 template <class M>
     bool MatricesAlmostEqual(const M& A, const M& B, double precision=0.0);
@@ -94,7 +98,7 @@ Vector cross(const V& u, const V& v)
 
 
 template <class V>
-const Vector& product(const Matrix& M, const V& u)
+const Vector& mxvecproduct(const Matrix& M, const V& u)
 {
     static Vector res;
     res[0] = M(0,0)*u[0] + M(0,1)*u[1] + M(0,2)*u[2];
@@ -105,7 +109,7 @@ const Vector& product(const Matrix& M, const V& u)
 
 
 template <class V>
-const Vector& product(const V& u, const Matrix& M)
+const Vector& mxvecproduct(const V& u, const Matrix& M)
 {
     static Vector res;
     res[0] = u[0]*M(0,0) + u[1]*M(1,0) + u[2]*M(2,0);
@@ -141,6 +145,7 @@ bool VectorsAlmostEqual(const V& u, const V& v, double precision)
 
 
 }   // namespace R3
+}   // namespace srreal
 }   // namespace diffpy
 
 #endif  // R3LINALG_HPP_INCLUDED

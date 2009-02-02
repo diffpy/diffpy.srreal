@@ -35,7 +35,7 @@ class BasePairQuantity
     public:
 
         // constructors
-        BasePairQuantity() { }
+        BasePairQuantity()  { }
         virtual ~BasePairQuantity()  { }
 
         // methods

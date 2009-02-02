@@ -33,6 +33,7 @@ class PairCounter : public PairQuantity
 {
     public:
 
+        // methods
         template <class T> int operator()(const T&);
 
     protected:

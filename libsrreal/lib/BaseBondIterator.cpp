@@ -83,10 +83,50 @@ void BaseBondIterator::includeSelfPairs(bool flag)
 
 // data query
 
+const R3::Vector& BaseBondIterator::r0() const
+{
+    const R3::Vector& rv = mstructure->siteCartesianPosition(msite_anchor);
+    return rv;
+}
+
+
+const R3::Vector& BaseBondIterator::r1() const
+{
+    const R3::Vector& rv = mstructure->siteCartesianPosition(msite_current);
+    return rv;
+}
+
+
 double BaseBondIterator::distance() const
 {
     double d = R3::distance(this->r0(), this->r1());
     return d;
+}
+
+
+const R3::Vector& BaseBondIterator::r01() const
+{
+    static R3::Vector rv;
+    rv = this->r1() - this->r0();
+    return rv;
+}
+
+
+double BaseBondIterator::msd0() const
+{
+    return 0.0;
+}
+
+
+double BaseBondIterator::msd1() const
+{
+    return 0.0;
+}
+
+
+double BaseBondIterator::msd() const
+{
+    return (this->msd0() + this->msd1());
 }
 
 // Protected Methods ---------------------------------------------------------

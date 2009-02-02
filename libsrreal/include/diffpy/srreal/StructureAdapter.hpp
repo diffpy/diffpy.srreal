@@ -22,11 +22,12 @@
 #ifndef STRUCTUREADAPTER_HPP_INCLUDED
 #define STRUCTUREADAPTER_HPP_INCLUDED
 
+#include "R3linalg.hpp"
+
 namespace diffpy {
 namespace srreal {
 
 class BaseBondIterator;
-
 
 class StructureAdapter
 {
@@ -34,6 +35,10 @@ class StructureAdapter
 
         // methods
         virtual int countSites() const = 0;
+        virtual const R3::Vector& siteCartesianPosition(int idx) const = 0;
+        virtual bool siteAnisotropy(int idx) const = 0;
+        virtual const R3::Matrix& siteCartesianUij(int idx) const = 0;
+
         virtual BaseBondIterator* createBondIterator() const = 0;
 
 };

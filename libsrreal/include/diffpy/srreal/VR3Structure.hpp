@@ -45,6 +45,10 @@ class VR3Adapter : public StructureAdapter
 
         // methods
         virtual int countSites() const;
+        virtual const R3::Vector& siteCartesianPosition(int idx) const;
+        virtual bool siteAnisotropy(int idx) const;
+        virtual const R3::Matrix& siteCartesianUij(int idx) const;
+
         virtual BaseBondIterator* createBondIterator() const;
 
     private:
@@ -89,6 +93,29 @@ inline
 int VR3Adapter::countSites() const
 {
     return mvr3structure->size();
+}
+
+
+inline
+const R3::Vector& VR3Adapter::siteCartesianPosition(int idx) const
+{
+    return mvr3structure->at(idx);
+}
+
+
+inline
+bool VR3Adapter::siteAnisotropy(int idx) const
+{
+    return false;
+}
+
+
+inline
+const R3::Matrix& VR3Adapter::siteCartesianUij(int idx) const
+{
+    static R3::Matrix Uzero;
+    Uzero = 0.0;
+    return Uzero;
 }
 
 

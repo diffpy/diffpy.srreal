@@ -26,7 +26,6 @@
 #include <diffpy/srreal/PairCounter.hpp>
 
 using namespace std;
-using namespace diffpy;
 using namespace diffpy::srreal;
 
 class TestVR3Structure : public CppUnit::TestFixture

@@ -20,6 +20,10 @@ vars.Add(PathVariable('includedir',
 env = DefaultEnvironment(variables=vars)
 Help(vars.GenerateHelpText(env))
 
+env.ParseConfig("python-config --includes")
+env.ParseConfig("python-config --ldflags")
+env.ParseConfig("gsl-config --cflags --libs")
+
 if env['build'] == 'debug':
    env.Append(CCFLAGS='-g')
 env.Append(CCFLAGS='-Wall')
@@ -45,7 +49,8 @@ Alias('install-lib', Install(libdir, lib))
 # includes
 includedir = env['includedir'] or \
         Dir(os.path.join(env['prefix'], 'include/diffpy/srreal'))
-include_sources = Glob('include/diffpy/srreal/*.hpp')
+include_sources = Glob('include/diffpy/*.[hi]pp') + \
+        Glob('include/diffpy/srreal/*.[hi]pp')
 Alias('install-include', Install(includedir, include_sources))
 
 # everything

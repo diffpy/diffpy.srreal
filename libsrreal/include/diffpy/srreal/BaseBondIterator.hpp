@@ -48,9 +48,13 @@ class BaseBondIterator
         void includeSelfPairs(bool);
 
         // get data
-        virtual const R3::Vector& r0() const = 0;
-        virtual const R3::Vector& r1() const = 0;
+        virtual const R3::Vector& r0() const;
+        virtual const R3::Vector& r1() const;
         double distance() const;
+        const R3::Vector& r01() const;
+        virtual double msd0() const;
+        virtual double msd1() const;
+        double msd() const;
 
     protected:
 

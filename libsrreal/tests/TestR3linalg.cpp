@@ -24,15 +24,18 @@
 #include <diffpy/srreal/R3linalg.hpp>
 
 using namespace std;
-using namespace diffpy;
-using diffpy::R3::MatricesAlmostEqual;
-using diffpy::R3::VectorsAlmostEqual;
+using namespace diffpy::srreal;
+using diffpy::srreal::R3::MatricesAlmostEqual;
+using diffpy::srreal::R3::VectorsAlmostEqual;
 
 
 class TestR3linalg : public CppUnit::TestFixture
 {
 
     CPPUNIT_TEST_SUITE(TestR3linalg);
+    CPPUNIT_TEST(test_determinant);
+    CPPUNIT_TEST(test_inverse);
+    CPPUNIT_TEST(test_transpose);
     CPPUNIT_TEST(test_norm);
     CPPUNIT_TEST(test_dot);
     CPPUNIT_TEST(test_cross);
@@ -44,6 +47,52 @@ private:
     static const double precision = 1.0e-12;
 
 public:
+
+    void test_determinant()
+    {
+	// default lattice should be cartesian
+	R3::Matrix A1, A2;
+	A1 = 9, 1, 9,
+	     6, 7, 4,
+	     0, 2, 9;
+	A2 = 9, 1, 9,
+	     0, 2, 9,
+	     6, 7, 4;
+	double detA = 549;
+	CPPUNIT_ASSERT_EQUAL(detA, R3::determinant(A1));
+	CPPUNIT_ASSERT_EQUAL(-detA, R3::determinant(A2));
+    }
+
+
+    void test_inverse()
+    {
+	R3::Matrix A, invA;
+	A =
+	    0.5359, -0.5904, 0.8670,
+	   -0.0053,  0.7559, 0.2692,
+	   -0.8926,  0.9424, 0.9692;
+	invA =
+	    0.49063197005867, 1.42323870111089, -0.83420736316541,
+	   -0.24089965988852, 1.32489393619466, -0.15249839300481,
+	    0.68609361943181, 0.02249568627913,  0.41178393851247;
+	CPPUNIT_ASSERT(MatricesAlmostEqual(invA, R3::inverse(A), precision));
+    }
+
+
+    void test_transpose()
+    {
+	R3::Matrix A, Atrans;
+	A =
+	    0.5359, -0.5904, 0.8670,
+	   -0.0053,  0.7559, 0.2692,
+	   -0.8926,  0.9424, 0.9692;
+	Atrans =
+	    0.5359, -0.0053, -0.8926,
+           -0.5904, 0.7559, 0.9424,
+            0.8670, 0.2692, 0.9692;
+	CPPUNIT_ASSERT(MatricesAlmostEqual(Atrans, R3::transpose(A), 0.0));
+    }
+
 
     void test_norm()
     {
@@ -87,9 +136,9 @@ public:
         prod_Mv = 0.729633980805669, 0.872890409522479, 0.925388343907868;
         prod_vM = 0.715502648789536, 1.056153454546559, 0.822556602046019;
         CPPUNIT_ASSERT(VectorsAlmostEqual(prod_Mv,
-                    R3::product(M, v), precision));
+                    R3::mxvecproduct(M, v), precision));
         CPPUNIT_ASSERT(VectorsAlmostEqual(prod_vM,
-                    R3::product(v, M), precision));
+                    R3::mxvecproduct(v, M), precision));
     }
 
 

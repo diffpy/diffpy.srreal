@@ -1,6 +1,9 @@
+Import('env')
+env_lib = env.Clone()
+
 src_lib = Glob('*.cpp')
-libsrreal = SharedLibrary('libsrreal', src_lib)
-lib = Alias('lib', libsrreal)
+libsrreal = env_lib.SharedLibrary('libsrreal', src_lib)
+lib = env_lib.Alias('lib', libsrreal)
 
 Return('libsrreal')
 
