@@ -49,8 +49,8 @@ template <class V> double norm(const V&);
 template <class V> double distance(const V& u, const V& v);
 template <class V> double dot(const V& u, const V& v);
 template <class V> Vector cross(const V& u, const V& v);
-template <class V> const Vector& mxvproduct(const Matrix&, const V&);
-template <class V> const Vector& mxvproduct(const V&, const Matrix&);
+template <class V> const Vector& mxvecproduct(const Matrix&, const V&);
+template <class V> const Vector& mxvecproduct(const V&, const Matrix&);
 
 template <class M>
     bool MatricesAlmostEqual(const M& A, const M& B, double precision=0.0);
