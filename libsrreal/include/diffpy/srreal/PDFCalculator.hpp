@@ -28,6 +28,7 @@ namespace diffpy {
 namespace srreal {
 
 class PeakWidthModel;
+class ScatteringFactorTable;
 
 class PDFCalculator : public PairQuantity
 {
@@ -53,12 +54,21 @@ class PDFCalculator : public PairQuantity
         const double& getRstep() const;
 
         // PDF peak width configuration
-        void setBondWidthCalculator(const PeakWidthModel&);
+        void setPeakWidthModel(const PeakWidthModel&);
         const PeakWidthModel& getPeakWidthModel() const;
+
+        // scattering factors configuration
+        void setScatteringFactorTable(const ScatteringFactorTable&);
+        const ScatteringFactorTable& getScatteringFactorTable() const;
+        void setRadiationType(const std::string&);
+        const std::string& getRadiationType() const;
+        // scattering factors lookup
+        double sfAtomType(const std::string&) const;
 
     protected:
 
-        // methods - overloads
+        // methods - PairQuantity overloads
+        virtual void init();
         virtual void addPairContribution(const BaseBondIterator*);
 
         // methods - calculation specific
@@ -69,6 +79,9 @@ class PDFCalculator : public PairQuantity
         int rgridPoints() const;
         int totalPoints() const;
         int totalIndex(double r) const;
+        // structure factors - fast lookup by site index
+        double sfSite(int) const;
+        void update_msfsite();
 
         // data
         // results
@@ -81,12 +94,16 @@ class PDFCalculator : public PairQuantity
         double mrmax;
         double mrstep;
         std::auto_ptr<PeakWidthModel> mpwmodel;
+        std::auto_ptr<PeakWidthModel> msftable;
+        std::vector<double> msfsite;
+
 
 };
 
 // Public Template Methods ---------------------------------------------------
 
 // FIXME
+#if 0
 
 class PDFCalculator : public SrReal::ProfileCalculator
 {
@@ -214,6 +231,7 @@ class PDFCalculator : public SrReal::ProfileCalculator
     size_t cursave;
 
 };
+#endif
 
 }   // namespace srreal
 }   // namespace diffpy
