@@ -216,7 +216,7 @@ const R3::Matrix& Lattice::fractionalMatrix(const R3::Matrix& Mc) const
 }
 
 
-R3::Vector Lattice::ucMaxDiagonal() const
+const R3::Vector& Lattice::ucMaxDiagonal() const
 {
     static list<R3::Vector> ucdiagonals;
     if (ucdiagonals.empty())
@@ -245,7 +245,7 @@ R3::Vector Lattice::ucMaxDiagonal() const
 
 double Lattice::ucMaxDiagonalLength() const
 {
-    R3::Vector ucmd = this->ucMaxDiagonal();
+    const R3::Vector& ucmd = this->ucMaxDiagonal();
     double res = this->norm(ucmd);
     return res;
 }
