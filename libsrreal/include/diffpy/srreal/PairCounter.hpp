@@ -39,7 +39,7 @@ class PairCounter : public PairQuantity
     protected:
 
         // methods
-        virtual void addPairContribution(const BaseBondGenerator*);
+        virtual void addPairContribution(const BaseBondGenerator&);
 
 };
 

@@ -69,7 +69,7 @@ class PDFCalculator : public PairQuantity
 
         // methods - PairQuantity overloads
         virtual void init();
-        virtual void addPairContribution(const BaseBondGenerator*);
+        virtual void addPairContribution(const BaseBondGenerator&);
 
         // methods - calculation specific
         double rextlo() const;

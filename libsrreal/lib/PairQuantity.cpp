@@ -75,7 +75,7 @@ void PairQuantity::updateValue()
     this->resetValue();
     auto_ptr<BaseBondGenerator> bnds;
     bnds.reset(mstructure->createBondGenerator());
-    this->configureBondGenerator(bnds.get());
+    this->configureBondGenerator(*bnds);
     int nsites = mstructure->countSites();
     for (int i0 = 0; i0 < nsites; ++i0)
     {
@@ -83,7 +83,7 @@ void PairQuantity::updateValue()
         bnds->selectSiteRange(0, i0 + 1);
         for (bnds->rewind(); !bnds->finished(); bnds->next())
         {
-            this->addPairContribution(bnds.get());
+            this->addPairContribution(*bnds);
         }
     }
 }

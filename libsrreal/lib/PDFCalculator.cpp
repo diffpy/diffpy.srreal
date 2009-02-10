@@ -167,7 +167,7 @@ const PeakWidthModel& PDFCalculator::getPeakWidthModel() const;
 
 /*
 void init();
-void addPairContribution(const BaseBondGenerator*);
+void addPairContribution(const BaseBondGenerator&);
 */
 
 // calculation specific

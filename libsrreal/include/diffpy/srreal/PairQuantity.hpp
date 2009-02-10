@@ -47,8 +47,8 @@ class PairQuantity : public BasePairQuantity
         virtual void resizeValue(size_t);
         virtual void resetValue();
         virtual void updateValue();
-        virtual void configureBondGenerator(BaseBondGenerator*) { }
-        virtual void addPairContribution(const BaseBondGenerator*) { }
+        virtual void configureBondGenerator(BaseBondGenerator&) { }
+        virtual void addPairContribution(const BaseBondGenerator&) { }
 
         // data
         QuantityType mvalue;
