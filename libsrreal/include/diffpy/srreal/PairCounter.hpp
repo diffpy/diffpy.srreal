@@ -27,7 +27,7 @@
 namespace diffpy {
 namespace srreal {
 
-class BaseBondIterator;
+class BaseBondGenerator;
 
 class PairCounter : public PairQuantity
 {
@@ -39,7 +39,7 @@ class PairCounter : public PairQuantity
     protected:
 
         // methods
-        virtual void addPairContribution(const BaseBondIterator*);
+        virtual void addPairContribution(const BaseBondGenerator*);
 
 };
 

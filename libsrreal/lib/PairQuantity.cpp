@@ -22,7 +22,7 @@
 
 #include <diffpy/srreal/PairQuantity.hpp>
 #include <diffpy/srreal/StructureAdapter.hpp>
-#include <diffpy/srreal/BaseBondIterator.hpp>
+#include <diffpy/srreal/BaseBondGenerator.hpp>
 
 using namespace std;
 using namespace diffpy::srreal;
@@ -73,9 +73,9 @@ void PairQuantity::resetValue()
 void PairQuantity::updateValue()
 {
     this->resetValue();
-    auto_ptr<BaseBondIterator> bnds;
-    bnds.reset(mstructure->createBondIterator());
-    this->configureBondIterator(bnds.get());
+    auto_ptr<BaseBondGenerator> bnds;
+    bnds.reset(mstructure->createBondGenerator());
+    this->configureBondGenerator(bnds.get());
     int nsites = mstructure->countSites();
     for (int i0 = 0; i0 < nsites; ++i0)
     {

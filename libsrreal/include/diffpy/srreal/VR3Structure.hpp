@@ -14,7 +14,7 @@
 *
 * class VR3Structure -- trivial structure representation.
 * class VR3Adapter -- concrete StructureAdapter for VR3Structure
-* class VR3BondIterator -- concrete BaseBondIterator for VR3Structure
+* class VR3BondGenerator -- concrete BaseBondGenerator for VR3Structure
 *
 * $Id$
 *
@@ -27,7 +27,7 @@
 
 #include "R3linalg.hpp"
 #include "StructureAdapter.hpp"
-#include "BaseBondIterator.hpp"
+#include "BaseBondGenerator.hpp"
 
 namespace diffpy {
 namespace srreal {
@@ -37,7 +37,7 @@ typedef std::vector<R3::Vector> VR3Structure;
 
 class VR3Adapter : public StructureAdapter
 {
-    friend class VR3BondIterator;
+    friend class VR3BondGenerator;
     public:
 
         // constructors
@@ -49,7 +49,7 @@ class VR3Adapter : public StructureAdapter
         virtual bool siteAnisotropy(int idx) const;
         virtual const R3::Matrix& siteCartesianUij(int idx) const;
 
-        virtual BaseBondIterator* createBondIterator() const;
+        virtual BaseBondGenerator* createBondGenerator() const;
 
     private:
 
@@ -58,12 +58,12 @@ class VR3Adapter : public StructureAdapter
 };
 
 
-class VR3BondIterator : public BaseBondIterator
+class VR3BondGenerator : public BaseBondGenerator
 {
     public:
 
         // constructors
-        VR3BondIterator(const VR3Adapter*);
+        VR3BondGenerator(const VR3Adapter*);
 
         // methods
         virtual const R3::Vector& r0() const;
@@ -120,33 +120,33 @@ const R3::Matrix& VR3Adapter::siteCartesianUij(int idx) const
 
 
 inline
-BaseBondIterator* VR3Adapter::createBondIterator() const
+BaseBondGenerator* VR3Adapter::createBondGenerator() const
 {
-    BaseBondIterator* bbi = new VR3BondIterator(this);
-    return bbi;
+    BaseBondGenerator* bnds = new VR3BondGenerator(this);
+    return bnds;
 }
 
 
-// VR3BondIterator - Constructor ---------------------------------------------
+// VR3BondGenerator - Constructor ---------------------------------------------
 
 inline
-VR3BondIterator::VR3BondIterator(const VR3Adapter* adpt) :
-    BaseBondIterator(adpt)
+VR3BondGenerator::VR3BondGenerator(const VR3Adapter* adpt) :
+    BaseBondGenerator(adpt)
 {
     mvr3structure = adpt->mvr3structure;
 }
 
-// VR3BondIterator - Public Methods ------------------------------------------
+// VR3BondGenerator - Public Methods ------------------------------------------
 
 inline
-const R3::Vector& VR3BondIterator::r0() const
+const R3::Vector& VR3BondGenerator::r0() const
 {
     return mvr3structure->at(msite_anchor);
 }
 
 
 inline
-const R3::Vector& VR3BondIterator::r1() const
+const R3::Vector& VR3BondGenerator::r1() const
 {
     return mvr3structure->at(msite_current);
 }

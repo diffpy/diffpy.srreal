@@ -26,7 +26,7 @@
 namespace diffpy {
 namespace srreal {
 
-class BaseBondIterator;
+class BaseBondGenerator;
 
 class PairQuantity : public BasePairQuantity
 {
@@ -47,8 +47,8 @@ class PairQuantity : public BasePairQuantity
         virtual void resizeValue(size_t);
         virtual void resetValue();
         virtual void updateValue();
-        virtual void configureBondIterator(BaseBondIterator*) { }
-        virtual void addPairContribution(const BaseBondIterator*) { }
+        virtual void configureBondGenerator(BaseBondGenerator*) { }
+        virtual void addPairContribution(const BaseBondGenerator*) { }
 
         // data
         QuantityType mvalue;

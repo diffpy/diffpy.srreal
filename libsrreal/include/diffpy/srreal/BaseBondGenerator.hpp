@@ -12,15 +12,15 @@
 *
 ******************************************************************************
 *
-* class BaseBondIterator -- semi-abstract class for an iterator
-*     over all atom pairs containing specified anchor atom.
+* class BaseBondGenerator -- semi-abstract class for a generation
+*     of all atom pairs containing specified anchor atom.
 *
 * $Id$
 *
 *****************************************************************************/
 
-#ifndef BASEBONDITERATOR_HPP_INCLUDED
-#define BASEBONDITERATOR_HPP_INCLUDED
+#ifndef BASEBONDGENERATOR_HPP_INCLUDED
+#define BASEBONDGENERATOR_HPP_INCLUDED
 
 #include "R3linalg.hpp"
 
@@ -29,12 +29,12 @@ namespace srreal {
 
 class StructureAdapter;
 
-class BaseBondIterator
+class BaseBondGenerator
 {
     public:
 
         // constructor
-        BaseBondIterator(const StructureAdapter*);
+        BaseBondGenerator(const StructureAdapter*);
 
         // methods
         // loop control
@@ -85,4 +85,4 @@ class BaseBondIterator
 }   // namespace srreal
 }   // namespace diffpy
 
-#endif  // BASEBONDITERATOR_HPP_INCLUDED
+#endif  // BASEBONDGENERATOR_HPP_INCLUDED

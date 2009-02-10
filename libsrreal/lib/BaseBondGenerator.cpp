@@ -12,14 +12,14 @@
 *
 ******************************************************************************
 *
-* class BaseBondIterator -- semi-abstract class for iterator
-*     over all atom pairs containing specified anchor atom.
+* class BaseBondGenerator -- semi-abstract class for generation
+*     of all atom pairs containing specified anchor atom.
 *
 * $Id$
 *
 *****************************************************************************/
 
-#include <diffpy/srreal/BaseBondIterator.hpp>
+#include <diffpy/srreal/BaseBondGenerator.hpp>
 #include <diffpy/srreal/StructureAdapter.hpp>
 
 using namespace std;
@@ -27,7 +27,7 @@ using namespace diffpy::srreal;
 
 // Constructor ---------------------------------------------------------------
 
-BaseBondIterator::BaseBondIterator(const StructureAdapter* stru)
+BaseBondGenerator::BaseBondGenerator(const StructureAdapter* stru)
 {
     mstructure = stru;
     this->includeSelfPairs(false);
@@ -39,14 +39,14 @@ BaseBondIterator::BaseBondIterator(const StructureAdapter* stru)
 
 // loop control
 
-void BaseBondIterator::rewind()
+void BaseBondGenerator::rewind()
 {
     msite_current = msite_first;
     this->skipSelfPair();
 }
 
 
-void BaseBondIterator::next()
+void BaseBondGenerator::next()
 {
     if (this->iterateSymmetry())  return;
     msite_current += 1;
@@ -54,21 +54,21 @@ void BaseBondIterator::next()
 }
 
 
-bool BaseBondIterator::finished() const
+bool BaseBondGenerator::finished() const
 {
     return msite_current >= msite_last;
 }
 
 // configuration
 
-void BaseBondIterator::selectAnchorSite(int anchor)
+void BaseBondGenerator::selectAnchorSite(int anchor)
 {
     msite_anchor = anchor;
     this->setFinishedFlag();
 }
 
 
-void BaseBondIterator::selectSiteRange(int first, int last)
+void BaseBondGenerator::selectSiteRange(int first, int last)
 {
     msite_first = first;
     msite_last = last;
@@ -76,35 +76,35 @@ void BaseBondIterator::selectSiteRange(int first, int last)
 }
 
 
-void BaseBondIterator::includeSelfPairs(bool flag)
+void BaseBondGenerator::includeSelfPairs(bool flag)
 {
     minclude_self_pairs = flag;
 }
 
 // data query
 
-const R3::Vector& BaseBondIterator::r0() const
+const R3::Vector& BaseBondGenerator::r0() const
 {
     const R3::Vector& rv = mstructure->siteCartesianPosition(msite_anchor);
     return rv;
 }
 
 
-const R3::Vector& BaseBondIterator::r1() const
+const R3::Vector& BaseBondGenerator::r1() const
 {
     const R3::Vector& rv = mstructure->siteCartesianPosition(msite_current);
     return rv;
 }
 
 
-double BaseBondIterator::distance() const
+double BaseBondGenerator::distance() const
 {
     double d = R3::distance(this->r0(), this->r1());
     return d;
 }
 
 
-const R3::Vector& BaseBondIterator::r01() const
+const R3::Vector& BaseBondGenerator::r01() const
 {
     static R3::Vector rv;
     rv = this->r1() - this->r0();
@@ -112,40 +112,40 @@ const R3::Vector& BaseBondIterator::r01() const
 }
 
 
-double BaseBondIterator::msd0() const
+double BaseBondGenerator::msd0() const
 {
     return 0.0;
 }
 
 
-double BaseBondIterator::msd1() const
+double BaseBondGenerator::msd1() const
 {
     return 0.0;
 }
 
 
-double BaseBondIterator::msd() const
+double BaseBondGenerator::msd() const
 {
     return (this->msd0() + this->msd1());
 }
 
 // Protected Methods ---------------------------------------------------------
 
-bool BaseBondIterator::iterateSymmetry()
+bool BaseBondGenerator::iterateSymmetry()
 {
     return false;
 }
 
 // Private Methods -----------------------------------------------------------
 
-void BaseBondIterator::skipSelfPair()
+void BaseBondGenerator::skipSelfPair()
 {
     if (minclude_self_pairs)    return;
     if (msite_anchor == msite_current)    msite_current += 1;
 }
 
 
-void BaseBondIterator::setFinishedFlag()
+void BaseBondGenerator::setFinishedFlag()
 {
     msite_current = msite_last;
 }

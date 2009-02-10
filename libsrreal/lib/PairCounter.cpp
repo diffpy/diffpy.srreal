@@ -24,7 +24,7 @@ using namespace diffpy::srreal;
 
 // Protected Methods ---------------------------------------------------------
 
-void PairCounter::addPairContribution(const BaseBondIterator* bnds)
+void PairCounter::addPairContribution(const BaseBondGenerator* bnds)
 {
     mvalue.front() += 1;
 }

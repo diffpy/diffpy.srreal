@@ -14,7 +14,7 @@
 *
 * class DiffPyStructureAdapter -- adapter to the Structure class from the
 *     Python diffpy.Structure package.
-* class DiffPyStructureBondIterator -- iterator for DiffPyStructureAdapter
+* class DiffPyStructureBondGenerator -- bond generator
 *     
 *
 * $Id$
@@ -30,7 +30,7 @@
 
 #include "R3linalg.hpp"
 #include "StructureAdapter.hpp"
-#include "BaseBondIterator.hpp"
+#include "BaseBondGenerator.hpp"
 
 namespace diffpy {
 namespace srreal {
@@ -40,7 +40,7 @@ class PointsInSphere;
 
 class DiffPyStructureAdapter : public StructureAdapter
 {
-    friend class DiffPyStructureBondIterator;
+    friend class DiffPyStructureBondGenerator;
     public:
 
         // constructors
@@ -48,7 +48,7 @@ class DiffPyStructureAdapter : public StructureAdapter
 
         // methods
         virtual int countSites() const;
-        virtual BaseBondIterator* createBondIterator() const;
+        virtual BaseBondGenerator* createBondGenerator() const;
 
     protected:
 
@@ -74,12 +74,12 @@ class DiffPyStructureAdapter : public StructureAdapter
 };
 
 
-class DiffPyStructureBondIterator : public BaseBondIterator
+class DiffPyStructureBondGenerator : public BaseBondGenerator
 {
     public:
 
         // constructors
-        DiffPyStructureBondIterator(const DiffPyStructureAdapter*);
+        DiffPyStructureBondGenerator(const DiffPyStructureAdapter*);
 
         // methods
         virtual const R3::Vector& r0() const;

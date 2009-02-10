@@ -14,7 +14,7 @@
 *
 * class DiffPyStructureAdapter -- adapter to the Structure class from the
 *     Python diffpy.Structure package.
-* class DiffPyStructureBondIterator -- iterator for DiffPyStructureAdapter
+* class DiffPyStructureBondGenerator -- related bond generator
 *     
 *
 * $Id$
@@ -52,10 +52,10 @@ int DiffPyStructureAdapter::countSites() const
 }
 
 
-BaseBondIterator* DiffPyStructureAdapter::createBondIterator() const
+BaseBondGenerator* DiffPyStructureAdapter::createBondGenerator() const
 {
-    BaseBondIterator* bbi = new DiffPyStructureBondIterator(this);
-    return bbi;
+    BaseBondGenerator* bnds = new DiffPyStructureBondGenerator(this);
+    return bnds;
 }
 
 // Protected Methods ---------------------------------------------------------
@@ -149,13 +149,13 @@ void DiffPyStructureAdapter::fetchPythonData()
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// class DiffPyStructureBondIterator
+// class DiffPyStructureBondGenerator
 //////////////////////////////////////////////////////////////////////////////
 
 // Constructor ---------------------------------------------------------------
 
-DiffPyStructureBondIterator::DiffPyStructureBondIterator(
-        const DiffPyStructureAdapter* adpt) : BaseBondIterator(adpt)
+DiffPyStructureBondGenerator::DiffPyStructureBondGenerator(
+        const DiffPyStructureAdapter* adpt) : BaseBondGenerator(adpt)
 {
     mdpstructure = adpt;
     const Lattice& L = mdpstructure->getLattice();
@@ -165,13 +165,13 @@ DiffPyStructureBondIterator::DiffPyStructureBondIterator(
 
 // Public Methods ------------------------------------------------------------
 
-const R3::Vector& DiffPyStructureBondIterator::r0() const
+const R3::Vector& DiffPyStructureBondGenerator::r0() const
 {
     return mr0ucv;
 }
 
 
-const R3::Vector& DiffPyStructureBondIterator::r1() const
+const R3::Vector& DiffPyStructureBondGenerator::r1() const
 {
     static R3::Vector rv;
     rv = mr1ucv + msphere->r();
@@ -179,7 +179,7 @@ const R3::Vector& DiffPyStructureBondIterator::r1() const
 }
 
 
-double DiffPyStructureBondIterator::msd0() const
+double DiffPyStructureBondGenerator::msd0() const
 {
     const R3::Matrix& Uijcartn = mdpstructure->siteCartesianUij(msite_anchor);
     const R3::Vector& s = this->r01();
@@ -189,7 +189,7 @@ double DiffPyStructureBondIterator::msd0() const
 }
 
 
-double DiffPyStructureBondIterator::msd1() const
+double DiffPyStructureBondGenerator::msd1() const
 {
     const R3::Matrix& Uijcartn = mdpstructure->siteCartesianUij(msite_current);
     const R3::Vector& s = this->r01();

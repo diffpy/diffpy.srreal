@@ -27,7 +27,7 @@
 namespace diffpy {
 namespace srreal {
 
-class BaseBondIterator;
+class BaseBondGenerator;
 
 class StructureAdapter
 {
@@ -39,7 +39,7 @@ class StructureAdapter
         virtual bool siteAnisotropy(int idx) const = 0;
         virtual const R3::Matrix& siteCartesianUij(int idx) const = 0;
 
-        virtual BaseBondIterator* createBondIterator() const = 0;
+        virtual BaseBondGenerator* createBondGenerator() const = 0;
 
 };
 
