@@ -74,6 +74,7 @@ class PDFCalculator : public PairQuantity
         // methods - calculation specific
         double rextlo() const;
         double rexthi() const;
+        double extMagnitude() const;
         int extloPoints() const;
         int exthiPoints() const;
         int rgridPoints() const;

@@ -24,6 +24,8 @@
 #include <cassert>
 
 #include <diffpy/srreal/PDFCalculator.hpp>
+#include <diffpy/srreal/StructureAdapter.hpp>
+#include <diffpy/srreal/R3linalg.hpp>
 
 using namespace std;
 using namespace diffpy;
@@ -34,6 +36,7 @@ using namespace diffpy::srreal;
 namespace {
 
 void ensureNonNegative(const string& vname, double value);
+double maxUii(const StructureAdapter*);
 
 }   // namespace
 
@@ -171,13 +174,32 @@ void addPairContribution(const BaseBondIterator*);
 
 double PDFCalculator::rextlo() const
 {
-    return 0.0; // FIXME
+    double rxlo = this->getRmin() - this->extMagnitude();
+    if (rxlo < 0.0)     rxlo = 0.0;
+    return rxlo;
 }
 
 
 double PDFCalculator::rexthi() const
 {
-    return 0.0; // FIXME
+    double rxhi = this->getRmin() + this->extMagnitude();
+    return rxhi;
+}
+
+
+double PDFCalculator::extMagnitude() const
+{
+    // number of ripples for extending the r-range
+    const int nripples = 6;
+    // extension due to termination ripples
+    double ext_ripples = (this->getQmax() > 0.0) ?
+        (nripples*2*M_PI / this->getQmax()) : 0.0;
+    // extension due to peak width
+    const int n_gaussian_sigma = 5;
+    double ext_pkwidth = n_gaussian_sigma * sqrt(maxUii(mstructure));
+    // combine extensions to get the total magnitude
+    double ext_total = sqrt(pow(ext_ripples, 2) + pow(ext_pkwidth, 2));
+    return ext_total;
 }
 
 
@@ -235,6 +257,22 @@ void ensureNonNegative(const string& vname, double value)
         emsg << vname << " cannot be negative.";
         throw invalid_argument(emsg.str());
     }
+}
+
+
+double maxUii(const StructureAdapter* stru)
+{
+    if (!stru)  return 0.0;
+    double rv = 0.0;
+    for (int i = 0; i < stru->countSites(); ++i)
+    {
+        const R3::Matrix U = stru->siteCartesianUij(i);
+        for (int k = 0; k < R3::Ndim; k++)
+        {
+            if (U(k,k) > rv)   rv = U(k,k);
+        }
+    }
+    return rv;
 }
 
 }   // namespace
