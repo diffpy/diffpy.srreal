@@ -1,3 +1,5 @@
+// vim:set ft=cpp:
+
 #ifndef MATHUTILS_IPP_INCLUDED
 #define MATHUTILS_IPP_INCLUDED
 

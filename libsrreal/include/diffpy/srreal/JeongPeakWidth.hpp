@@ -1,0 +1,66 @@
+/*****************************************************************************
+*
+* diffpy.srreal     by DANSE Diffraction group
+*                   Simon J. L. Billinge
+*                   (c) 2009 Trustees of the Columbia University
+*                   in the City of New York.  All rights reserved.
+*
+* File coded by:    Christopher Farrow, Pavol Juhas
+*
+* See AUTHORS.txt for a list of people who contributed.
+* See LICENSE.txt for license information.
+*
+******************************************************************************
+*
+* class JeongPeakWidth -- peak width model based on FIXME paper by Jeong
+*
+* $Id$
+*
+*****************************************************************************/
+
+#ifndef JEONGPEAKWIDTH_HPP_INCLUDED
+#define JEONGPEAKWIDTH_HPP_INCLUDED
+
+#include <diffpy/srreal/DebyeWallerPeakWidth.hpp>
+
+namespace diffpy {
+namespace srreal {
+
+
+class JeongPeakWidth : public DebyeWallerPeakWidth
+{
+    public:
+
+        // constructors
+        JeongPeakWidth();
+        virtual BasePeakWidthModel* create() const;
+        virtual BasePeakWidthModel* copy() const;
+
+        // comparison with derived classes
+        virtual bool operator==(const BasePeakWidthModel&) const;
+
+        // methods
+        virtual const std::string& type() const;
+        virtual double calculate(const BaseBondGenerator&) const;
+
+        // data access
+        const double& getDelta1() const;
+        void setDelta1(double);
+        const double& getDelta2() const;
+        void setDelta2(double);
+        const double& getQbroad() const;
+        void setQbroad(double);
+
+    private:
+
+        // data
+        double mdelta1;
+        double mdelta2;
+        double mqbroad;
+};
+
+
+}   // namespace srreal
+}   // namespace diffpy
+
+#endif  // JEONGPEAKWIDTH_HPP_INCLUDED

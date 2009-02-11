@@ -35,6 +35,7 @@ class BaseBondGenerator
 
         // constructor
         BaseBondGenerator(const StructureAdapter*);
+        virtual ~BaseBondGenerator()  { }
 
         // methods
         // loop control
