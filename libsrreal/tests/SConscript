@@ -12,7 +12,9 @@ env_test.AppendUnique(LIBS='libboost_python')
 
 # alltests -- the unit test driver
 test_sources = ['alltests.cpp']
-if env_test['tests'] == 'all':
+
+# add all unit test modules when variable tests was not set.
+if env_test.get('tests') is None:
     test_sources += Glob('Test*.cpp')
 else:
     test_sources += Split(env_test['tests']) 

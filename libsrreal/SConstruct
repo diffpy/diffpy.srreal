@@ -4,7 +4,7 @@ import os.path
 # Customizable compile variables
 vars = Variables('sconsvars.py')
 
-vars.Add('tests', 'Custom list of unit test sources', 'all')
+vars.Add('tests', 'Custom list of unit test sources', None)
 vars.Add(EnumVariable('build',
     'compiler settings', 'debug',
     allowed_values=('debug', 'fast')))
