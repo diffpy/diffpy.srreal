@@ -3,23 +3,23 @@ Import('env')
 # Environment for building unit test driver
 env_test = env.Clone()
 env_test.ParseConfig('pkg-config --cflags --libs cppunit')
-lib_dir = Dir('../lib').abspath
+lib_dir = Dir('#/').abspath
 env_test.PrependUnique(LIBS='libsrreal', LIBPATH=lib_dir)
 env_test.PrependENVPath('LD_LIBRARY_PATH', lib_dir)
 env_test.AppendUnique(LIBS='libboost_python')
 
-# alltests - the unit test driver
-src_tests = ['alltests.cpp']
-if env_test['tests'] == 'all':
-    src_tests += Glob('Test*.cpp')
-else:
-    src_tests += Split(env_test['tests']) 
-alltests = env_test.Program('alltests', src_tests)
+# Targets --------------------------------------------------------------------
 
-# alias for executing unit test modules
+# alltests -- the unit test driver
+test_sources = ['alltests.cpp']
+if env_test['tests'] == 'all':
+    test_sources += Glob('Test*.cpp')
+else:
+    test_sources += Split(env_test['tests']) 
+alltests = env_test.Program('alltests', test_sources)
+
+# test -- alias for executing unit tests.
 test = env_test.Alias('test', [alltests], alltests[0].abspath)
 AlwaysBuild(test)
-
-# Default(alltests)
 
 # vim: ft=python

@@ -5,16 +5,15 @@ import os.path
 vars = Variables('sconsvars.py')
 
 vars.Add('tests', 'Custom list of unit test sources', 'all')
-vars.Add(EnumVariable('build', 'compiler settings', 'debug',
-                      allowed_values=('debug', 'fast')))
+vars.Add(EnumVariable('build',
+    'compiler settings', 'debug',
+    allowed_values=('debug', 'fast')))
 vars.Add(PathVariable('prefix',
     'installation prefix directory', '/usr/local'))
 vars.Add(PathVariable('libdir',
-    'object code library directory [prefix/lib]', '',
-    validator=PathVariable.PathAccept))
+    'object code library directory [prefix/lib]', None))
 vars.Add(PathVariable('includedir',
-    'installation directory for C++ header files [prefix/include]', '',
-    validator=PathVariable.PathAccept))
+    'installation directory for C++ header files [prefix/include]', None))
 
 # Default build environment
 env = DefaultEnvironment(variables=vars)
@@ -27,33 +26,44 @@ env.ParseConfig("gsl-config --cflags --libs")
 if env['build'] == 'debug':
    env.Append(CCFLAGS='-g')
 env.Append(CCFLAGS='-Wall')
-env.PrependUnique(CPPPATH='#/include')
+env.PrependUnique(CPPPATH='#/')
+
+# Define lists for storing library source and include files.
+env['lib_includes'] = []
+env['lib_sources'] = []
+
+# Subsidiary SConscripts -----------------------------------------------------
 
 Export('env')
 
-# Execute subsidiary sconscripts
+# This SConscript updates lib_includes and lib_sources.
+SConscript('diffpy/SConscript')
 
-# shared library object
-lib = SConscript('lib/SConscript')
-# unit tests
+# Define any targets related to testing.
 SConscript('tests/SConscript')
 
-# Installation targets
+# Top Level Targets ----------------------------------------------------------
 
-# library object
+# lib -- shared library object
+libsrreal = env.SharedLibrary('libsrreal', env['lib_sources'])
+Alias('lib', libsrreal)
+
+# Installation targets.
+
 prefix = env['prefix']
-libdir = env['libdir'] or \
-        Dir(os.path.join(prefix, 'lib'))
-Alias('install-lib', Install(libdir, lib))
 
-# includes
-includedir = env['includedir'] or \
-        Dir(os.path.join(env['prefix'], 'include/diffpy/srreal'))
-include_sources = Glob('include/diffpy/*.[hi]pp') + \
-        Glob('include/diffpy/srreal/*.[hi]pp')
-Alias('install-include', Install(includedir, include_sources))
+# install-lib
+libdir = env.get('libdir', os.path.join(prefix, 'lib'))
+Alias('install-lib', Install(libdir, libsrreal))
 
-# everything
+# install-includes
+includedir = env.get('includedir', os.path.join(env['prefix'], 'include'))
+get_target_path = lambda f : os.path.join(includedir, f.path)
+include_targets = map(get_target_path, env['lib_includes'])
+
+Alias('install-include', InstallAs(include_targets, env['lib_includes']))
+
+# install
 Alias('install', ['install-include', 'install-lib'])
 
 # vim: ft=python
