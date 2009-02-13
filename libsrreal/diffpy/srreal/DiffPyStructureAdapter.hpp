@@ -95,10 +95,6 @@ class DiffPyStructureBondGenerator : public BaseBondGenerator
         R3::Vector mr1ucv;
 };
 
-double meanSquareDisplacement(const R3::Matrix& Uijcartn, const R3::Vector& s,
-        bool anisotropy=false);
-
-
 //////////////////////////////////////////////////////////////////////////////
 // Definitions
 //////////////////////////////////////////////////////////////////////////////
