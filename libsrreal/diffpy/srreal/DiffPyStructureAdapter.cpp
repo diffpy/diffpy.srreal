@@ -27,7 +27,6 @@
 
 #include <diffpy/srreal/DiffPyStructureAdapter.hpp>
 #include <diffpy/srreal/PDFUtils.hpp>
-#include <diffpy/srreal/Lattice.hpp>
 #include <diffpy/srreal/PointsInSphere.hpp>
 
 using namespace std;
@@ -64,8 +63,7 @@ BaseBondGenerator* DiffPyStructureAdapter::createBondGenerator() const
 
 const Lattice& DiffPyStructureAdapter::getLattice() const
 {
-    assert(mlattice.get());
-    return *mlattice;
+    return mlattice;
 }
 
 
@@ -109,16 +107,21 @@ void DiffPyStructureAdapter::fetchPythonData()
     alpha = python::extract<double>(lattice.attr("alpha"));
     beta = python::extract<double>(lattice.attr("beta"));
     gamma = python::extract<double>(lattice.attr("gamma"));
+    mlattice.setLatPar(a, b, c, alpha, beta, gamma);
     // atom properties
     mcartesian_positions.clear();
     manisotropies.clear();
     mcartesian_uijs.clear();
     matomtypes.clear();
     int num_atoms = python::len(*mdpstructure);
+    // We need to call python::eval to avoid problems with numpy.bool
+    python::object py_main = python::import("__main__");
+    python::object py_globals = py_main.attr("__dict__");
+    python::dict py_locals;
     for (int i = 0; i < num_atoms; ++i)
     {
         python::object ai;
-        ai = mdpstructure[i];
+        ai = (*mdpstructure)[i];
         // mcartesian_positions
         python::object xyz = ai.attr("xyz");
         double x, y, z;
@@ -126,18 +129,22 @@ void DiffPyStructureAdapter::fetchPythonData()
         y = python::extract<double>(xyz[1]);
         z = python::extract<double>(xyz[2]);
         R3::Vector xyz_frac(x, y, z);
-        R3::Vector xyz_cartn = mlattice->cartesian(xyz_frac);
+        R3::Vector xyz_cartn;
+        xyz_cartn = mlattice.cartesian(xyz_frac);
         mcartesian_positions.push_back(xyz_cartn);
         // manisotropies
         bool aniso;
-        aniso = python::extract<bool>(ai.attr("anisotropy"));
+        py_locals["ai"] = ai;
+        python::object anisotropy =
+            python::eval("bool(ai.anisotropy)", py_globals, py_locals);
+        aniso = python::extract<bool>(anisotropy);
         manisotropies.push_back(aniso);
         // mcartesian_uijs
         R3::Matrix Ufrac;
         python::object uflat = ai.attr("U").attr("flat");
         python::stl_input_iterator<double> ufirst(uflat), ulast;
         std::copy(ufirst, ulast, Ufrac.data());
-        R3::Matrix Ucart = mlattice->cartesianMatrix(Ufrac);
+        R3::Matrix Ucart = mlattice.cartesianMatrix(Ufrac);
         mcartesian_uijs.push_back(Ucart);
         // matomtypes
         string atp = python::extract<string>(ai.attr("element"));

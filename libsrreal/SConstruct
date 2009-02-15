@@ -16,7 +16,10 @@ vars.Add(PathVariable('includedir',
     'installation directory for C++ header files [prefix/include]', None))
 
 # Default build environment
-env = DefaultEnvironment(variables=vars)
+env = DefaultEnvironment(variables=vars, ENV={
+    'PATH' : os.environ['PATH'],
+    'PYTHONPATH' : os.environ['PYTHONPATH'],
+    })
 Help(vars.GenerateHelpText(env))
 
 env.ParseConfig("python-config --includes")

@@ -33,6 +33,7 @@ class StructureAdapter
 {
     public:
 
+        virtual ~StructureAdapter()  { }
         // methods
         virtual int countSites() const = 0;
         virtual const R3::Vector& siteCartesianPosition(int idx) const = 0;

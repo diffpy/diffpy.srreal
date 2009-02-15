@@ -23,13 +23,19 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/ui/text/TestRunner.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <boost/python.hpp>
+
+#include "globals.hpp"
 
 using namespace std;
 using namespace CppUnit;
 
 
-int main()
+int main(int argc, char* argv[])
 {
+    // Reset global paths from argv[0]
+    thisfile(argv[0]);
+
     // Get the top level suite from the registry
     Test* suite = TestFactoryRegistry::getRegistry().makeTest();
 
@@ -42,10 +48,20 @@ int main()
     Outputter* outfmt = new CompilerOutputter(&runner.result(), cerr);
     runner.setOutputter(outfmt);
     // Run the tests.
-    bool wasSucessful = runner.run();
+    int exit_code;
+    try {
+        bool wasSucessful;
+        wasSucessful = runner.run();
+        exit_code = wasSucessful ? EXIT_SUCCESS : EXIT_FAILURE;
+    }
+    catch (boost::python::error_already_set) {
+        if (PyErr_Occurred())   PyErr_Print();
+        exit_code = 2;
+    }
 
     // Return error code 1 if the one of test failed.
-    return wasSucessful ? EXIT_SUCCESS : EXIT_FAILURE;
+    // Return error code 2 if there was other failure.
+    return exit_code;
 }
 
 // End of file

@@ -21,16 +21,17 @@
 *
 *****************************************************************************/
 
-#ifndef VR3STRUCTURE_HPP_INCLUDED
-#define VR3STRUCTURE_HPP_INCLUDED
+#ifndef DIFFPYSTRUCTUREADAPTER_HPP_INCLUDED
+#define DIFFPYSTRUCTUREADAPTER_HPP_INCLUDED
 
 #include <memory>
 #include <vector>
 #include <boost/python.hpp>
 
-#include "R3linalg.hpp"
-#include "StructureAdapter.hpp"
-#include "BaseBondGenerator.hpp"
+#include <diffpy/srreal/R3linalg.hpp>
+#include <diffpy/srreal/StructureAdapter.hpp>
+#include <diffpy/srreal/BaseBondGenerator.hpp>
+#include <diffpy/srreal/Lattice.hpp>
 
 namespace diffpy {
 namespace srreal {
@@ -65,7 +66,7 @@ class DiffPyStructureAdapter : public StructureAdapter
         // data
         const boost::python::object* mdpstructure;
         // copied properties
-        std::auto_ptr<Lattice> mlattice;
+        Lattice mlattice;
         std::vector<R3::Vector> mcartesian_positions;
         std::vector<bool> manisotropies;
         std::vector<R3::Matrix> mcartesian_uijs;
@@ -112,4 +113,4 @@ StructureAdapter* createPQAdapter(const boost::python::object& dpstru)
 }   // namespace srreal
 }   // namespace diffpy
 
-#endif  // VR3STRUCTURE_HPP_INCLUDED
+#endif  // DIFFPYSTRUCTUREADAPTER_HPP_INCLUDED
