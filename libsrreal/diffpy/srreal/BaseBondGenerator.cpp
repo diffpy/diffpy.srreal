@@ -91,6 +91,7 @@ void BaseBondGenerator::setRmin(double rmin)
 {
     if (rmin != mrmin)  this->setFinishedFlag();
     mrmin = rmin;
+    this->checkIfRangeSet();
 }
 
 
@@ -98,6 +99,7 @@ void BaseBondGenerator::setRmax(double rmax)
 {
     if (rmax != mrmax)  this->setFinishedFlag();
     mrmax = rmax;
+    this->checkIfRangeSet();
 }
 
 // data query
@@ -179,9 +181,19 @@ void BaseBondGenerator::getNextBond()
 
 bool BaseBondGenerator::bondOutOfRange() const
 {
-    double d = this->distance();
-    bool rv = (d < this->getRmin()) || (d > this->getRmax());
+    bool rv = false;
+    if (mrangeset)    
+    {
+        double d = this->distance();
+        rv = (d < this->getRmin()) || (d > this->getRmax());
+    }
     return rv;
+}
+
+
+void BaseBondGenerator::checkIfRangeSet()
+{
+    mrangeset = (this->getRmin() != 0.0) || (this->getRmax() != DOUBLE_MAX);
 }
 
 

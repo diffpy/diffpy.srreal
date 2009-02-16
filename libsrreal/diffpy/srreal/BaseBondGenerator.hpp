@@ -82,9 +82,12 @@ class BaseBondGenerator
 
     private:
 
+        // data
+        bool mrangeset;
         // methods
         void getNextBond();
         bool bondOutOfRange() const;
+        void checkIfRangeSet();
         void skipSelfPair();
         void setFinishedFlag();
 
