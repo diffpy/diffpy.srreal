@@ -12,8 +12,7 @@
 *
 ******************************************************************************
 *
-* class TestVR3Structure -- unit tests for using simple structure class
-*     VR3Structure with pair quantity calculators
+* class TestPairCounter -- unit tests for PairCounter class
 *
 * $Id$
 *
@@ -22,17 +21,19 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <diffpy/srreal/VR3Structure.hpp>
 #include <diffpy/srreal/PairCounter.hpp>
+#include <diffpy/srreal/VR3Structure.hpp>
 
 using namespace std;
 using namespace diffpy::srreal;
 
-class TestVR3Structure : public CppUnit::TestFixture
+class TestPairCounter : public CppUnit::TestFixture
 {
 
-    CPPUNIT_TEST_SUITE(TestVR3Structure);
-    CPPUNIT_TEST(test_PairCounter);
+    CPPUNIT_TEST_SUITE(TestPairCounter);
+    CPPUNIT_TEST(test_call);
+    CPPUNIT_TEST(test_setRmin);
+    CPPUNIT_TEST(test_setRmax);
     CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -47,7 +48,7 @@ public:
     }
 
 
-    void test_PairCounter()
+    void test_call()
     {
         PairCounter pcount;
         for (int i = 0; i < 100; ++i)
@@ -61,9 +62,19 @@ public:
         CPPUNIT_ASSERT_EQUAL(0, pcount(mstru));
     }
 
+
+    void test_setRmin()
+    {
+    }
+
+
+    void test_setRmax()
+    {
+    }
+
 };
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(TestVR3Structure);
+CPPUNIT_TEST_SUITE_REGISTRATION(TestPairCounter);
 
 // End of file

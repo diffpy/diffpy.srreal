@@ -12,8 +12,8 @@
 *
 ******************************************************************************
 *
-* class TestVR3Structure -- unit tests for using simple structure class
-*     VR3Structure with pair quantity calculators
+* class TestDiffPyStructureAdapter -- unit tests for an adapter
+*     to Structure class from diffpy.Structure
 *
 * $Id$
 *
