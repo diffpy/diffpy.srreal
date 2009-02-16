@@ -80,9 +80,7 @@ def fitNickelFromFile(dataname, stype):
     from park.optim.fitmc import FitMC
     handler = ConsoleUpdate(improvement_delta=0.1,progress_delta=1)
     #from park.optim.fitmc import FitMC
-    #fitter = FitMC(start_points=1)
-    from park.optim.snobfit import Snobfit
-    fitter = Snobfit()
+    fitter = FitMC(start_points=1)
 
 
     # Run the fit and save the results
