@@ -24,13 +24,13 @@ def fitSiNi():
     # Use diffpy.Structure to read the structure from file
     import diffpy.Structure
     nistru = diffpy.Structure.Structure()
-    nistru.read("testdata/ni.stru", "pdffit")
+    nistru.read("data/ni.stru", "pdffit")
     # Convert the structure to a CrystalStructure object that the PDFModel can
     # use.
     niphase = phaseFromStructure(nistru, "nickel")
 
     sistru = diffpy.Structure.Structure()
-    sistru.read("testdata/si.stru", "pdffit")
+    sistru.read("data/si.stru", "pdffit")
     siphase = phaseFromStructure(sistru, "silicon")
 
     # Add the phase to the model.
@@ -39,7 +39,7 @@ def fitSiNi():
 
     # Load the data and select the data points that we want to fit
     from park.modelling.data import Data1D
-    dat = Data1D(filename="testdata/si90ni10-q27r60-xray.gr")
+    dat = Data1D(filename="data/si90ni10-q27r60-xray.gr")
     # This selects every-other data point up to r = 10
     import bisect
     idxlo = bisect.bisect(dat.x, 1.5)
@@ -129,13 +129,13 @@ def calcSiNi():
     # Use diffpy.Structure to read the structure from file
     import diffpy.Structure
     nistru = diffpy.Structure.Structure()
-    nistru.read("testdata/ni.stru", "pdffit")
+    nistru.read("data/ni.stru", "pdffit")
     # Convert the structure to a CrystalStructure object that the PDFModel can
     # use.
     niphase = phaseFromStructure(nistru, "nickel")
 
     sistru = diffpy.Structure.Structure()
-    sistru.read("testdata/si.stru", "pdffit")
+    sistru.read("data/si.stru", "pdffit")
     siphase = phaseFromStructure(sistru, "silicon")
 
     # Add the phase to the model.

@@ -20,20 +20,25 @@ def fitNickelFromFile(dataname, stype):
 
     import park
     import numpy
-    from diffpy.srreal.pdf import PDFModel, phaseFromStructure, structureFromPhase
+    from diffpy.srreal.pdf import PDFModel
+    from diffpy.srreal.pdf import phaseFromStructure
+    from diffpy.srreal.pdf import structureFromPhase
 
     outname = ".".join(dataname.split(".")[:-1])
 
-    # Create a new refinement model
+    # Create a new refinement model. "NiModel" is the model name.
     model = PDFModel("NiModel")
-    # Set the qmax cutoff for the pdf data
+    # stype is the scattering type, "X" for x-ray and "N" for neutron.
     model.stype = stype
+    # Set the qmax cutoff for the pdf data. 
     model.qmax = 27.0
 
-    # Use diffpy.Structure to read the structure from file
+    # Use diffpy.Structure to read the structure from file. We're reading in a
+    # structure file in "pdffit" format, but many other formats can be read.
     import diffpy.Structure
     stru = diffpy.Structure.Structure()
-    stru.read("testdata/ni.stru", "pdffit")
+    stru.read("data/ni.stru", "pdffit")
+
     # Convert the structure to a CrystalStructure object that the PDFModel can
     # use.
     phase = phaseFromStructure(stru)
@@ -43,29 +48,35 @@ def fitNickelFromFile(dataname, stype):
 
     # Load the data and select the data points that we want to fit
     from park.modelling.data import Data1D
-    dat = Data1D(filename="testdata/"+dataname)
-    # This selects every-other data point up to r = 10
+    dat = Data1D(filename="data/"+dataname)
+    # This selects every-other data point between r = 1.8 and r = 10.
     import bisect
     idxlo = bisect.bisect(dat.x, 1.8)
     idxhi = bisect.bisect(dat.x, 10)
     dat.select(range(idxlo, idxhi, 2))
 
     # Create the assembly, which associates the model with the data and
-    # specifies which phases are part of the fit
+    # specifies which phases are part of the fit. The phase is put in the
+    # assembly as well, but without data. This allows us to share the phase
+    # between multiple models.
     assemb = park.Assembly([(model,dat), (phase,)])
 
     # Constrain parameters
-    # This refines dscale between 0.2 and 2.0
+    # This says to refine the data scale "dscale" between 0.2 and 2.0
     model.dscale.set((0.2, 2.0))
-    # This sets lattice parameters b and c equal to a
+    # This sets lattice parameters b and c equal to a, and says to refine a
+    # between 3.50 and 3.55 Angstroms.
     lat = phase.lattice
     lat.b.set( lat.a.path )
     lat.c.set( lat.a.path )
     lat.a.set((3.50, 3.55))
-    # This constrains delta2 and qdamp
+    # This constrains an atomic vibrational correlation factor, delta2, and
+    # and an experimental resolution factor, qdamp.
     phase.delta2.set((0, 10))
     model.qdamp.set((0.0, 0.1))
-    # Loop over atoms and constrain the thermal parameters to be isotropic
+
+    # Loop over atoms and constrain the thermal parameters to be isotropic.
+    # This will be automated in the future.
     atoms = phase.getAtoms()
     u11path = atoms[0]["u11"].path
     for i, atom in enumerate(atoms):
@@ -75,11 +86,14 @@ def fitNickelFromFile(dataname, stype):
         atom.u33.set(u11path)
     atoms[0].u11.set( (0.001, 0.01) )
 
-    # Configure the fit
+    # Configure the fit.
     from park.fitting.fitresult import ConsoleUpdate
     from park.optim.fitmc import FitMC
+    # Select the update method. This will print updates to the screen.
     handler = ConsoleUpdate(improvement_delta=0.1,progress_delta=1)
-    #from park.optim.fitmc import FitMC
+    # This uses the park Monte-carlo fitter, which performs multiple fits (in
+    # this case, just 1) at multiple starting positions. With more start points,
+    # we get closer to true global optimization.
     fitter = FitMC(start_points=1)
 
 
@@ -88,7 +102,9 @@ def fitNickelFromFile(dataname, stype):
     import park.fitting.fit
     result = park.fitting.fit.fit(assemb, handler=handler, fitter=fitter)
     result.print_summary()
+    # Save the fit.
     numpy.savetxt("%s.fit"%outname, zip(dat.fit_x,dat.calc_y))
+    # Save the output to file.
     ofile = file("%s.res"%outname, 'w')
     result.print_summary(ofile)
     ofile.close()
@@ -104,12 +120,14 @@ def fitTwoNickel():
 
     import park
     import numpy
-    from diffpy.srreal.pdf import PDFModel, phaseFromStructure, structureFromPhase
+    from diffpy.srreal.pdf import PDFModel
+    from diffpy.srreal.pdf import phaseFromStructure
+    from diffpy.srreal.pdf import structureFromPhase
 
     # Use diffpy.Structure to read the structure from file
     import diffpy.Structure
     stru = diffpy.Structure.Structure()
-    stru.read("testdata/ni.stru", "pdffit")
+    stru.read("data/ni.stru", "pdffit")
     # Convert the structure to a CrystalStructure object that the PDFModel can
     # use.
     phase = phaseFromStructure(stru)
@@ -133,12 +151,12 @@ def fitTwoNickel():
     # Load the data and select the data points that we want to fit
     from park.modelling.data import Data1D
     import bisect
-    datN = Data1D(filename="testdata/ni-q27r100-neutron.gr")
+    datN = Data1D(filename="data/ni-q27r100-neutron.gr")
     # This selects every-other dat1a point up to r = 10
     idxlo = bisect.bisect(datN.x, 1.8)
     idxhi = bisect.bisect(datN.x, 10)
     datN.select(range(idxlo, idxhi, 2))
-    datX = Data1D(filename="testdata/ni-q27r60-xray.gr")
+    datX = Data1D(filename="data/ni-q27r60-xray.gr")
     idxlo = bisect.bisect(datX.x, 1.8)
     idxhi = bisect.bisect(datX.x, 10)
     datX.select(range(idxlo, idxhi, 2))

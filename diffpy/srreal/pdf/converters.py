@@ -103,25 +103,3 @@ def structureFromPhase(p):
         S.addNewAtom(atype = element, xyz = xyz, U = U)
 
     return S
-
-def _testConverters():
-    """Assert that stru == structureFromPhase(phaseFromStructure(stru))"""
-    from diffpy.Structure import Structure
-    S1 = Structure()
-    S1.read("tests/testdata/ni.stru", "pdffit")
-
-    p = phaseFromStructure(S1)
-    S2 = structureFromPhase(p)
-
-    assert(S1.lattice.abcABG() == S2.lattice.abcABG())
-    assert(len(S1) == len(S2))
-    for i in range(len(S1)):
-        assert(S1[i].element == S2[i].element)
-        assert(S1[i].occupancy == S2[i].occupancy)
-        assert((S1[i].xyz == S2[i].xyz).all())
-        assert((S1[i].U == S2[i].U).all())
-
-    return
-
-if __name__ == "__main__":
-    _testConverters()
