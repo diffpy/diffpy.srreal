@@ -21,15 +21,19 @@
 
 #include <diffpy/srreal/BaseBondGenerator.hpp>
 #include <diffpy/srreal/StructureAdapter.hpp>
+#include <diffpy/mathutils.hpp>
 
 using namespace std;
 using namespace diffpy::srreal;
+using diffpy::mathutils::DOUBLE_MAX;
 
 // Constructor ---------------------------------------------------------------
 
 BaseBondGenerator::BaseBondGenerator(const StructureAdapter* stru)
 {
     mstructure = stru;
+    this->setRmin(0.0);
+    this->setRmax(DOUBLE_MAX);
     this->includeSelfPairs(false);
     this->selectAnchorSite(0);
     this->selectSiteRange(0, mstructure->countSites());
@@ -48,9 +52,11 @@ void BaseBondGenerator::rewind()
 
 void BaseBondGenerator::next()
 {
-    if (this->iterateSymmetry())  return;
-    msite_current += 1;
-    this->skipSelfPair();
+    for (this->getNext(); !this->finished(); this->getNext())
+    {
+        double d = this->distance();
+        if (this->getRmin() <= d && d <= this->getRmax())  break;
+    }
 }
 
 
@@ -78,10 +84,37 @@ void BaseBondGenerator::selectSiteRange(int first, int last)
 
 void BaseBondGenerator::includeSelfPairs(bool flag)
 {
+    if (minclude_self_pairs != flag)  this->setFinishedFlag();
     minclude_self_pairs = flag;
 }
 
+
+void BaseBondGenerator::setRmin(double rmin)
+{
+    if (rmin != mrmin)  this->setFinishedFlag();
+    mrmin = rmin;
+}
+
+
+void BaseBondGenerator::setRmax(double rmax)
+{
+    if (rmax != mrmax)  this->setFinishedFlag();
+    mrmax = rmax;
+}
+
 // data query
+
+const double& BaseBondGenerator::getRmin() const
+{
+    return mrmin;
+}
+
+
+const double& BaseBondGenerator::getRmax() const
+{
+    return mrmax;
+}
+
 
 const R3::Vector& BaseBondGenerator::r0() const
 {
@@ -137,6 +170,14 @@ bool BaseBondGenerator::iterateSymmetry()
 }
 
 // Private Methods -----------------------------------------------------------
+
+void BaseBondGenerator::getNext()
+{
+    if (this->iterateSymmetry())  return;
+    msite_current += 1;
+    this->skipSelfPair();
+}
+
 
 void BaseBondGenerator::skipSelfPair()
 {

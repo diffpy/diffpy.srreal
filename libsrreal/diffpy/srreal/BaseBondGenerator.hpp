@@ -22,7 +22,7 @@
 #ifndef BASEBONDGENERATOR_HPP_INCLUDED
 #define BASEBONDGENERATOR_HPP_INCLUDED
 
-#include "R3linalg.hpp"
+#include <diffpy/srreal/R3linalg.hpp>
 
 namespace diffpy {
 namespace srreal {
@@ -47,8 +47,12 @@ class BaseBondGenerator
         void selectAnchorSite(int);
         void selectSiteRange(int first, int last);
         void includeSelfPairs(bool);
+        void setRmin(double);
+        void setRmax(double);
 
         // get data
+        const double& getRmin() const;
+        const double& getRmax() const;
         virtual const R3::Vector& r0() const;
         virtual const R3::Vector& r1() const;
         double distance() const;
@@ -65,6 +69,8 @@ class BaseBondGenerator
         int msite_last;
         int msite_current;
         bool minclude_self_pairs;
+        double mrmin;
+        double mrmax;
         const StructureAdapter* mstructure;
 
         // bond data
@@ -77,6 +83,7 @@ class BaseBondGenerator
     private:
 
         // methods
+        void getNext();
         void skipSelfPair();
         void setFinishedFlag();
 

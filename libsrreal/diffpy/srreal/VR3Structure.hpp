@@ -25,7 +25,7 @@
 
 #include <vector>
 
-#include "R3linalg.hpp"
+#include <diffpy/srreal/R3linalg.hpp>
 #include "StructureAdapter.hpp"
 #include "BaseBondGenerator.hpp"
 

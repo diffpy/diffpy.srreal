@@ -22,7 +22,7 @@
 #ifndef STRUCTUREADAPTER_HPP_INCLUDED
 #define STRUCTUREADAPTER_HPP_INCLUDED
 
-#include "R3linalg.hpp"
+#include <diffpy/srreal/R3linalg.hpp>
 
 namespace diffpy {
 namespace srreal {
