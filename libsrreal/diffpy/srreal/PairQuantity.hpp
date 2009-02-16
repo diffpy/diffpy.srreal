@@ -40,6 +40,12 @@ class PairQuantity : public BasePairQuantity
         template <class T> const QuantityType& eval(const T&);
         virtual const QuantityType& value() const;
 
+        // configuration
+        virtual void setRmin(double);
+        const double& getRmin() const;
+        virtual void setRmax(double);
+        const double& getRmax() const;
+
     protected:
 
         // methods
@@ -47,12 +53,14 @@ class PairQuantity : public BasePairQuantity
         virtual void resizeValue(size_t);
         virtual void resetValue();
         virtual void updateValue();
-        virtual void configureBondGenerator(BaseBondGenerator&) { }
+        virtual void configureBondGenerator(BaseBondGenerator&);
         virtual void addPairContribution(const BaseBondGenerator&) { }
 
         // data
         QuantityType mvalue;
         const StructureAdapter* mstructure;
+        double mrmin;
+        double mrmax;
 
 };
 

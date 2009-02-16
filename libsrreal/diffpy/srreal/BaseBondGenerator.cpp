@@ -47,16 +47,14 @@ void BaseBondGenerator::rewind()
 {
     msite_current = msite_first;
     this->skipSelfPair();
+    while (!this->finished() && this->bondOutOfRange())  this->getNextBond();
 }
 
 
 void BaseBondGenerator::next()
 {
-    for (this->getNext(); !this->finished(); this->getNext())
-    {
-        double d = this->distance();
-        if (this->getRmin() <= d && d <= this->getRmax())  break;
-    }
+    this->getNextBond();
+    while (!this->finished() && this->bondOutOfRange())  this->getNextBond();
 }
 
 
@@ -171,11 +169,19 @@ bool BaseBondGenerator::iterateSymmetry()
 
 // Private Methods -----------------------------------------------------------
 
-void BaseBondGenerator::getNext()
+void BaseBondGenerator::getNextBond()
 {
     if (this->iterateSymmetry())  return;
     msite_current += 1;
     this->skipSelfPair();
+}
+
+
+bool BaseBondGenerator::bondOutOfRange() const
+{
+    double d = this->distance();
+    bool rv = (d < this->getRmin()) || (d > this->getRmax());
+    return rv;
 }
 
 

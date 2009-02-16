@@ -23,6 +23,7 @@
 #include <diffpy/srreal/PairQuantity.hpp>
 #include <diffpy/srreal/StructureAdapter.hpp>
 #include <diffpy/srreal/BaseBondGenerator.hpp>
+#include <diffpy/mathutils.hpp>
 
 using namespace std;
 using namespace diffpy::srreal;
@@ -50,10 +51,37 @@ const QuantityType& PairQuantity::value() const
     return mvalue;
 }
 
+
+void PairQuantity::setRmin(double rmin)
+{
+    mrmin = rmin;
+}
+
+
+const double& PairQuantity::getRmin() const
+{
+    return mrmin;
+}
+
+
+void PairQuantity::setRmax(double rmax)
+{
+    mrmax = rmax;
+}
+
+
+const double& PairQuantity::getRmax() const
+{
+    return mrmax;
+}
+
 // Protected Methods ---------------------------------------------------------
 
 void PairQuantity::init()
 { 
+    using diffpy::mathutils::DOUBLE_MAX;
+    this->setRmin(0.0);
+    this->setRmax(DOUBLE_MAX);
     this->resizeValue(1);
 }
 
@@ -86,6 +114,13 @@ void PairQuantity::updateValue()
             this->addPairContribution(*bnds);
         }
     }
+}
+
+
+void PairQuantity::configureBondGenerator(BaseBondGenerator& bnds)
+{
+    bnds.setRmin(this->getRmin());
+    bnds.setRmax(this->getRmax());
 }
 
 // End of file

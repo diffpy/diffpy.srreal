@@ -100,26 +100,14 @@ const double& PDFCalculator::getQmax() const
 void PDFCalculator::setRmin(double rmin)
 {
     ensureNonNegative("Rmin", rmin);
-    mrmin = rmin;
-}
-
-
-const double& PDFCalculator::getRmin() const
-{
-    return mrmin;
+    this->PairQuantity::setRmin(rmin);
 }
 
 
 void PDFCalculator::setRmax(double rmax)
 {
     ensureNonNegative("Rmax", rmax);
-    mrmax = rmax;
-}
-
-
-const double& PDFCalculator::getRmax() const
-{
-    return mrmax;
+    this->PairQuantity::setRmax(rmax);
 }
 
 
@@ -165,9 +153,16 @@ const PeakWidthModel& PDFCalculator::getPeakWidthModel() const;
 
 // PairQuantity overloads
 
+void PDFCalculator::init()
+{
+    this->PairQuantity::init();
+}
+
+
 /*
-void init();
-void addPairContribution(const BaseBondGenerator&);
+void PDFCalculator::addPairContribution(const BaseBondGenerator& bnds)
+{
+}
 */
 
 // calculation specific

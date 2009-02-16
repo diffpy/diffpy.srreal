@@ -83,7 +83,8 @@ class BaseBondGenerator
     private:
 
         // methods
-        void getNext();
+        void getNextBond();
+        bool bondOutOfRange() const;
         void skipSelfPair();
         void setFinishedFlag();
 

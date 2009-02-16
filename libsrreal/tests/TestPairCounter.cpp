@@ -39,12 +39,21 @@ class TestPairCounter : public CppUnit::TestFixture
 private:
 
     VR3Structure mstru;
+    VR3Structure mline100;
 
 public:
 
     void setUp()
     {
         mstru.clear();
+        if (mline100.empty())
+        {
+            for (int i = 0; i < 100; ++i)
+            {
+                R3::Vector P(1.0*i, 0.0, 0.0);
+                mline100.push_back(P);
+            }
+        }
     }
 
 
@@ -65,11 +74,26 @@ public:
 
     void test_setRmin()
     {
+        PairCounter pcount;
+        CPPUNIT_ASSERT_EQUAL(100*99/2, pcount(mline100));
+        pcount.setRmin(100);
+        CPPUNIT_ASSERT_EQUAL(0, pcount(mline100));
+        pcount.setRmin(99.0);
+        CPPUNIT_ASSERT_EQUAL(1, pcount(mline100));
+        pcount.setRmin(1.1);
+        CPPUNIT_ASSERT_EQUAL(100*99/2 - 99, pcount(mline100));
     }
 
 
     void test_setRmax()
     {
+        PairCounter pcount;
+        pcount.setRmax(0.9);
+        CPPUNIT_ASSERT_EQUAL(0, pcount(mline100));
+        pcount.setRmax(1.1);
+        CPPUNIT_ASSERT_EQUAL(99, pcount(mline100));
+        pcount.setRmax(98.5);
+        CPPUNIT_ASSERT_EQUAL(100*99/2 - 1, pcount(mline100));
     }
 
 };

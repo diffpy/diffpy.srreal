@@ -22,13 +22,14 @@
 #define PDFCALCULATOR_HPP_INCLUDED
 
 #include <memory>
-#include "PairQuantity.hpp"
+#include <diffpy/srreal/PairQuantity.hpp>
+#include <diffpy/srreal/BasePeakWidthModel.hpp>
 
 namespace diffpy {
 namespace srreal {
 
-class PeakWidthModel;
-class ScatteringFactorTable;
+// FIXME
+class ScatteringFactorTable { };
 
 class PDFCalculator : public PairQuantity
 {
@@ -46,16 +47,14 @@ class PDFCalculator : public PairQuantity
         const double& getQmax() const;
 
         // R-range configuration
-        void setRmin(double);
-        const double& getRmin() const;
-        void setRmax(double);
-        const double& getRmax() const;
+        virtual void setRmin(double);
+        virtual void setRmax(double);
         void setRstep(double);
         const double& getRstep() const;
 
         // PDF peak width configuration
-        void setPeakWidthModel(const PeakWidthModel&);
-        const PeakWidthModel& getPeakWidthModel() const;
+        void setPeakWidthModel(const BasePeakWidthModel&);
+        const BasePeakWidthModel& getPeakWidthModel() const;
 
         // scattering factors configuration
         void setScatteringFactorTable(const ScatteringFactorTable&);
@@ -69,7 +68,8 @@ class PDFCalculator : public PairQuantity
 
         // methods - PairQuantity overloads
         virtual void init();
-        virtual void addPairContribution(const BaseBondGenerator&);
+        // FIXME
+//      virtual void addPairContribution(const BaseBondGenerator&);
 
         // methods - calculation specific
         double rextlo() const;
@@ -91,11 +91,9 @@ class PDFCalculator : public PairQuantity
         // configuration
         double mqmin;
         double mqmax;
-        double mrmin;
-        double mrmax;
         double mrstep;
-        std::auto_ptr<PeakWidthModel> mpwmodel;
-        std::auto_ptr<PeakWidthModel> msftable;
+        std::auto_ptr<BasePeakWidthModel> mpwmodel;
+        std::auto_ptr<ScatteringFactorTable> msftable;
         std::vector<double> msfsite;
 
 
