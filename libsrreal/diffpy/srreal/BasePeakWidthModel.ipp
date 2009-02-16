@@ -30,10 +30,10 @@ BasePeakWidthModel* createPeakWidthModel(const std::string& tp)
     if (ipwm == reg.end())
     {
         stringstream emsg;
-        emsg << "Unknown type of PeakWidthModel '" << tp << "'.";
+        emsg << "Unknown type of BasePeakWidthModel '" << tp << "'.";
         throw invalid_argument(emsg.str());
     }
-    BasePeakWidthModel* rv = ipwm->second->copy();
+    BasePeakWidthModel* rv = ipwm->second->create();
     return rv;
 }
 
@@ -46,7 +46,7 @@ bool registerPeakWidthModel(const BasePeakWidthModel& pwm)
     if (reg.count(pwm.type()))
     {
         stringstream emsg;
-        emsg << "PeakWidthModel type '" << pwm.type() <<
+        emsg << "BasePeakWidthModel type '" << pwm.type() <<
             "' is already registered.";
         throw logic_error(emsg.str());
     }
