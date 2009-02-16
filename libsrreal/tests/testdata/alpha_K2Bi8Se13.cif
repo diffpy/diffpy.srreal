@@ -1,0 +1,68 @@
+#### CIF created by Crystallographica 2 ####
+
+data_PotassiumBismuthSelenide
+
+_audit_creation_method                    'Crystallographica 2' 
+_cell_angle_alpha                         89.98 
+_cell_angle_beta                          98.64 
+_cell_angle_gamma                         87.96 
+_cell_formula_units_Z                     1 
+_cell_length_a                            13.768 
+_cell_length_b                            12.096 
+_cell_length_c                            4.1656 
+_cell_volume                              685.411 
+_cgraph_comments                         'Molten salt synthesis and properties of three new solid state ternary bismuth chalcogenides. beta-CsBiS2. gamma-CsBiS2 and K2Bi8Se13'
+_cgraph_title                            'Potassium Bismuth Selenide (2/8/13)'
+_chemical_formula_sum                    'K2 Bi8 Se13'
+_symmetry_space_group_name_H-M           'P -1'
+_symmetry_space_group_name_Hall          '-P 1'
+
+loop_
+        _symmetry_equiv_pos_as_xyz
+        'x, y, z'
+        '-x, -y, -z'
+
+loop_
+        _atom_site_label
+        _atom_site_type_symbol
+        _atom_site_fract_x
+        _atom_site_fract_y
+        _atom_site_fract_z
+        _atom_site_U_iso_or_equiv
+        _atom_site_thermal_displace_type
+        _atom_site_occupancy
+        K1 K1+ 0.831 0.051 0.415 0 Uani 1
+        Bi1 Bi3+ 0.8809 0.3803 0.4408 0 Uani 1
+        Bi2 Bi3+ 0.3787 0.5464 0.1887 0 Uani 1
+        Bi3 Bi3+ 0.151 0.294 0.0758 0 Uani 1
+        Bi4 Bi3+ 0.5628 0.8671 0.2822 0 Uani 1
+        Se1 Se 0.2625 0.4267 0.632 0 Uani 1
+        Se2 Se 0.037 0.1977 0.516 0 Uani 1
+        Se3 Se 0.7788 0.2707 0.887 0 Uani 1
+        Se4 Se 0.5094 0.3536 0.254 0 Uani 1
+        Se5 Se 0.2811 0.1169 0.14 0 Uani 1
+        Se6 Se 0.5837 0.0886 0.293 0 Uani 1
+        Se7 Se 0 0.5 0 0 Uani 1
+
+loop_
+        _atom_site_aniso_label
+        _atom_site_aniso_U_11
+        _atom_site_aniso_U_22
+        _atom_site_aniso_U_33
+        _atom_site_aniso_U_12
+        _atom_site_aniso_U_13
+        _atom_site_aniso_U_23
+        K1 0.04 0.02 0.05 -0.018 0.004 0.01
+        Bi1 0.016 0.023 0.019 -0.001 0.001 0
+        Bi2 0.018 0.024 0.018 0 0.002 0
+        Bi3 0.017 0.024 0.018 0 0.002 -0.002
+        Bi4 0.028 0.018 0.022 0 0.004 0.001
+        Se1 0.021 0.018 0.022 0.001 0.002 -0.003
+        Se2 0.016 0.03 0.017 -0.005 -0.001 0.001
+        Se3 0.023 0.015 0.025 0.001 0.002 -0.003
+        Se4 0.021 0.022 0.017 -0.002 -0.002 -0.004
+        Se5 0.02 0.012 0.023 0.005 0.001 0.002
+        Se6 0.016 0.018 0.018 0.002 0.002 0.001
+        Se7 0.019 0.011 0.017 -0.004 0.002 0
+
+#### End of Crystallographic Information File ####

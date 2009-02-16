@@ -47,18 +47,20 @@ class DiffPyStructureAdapter : public StructureAdapter
         // constructors
         DiffPyStructureAdapter(const boost::python::object&);
 
-        // methods
-        virtual int countSites() const;
+        // methods - overloaded
         virtual BaseBondGenerator* createBondGenerator() const;
+        virtual int countSites() const;
+        virtual const R3::Vector& siteCartesianPosition(int idx) const;
+        virtual bool siteAnisotropy(int idx) const;
+        virtual const R3::Matrix& siteCartesianUij(int idx) const;
+        virtual const std::string& siteAtomType(int idx) const;
+
+        // methods - own
+        const Lattice& getLattice() const;
 
     protected:
 
         // methods
-        const Lattice& getLattice() const;
-        const R3::Vector& siteCartesianPosition(int idx) const;
-        bool siteAnisotropy(int idx) const;
-        const R3::Matrix& siteCartesianUij(int idx) const;
-        const std::string& siteAtomType(int idx) const;
         void fetchPythonData();
 
     private:

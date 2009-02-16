@@ -35,13 +35,11 @@ class StructureAdapter
 
         virtual ~StructureAdapter()  { }
         // methods
+        virtual BaseBondGenerator* createBondGenerator() const = 0;
         virtual int countSites() const = 0;
         virtual const R3::Vector& siteCartesianPosition(int idx) const = 0;
         virtual bool siteAnisotropy(int idx) const = 0;
         virtual const R3::Matrix& siteCartesianUij(int idx) const = 0;
-
-        virtual BaseBondGenerator* createBondGenerator() const = 0;
-
 };
 
 

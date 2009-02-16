@@ -47,19 +47,18 @@ DiffPyStructureAdapter::DiffPyStructureAdapter(const python::object& dpstru)
 
 // Public Methods ------------------------------------------------------------
 
-int DiffPyStructureAdapter::countSites() const
-{
-    return mcartesian_positions.size();
-}
-
-
 BaseBondGenerator* DiffPyStructureAdapter::createBondGenerator() const
 {
     BaseBondGenerator* bnds = new DiffPyStructureBondGenerator(this);
     return bnds;
 }
 
-// Protected Methods ---------------------------------------------------------
+
+int DiffPyStructureAdapter::countSites() const
+{
+    return mcartesian_positions.size();
+}
+
 
 const Lattice& DiffPyStructureAdapter::getLattice() const
 {
@@ -94,6 +93,7 @@ const string& DiffPyStructureAdapter::siteAtomType(int idx) const
     return matomtypes[idx];
 }
 
+// Protected Methods ---------------------------------------------------------
 
 void DiffPyStructureAdapter::fetchPythonData()
 {
