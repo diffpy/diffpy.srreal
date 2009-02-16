@@ -142,15 +142,6 @@ def calcSiNi():
     model.addPhase(niphase)
     model.addPhase(siphase)
 
-    # Load the data and select the data points that we want to fit
-    from park.modelling.data import Data1D
-    xvals = numpy.arange(1.5, 10, 0.05)
-    yvals = numpy.zeros(len(xvals))
-    dat = Data1D(x=xvals, y=yvals)
-    # Set the calculation range
-    # Create the assembly, which associates the model with the data
-    assemb = park.Assembly([(model,dat), (niphase,), (siphase,)])
-
     # Constrain parameters
     # Scale factors
     model.dscale.set(1)
@@ -158,11 +149,11 @@ def calcSiNi():
     siphase.pscale.set(0.9)
 
     # Calculate the signal
-    assemb.fit_parameters()
-    assemb.eval()
+    xvals = numpy.arange(1.5, 10, 0.05)
+    yvals = model(xvals)
 
     # Save the results
-    numpy.savetxt("sini.calc", zip(dat.fit_x,dat.calc_y))
+    numpy.savetxt("sini.calc", zip(xvals, yvals))
 
     return
 

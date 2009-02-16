@@ -28,7 +28,7 @@ def phaseFromStructure(S, name=None):
     for name in parlist:
         par = _l[name]
         par.set(getattr(S.lattice, name))
-    _p.addLattice(_l)
+    _p.setLattice(_l)
 
     # Now the atoms
     import atoms

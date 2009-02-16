@@ -79,7 +79,11 @@ def fitNickelFromFile(dataname, stype):
     from park.fitting.fitresult import ConsoleUpdate
     from park.optim.fitmc import FitMC
     handler = ConsoleUpdate(improvement_delta=0.1,progress_delta=1)
-    fitter = FitMC(start_points=1)
+    #from park.optim.fitmc import FitMC
+    #fitter = FitMC(start_points=1)
+    from park.optim.snobfit import Snobfit
+    fitter = Snobfit()
+
 
     # Run the fit and save the results
     print "Starting refinement of", dataname
@@ -123,7 +127,6 @@ def fitTwoNickel():
     # Set the qmax cutoff for the pdf data
     modelX.stype = "X"
     modelX.qmax = 27.0
-
 
     # Add the phase to the models
     modelN.addPhase(phase)

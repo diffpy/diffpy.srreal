@@ -23,7 +23,7 @@ class CrystalPhase(DynamicModel):
     rcut        --  Cutoff for sigma ratio (default 0)
     
     ParameterSets
-    addLattice and addAtom add managed parameter sets to this phase.
+    setLattice and addAtom add managed parameter sets to this phase.
     """
 
     def __init__(self, name = "", **kw):
@@ -50,8 +50,8 @@ class CrystalPhase(DynamicModel):
     def eval(self, x):
         return 0.0
 
-    def addLattice(self, _l):
-        """Add a configured lattice to the phase."""
+    def setLattice(self, _l):
+        """Set the lattice for the phase."""
         self.parameterset.append(_l)
         return
 
