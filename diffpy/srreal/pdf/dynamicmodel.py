@@ -4,7 +4,7 @@ the normal park.Model behavior. In particular, parameter accessors give the
 parameter itself, rather than its value.
 """
 
-__id__ = "$Id:"
+__id__ = "$Id$"
 
 import park
 
@@ -23,12 +23,14 @@ class DynamicModel(park.Model):
         Return a parameter or parameterset by name.
         """
         try:
-            return self.parameterset[p]
+            rv = self.parameterset[p]
         except KeyError:
-            raise AttributeError(
-                "'%s' object has no attribute '%s'"\
-                %(self.__class__.__name__, p))
+            emsg = "'%s' object has no attribute '%s'" % \
+                    (self.__class__.__name__, p)
+            raise AttributeError(emsg)
+        return rv
+
+# End of class DynamicModel
 
 if __name__ == "__main__":
-
     pass

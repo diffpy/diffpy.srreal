@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 """The PDFModel class."""
 
-__id__ = "$Id:"
+__id__ = "$Id$"
 
-import park
-from dynamicmodel import DynamicModel
 import numpy
-from parameters import PDFTopLevelParameter
+import park
+from diffpy.srreal.pdf.dynamicmodel import DynamicModel
+from diffpy.srreal.pdf.parameters import PDFTopLevelParameter
 
 class PDFModel(DynamicModel):
     """park.Model for PDF refinement"""
@@ -99,7 +99,7 @@ class PDFModel(DynamicModel):
             # If the phase was loaded from a structure, this will save some
             # time when the phase is added to the engine.
             if phase._stru is None:
-                import converters
+                from diffpy.srreal.pdf import converters
                 phase._stru = converters.structureFromPhase(phase)
             self._engine.add_structure(phase._stru)
             phase._addEngine(self._engine, i+1)
@@ -166,7 +166,7 @@ def testTwoDataOneModel():
     import diffpy.Structure
     S = diffpy.Structure.Structure()
     S.read("tests/testdata/ni.stru", "pdffit")
-    import converters
+    from diffpy.srreal.pdf import converters
     p = converters.phaseFromStructure(S)
 
     m.addPhase(p)
@@ -230,7 +230,7 @@ def testSimpleFit(datafile="ni-q27r60-xray.gr"):
     import diffpy.Structure
     S = diffpy.Structure.Structure()
     S.read("tests/testdata/ni.stru", "pdffit")
-    import converters
+    from diffpy.srreal.pdf import converters
     p = converters.phaseFromStructure(S)
 
     m.addPhase(p)
@@ -280,12 +280,11 @@ def testModel():
 
     C = PDFModel("C")
 
-    import numpy
     x = numpy.arange(1, 20, 0.05)
     import diffpy.Structure
     S = diffpy.Structure.Structure()
     S.read("tests/testdata/ni.stru", "pdffit")
-    import converters
+    from diffpy.srreal.pdf import converters
     p = converters.phaseFromStructure(S)
 
     C.addPhase(p)
@@ -301,6 +300,7 @@ def testModel():
     y = C.eval(x)
 
     numpy.savetxt("ni.pdf.calc", zip(x,y))
+    return
 
 if __name__ == "__main__":
 

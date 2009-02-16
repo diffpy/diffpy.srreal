@@ -7,7 +7,7 @@ See the class documentation for more information.
 __id__ = "$Id$"
 
 import park
-from parameters import PDFPhaseParameter
+from diffpy.srreal.pdf.parameters import PDFPhaseParameter
 
 class Atom(park.ParameterSet):
     """Class for atomic information.
@@ -58,6 +58,9 @@ class Atom(park.ParameterSet):
             f = getattr(PdfFit, par.name)
             par._addEngine(engine, f(atomnum), phasenum)
         return
+
+# End of class Atom
+
 
 if __name__ == "__main__":
     # Check to see if everything imports correctly

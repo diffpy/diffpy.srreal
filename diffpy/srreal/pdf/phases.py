@@ -7,8 +7,8 @@ See the class documentation for more information.
 __id__ = "$Id$"
 
 import park
-from parameters import PDFPhaseParameter
-from dynamicmodel import DynamicModel
+from diffpy.srreal.pdf.parameters import PDFPhaseParameter
+from diffpy.srreal.pdf.dynamicmodel import DynamicModel
 
 class CrystalPhase(DynamicModel):
     """Class for holding crystal structure information.
@@ -89,7 +89,9 @@ class CrystalPhase(DynamicModel):
 
         return
 
+# End of class CrystalPhase
+
+
 if __name__ == "__main__":
     # Check to see if everything imports correctly
     pass
-
