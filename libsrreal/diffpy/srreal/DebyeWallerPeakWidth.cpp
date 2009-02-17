@@ -12,7 +12,8 @@
 *
 ******************************************************************************
 *
-* class DebyeWallerPeakWidth -- peak width model based on FIXME paper by Jeong
+* class DebyeWallerPeakWidth -- peak width calculated assuming independent
+*     thermal vibrations of atoms forming a pair.
 *
 * $Id$
 *

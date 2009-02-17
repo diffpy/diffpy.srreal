@@ -12,7 +12,9 @@
 *
 ******************************************************************************
 *
-* class JeongPeakWidth -- peak width model based on FIXME paper by Jeong
+* class DebyeWallerPeakWidth -- peak width model based on 
+*      I.-K. Jeong, et al., Phys. Rev. B 67, 104301 (2003)
+*      http://link.aps.org/doi/10.1103/PhysRevB.67.104301
 *
 * $Id$
 *

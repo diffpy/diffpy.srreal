@@ -12,7 +12,9 @@
 *
 ******************************************************************************
 *
-* class JeongPeakWidth -- peak width model based on FIXME paper by Jeong
+* class DebyeWallerPeakWidth -- peak width model based on 
+*      I.-K. Jeong, et al., Phys. Rev. B 67, 104301 (2003)
+*      http://link.aps.org/doi/10.1103/PhysRevB.67.104301
 *
 * $Id$
 *
@@ -20,6 +22,7 @@
 
 #include <diffpy/srreal/JeongPeakWidth.hpp>
 #include <diffpy/srreal/BaseBondGenerator.hpp>
+#include <diffpy/mathutils.hpp>
 
 using namespace std;
 using namespace diffpy::srreal;
@@ -71,11 +74,14 @@ const string& JeongPeakWidth::type() const
 
 double JeongPeakWidth::calculate(const BaseBondGenerator& bnds) const
 {
-    double dw_fwhm = this->DebyeWallerPeakWidth::calculate(bnds);
+    using diffpy::mathutils::DOUBLE_EPS;
     double r = bnds.distance();
-    double corr = 1.0 - this->getDelta1()/r - this->getDelta2()/pow(r, 2) +
-        pow(this->getQbroad()*r, 2);
-    double fwhm = (corr > 0) ? (sqrt(corr) * dw_fwhm) : dw_fwhm;
+    // avoid division by zero
+    double corr = (r < DOUBLE_EPS) ? 0.0 :
+        (1.0 - this->getDelta1()/r - this->getDelta2()/pow(r, 2) +
+         pow(this->getQbroad()*r, 2));
+    double fwhm = (corr <= 0) ? 0.0 : 
+        (sqrt(corr) * this->DebyeWallerPeakWidth::calculate(bnds));
     return fwhm;
 }
 
