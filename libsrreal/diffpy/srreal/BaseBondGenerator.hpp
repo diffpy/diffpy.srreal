@@ -84,6 +84,7 @@ class BaseBondGenerator
 
         // data
         bool mrangeset;
+
         // methods
         void getNextBond();
         bool bondOutOfRange() const;

@@ -26,8 +26,8 @@
 #include <vector>
 
 #include <diffpy/srreal/R3linalg.hpp>
-#include "StructureAdapter.hpp"
-#include "BaseBondGenerator.hpp"
+#include <diffpy/srreal/StructureAdapter.hpp>
+#include <diffpy/srreal/BaseBondGenerator.hpp>
 
 namespace diffpy {
 namespace srreal {

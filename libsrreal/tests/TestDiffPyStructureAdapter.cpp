@@ -22,7 +22,6 @@
 #include <signal.h>
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
-
 #include <boost/filesystem/path.hpp>
 #include <boost/python.hpp>
 

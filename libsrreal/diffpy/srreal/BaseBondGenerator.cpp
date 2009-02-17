@@ -193,7 +193,7 @@ bool BaseBondGenerator::bondOutOfRange() const
 
 void BaseBondGenerator::checkIfRangeSet()
 {
-    mrangeset = (this->getRmin() != 0.0) || (this->getRmax() != DOUBLE_MAX);
+    mrangeset = (this->getRmin() > 0.0) || (this->getRmax() != DOUBLE_MAX);
 }
 
 

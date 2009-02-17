@@ -21,7 +21,7 @@
 #ifndef PAIRQUANTITY_HPP_INCLUDED
 #define PAIRQUANTITY_HPP_INCLUDED
 
-#include "BasePairQuantity.hpp"
+#include <diffpy/srreal/BasePairQuantity.hpp>
 
 namespace diffpy {
 namespace srreal {
