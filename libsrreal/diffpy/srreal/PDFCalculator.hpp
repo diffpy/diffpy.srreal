@@ -23,7 +23,7 @@
 
 #include <memory>
 #include <diffpy/srreal/PairQuantity.hpp>
-#include <diffpy/srreal/BasePeakWidthModel.hpp>
+#include <diffpy/srreal/PeakWidthModel.hpp>
 
 namespace diffpy {
 namespace srreal {
@@ -53,8 +53,8 @@ class PDFCalculator : public PairQuantity
         const double& getRstep() const;
 
         // PDF peak width configuration
-        void setPeakWidthModel(const BasePeakWidthModel&);
-        const BasePeakWidthModel& getPeakWidthModel() const;
+        void setPeakWidthModel(const PeakWidthModel&);
+        const PeakWidthModel& getPeakWidthModel() const;
 
         // scattering factors configuration
         void setScatteringFactorTable(const ScatteringFactorTable&);
@@ -92,7 +92,7 @@ class PDFCalculator : public PairQuantity
         double mqmin;
         double mqmax;
         double mrstep;
-        std::auto_ptr<BasePeakWidthModel> mpwmodel;
+        std::auto_ptr<PeakWidthModel> mpwmodel;
         std::auto_ptr<ScatteringFactorTable> msftable;
         std::vector<double> msfsite;
 

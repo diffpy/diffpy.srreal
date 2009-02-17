@@ -32,22 +32,22 @@ ConstantPeakWidth::ConstantPeakWidth()
 }
 
 
-BasePeakWidthModel* ConstantPeakWidth::create() const
+PeakWidthModel* ConstantPeakWidth::create() const
 {
-    BasePeakWidthModel* rv = new ConstantPeakWidth();
+    PeakWidthModel* rv = new ConstantPeakWidth();
     return rv;
 }
 
 
-BasePeakWidthModel* ConstantPeakWidth::copy() const
+PeakWidthModel* ConstantPeakWidth::copy() const
 {
-    BasePeakWidthModel* rv = new ConstantPeakWidth(*this);
+    PeakWidthModel* rv = new ConstantPeakWidth(*this);
     return rv;
 }
 
 // Public Methods ------------------------------------------------------------
 
-bool ConstantPeakWidth::operator==(const BasePeakWidthModel& other) const
+bool ConstantPeakWidth::operator==(const PeakWidthModel& other) const
 {
     // This peak width model has no parameters, therefore we just need
     // to check if other is of the same type.

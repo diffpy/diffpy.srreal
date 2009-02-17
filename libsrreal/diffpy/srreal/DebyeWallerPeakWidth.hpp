@@ -22,22 +22,22 @@
 #ifndef DEBYEWALLERPEAKWIDTH_HPP_INCLUDED
 #define DEBYEWALLERPEAKWIDTH_HPP_INCLUDED
 
-#include <diffpy/srreal/BasePeakWidthModel.hpp>
+#include <diffpy/srreal/PeakWidthModel.hpp>
 
 namespace diffpy {
 namespace srreal {
 
 
-class DebyeWallerPeakWidth : public BasePeakWidthModel
+class DebyeWallerPeakWidth : public PeakWidthModel
 {
     public:
 
         // constructors
-        virtual BasePeakWidthModel* create() const;
-        virtual BasePeakWidthModel* copy() const;
+        virtual PeakWidthModel* create() const;
+        virtual PeakWidthModel* copy() const;
 
         // comparison with derived classes
-        virtual bool operator==(const BasePeakWidthModel&) const;
+        virtual bool operator==(const PeakWidthModel&) const;
 
         // methods
         virtual const std::string& type() const;

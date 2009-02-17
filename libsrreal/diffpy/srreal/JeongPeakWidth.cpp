@@ -37,22 +37,22 @@ JeongPeakWidth::JeongPeakWidth()
 }
 
 
-BasePeakWidthModel* JeongPeakWidth::create() const
+PeakWidthModel* JeongPeakWidth::create() const
 {
-    BasePeakWidthModel* rv = new JeongPeakWidth();
+    PeakWidthModel* rv = new JeongPeakWidth();
     return rv;
 }
 
 
-BasePeakWidthModel* JeongPeakWidth::copy() const
+PeakWidthModel* JeongPeakWidth::copy() const
 {
-    BasePeakWidthModel* rv = new JeongPeakWidth(*this);
+    PeakWidthModel* rv = new JeongPeakWidth(*this);
     return rv;
 }
 
 // Public Methods ------------------------------------------------------------
 
-bool JeongPeakWidth::operator==(const BasePeakWidthModel& other) const
+bool JeongPeakWidth::operator==(const PeakWidthModel& other) const
 {
     if (this == &other)  return true;
     const JeongPeakWidth* jpwm =
@@ -80,6 +80,7 @@ double JeongPeakWidth::calculate(const BaseBondGenerator& bnds) const
     double corr = (r < DOUBLE_EPS) ? 0.0 :
         (1.0 - this->getDelta1()/r - this->getDelta2()/pow(r, 2) +
          pow(this->getQbroad()*r, 2));
+    // avoid calculating square root of negative value
     double fwhm = (corr <= 0) ? 0.0 : 
         (sqrt(corr) * this->DebyeWallerPeakWidth::calculate(bnds));
     return fwhm;

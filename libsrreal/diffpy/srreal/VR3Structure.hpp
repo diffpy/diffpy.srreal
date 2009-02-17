@@ -127,7 +127,7 @@ BaseBondGenerator* VR3Adapter::createBondGenerator() const
 }
 
 
-// VR3BondGenerator - Constructor ---------------------------------------------
+// VR3BondGenerator - Constructor --------------------------------------------
 
 inline
 VR3BondGenerator::VR3BondGenerator(const VR3Adapter* adpt) :
@@ -136,7 +136,7 @@ VR3BondGenerator::VR3BondGenerator(const VR3Adapter* adpt) :
     mvr3structure = adpt->mvr3structure;
 }
 
-// VR3BondGenerator - Public Methods ------------------------------------------
+// VR3BondGenerator - Public Methods -----------------------------------------
 
 inline
 const R3::Vector& VR3BondGenerator::r0() const

@@ -35,11 +35,11 @@ class JeongPeakWidth : public DebyeWallerPeakWidth
 
         // constructors
         JeongPeakWidth();
-        virtual BasePeakWidthModel* create() const;
-        virtual BasePeakWidthModel* copy() const;
+        virtual PeakWidthModel* create() const;
+        virtual PeakWidthModel* copy() const;
 
         // comparison with derived classes
-        virtual bool operator==(const BasePeakWidthModel&) const;
+        virtual bool operator==(const PeakWidthModel&) const;
 
         // methods
         virtual const std::string& type() const;

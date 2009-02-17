@@ -12,7 +12,7 @@
 *
 ******************************************************************************
 *
-* class BasePeakWidthModel -- base class for calculation of peak widths.
+* class PeakWidthModel -- base class for calculation of peak widths.
 *     The The calculate function takes a BondGenerator instance and
 *     returns full width at half maximum, based on peak model parameters
 *     and anisotropic displacement parameters of atoms in the pair.
@@ -21,8 +21,8 @@
 *
 *****************************************************************************/
 
-#ifndef BASEPEAKWIDTHMODEL_HPP_INCLUDED
-#define BASEPEAKWIDTHMODEL_HPP_INCLUDED
+#ifndef PEAKWIDTHMODEL_HPP_INCLUDED
+#define PEAKWIDTHMODEL_HPP_INCLUDED
 
 #include <string>
 #include <map>
@@ -32,40 +32,40 @@ namespace srreal {
 
 class BaseBondGenerator;
 
-class BasePeakWidthModel
+class PeakWidthModel
 {
     public:
 
         // constructors
-        virtual BasePeakWidthModel* create() const = 0;
-        virtual BasePeakWidthModel* copy() const = 0;
-        virtual ~BasePeakWidthModel()  { }
+        virtual PeakWidthModel* create() const = 0;
+        virtual PeakWidthModel* copy() const = 0;
+        virtual ~PeakWidthModel()  { }
 
         // methods
         virtual const std::string& type() const = 0;
         virtual double calculate(const BaseBondGenerator&) const = 0;
 
         // comparison with derived classes
-        virtual bool operator==(const BasePeakWidthModel&) const = 0;
+        virtual bool operator==(const PeakWidthModel&) const = 0;
 
     private:
 
         // class method for registration
-        friend BasePeakWidthModel* createPeakWidthModel(const std::string&);
-        friend bool registerPeakWidthModel(const BasePeakWidthModel&);
-        static std::map<std::string, BasePeakWidthModel*>& getRegistry();
+        friend PeakWidthModel* createPeakWidthModel(const std::string&);
+        friend bool registerPeakWidthModel(const PeakWidthModel&);
+        static std::map<std::string, PeakWidthModel*>& getRegistry();
 };
 
 // Factory functions for Peak Width Models -----------------------------------
 
-BasePeakWidthModel* createPeakWidthModel(const std::string& tp);
-bool registerPeakWidthModel(const BasePeakWidthModel&);
+PeakWidthModel* createPeakWidthModel(const std::string& tp);
+bool registerPeakWidthModel(const PeakWidthModel&);
 
 }   // namespace srreal
 }   // namespace diffpy
 
 // Implementation ------------------------------------------------------------
 
-#include <diffpy/srreal/BasePeakWidthModel.ipp>
+#include <diffpy/srreal/PeakWidthModel.ipp>
 
-#endif  // BASEPEAKWIDTHMODEL_HPP_INCLUDED
+#endif  // PEAKWIDTHMODEL_HPP_INCLUDED

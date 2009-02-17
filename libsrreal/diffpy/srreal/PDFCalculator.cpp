@@ -130,13 +130,13 @@ const double& PDFCalculator::getRstep() const
 // PDF peak width configuration
 
 /*
-void PDFCalculator::setPeakWidthModel(const BasePeakWidthModel& pwm)
+void PDFCalculator::setPeakWidthModel(const PeakWidthModel& pwm)
 {
     mpwmodel.reset(pwm.copy());
 }
 
 
-const BasePeakWidthModel& PDFCalculator::getPeakWidthModel() const;
+const PeakWidthModel& PDFCalculator::getPeakWidthModel() const;
 {
     assert(mpwmodel.get());
     return *mpwmodel;

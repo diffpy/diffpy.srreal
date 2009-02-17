@@ -29,22 +29,22 @@ using namespace diffpy::srreal;
 
 // Constructors --------------------------------------------------------------
 
-BasePeakWidthModel* DebyeWallerPeakWidth::create() const
+PeakWidthModel* DebyeWallerPeakWidth::create() const
 {
-    BasePeakWidthModel* rv = new DebyeWallerPeakWidth();
+    PeakWidthModel* rv = new DebyeWallerPeakWidth();
     return rv;
 }
 
 
-BasePeakWidthModel* DebyeWallerPeakWidth::copy() const
+PeakWidthModel* DebyeWallerPeakWidth::copy() const
 {
-    BasePeakWidthModel* rv = new DebyeWallerPeakWidth(*this);
+    PeakWidthModel* rv = new DebyeWallerPeakWidth(*this);
     return rv;
 }
 
 // Public Methods ------------------------------------------------------------
 
-bool DebyeWallerPeakWidth::operator==(const BasePeakWidthModel& other) const
+bool DebyeWallerPeakWidth::operator==(const PeakWidthModel& other) const
 {
     // This peak width model has no parameters, therefore we just need
     // to check if other is of the same type.

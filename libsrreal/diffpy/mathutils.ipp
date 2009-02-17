@@ -1,5 +1,3 @@
-// vim:set ft=cpp:
-
 #ifndef MATHUTILS_IPP_INCLUDED
 #define MATHUTILS_IPP_INCLUDED
 
@@ -75,5 +73,7 @@ double asind(double x)
 
 } // namespace mathutils
 } // namespace diffpy
+
+// vim:ft=cpp:
 
 #endif  // MATHUTILS_IPP_INCLUDED
