@@ -182,7 +182,7 @@ void BaseBondGenerator::getNextBond()
 bool BaseBondGenerator::bondOutOfRange() const
 {
     bool rv = false;
-    if (mrangeset)    
+    if (mrangeset)
     {
         double d = this->distance();
         rv = (d < this->getRmin()) || (d > this->getRmax());

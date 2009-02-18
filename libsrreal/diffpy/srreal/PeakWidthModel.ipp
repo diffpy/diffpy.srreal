@@ -15,7 +15,7 @@
 * class PeakWidthModel -- base class for calculation of peak widths.
 *     Implementation of inline functions.
 *
-* $Id: BasePeakWidthModel.hpp 2722 2009-02-16 22:33:26Z juhas $
+* $Id$
 *
 *****************************************************************************/
 

@@ -12,7 +12,7 @@
 *
 ******************************************************************************
 *
-* class DebyeWallerPeakWidth -- peak width model based on 
+* class DebyeWallerPeakWidth -- peak width model based on
 *      I.-K. Jeong, et al., Phys. Rev. B 67, 104301 (2003)
 *      http://link.aps.org/doi/10.1103/PhysRevB.67.104301
 *
@@ -81,7 +81,7 @@ double JeongPeakWidth::calculate(const BaseBondGenerator& bnds) const
         (1.0 - this->getDelta1()/r - this->getDelta2()/pow(r, 2) +
          pow(this->getQbroad()*r, 2));
     // avoid calculating square root of negative value
-    double fwhm = (corr <= 0) ? 0.0 : 
+    double fwhm = (corr <= 0) ? 0.0 :
         (sqrt(corr) * this->DebyeWallerPeakWidth::calculate(bnds));
     return fwhm;
 }

@@ -29,7 +29,7 @@
 *
 *     PointsInSphere sph(Rmin, Rmax, a, b, c, alpha, beta, gamma)
 *     for (sph.rewind(); !sph.finished(); sph.next())
-*     { 
+*     {
 *         // lattice indices are in sph.m(), sph.n(), sph.o() or sph.mno()
 *         // sph.r() is distance from origin,
 *         // where sph.Rmin() < sph.r() < sph.Rmax()
@@ -38,7 +38,7 @@
 *     ReflectionsInQminQmax ref(Qmin, Qmax, a, b, c, alpha, beta, gamma)
 *     for (ReflectionsInQminQmax ref(Qmin, Qmax, a, b, c, alpha, beta, gamma);
 *	   !ref.finished(); ref.next() )
-*     { 
+*     {
 *         // Miller indices are in ref.h(), ref.k(), ref.l() or ref.hkl()
 *         // ref.Q() is magnitude of Q vector
 *         // ref.d() is lattice plane spacing
@@ -53,7 +53,7 @@
 #ifndef POINTSINSPHERE_HPP_INCLUDED
 #define POINTSINSPHERE_HPP_INCLUDED
 
-// ensure math constants get defined for MSVC 
+// ensure math constants get defined for MSVC
 #define _USE_MATH_DEFINES
 #include <cmath>
 
@@ -84,7 +84,7 @@ class LatticeParameters
         void update();
         // return a reciprocal of this lattice
         LatticeParameters reciprocal() const;
-        
+
 };
 
 }   // namespace pointsinsphere

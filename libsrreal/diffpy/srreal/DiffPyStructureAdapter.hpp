@@ -15,7 +15,7 @@
 * class DiffPyStructureAdapter -- adapter to the Structure class from the
 *     Python diffpy.Structure package.
 * class DiffPyStructureBondGenerator -- bond generator
-*     
+*
 *
 * $Id$
 *

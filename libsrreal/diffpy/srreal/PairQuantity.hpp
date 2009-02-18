@@ -32,7 +32,7 @@ class PairQuantity : public BasePairQuantity
 {
     public:
 
-        // constructors
+        // constructor
         PairQuantity();
 
         // methods
@@ -49,7 +49,6 @@ class PairQuantity : public BasePairQuantity
     protected:
 
         // methods
-        virtual void init();
         virtual void resizeValue(size_t);
         virtual void resetValue();
         virtual void updateValue();

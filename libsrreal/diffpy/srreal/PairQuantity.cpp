@@ -28,11 +28,14 @@
 using namespace std;
 using namespace diffpy::srreal;
 
-// Constructors --------------------------------------------------------------
+// Constructor ---------------------------------------------------------------
 
-PairQuantity::PairQuantity()
+PairQuantity::PairQuantity() : BasePairQuantity()
 {
-    this->init();
+    using diffpy::mathutils::DOUBLE_MAX;
+    this->setRmin(0.0);
+    this->setRmax(DOUBLE_MAX);
+    this->resizeValue(1);
 }
 
 // Public Methods ------------------------------------------------------------
@@ -77,15 +80,6 @@ const double& PairQuantity::getRmax() const
 
 // Protected Methods ---------------------------------------------------------
 
-void PairQuantity::init()
-{ 
-    using diffpy::mathutils::DOUBLE_MAX;
-    this->setRmin(0.0);
-    this->setRmax(DOUBLE_MAX);
-    this->resizeValue(1);
-}
-
-
 void PairQuantity::resizeValue(size_t sz)
 {
     mvalue.resize(sz);
@@ -97,7 +91,7 @@ void PairQuantity::resetValue()
     fill(mvalue.begin(), mvalue.end(), 0.0);
 }
 
-        
+
 void PairQuantity::updateValue()
 {
     this->resetValue();

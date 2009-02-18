@@ -40,6 +40,14 @@ double maxUii(const StructureAdapter*);
 
 }   // namespace
 
+// Constructor ---------------------------------------------------------------
+
+PDFCalculator::PDFCalculator() : PairQuantity()
+{
+    auto_ptr<PeakWidthModel> pwm(createPeakWidthModel("jeong"));
+    this->setPeakWidthModel(*pwm);
+}
+
 // Public Methods ------------------------------------------------------------
 
 // results
@@ -129,18 +137,19 @@ const double& PDFCalculator::getRstep() const
 
 // PDF peak width configuration
 
-/*
 void PDFCalculator::setPeakWidthModel(const PeakWidthModel& pwm)
 {
     mpwmodel.reset(pwm.copy());
 }
 
 
-const PeakWidthModel& PDFCalculator::getPeakWidthModel() const;
+const PeakWidthModel& PDFCalculator::getPeakWidthModel() const
 {
     assert(mpwmodel.get());
     return *mpwmodel;
 }
+
+/*
         void setScatteringFactorTable(const ScatteringFactorTable&);
         const ScatteringFactorTable& getScatteringFactorTable() const;
         void setRadiationType(const std::string&);
@@ -152,12 +161,6 @@ const PeakWidthModel& PDFCalculator::getPeakWidthModel() const;
 // Protected Methods ---------------------------------------------------------
 
 // PairQuantity overloads
-
-void PDFCalculator::init()
-{
-    this->PairQuantity::init();
-}
-
 
 /*
 void PDFCalculator::addPairContribution(const BaseBondGenerator& bnds)

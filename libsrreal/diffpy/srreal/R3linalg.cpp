@@ -5,7 +5,7 @@
 *     blitz::TinyVector  and  blitz::TinyMatrix
 *
 * $Id$
-* 
+*
 * <license text>
 ***********************************************************************/
 

@@ -154,7 +154,7 @@ public:
 private:
 
     void initializePython() const
-    {  
+    {
         if (Py_IsInitialized())  return;
         Py_Initialize();
         static int py_argc = 1;

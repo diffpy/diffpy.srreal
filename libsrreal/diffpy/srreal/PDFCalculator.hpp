@@ -35,6 +35,9 @@ class PDFCalculator : public PairQuantity
 {
     public:
 
+        // constructor
+        PDFCalculator();
+
         // results
         const QuantityType& getPDF() const;
         const QuantityType& getRDF() const;
@@ -67,7 +70,6 @@ class PDFCalculator : public PairQuantity
     protected:
 
         // methods - PairQuantity overloads
-        virtual void init();
         // FIXME
 //      virtual void addPairContribution(const BaseBondGenerator&);
 
@@ -134,7 +136,7 @@ class PDFCalculator : public SrReal::ProfileCalculator
      virtual void setQmin(float val);
 
     // Get the RDF over the requested calculation points
-    virtual float* getPDF(); 
+    virtual float* getPDF();
     // Get the RDF over the requested calculation points
     virtual float* getRDF();
 
@@ -204,26 +206,26 @@ class PDFCalculator : public SrReal::ProfileCalculator
     /* Data */
 
     // RDF without resolution or qmax corrections
-    float *rdf; 
+    float *rdf;
     // PDF without resolution or qmax corrections
-    float *pdf; 
+    float *pdf;
     // array for computing fft for termination ripples
-    double *ffta; 
+    double *ffta;
     size_t fftlen;
     size_t qmaxidxlo;
     size_t qmaxidxhi;
     size_t qminidxhi;
 
     // For the internal calculation range
-    size_t cnumpoints; 
+    size_t cnumpoints;
     float crmin;
     float crmax;
     float cdr;
 
     // The average scattering power in the unit cell
-    float bavg; 
+    float bavg;
     // The number of scatterers in the unit cell, calculated from occupancy
-    float numscat; 
+    float numscat;
 
     // Ids for accessing saved crystal parameters
     size_t lastsave;
