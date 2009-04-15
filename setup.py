@@ -35,6 +35,8 @@ dist = setup(
             'elements',
         ],
         dependency_links = [
+            # REMOVE dev.danse.us for a public release.
+            'http://dev.danse.us/packages/',
             "http://www.diffpy.org/packages/",
         ],
 
