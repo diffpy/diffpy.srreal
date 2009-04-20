@@ -26,6 +26,7 @@
 #include <boost/python.hpp>
 
 #include <diffpy/srreal/DiffPyStructureAdapter.hpp>
+#include <diffpy/PythonInterface.hpp>
 #include "globals.hpp"
 
 using namespace std;
@@ -55,7 +56,7 @@ public:
 
     void setUp()
     {
-        this->initializePython();
+        diffpy::initializePython();
         if (!m_ni.get())
         {
             python::object stru;
@@ -152,19 +153,6 @@ public:
 
 
 private:
-
-    void initializePython() const
-    {
-        if (Py_IsInitialized())  return;
-        Py_Initialize();
-        static int py_argc = 1;
-        static char py_arg0[7] = "python";
-        static char* py_argv[] = {py_arg0};
-        PySys_SetArgv(py_argc, py_argv);
-        // Make sure Python does not eat SIGINT.
-        signal(SIGINT, SIG_DFL);
-    }
-
 
     python::object loadTestStructure(const string& tailname) const
     {
