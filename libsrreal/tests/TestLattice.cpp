@@ -8,7 +8,6 @@
 * <license text>
 ***********************************************************************/
 
-#include <stdexcept>
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_permutation.h>

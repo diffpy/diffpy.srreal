@@ -48,7 +48,7 @@ PeakWidthModel* createPeakWidthModel(const std::string& tp)
     ipwm = reg.find(tp);
     if (ipwm == reg.end())
     {
-        stringstream emsg;
+        ostringstream emsg;
         emsg << "Unknown type of PeakWidthModel '" << tp << "'.";
         throw invalid_argument(emsg.str());
     }
@@ -64,7 +64,7 @@ bool registerPeakWidthModel(const PeakWidthModel& pwm)
     map<string, PeakWidthModel*>& reg = PeakWidthModel::getRegistry();
     if (reg.count(pwm.type()))
     {
-        stringstream emsg;
+        ostringstream emsg;
         emsg << "PeakWidthModel type '" << pwm.type() <<
             "' is already registered.";
         throw logic_error(emsg.str());
