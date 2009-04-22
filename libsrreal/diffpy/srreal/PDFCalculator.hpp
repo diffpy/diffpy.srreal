@@ -24,12 +24,11 @@
 #include <memory>
 #include <diffpy/srreal/PairQuantity.hpp>
 #include <diffpy/srreal/PeakWidthModel.hpp>
+#include <diffpy/srreal/ScatteringFactorTable.hpp>
 
 namespace diffpy {
 namespace srreal {
 
-// FIXME
-class ScatteringFactorTable { };
 
 class PDFCalculator : public PairQuantity
 {

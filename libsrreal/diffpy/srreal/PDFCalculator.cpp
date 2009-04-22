@@ -28,7 +28,6 @@
 #include <diffpy/srreal/R3linalg.hpp>
 
 using namespace std;
-using namespace diffpy;
 using namespace diffpy::srreal;
 
 // Declaration of Local Helpers ----------------------------------------------

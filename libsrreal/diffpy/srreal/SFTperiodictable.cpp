@@ -92,13 +92,6 @@ class SFTperiodictableXray : public ScatteringFactorTable
 
 };  // class SFTperiodictableXray
 
-// Registration --------------------------------------------------------------
-
-bool reg_SFTperiodictableXray = (
-        registerScatteringFactorTable(SFTperiodictableXray()) &&
-        aliasScatteringFactorTable("SFTperiodictableXray", "X")
-        );
-
 //////////////////////////////////////////////////////////////////////////////
 // class SFTperiodictableNeutron
 //////////////////////////////////////////////////////////////////////////////
@@ -159,6 +152,11 @@ class SFTperiodictableNeutron : public ScatteringFactorTable
 };  // class SFTperiodictableNeutron
 
 // Registration --------------------------------------------------------------
+
+bool reg_SFTperiodictableXray = (
+        registerScatteringFactorTable(SFTperiodictableXray()) &&
+        aliasScatteringFactorTable("SFTperiodictableXray", "X")
+        );
 
 bool reg_SFTperiodictableNeutron = (
         registerScatteringFactorTable(SFTperiodictableNeutron()) &&
