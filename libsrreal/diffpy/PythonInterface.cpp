@@ -21,6 +21,8 @@
 #include <signal.h>
 #include <diffpy/PythonInterface.hpp>
 
+using std::string;
+
 namespace diffpy {
 
 void initializePython(int py_argc, char* py_argv[])
@@ -39,6 +41,23 @@ void initializePython(int py_argc, char* py_argv[])
     // Make sure Python does not eat SIGINT.
     signal(SIGINT, SIG_DFL);
 }
+
+
+string getPythonErrorString()
+{
+    string rv;
+    PyObject* ptype = NULL;
+    PyObject* pvalue = NULL;
+    PyObject* ptraceback = NULL;
+    PyErr_Fetch(&ptype, &pvalue, &ptraceback);
+    if (ptype == NULL)  return rv;
+    PyObject* pemsg = PyObject_Str(pvalue);
+    rv = PyString_AsString(pemsg);
+    Py_XDECREF(pemsg);
+    PyErr_Restore(ptype, pvalue, ptraceback);
+    return rv;
+}
+
 
 }   // namespace diffpy
 

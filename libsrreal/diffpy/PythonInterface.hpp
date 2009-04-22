@@ -22,12 +22,14 @@
 #define PYTHONINTERFACE_HPP_INCLUDED
 
 #include <Python.h>
+#include <string>
 
 namespace diffpy {
 
 // routines
 
 void initializePython(int py_argc=0, char* py_argv[]=NULL);
+std::string getPythonErrorString();
 
 }   // namespace diffpy
 

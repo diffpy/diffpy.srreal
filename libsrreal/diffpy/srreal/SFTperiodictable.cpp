@@ -25,6 +25,7 @@
 *****************************************************************************/
 
 #include <stdexcept>
+#include <string>
 #include <boost/python.hpp>
 
 #include <diffpy/srreal/ScatteringFactorTable.hpp>
@@ -33,6 +34,28 @@
 using namespace std;
 using namespace diffpy::srreal;
 namespace python = boost::python;
+
+// Local helpers -------------------------------------------------------------
+
+namespace {
+
+// reference to the symbol method of periodictable.elements
+python::object periodictable_elements_symbol()
+{
+    static bool did_import = false;
+    static python::object symbol;
+    // short-circuit return
+    if (did_import)  return symbol;
+    // first pass requires actual import
+    diffpy::initializePython();
+    python::object mod = python::import("periodictable");
+    python::object elements = mod.attr("elements");
+    symbol = elements.attr("symbol");
+    did_import = true;
+    return symbol;
+}
+
+}   // namespace
 
 //////////////////////////////////////////////////////////////////////////////
 // class SFTperiodictableXray
@@ -75,16 +98,14 @@ class SFTperiodictableXray : public ScatteringFactorTable
         double fetch(const string& smbl) const
         {
             double rv;
-            diffpy::initializePython();
-            python::object mod = python::import("periodictable");
-            python::object elements = mod.attr("elements");
+            python::object symbol = periodictable_elements_symbol();
             try {
-                python::object el = elements.attr("symbol")(smbl);
+                python::object el = symbol(smbl);
                 rv = python::extract<int>(el.attr("number"));
             }
             catch (python::error_already_set e) {
-                if (PyErr_Occurred())   PyErr_Clear();
-                const char* emsg = "Invalid atom type.";
+                string emsg = diffpy::getPythonErrorString();
+                PyErr_Clear();
                 throw invalid_argument(emsg);
             }
             return rv;
@@ -133,17 +154,15 @@ class SFTperiodictableNeutron : public ScatteringFactorTable
         double fetch(const string& smbl) const
         {
             double rv;
-            diffpy::initializePython();
-            python::object mod = python::import("periodictable");
-            python::object elements = mod.attr("elements");
+            python::object symbol = periodictable_elements_symbol();
             try {
-                python::object el = elements.attr("symbol")(smbl);
+                python::object el = symbol(smbl);
                 python::object b_c = el.attr("neutron").attr("b_c");
                 rv = python::extract<double>(b_c);
             }
             catch (python::error_already_set) {
-                if (PyErr_Occurred())   PyErr_Clear();
-                const char* emsg = "Invalid atom type.";
+                string emsg = diffpy::getPythonErrorString();
+                PyErr_Clear();
                 throw invalid_argument(emsg);
             }
             return rv;
