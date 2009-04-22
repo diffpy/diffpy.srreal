@@ -64,7 +64,8 @@ const string& DebyeWallerPeakWidth::type() const
 double DebyeWallerPeakWidth::calculate(const BaseBondGenerator& bnds) const
 {
     double gauss_sigma_square = bnds.msd();
-    double fwhm = 2 * sqrt(2 * M_LN2 * gauss_sigma_square);
+    const double tofwhm = 2 * sqrt(2 * M_LN2);
+    double fwhm = tofwhm * sqrt(gauss_sigma_square);
     return fwhm;
 }
 
