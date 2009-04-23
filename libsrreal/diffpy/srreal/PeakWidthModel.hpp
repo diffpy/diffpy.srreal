@@ -13,7 +13,7 @@
 ******************************************************************************
 *
 * class PeakWidthModel -- base class for calculation of peak widths.
-*     The The calculate function takes a BondGenerator instance and
+*     The calculate function takes a BondGenerator instance and
 *     returns full width at half maximum, based on peak model parameters
 *     and anisotropic displacement parameters of atoms in the pair.
 *
