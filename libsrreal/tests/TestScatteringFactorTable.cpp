@@ -26,10 +26,8 @@
 
 #include <diffpy/srreal/ScatteringFactorTable.hpp>
 #include <diffpy/PythonInterface.hpp>
-#include "globals.hpp"
 
 using namespace std;
-using namespace boost;
 using namespace diffpy::srreal;
 
 
