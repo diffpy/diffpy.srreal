@@ -28,6 +28,15 @@ using namespace std;
 namespace diffpy {
 namespace srreal {
 
+// class PeakProfile ---------------------------------------------------------
+
+PeakProfile::RegistryType& PeakProfile::getRegistry()
+{
+    static RegistryType* the_registry = NULL;
+    if (!the_registry)  the_registry = new RegistryType();
+    return *the_registry;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // class GaussPeakProfile
 //////////////////////////////////////////////////////////////////////////////
@@ -35,6 +44,10 @@ namespace srreal {
 class GaussPeakProfile : public PeakProfile
 {
     public:
+
+        // constructors
+        PeakProfile* create() const;
+        PeakProfile* copy() const;
 
         // methods
         const std::string& type() const;
@@ -45,6 +58,20 @@ class GaussPeakProfile : public PeakProfile
 };
 
 // Implementation ------------------------------------------------------------
+
+PeakProfile* GaussPeakProfile::create() const
+{
+    PeakProfile* rv = new GaussPeakProfile();
+    return rv;
+}
+
+
+PeakProfile* GaussPeakProfile::copy() const
+{
+    PeakProfile* rv = new GaussPeakProfile(*this);
+    return rv;
+}
+
 
 const string& GaussPeakProfile::type() const
 {
@@ -76,7 +103,7 @@ double GaussPeakProfile::xboundhi(double eps_y, double fwhm) const
 
 // Registration --------------------------------------------------------------
 
-bool reg_GaussPeakProfile = registerPeakProfile(new GaussPeakProfile());
+bool reg_GaussPeakProfile = registerPeakProfile(GaussPeakProfile());
 
 }   // namespace srreal
 }   // namespace diffpy

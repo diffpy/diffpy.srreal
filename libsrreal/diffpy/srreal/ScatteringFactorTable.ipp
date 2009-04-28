@@ -111,7 +111,7 @@ bool registerScatteringFactorTable(const ScatteringFactorTable& sft)
             "' is already registered.";
         throw logic_error(emsg.str());
     }
-    reg[sft.type()] = sft.create();
+    reg[sft.type()] = sft.copy();
     return true;
 }
 

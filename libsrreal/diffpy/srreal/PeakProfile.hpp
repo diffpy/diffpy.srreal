@@ -37,6 +37,8 @@ class PeakProfile
     public:
 
         // constructors
+        virtual PeakProfile* create() const = 0;
+        virtual PeakProfile* copy() const = 0;
         virtual ~PeakProfile()  { }
 
         // methods
@@ -48,7 +50,7 @@ class PeakProfile
     private:
 
         friend const PeakProfile* borrowPeakProfile(const std::string&);
-        friend bool registerPeakProfile(const PeakProfile*);
+        friend bool registerPeakProfile(const PeakProfile&);
         // class method for registration
         typedef std::map<std::string, const PeakProfile*> RegistryType;
         static RegistryType& getRegistry();
@@ -57,7 +59,8 @@ class PeakProfile
 // Factory functions for Peak Width Models -----------------------------------
 
 const PeakProfile* borrowPeakProfile(const std::string& tp);
-bool registerPeakProfile(const PeakProfile*);
+PeakProfile* createPeakProfile(const std::string& tp);
+bool registerPeakProfile(const PeakProfile&);
 
 }   // namespace srreal
 }   // namespace diffpy

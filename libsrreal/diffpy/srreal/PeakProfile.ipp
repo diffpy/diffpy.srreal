@@ -28,15 +28,6 @@
 namespace diffpy {
 namespace srreal {
 
-// class PeakProfile ---------------------------------------------------------
-
-inline
-PeakProfile::RegistryType& PeakProfile::getRegistry()
-{
-    static RegistryType the_registry;
-    return the_registry;
-}
-
 // Factory Functions ---------------------------------------------------------
 
 inline
@@ -58,18 +49,27 @@ const PeakProfile* borrowPeakProfile(const std::string& tp)
 
 
 inline
-bool registerPeakProfile(const PeakProfile* prfl)
+PeakProfile* createPeakProfile(const std::string& tp)
+{
+    const PeakProfile* ppf = borrowPeakProfile(tp);
+    PeakProfile* rv = ppf->copy();
+    return rv;
+}
+
+
+inline
+bool registerPeakProfile(const PeakProfile& prfl)
 {
     using namespace std;
     PeakProfile::RegistryType& reg = PeakProfile::getRegistry();
-    if (reg.count(prfl->type()))
+    if (reg.count(prfl.type()))
     {
         ostringstream emsg;
-        emsg << "PeakProfile type '" << prfl->type() <<
+        emsg << "PeakProfile type '" << prfl.type() <<
             "' is already registered.";
         throw logic_error(emsg.str());
     }
-    reg[prfl->type()] = prfl;
+    reg[prfl.type()] = prfl.copy();
     return true;
 }
 
