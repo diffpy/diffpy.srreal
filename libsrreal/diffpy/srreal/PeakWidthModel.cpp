@@ -12,71 +12,66 @@
 *
 ******************************************************************************
 *
-* class PeakProfile -- implementation of concrete class registry and
-*     of a factory for borrowed pointers
+* class PeakWidthModel -- base class for calculation of peak widths.
 *
 * $Id$
 *
 *****************************************************************************/
 
-#ifndef PEAKPROFILE_IPP_INCLUDED
-#define PEAKPROFILE_IPP_INCLUDED
-
 #include <sstream>
 #include <stdexcept>
+#include <memory>
+#include <diffpy/srreal/PeakWidthModel.hpp>
+
+using namespace std;
 
 namespace diffpy {
 namespace srreal {
 
+// class PeakWidthModel ------------------------------------------------------
+
+PeakWidthModel::RegistryType& PeakWidthModel::getRegistry()
+{
+    static auto_ptr<RegistryType> the_registry;
+    if (!the_registry.get())  the_registry.reset(new RegistryType());
+    return *the_registry;
+}
+
 // Factory Functions ---------------------------------------------------------
 
-inline
-const PeakProfile* borrowPeakProfile(const std::string& tp)
+PeakWidthModel* createPeakWidthModel(const std::string& tp)
 {
     using namespace std;
-    PeakProfile::RegistryType& reg = PeakProfile::getRegistry();
-    PeakProfile::RegistryType::iterator iprfl;
-    iprfl = reg.find(tp);
-    if (iprfl == reg.end())
+    PeakWidthModel::RegistryType& reg = PeakWidthModel::getRegistry();
+    PeakWidthModel::RegistryType::iterator ipwm;
+    ipwm = reg.find(tp);
+    if (ipwm == reg.end())
     {
         ostringstream emsg;
-        emsg << "Unknown type of PeakProfile '" << tp << "'.";
+        emsg << "Unknown type of PeakWidthModel '" << tp << "'.";
         throw invalid_argument(emsg.str());
     }
-    const PeakProfile* rv = iprfl->second;
+    PeakWidthModel* rv = ipwm->second->copy();
     return rv;
 }
 
 
-inline
-PeakProfile* createPeakProfile(const std::string& tp)
-{
-    const PeakProfile* ppf = borrowPeakProfile(tp);
-    PeakProfile* rv = ppf->copy();
-    return rv;
-}
-
-
-inline
-bool registerPeakProfile(const PeakProfile& prfl)
+bool registerPeakWidthModel(const PeakWidthModel& pwm)
 {
     using namespace std;
-    PeakProfile::RegistryType& reg = PeakProfile::getRegistry();
-    if (reg.count(prfl.type()))
+    PeakWidthModel::RegistryType& reg = PeakWidthModel::getRegistry();
+    if (reg.count(pwm.type()))
     {
         ostringstream emsg;
-        emsg << "PeakProfile type '" << prfl.type() <<
+        emsg << "PeakWidthModel type '" << pwm.type() <<
             "' is already registered.";
         throw logic_error(emsg.str());
     }
-    reg[prfl.type()] = prfl.copy();
+    reg[pwm.type()] = pwm.create();
     return true;
 }
-
 
 }   // namespace srreal
 }   // namespace diffpy
 
-// vim:ft=cpp
-
-#endif  // PEAKPROFILE_IPP_INCLUDED
+// End of file.

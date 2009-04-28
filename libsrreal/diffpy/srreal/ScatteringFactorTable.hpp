@@ -71,8 +71,4 @@ bool aliasScatteringFactorTable(const std::string& tp, const std::string& al);
 }   // namespace srreal
 }   // namespace diffpy
 
-// Implementation ------------------------------------------------------------
-
-#include <diffpy/srreal/ScatteringFactorTable.ipp>
-
 #endif  // SCATTERINGFACTORTABLE_HPP_INCLUDED

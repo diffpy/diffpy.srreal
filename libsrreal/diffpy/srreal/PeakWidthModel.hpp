@@ -53,7 +53,9 @@ class PeakWidthModel
         // class method for registration
         friend PeakWidthModel* createPeakWidthModel(const std::string&);
         friend bool registerPeakWidthModel(const PeakWidthModel&);
-        static std::map<std::string, PeakWidthModel*>& getRegistry();
+        // class method for registration
+        typedef std::map<std::string, const PeakWidthModel*> RegistryType;
+        static RegistryType& getRegistry();
 };
 
 // Factory functions for Peak Width Models -----------------------------------
@@ -63,9 +65,5 @@ bool registerPeakWidthModel(const PeakWidthModel&);
 
 }   // namespace srreal
 }   // namespace diffpy
-
-// Implementation ------------------------------------------------------------
-
-#include <diffpy/srreal/PeakWidthModel.ipp>
 
 #endif  // PEAKWIDTHMODEL_HPP_INCLUDED

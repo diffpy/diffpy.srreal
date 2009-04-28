@@ -21,6 +21,9 @@
 *****************************************************************************/
 
 #include <cmath>
+#include <memory>
+#include <sstream>
+#include <stdexcept>
 #include <diffpy/srreal/PeakProfile.hpp>
 
 using namespace std;
@@ -28,13 +31,57 @@ using namespace std;
 namespace diffpy {
 namespace srreal {
 
-// class PeakProfile ---------------------------------------------------------
+//////////////////////////////////////////////////////////////////////////////
+// class PeakProfile
+//////////////////////////////////////////////////////////////////////////////
 
 PeakProfile::RegistryType& PeakProfile::getRegistry()
 {
-    static RegistryType* the_registry = NULL;
-    if (!the_registry)  the_registry = new RegistryType();
+    static auto_ptr<RegistryType> the_registry;
+    if (!the_registry.get())  the_registry.reset(new RegistryType());
     return *the_registry;
+}
+
+// Factory Functions ---------------------------------------------------------
+
+const PeakProfile* borrowPeakProfile(const std::string& tp)
+{
+    using namespace std;
+    PeakProfile::RegistryType& reg = PeakProfile::getRegistry();
+    PeakProfile::RegistryType::iterator iprfl;
+    iprfl = reg.find(tp);
+    if (iprfl == reg.end())
+    {
+        ostringstream emsg;
+        emsg << "Unknown type of PeakProfile '" << tp << "'.";
+        throw invalid_argument(emsg.str());
+    }
+    const PeakProfile* rv = iprfl->second;
+    return rv;
+}
+
+
+PeakProfile* createPeakProfile(const std::string& tp)
+{
+    const PeakProfile* ppf = borrowPeakProfile(tp);
+    PeakProfile* rv = ppf->copy();
+    return rv;
+}
+
+
+bool registerPeakProfile(const PeakProfile& prfl)
+{
+    using namespace std;
+    PeakProfile::RegistryType& reg = PeakProfile::getRegistry();
+    if (reg.count(prfl.type()))
+    {
+        ostringstream emsg;
+        emsg << "PeakProfile type '" << prfl.type() <<
+            "' is already registered.";
+        throw logic_error(emsg.str());
+    }
+    reg[prfl.type()] = prfl.copy();
+    return true;
 }
 
 //////////////////////////////////////////////////////////////////////////////

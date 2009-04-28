@@ -65,8 +65,4 @@ bool registerPeakProfile(const PeakProfile&);
 }   // namespace srreal
 }   // namespace diffpy
 
-// Implementation ------------------------------------------------------------
-
-#include <diffpy/srreal/PeakProfile.ipp>
-
 #endif  // PEAKPROFILE_HPP_INCLUDED

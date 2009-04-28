@@ -18,11 +18,12 @@
 *
 *****************************************************************************/
 
-#ifndef SCATTERINGFACTORTABLE_IPP_INCLUDED
-#define SCATTERINGFACTORTABLE_IPP_INCLUDED
-
 #include <sstream>
 #include <stdexcept>
+#include <memory>
+#include <diffpy/srreal/ScatteringFactorTable.hpp>
+
+using namespace std;
 
 namespace diffpy {
 namespace srreal {
@@ -31,7 +32,6 @@ namespace srreal {
 
 // public methods
 
-inline
 const double& ScatteringFactorTable::lookup(const std::string& smbl) const
 {
     using namespace std;
@@ -47,21 +47,18 @@ const double& ScatteringFactorTable::lookup(const std::string& smbl) const
 }
 
 
-inline
 void ScatteringFactorTable::setCustom(const std::string& smbl, double value)
 {
     mtable[smbl] = value;
 }
 
 
-inline
 void ScatteringFactorTable::resetCustom(const std::string& smbl)
 {
     mtable.erase(smbl);
 }
 
 
-inline
 void ScatteringFactorTable::resetAll()
 {
     mtable.clear();
@@ -69,17 +66,16 @@ void ScatteringFactorTable::resetAll()
 
 // private methods
 
-inline
 ScatteringFactorTable::RegistryType&
 ScatteringFactorTable::getRegistry()
 {
-    static RegistryType the_registry;
-    return the_registry;
+    static auto_ptr<RegistryType> the_registry;
+    if (!the_registry.get())  the_registry.reset(new RegistryType());
+    return *the_registry;
 }
 
 // Factory Functions ---------------------------------------------------------
 
-inline
 ScatteringFactorTable* createScatteringFactorTable(const std::string& tp)
 {
     using namespace std;
@@ -98,7 +94,6 @@ ScatteringFactorTable* createScatteringFactorTable(const std::string& tp)
 }
 
 
-inline
 bool registerScatteringFactorTable(const ScatteringFactorTable& sft)
 {
     using namespace std;
@@ -116,7 +111,6 @@ bool registerScatteringFactorTable(const ScatteringFactorTable& sft)
 }
 
 
-inline
 bool aliasScatteringFactorTable(const std::string& tp, const std::string& al)
 {
     using namespace std;
@@ -142,6 +136,4 @@ bool aliasScatteringFactorTable(const std::string& tp, const std::string& al)
 }   // namespace srreal
 }   // namespace diffpy
 
-// vim:ft=cpp
-
-#endif  // SCATTERINGFACTORTABLE_IPP_INCLUDED
+// End of file.
