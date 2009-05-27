@@ -74,4 +74,4 @@ bool registerPeakWidthModel(const PeakWidthModel& pwm)
 }   // namespace srreal
 }   // namespace diffpy
 
-// End of file.
+// End of file

@@ -155,4 +155,4 @@ bool reg_GaussPeakProfile = registerPeakProfile(GaussPeakProfile());
 }   // namespace srreal
 }   // namespace diffpy
 
-// End of file.
+// End of file

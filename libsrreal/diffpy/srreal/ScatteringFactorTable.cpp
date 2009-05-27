@@ -136,4 +136,4 @@ bool aliasScatteringFactorTable(const std::string& tp, const std::string& al)
 }   // namespace srreal
 }   // namespace diffpy
 
-// End of file.
+// End of file

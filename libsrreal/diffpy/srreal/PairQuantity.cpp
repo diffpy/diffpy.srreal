@@ -12,7 +12,7 @@
 *
 ******************************************************************************
 *
-* class PairQuantity -- brute force pair quantity calculator
+* class PairQuantity -- general implementation of pair quantity calculator
 *
 * $Id$
 *
@@ -21,7 +21,7 @@
 #include <memory>
 
 #include <diffpy/srreal/PairQuantity.hpp>
-#include <diffpy/srreal/StructureAdapter.hpp>
+//#include <diffpy/srreal/StructureAdapter.hpp>
 #include <diffpy/srreal/BaseBondGenerator.hpp>
 #include <diffpy/mathutils.hpp>
 
@@ -36,6 +36,7 @@ PairQuantity::PairQuantity() : BasePairQuantity()
     this->setRmin(0.0);
     this->setRmax(DOUBLE_MAX);
     this->resizeValue(1);
+    this->setEvaluator(BASIC);
 }
 
 // Public Methods ------------------------------------------------------------
@@ -43,7 +44,7 @@ PairQuantity::PairQuantity() : BasePairQuantity()
 const QuantityType& PairQuantity::eval(const StructureAdapter& stru)
 {
     mstructure = &stru;
-    this->updateValue();
+    mevaluator->updateValue(*this);
     mstructure = NULL;
     return this->value();
 }
@@ -78,6 +79,14 @@ const double& PairQuantity::getRmax() const
     return mrmax;
 }
 
+
+void PairQuantity::setEvaluator(PQEvaluatorType evtp)
+{
+    if (mevaluator.get() && mevaluator->typeint() == evtp)  return;
+    mevaluator.reset(createPQEvaluator(evtp));
+    this->resetValue();
+}
+
 // Protected Methods ---------------------------------------------------------
 
 void PairQuantity::resizeValue(size_t sz)
@@ -89,25 +98,6 @@ void PairQuantity::resizeValue(size_t sz)
 void PairQuantity::resetValue()
 {
     fill(mvalue.begin(), mvalue.end(), 0.0);
-}
-
-
-void PairQuantity::updateValue()
-{
-    this->resetValue();
-    auto_ptr<BaseBondGenerator> bnds;
-    bnds.reset(mstructure->createBondGenerator());
-    this->configureBondGenerator(*bnds);
-    int nsites = mstructure->countSites();
-    for (int i0 = 0; i0 < nsites; ++i0)
-    {
-        bnds->selectAnchorSite(i0);
-        bnds->selectSiteRange(0, i0 + 1);
-        for (bnds->rewind(); !bnds->finished(); bnds->next())
-        {
-            this->addPairContribution(*bnds);
-        }
-    }
 }
 
 

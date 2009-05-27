@@ -12,7 +12,7 @@
 *
 ******************************************************************************
 *
-* class PairQuantity -- brute force pair quantity calculator
+* class PairQuantity -- general implementation of pair quantity calculator
 *
 * $Id$
 *
@@ -21,7 +21,10 @@
 #ifndef PAIRQUANTITY_HPP_INCLUDED
 #define PAIRQUANTITY_HPP_INCLUDED
 
+#include <memory>
+
 #include <diffpy/srreal/BasePairQuantity.hpp>
+#include <diffpy/srreal/PQEvaluator.hpp>
 
 namespace diffpy {
 namespace srreal {
@@ -45,13 +48,16 @@ class PairQuantity : public BasePairQuantity
         const double& getRmin() const;
         virtual void setRmax(double);
         const double& getRmax() const;
+        void setEvaluator(PQEvaluatorType evtp);
 
     protected:
+
+        friend class PQEvaluatorBasic;
+        friend class PQEvaluatorOptimized;
 
         // methods
         virtual void resizeValue(size_t);
         virtual void resetValue();
-        virtual void updateValue();
         virtual void configureBondGenerator(BaseBondGenerator&);
         virtual void addPairContribution(const BaseBondGenerator&) { }
 
@@ -60,6 +66,7 @@ class PairQuantity : public BasePairQuantity
         const StructureAdapter* mstructure;
         double mrmin;
         double mrmax;
+        std::auto_ptr<PQEvaluatorBasic> mevaluator;
 
 };
 
