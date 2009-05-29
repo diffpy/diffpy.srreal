@@ -190,19 +190,24 @@ const R3::Vector& DiffPyStructureBondGenerator::r1() const
 
 double DiffPyStructureBondGenerator::msd0() const
 {
-    const R3::Matrix& Uijcartn = mdpstructure->siteCartesianUij(msite_anchor);
-    const R3::Vector& s = this->r01();
-    bool anisotropy = mdpstructure->siteAnisotropy(msite_anchor);
-    double rv = meanSquareDisplacement(Uijcartn, s, anisotropy);
+    double rv = this->msdSiteDir(this->site0(), this->r01());
     return rv;
 }
 
 
 double DiffPyStructureBondGenerator::msd1() const
 {
-    const R3::Matrix& Uijcartn = mdpstructure->siteCartesianUij(msite_current);
-    const R3::Vector& s = this->r01();
-    bool anisotropy = mdpstructure->siteAnisotropy(msite_current);
+    double rv = this->msdSiteDir(this->site1(), this->r01());
+    return rv;
+}
+
+// Private Methods -----------------------------------------------------------
+
+double DiffPyStructureBondGenerator::msdSiteDir(
+        int siteidx, const R3::Vector& s) const
+{
+    const R3::Matrix& Uijcartn = mdpstructure->siteCartesianUij(siteidx);
+    bool anisotropy = mdpstructure->siteAnisotropy(siteidx);
     double rv = meanSquareDisplacement(Uijcartn, s, anisotropy);
     return rv;
 }

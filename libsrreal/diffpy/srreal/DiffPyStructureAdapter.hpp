@@ -91,11 +91,15 @@ class DiffPyStructureBondGenerator : public BaseBondGenerator
         virtual double msd1() const;
 
     private:
+
         // data
         const DiffPyStructureAdapter* mdpstructure;
         std::auto_ptr<PointsInSphere> msphere;
         R3::Vector mr0ucv;
         R3::Vector mr1ucv;
+
+        // methods
+        double msdSiteDir(int siteidx, const R3::Vector& s) const;
 };
 
 //////////////////////////////////////////////////////////////////////////////
