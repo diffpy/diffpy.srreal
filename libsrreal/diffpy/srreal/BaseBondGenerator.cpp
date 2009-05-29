@@ -116,16 +116,28 @@ const double& BaseBondGenerator::getRmax() const
 }
 
 
+const int& BaseBondGenerator::site0() const
+{
+    return msite_anchor;
+}
+
+
+const int& BaseBondGenerator::site1() const
+{
+    return msite_current;
+}
+
+
 const R3::Vector& BaseBondGenerator::r0() const
 {
-    const R3::Vector& rv = mstructure->siteCartesianPosition(msite_anchor);
+    const R3::Vector& rv = mstructure->siteCartesianPosition(this->site0());
     return rv;
 }
 
 
 const R3::Vector& BaseBondGenerator::r1() const
 {
-    const R3::Vector& rv = mstructure->siteCartesianPosition(msite_current);
+    const R3::Vector& rv = mstructure->siteCartesianPosition(this->site1());
     return rv;
 }
 

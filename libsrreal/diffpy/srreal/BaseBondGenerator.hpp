@@ -53,6 +53,8 @@ class BaseBondGenerator
         // get data
         const double& getRmin() const;
         const double& getRmax() const;
+        const int& site0() const;
+        const int& site1() const;
         virtual const R3::Vector& r0() const;
         virtual const R3::Vector& r1() const;
         double distance() const;
