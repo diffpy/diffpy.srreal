@@ -38,6 +38,7 @@ class StructureAdapter
         virtual BaseBondGenerator* createBondGenerator() const = 0;
         virtual int countSites() const = 0;
         virtual double totalOccupancy() const;
+        virtual double numberDensity() const;
         virtual const R3::Vector& siteCartesianPosition(int idx) const = 0;
         virtual double siteOccupancy(int idx) const;
         virtual bool siteAnisotropy(int idx) const = 0;

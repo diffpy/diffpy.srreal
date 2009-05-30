@@ -30,17 +30,19 @@ using namespace diffpy::srreal;
 
 double StructureAdapter::totalOccupancy() const
 {
-    auto_ptr<BaseBondGenerator> bnds(this->createBondGenerator());
-    // This needs to sum over all atoms in expanded unit cell. 
-    // This is ensured by looping over all bonds of atom 0 with
-    // self-pairs included.
-    bnds->includeSelfPairs(true);
     double total_occupancy = 0.0;
-    for (bnds->rewind(); !bnds->finished(); bnds->next())
+    int cnt_sites = this->countSites();
+    for (int i = 0; i < cnt_sites; ++i)
     {
-        total_occupancy += this->siteOccupancy(bnds->site1());
+        total_occupancy += this->siteOccupancy(i);
     }
     return total_occupancy;
+}
+
+
+double StructureAdapter::numberDensity() const
+{
+    return 0.0;
 }
 
 
