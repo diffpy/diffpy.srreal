@@ -38,8 +38,8 @@ class PDFCalculator : public PairQuantity
         PDFCalculator();
 
         // results
-        const QuantityType& getPDF() const;
-        const QuantityType& getRDF() const;
+        QuantityType getPDF() const;
+        QuantityType getRDF() const;
         QuantityType getRgrid() const;
 
         // Q-range configuration
@@ -82,13 +82,11 @@ class PDFCalculator : public PairQuantity
         int totalPoints() const;
         int totalIndex(double r) const;
         // structure factors - fast lookup by site index
-        double sfSite(int) const;
+        const double& sfSite(int) const;
+        double sfAverage() const;
         void update_msfsite();
 
         // data
-        // results
-        QuantityType mpdf;
-        QuantityType mrdf;
         // configuration
         double mqmin;
         double mqmax;
@@ -96,8 +94,6 @@ class PDFCalculator : public PairQuantity
         std::auto_ptr<PeakWidthModel> mpwmodel;
         std::auto_ptr<ScatteringFactorTable> msftable;
         std::vector<double> msfsite;
-
-
 };
 
 // Public Template Methods ---------------------------------------------------

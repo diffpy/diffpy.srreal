@@ -37,6 +37,29 @@ namespace {
 void ensureNonNegative(const string& vname, double value);
 double maxUii(const StructureAdapter*);
 
+
+class PDFBaseLine
+{
+    private:
+
+        // data
+        double mslope;
+
+    public:
+
+        PDFBaseLine(double num_density)
+        {
+            mslope = (num_density > 0) ? (-4 * M_PI * num_density) : 0.0;
+        }
+
+        double operator()(const double& ri) const
+        {
+            return mslope * ri;
+        }
+
+};
+
+
 }   // namespace
 
 // Constructor ---------------------------------------------------------------
@@ -51,15 +74,43 @@ PDFCalculator::PDFCalculator() : PairQuantity()
 
 // results
 
-const QuantityType& PDFCalculator::getPDF() const
+QuantityType PDFCalculator::getPDF() const
 {
-    return mpdf;
+    QuantityType pdf(this->rgridPoints());
+    QuantityType rdf = this->getRDF();
+    QuantityType rgrid = this->getRgrid();
+    assert(pdf.size() == rdf.size() && pdf.size() == rgrid.size());
+    PDFBaseLine baseline(mstructure->numberDensity());
+    QuantityType::iterator pdfi = pdf.begin();
+    QuantityType::const_iterator rdfi = rdf.begin();
+    QuantityType::const_iterator ri = rgrid.begin();
+    for (; pdfi != pdf.end(); ++pdfi, ++rdfi, ++ri)
+    {
+        *pdfi = (*ri == 0.0) ? (0.0) :
+            (*pdfi / *ri + baseline(*ri));
+    }
+    return pdf;
 }
 
 
-const QuantityType& PDFCalculator::getRDF() const
+QuantityType PDFCalculator::getRDF() const
 {
-    return mrdf;
+    QuantityType rdf(this->rgridPoints());
+    double totocc = mstructure->totalOccupancy();
+    double sfavg = this->sfAverage();
+    double rdf_scale = (totocc * sfavg == 0.0) ? 0.0 :
+        1.0 / (totocc * sfavg * sfavg);
+    QuantityType::iterator iirdf = rdf.begin();
+    QuantityType::const_iterator iival =
+        this->value().begin() + this->extloPoints();
+    QuantityType::const_iterator iival_last = iival + rdf.size();
+    assert(iival <= this->value().end());
+    assert(iival_last <= this->value().end());
+    for (; iival != iival_last; ++iival, ++iirdf)
+    {
+        *iirdf = *iival * rdf_scale;
+    }
+    return rdf;
 }
 
 
@@ -241,6 +292,25 @@ int PDFCalculator::totalIndex(double r) const
     assert(0 <= npts && npts < this->totalPoints());
     return npts;
 }
+
+
+const double& PDFCalculator::sfSite(int siteidx) const
+{
+    assert(0 <= siteidx && siteidx < int(msfsite.size()));
+    return msfsite[siteidx];
+}
+
+
+double PDFCalculator::sfAverage() const
+{
+    double totsf = 0.0;
+    int cntsites = mstructure->countSites();
+    for (int i = 0; i < cntsites; ++i)  { totsf += this->sfSite(i); }
+    double totocc = mstructure->totalOccupancy();
+    double rv = (totocc == 0.0) ? 0.0 : (totsf / totocc);
+    return rv;
+}
+
 
 // Local Helpers -------------------------------------------------------------
 
