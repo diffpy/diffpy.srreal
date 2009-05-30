@@ -50,7 +50,9 @@ class DiffPyStructureAdapter : public StructureAdapter
         // methods - overloaded
         virtual BaseBondGenerator* createBondGenerator() const;
         virtual int countSites() const;
+        virtual double numberDensity() const;
         virtual const R3::Vector& siteCartesianPosition(int idx) const;
+        virtual double siteOccupancy(int idx) const;
         virtual bool siteAnisotropy(int idx) const;
         virtual const R3::Matrix& siteCartesianUij(int idx) const;
         virtual const std::string& siteAtomType(int idx) const;
@@ -70,6 +72,7 @@ class DiffPyStructureAdapter : public StructureAdapter
         // copied properties
         Lattice mlattice;
         std::vector<R3::Vector> mcartesian_positions;
+        std::vector<double> moccupancies;
         std::vector<bool> manisotropies;
         std::vector<R3::Matrix> mcartesian_uijs;
         std::vector<std::string> matomtypes;

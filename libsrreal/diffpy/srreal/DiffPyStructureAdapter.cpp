@@ -60,6 +60,13 @@ int DiffPyStructureAdapter::countSites() const
 }
 
 
+double DiffPyStructureAdapter::numberDensity() const
+{
+    double rv = this->totalOccupancy() / mlattice.volume();
+    return rv;
+}
+
+
 const Lattice& DiffPyStructureAdapter::getLattice() const
 {
     return mlattice;
@@ -70,6 +77,13 @@ const R3::Vector& DiffPyStructureAdapter::siteCartesianPosition(int idx) const
 {
     assert(0 <= idx && idx < this->countSites());
     return mcartesian_positions[idx];
+}
+
+
+double DiffPyStructureAdapter::siteOccupancy(int idx) const
+{
+    assert(0 <= idx && idx < this->countSites());
+    return moccupancies[idx];
 }
 
 
@@ -110,6 +124,7 @@ void DiffPyStructureAdapter::fetchPythonData()
     mlattice.setLatPar(a, b, c, alpha, beta, gamma);
     // atom properties
     mcartesian_positions.clear();
+    moccupancies.clear();
     manisotropies.clear();
     mcartesian_uijs.clear();
     matomtypes.clear();
@@ -132,6 +147,9 @@ void DiffPyStructureAdapter::fetchPythonData()
         R3::Vector xyz_cartn;
         xyz_cartn = mlattice.cartesian(xyz_frac);
         mcartesian_positions.push_back(xyz_cartn);
+        // moccupancies
+        double occupancy = python::extract<double>(ai.attr("occupancy"));
+        moccupancies.push_back(occupancy);
         // manisotropies
         bool aniso;
         py_locals["ai"] = ai;
