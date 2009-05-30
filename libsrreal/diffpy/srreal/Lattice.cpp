@@ -61,14 +61,12 @@ void Lattice::setLatPar(double a0, double b0, double c0,
     msinb = sind(mbeta);
     mcosg = cosd(mgamma);
     msing = sind(mgamma);
-    // Vunit is a volume of unit cell with a=b=c=1
-    double Vunit = sqrt(1.0 +
-            2.0 * mcosa * mcosb * mcosg -
-            mcosa * mcosa - mcosb * mcosb - mcosg * mcosg);
+    // Vnorm is a volume of unit cell with a=b=c=1
+    double Vnorm = this->volumeNormal();
     // reciprocal lattice
-    mar = msina / (ma * Vunit);
-    mbr = msinb / (mb * Vunit);
-    mcr = msing / (mc * Vunit);
+    mar = msina / (ma * Vnorm);
+    mbr = msinb / (mb * Vnorm);
+    mcr = msing / (mc * Vnorm);
     mcosar = (mcosb*mcosg - mcosa) / (msinb * msing);
     mcosbr = (mcosa*mcosg - mcosb) / (msina * msing);
     mcosgr = (mcosa*mcosb - mcosg) / (msina * msinb);
@@ -133,14 +131,12 @@ void Lattice::setLatBase(const R3::Vector& va0,
     malpha = acosd(mcosa);
     mbeta = acosd(mcosb);
     mgamma = acosd(mcosg);
-    // Vunit is a volume of unit cell with a=b=c=1
-    double Vunit = sqrt(1.0 +
-            2.0 * mcosa * mcosb * mcosg -
-            mcosa * mcosa - mcosb * mcosb - mcosg * mcosg);
+    // Vnorm is a volume of unit cell with a=b=c=1
+    double Vnorm = this->volumeNormal();
     // reciprocal lattice
-    mar = msina/(ma*Vunit);
-    mbr = msinb/(mb*Vunit);
-    mcr = msing/(mc*Vunit);
+    mar = msina/(ma*Vnorm);
+    mbr = msinb/(mb*Vnorm);
+    mcr = msing/(mc*Vnorm);
     mcosar = (mcosb*mcosg - mcosa)/(msinb*msing);
     mcosbr = (mcosa*mcosg - mcosb)/(msina*msing);
     mcosgr = (mcosa*mcosb - mcosg)/(msina*msinb);
@@ -169,6 +165,24 @@ void Lattice::setLatBase(const R3::Vector& va0,
         mrecbase(2,0)/mar,  mrecbase(2,1)/mbr,  mrecbase(2,2)/mcr;
     this->updateMetrics();
 }
+
+
+// volumeNormal is a volume of unit cell with a=b=c=1
+double Lattice::volumeNormal() const
+{
+    double rv = sqrt(1.0 +
+            2.0 * mcosa * mcosb * mcosg -
+            mcosa * mcosa - mcosb * mcosb - mcosg * mcosg);
+    return rv;
+}
+
+
+double Lattice::volume() const
+{
+    double rv = this->volumeNormal() * this->a() * this->b() * this->c();
+    return rv;
+}
+
 
 const R3::Vector& Lattice::cartesian(const R3::Vector& lv) const
 {

@@ -59,6 +59,8 @@ class Lattice
         const R3::Vector& va() const;
         const R3::Vector& vb() const;
         const R3::Vector& vc() const;
+        double volumeNormal() const;
+        double volume() const;
         // reciprocal lattice
         double ar() const;
         double br() const;
