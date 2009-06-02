@@ -38,11 +38,13 @@ class TestDiffPyStructureAdapter : public CppUnit::TestFixture
 
     CPPUNIT_TEST_SUITE(TestDiffPyStructureAdapter);
     CPPUNIT_TEST(test_countSites);
-    CPPUNIT_TEST(test_getLattice);
+    CPPUNIT_TEST(test_totalOccupancy);
+    CPPUNIT_TEST(test_numberDensity);
     CPPUNIT_TEST(test_siteCartesianPosition);
     CPPUNIT_TEST(test_siteAnisotropy);
     CPPUNIT_TEST(test_siteCartesianUij);
     CPPUNIT_TEST(test_siteAtomType);
+    CPPUNIT_TEST(test_getLattice);
     CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -50,6 +52,7 @@ private:
     auto_ptr<DiffPyStructureAdapter> m_ni;
     auto_ptr<DiffPyStructureAdapter> m_kbise;
     auto_ptr<DiffPyStructureAdapter> m_catio3;
+    auto_ptr<DiffPyStructureAdapter> m_pswt;
 
 public:
 
@@ -74,6 +77,12 @@ public:
             stru = this->loadTestStructure("icsd_62149.cif");
             m_catio3.reset(new DiffPyStructureAdapter(stru));
         }
+        if (!m_pswt.get())
+        {
+            python::object stru;
+            stru = this->loadTestStructure("PbScW25TiO3.stru");
+            m_pswt.reset(new DiffPyStructureAdapter(stru));
+        }
     }
 
 
@@ -82,18 +91,23 @@ public:
         CPPUNIT_ASSERT_EQUAL(4, m_ni->countSites());
         CPPUNIT_ASSERT_EQUAL(23, m_kbise->countSites());
         CPPUNIT_ASSERT_EQUAL(20, m_catio3->countSites());
+        CPPUNIT_ASSERT_EQUAL(56, m_pswt->countSites());
     }
 
 
-    void test_getLattice()
+    void test_totalOccupancy()
     {
-        const Lattice& L = m_kbise->getLattice();
-        CPPUNIT_ASSERT_EQUAL(13.768, L.a());
-        CPPUNIT_ASSERT_EQUAL(12.096, L.b());
-        CPPUNIT_ASSERT_EQUAL(4.1656, L.c());
-        CPPUNIT_ASSERT_EQUAL(89.98, L.alpha());
-        CPPUNIT_ASSERT_EQUAL(98.64, L.beta());
-        CPPUNIT_ASSERT_EQUAL(87.96, L.gamma() );
+        CPPUNIT_ASSERT_EQUAL(4.0, m_ni->totalOccupancy());
+        CPPUNIT_ASSERT_EQUAL(40.0, m_pswt->totalOccupancy());
+    }
+
+
+    void test_numberDensity()
+    {
+        const double eps = 1.0e-7;
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0914114, m_ni->numberDensity(), eps);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0760332, m_pswt->numberDensity(), eps);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0335565, m_kbise->numberDensity(), eps);
     }
 
 
@@ -148,6 +162,18 @@ public:
         CPPUNIT_ASSERT_EQUAL(string("Bi3+"), m_kbise->siteAtomType(2));
         CPPUNIT_ASSERT_EQUAL(string("Se"), m_kbise->siteAtomType(10));
         CPPUNIT_ASSERT_EQUAL(string("Se"), m_kbise->siteAtomType(22));
+    }
+
+
+    void test_getLattice()
+    {
+        const Lattice& L = m_kbise->getLattice();
+        CPPUNIT_ASSERT_EQUAL(13.768, L.a());
+        CPPUNIT_ASSERT_EQUAL(12.096, L.b());
+        CPPUNIT_ASSERT_EQUAL(4.1656, L.c());
+        CPPUNIT_ASSERT_EQUAL(89.98, L.alpha());
+        CPPUNIT_ASSERT_EQUAL(98.64, L.beta());
+        CPPUNIT_ASSERT_EQUAL(87.96, L.gamma() );
     }
 
 
