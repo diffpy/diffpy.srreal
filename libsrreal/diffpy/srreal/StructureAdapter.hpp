@@ -29,19 +29,44 @@ namespace srreal {
 
 class BaseBondGenerator;
 
+/// @class StructureAdapter
+/// @brief abstract adaptor to structure data needed by
+/// PairQuantity calculator
+
 class StructureAdapter
 {
     public:
 
         virtual ~StructureAdapter()  { }
+
         // methods
+
+        /// factory for creating compatible BondGenerator instance.
         virtual BaseBondGenerator* createBondGenerator() const = 0;
+
+        /// number of independent sites in the structure, before
+        /// any symmetry expansion.
         virtual int countSites() const = 0;
+
+        /// total number of atoms in the structure unit accounting
+        /// for possibly fractional occupancies.
         virtual double totalOccupancy() const;
+
+        /// number density in the structure model or 0 when not defined.
         virtual double numberDensity() const;
+
+        /// Cartesian coordinates of the independent site @param idx
         virtual const R3::Vector& siteCartesianPosition(int idx) const = 0;
+
+        /// site occupancy at the independent site @param idx
         virtual double siteOccupancy(int idx) const;
+
+        /// flag for anisotropic atom displacements at independent site
+        /// @param idx
         virtual bool siteAnisotropy(int idx) const = 0;
+
+        /// tensor of atom displacement parameters converted in
+        /// Cartesian coordinate system at independent site @param idx
         virtual const R3::Matrix& siteCartesianUij(int idx) const = 0;
 };
 
