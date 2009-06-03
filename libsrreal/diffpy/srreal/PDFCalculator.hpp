@@ -22,6 +22,8 @@
 #define PDFCALCULATOR_HPP_INCLUDED
 
 #include <memory>
+#include <set>
+
 #include <diffpy/srreal/PairQuantity.hpp>
 #include <diffpy/srreal/PeakWidthModel.hpp>
 #include <diffpy/srreal/ScatteringFactorTable.hpp>
@@ -29,6 +31,7 @@
 namespace diffpy {
 namespace srreal {
 
+class PDFEnvelope;  // FIXME -- temporary, to be removed
 
 class PDFCalculator : public PairQuantity
 {
@@ -47,6 +50,7 @@ class PDFCalculator : public PairQuantity
         const double& getQmin() const;
         void setQmax(double);
         const double& getQmax() const;
+        QuantityType applyBandPassFilter(const QuantityType& a) const;
 
         // R-range configuration
         virtual void setRmin(double);
@@ -57,6 +61,17 @@ class PDFCalculator : public PairQuantity
         // PDF peak width configuration
         void setPeakWidthModel(const PeakWidthModel&);
         const PeakWidthModel& getPeakWidthModel() const;
+
+        // PDF envelope functions
+        // application on an array
+        QuantityType applyEnvelopes(const QuantityType&) const;
+        // configuration of envelopes
+        void addEnvelope(const PDFEnvelope&);
+        void addEnvelope(const std::string& tp);
+        const PDFEnvelope& getEnvelope(const std::string& tp) const;
+        PDFEnvelope& getEnvelope(const std::string& tp);
+        std::set<std::string> usedEnvelopeTypes() const;
+        void clearEnvelopes();
 
         // scattering factors configuration
         void setScatteringFactorTable(const ScatteringFactorTable&);
@@ -81,6 +96,7 @@ class PDFCalculator : public PairQuantity
         int rgridPoints() const;
         int totalPoints() const;
         int totalIndex(double r) const;
+
         // structure factors - fast lookup by site index
         const double& sfSite(int) const;
         double sfAverage() const;

@@ -32,6 +32,10 @@ namespace srreal {
 double meanSquareDisplacement(const R3::Matrix& Uijcartn, const R3::Vector& s,
         bool anisotropy=false);
 
+// Apply band pass filter to a sequence of doubles
+template <class Ti>
+void bandPassFilter(Ti first, Ti last, double dr, double qmin, double qmax) { /*FIXME*/ }
+
 }   // namespace srreal
 }   // namespace diffpy
 

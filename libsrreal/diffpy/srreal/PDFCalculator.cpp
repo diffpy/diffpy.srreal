@@ -26,6 +26,7 @@
 #include <diffpy/srreal/PDFCalculator.hpp>
 #include <diffpy/srreal/StructureAdapter.hpp>
 #include <diffpy/srreal/R3linalg.hpp>
+#include <diffpy/srreal/PDFUtils.hpp>
 
 using namespace std;
 using namespace diffpy::srreal;
@@ -89,7 +90,11 @@ QuantityType PDFCalculator::getPDF() const
         *pdfi = (*ri == 0.0) ? (0.0) :
             (*pdfi / *ri + baseline(*ri));
     }
-    return pdf;
+    // fixme - factor out baseline application to a separate method
+    QuantityType& pdf0 = pdf;
+    QuantityType pdf1 = this->applyEnvelopes(pdf0);
+    QuantityType pdf2 = this->applyBandPassFilter(pdf1);
+    return pdf2;
 }
 
 
@@ -153,6 +158,16 @@ const double& PDFCalculator::getQmax() const
     return mqmax;
 }
 
+
+QuantityType PDFCalculator::applyBandPassFilter(const QuantityType& a) const
+{
+    QuantityType rv(a);
+    bandPassFilter(rv.begin(), rv.end(),
+            this->getRstep(), this->getQmin(), this->getQmax());
+    return rv;
+}
+
+
 // R-range configuration
 
 void PDFCalculator::setRmin(double rmin)
@@ -198,6 +213,46 @@ const PeakWidthModel& PDFCalculator::getPeakWidthModel() const
     assert(mpwmodel.get());
     return *mpwmodel;
 }
+
+// PDF envelope methods
+
+QuantityType PDFCalculator::applyEnvelopes(const QuantityType& a) const
+{
+    // FIXME
+    return a;
+}
+
+
+/*
+void PDFCalculator::addEnvelope(const PDFEnvelope& envlp)
+{
+}
+
+
+void PDFCalculator::addEnvelope(const string& tp)
+{
+}
+
+
+const PDFEnvelope& PDFCalculator::getEnvelope(const std::string& tp) const
+{
+}
+
+
+PDFEnvelope& PDFCalculator::getEnvelope(const std::string& tp)
+{
+}
+
+
+set<string> PDFCalculator::usedEnvelopeTypes() const
+{
+}
+
+
+void PDFCalculator::clearEnvelopes()
+{
+}
+*/
 
 /*
         void setScatteringFactorTable(const ScatteringFactorTable&);
