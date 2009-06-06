@@ -32,7 +32,6 @@
 #include <diffpy/PythonInterface.hpp>
 
 using namespace std;
-using namespace diffpy::srreal;
 namespace python = boost::python;
 
 // Local helpers -------------------------------------------------------------
@@ -56,6 +55,9 @@ python::object periodictable_elements_symbol()
 }
 
 }   // namespace
+
+namespace diffpy {
+namespace srreal {
 
 //////////////////////////////////////////////////////////////////////////////
 // class SFTperiodictableXray
@@ -181,5 +183,8 @@ bool reg_SFTperiodictableNeutron = (
         registerScatteringFactorTable(SFTperiodictableNeutron()) &&
         aliasScatteringFactorTable("SFTperiodictableNeutron", "N")
         );
+
+}   // namespace srreal
+}   // namespace diffpy
 
 // End of file
