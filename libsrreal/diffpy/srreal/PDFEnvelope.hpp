@@ -1,0 +1,70 @@
+/*****************************************************************************
+*
+* diffpy.srreal     by DANSE Diffraction group
+*                   Simon J. L. Billinge
+*                   (c) 2009 Trustees of the Columbia University
+*                   in the City of New York.  All rights reserved.
+*
+* File coded by:    Pavol Juhas
+*
+* See AUTHORS.txt for a list of people who contributed.
+* See LICENSE.txt for license information.
+*
+******************************************************************************
+*
+* class PDFEnvelope -- abstract base class for PDF envelope functions
+*     A concrete instance of PDFEnvelope is a functor, that calculates
+*     PDF scaling coefficients at a given pair distance r.  Several functors
+*     can be defined and applied in PDFCalculator.
+*
+* $Id$
+*
+*****************************************************************************/
+
+#ifndef PDFENVELOPE_HPP_INCLUDED
+#define PDFENVELOPE_HPP_INCLUDED
+
+#include <string>
+#include <map>
+
+namespace diffpy {
+namespace srreal {
+
+/// @class PDFEnvelope
+/// @brief abstract base class for PDF envelope scaling function
+
+class PDFEnvelope
+{
+    public:
+
+        // constructors
+        virtual PDFEnvelope* create() const = 0;
+        virtual PDFEnvelope* copy() const = 0;
+        virtual ~PDFEnvelope()  { }
+
+        // methods
+        virtual double operator()(const double& r) const = 0;
+        virtual const std::string& type() const = 0;
+
+    private:
+
+        friend PDFEnvelope* createPDFEnvelope(const std::string&);
+        friend bool registerPDFEnvelope(const PDFEnvelope& tp);
+        friend bool aliasPDFEnvelope(const std::string&, const std::string&);
+
+        // class method for registration
+        typedef std::map<std::string, const PDFEnvelope*> RegistryType;
+        static RegistryType& getRegistry();
+
+};
+
+// Factory functions for concrete PDF envelopes ------------------------------
+
+PDFEnvelope* createPDFEnvelope(const std::string& tp);
+bool registerPDFEnvelope(const PDFEnvelope&);
+bool aliasPDFEnvelope(const std::string& tp, const std::string& al);
+
+}   // namespace srreal
+}   // namespace diffpy
+
+#endif  // PDFENVELOPE_HPP_INCLUDED
