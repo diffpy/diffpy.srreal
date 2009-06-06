@@ -45,17 +45,6 @@ class PDFEnvelope
         // methods
         virtual double operator()(const double& r) const = 0;
         virtual const std::string& type() const = 0;
-
-    private:
-
-        friend PDFEnvelope* createPDFEnvelope(const std::string&);
-        friend bool registerPDFEnvelope(const PDFEnvelope& tp);
-        friend bool aliasPDFEnvelope(const std::string&, const std::string&);
-
-        // class method for registration
-        typedef std::map<std::string, const PDFEnvelope*> RegistryType;
-        static RegistryType& getRegistry();
-
 };
 
 // Factory functions for concrete PDF envelopes ------------------------------
