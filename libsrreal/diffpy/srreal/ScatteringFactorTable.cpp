@@ -21,9 +21,12 @@
 #include <sstream>
 #include <stdexcept>
 #include <memory>
+
 #include <diffpy/srreal/ScatteringFactorTable.hpp>
+#include <diffpy/ClassRegistry.hpp>
 
 using namespace std;
+using diffpy::ClassRegistry;
 
 namespace diffpy {
 namespace srreal {
@@ -32,7 +35,7 @@ namespace srreal {
 
 // public methods
 
-const double& ScatteringFactorTable::lookup(const std::string& smbl) const
+const double& ScatteringFactorTable::lookup(const string& smbl) const
 {
     using namespace std;
     map<string, double>::const_iterator isft;
@@ -47,13 +50,13 @@ const double& ScatteringFactorTable::lookup(const std::string& smbl) const
 }
 
 
-void ScatteringFactorTable::setCustom(const std::string& smbl, double value)
+void ScatteringFactorTable::setCustom(const string& smbl, double value)
 {
     mtable[smbl] = value;
 }
 
 
-void ScatteringFactorTable::resetCustom(const std::string& smbl)
+void ScatteringFactorTable::resetCustom(const string& smbl)
 {
     mtable.erase(smbl);
 }
@@ -64,73 +67,23 @@ void ScatteringFactorTable::resetAll()
     mtable.clear();
 }
 
-// private methods
-
-ScatteringFactorTable::RegistryType&
-ScatteringFactorTable::getRegistry()
-{
-    static auto_ptr<RegistryType> the_registry;
-    if (!the_registry.get())  the_registry.reset(new RegistryType());
-    return *the_registry;
-}
-
 // Factory Functions ---------------------------------------------------------
 
-ScatteringFactorTable* createScatteringFactorTable(const std::string& tp)
+ScatteringFactorTable* createScatteringFactorTable(const string& tp)
 {
-    using namespace std;
-    ScatteringFactorTable::RegistryType& reg =
-        ScatteringFactorTable::getRegistry();
-    ScatteringFactorTable::RegistryType::iterator isft;
-    isft = reg.find(tp);
-    if (isft == reg.end())
-    {
-        ostringstream emsg;
-        emsg << "Unknown type of ScatteringFactorTable '" << tp << "'.";
-        throw invalid_argument(emsg.str());
-    }
-    ScatteringFactorTable* rv = isft->second->create();
-    return rv;
+    return ClassRegistry<ScatteringFactorTable>::create(tp);
 }
 
 
-bool registerScatteringFactorTable(const ScatteringFactorTable& sft)
+bool registerScatteringFactorTable(const ScatteringFactorTable& ref)
 {
-    using namespace std;
-    ScatteringFactorTable::RegistryType&
-        reg = ScatteringFactorTable::getRegistry();
-    if (reg.count(sft.type()))
-    {
-        ostringstream emsg;
-        emsg << "ScatteringFactorTable type '" << sft.type() <<
-            "' is already registered.";
-        throw logic_error(emsg.str());
-    }
-    reg[sft.type()] = sft.copy();
-    return true;
+    return ClassRegistry<ScatteringFactorTable>::add(ref);
 }
 
 
-bool aliasScatteringFactorTable(const std::string& tp, const std::string& al)
+bool aliasScatteringFactorTable(const string& tp, const string& al)
 {
-    using namespace std;
-    map<string, const ScatteringFactorTable*>& reg =
-        ScatteringFactorTable::getRegistry();
-    if (!reg.count(tp))
-    {
-        ostringstream emsg;
-        emsg << "Unknown ScatteringFactorTable '" << tp << "'.";
-        throw logic_error(emsg.str());
-    }
-    if (reg.count(al) && reg[al] != reg[tp])
-    {
-        ostringstream emsg;
-        emsg << "ScatteringFactorTable type '" << al <<
-            "' is already registered.";
-        throw logic_error(emsg.str());
-    }
-    reg[al] = reg[tp];
-    return true;
+    return ClassRegistry<ScatteringFactorTable>::alias(tp, al);
 }
 
 }   // namespace srreal

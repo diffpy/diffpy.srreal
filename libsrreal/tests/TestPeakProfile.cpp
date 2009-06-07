@@ -20,6 +20,7 @@
 
 #include <cmath>
 #include <stdexcept>
+#include <memory>
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -41,22 +42,22 @@ class TestPeakProfile : public CppUnit::TestFixture
 
 private:
 
-    const PeakProfile* mpkgauss;
+    auto_ptr<PeakProfile> mpkgauss;
     static const int mdigits = 12;
 
 public:
 
     void setUp()
     {
-        mpkgauss = borrowPeakProfile("gauss");
+        mpkgauss.reset(createPeakProfile("gauss"));
     }
 
 
     void test_factory()
     {
-        CPPUNIT_ASSERT_THROW(borrowPeakProfile("invalid"),
+        CPPUNIT_ASSERT_THROW(createPeakProfile("invalid"),
                 invalid_argument);
-        CPPUNIT_ASSERT_EQUAL(mpkgauss, borrowPeakProfile("gauss"));
+        CPPUNIT_ASSERT_EQUAL(string("gauss"), mpkgauss->type());
     }
 
 

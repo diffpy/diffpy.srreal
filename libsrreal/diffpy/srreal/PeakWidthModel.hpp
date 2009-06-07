@@ -47,21 +47,13 @@ class PeakWidthModel
 
         // comparison with derived classes
         virtual bool operator==(const PeakWidthModel&) const = 0;
-
-    private:
-
-        // class method for registration
-        friend PeakWidthModel* createPeakWidthModel(const std::string&);
-        friend bool registerPeakWidthModel(const PeakWidthModel&);
-        // class method for registration
-        typedef std::map<std::string, const PeakWidthModel*> RegistryType;
-        static RegistryType& getRegistry();
 };
 
 // Factory functions for Peak Width Models -----------------------------------
 
 PeakWidthModel* createPeakWidthModel(const std::string& tp);
 bool registerPeakWidthModel(const PeakWidthModel&);
+bool aliasPeakWidthModel(const std::string& tp, const std::string& al);
 
 }   // namespace srreal
 }   // namespace diffpy

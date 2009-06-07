@@ -46,21 +46,13 @@ class PeakProfile
         virtual double y(double x, double fwhm) const = 0;
         virtual double xboundlo(double eps_y, double fwhm) const = 0;
         virtual double xboundhi(double eps_y, double fwhm) const = 0;
-
-    private:
-
-        friend const PeakProfile* borrowPeakProfile(const std::string&);
-        friend bool registerPeakProfile(const PeakProfile&);
-        // class method for registration
-        typedef std::map<std::string, const PeakProfile*> RegistryType;
-        static RegistryType& getRegistry();
 };
 
 // Factory functions for Peak Width Models -----------------------------------
 
-const PeakProfile* borrowPeakProfile(const std::string& tp);
 PeakProfile* createPeakProfile(const std::string& tp);
 bool registerPeakProfile(const PeakProfile&);
+bool aliasPeakProfile(const std::string& tp, const std::string& al);
 
 }   // namespace srreal
 }   // namespace diffpy

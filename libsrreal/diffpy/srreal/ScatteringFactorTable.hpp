@@ -47,19 +47,6 @@ class ScatteringFactorTable
 
         virtual double fetch(const std::string& smbl) const = 0;
         mutable std::map<std::string,double> mtable;
-
-    private:
-
-        friend ScatteringFactorTable* createScatteringFactorTable(
-                const std::string&);
-        friend bool registerScatteringFactorTable(
-                const ScatteringFactorTable& tp);
-        friend bool aliasScatteringFactorTable(
-                const std::string&, const std::string&);
-
-        // class method for registration
-        typedef std::map<std::string, const ScatteringFactorTable*> RegistryType;
-        static RegistryType& getRegistry();
 };
 
 // Factory functions for Scattering Factor Tables ----------------------------

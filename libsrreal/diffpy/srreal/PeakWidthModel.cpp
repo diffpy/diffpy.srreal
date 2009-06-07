@@ -21,54 +21,33 @@
 #include <sstream>
 #include <stdexcept>
 #include <memory>
+
 #include <diffpy/srreal/PeakWidthModel.hpp>
+#include <diffpy/ClassRegistry.hpp>
 
 using namespace std;
+using diffpy::ClassRegistry;
 
 namespace diffpy {
 namespace srreal {
 
-// class PeakWidthModel ------------------------------------------------------
-
-PeakWidthModel::RegistryType& PeakWidthModel::getRegistry()
-{
-    static auto_ptr<RegistryType> the_registry;
-    if (!the_registry.get())  the_registry.reset(new RegistryType());
-    return *the_registry;
-}
-
 // Factory Functions ---------------------------------------------------------
 
-PeakWidthModel* createPeakWidthModel(const std::string& tp)
+PeakWidthModel* createPeakWidthModel(const string& tp)
 {
-    using namespace std;
-    PeakWidthModel::RegistryType& reg = PeakWidthModel::getRegistry();
-    PeakWidthModel::RegistryType::iterator ipwm;
-    ipwm = reg.find(tp);
-    if (ipwm == reg.end())
-    {
-        ostringstream emsg;
-        emsg << "Unknown type of PeakWidthModel '" << tp << "'.";
-        throw invalid_argument(emsg.str());
-    }
-    PeakWidthModel* rv = ipwm->second->copy();
-    return rv;
+    return ClassRegistry<PeakWidthModel>::create(tp);
 }
 
 
-bool registerPeakWidthModel(const PeakWidthModel& pwm)
+bool registerPeakWidthModel(const PeakWidthModel& ref)
 {
-    using namespace std;
-    PeakWidthModel::RegistryType& reg = PeakWidthModel::getRegistry();
-    if (reg.count(pwm.type()))
-    {
-        ostringstream emsg;
-        emsg << "PeakWidthModel type '" << pwm.type() <<
-            "' is already registered.";
-        throw logic_error(emsg.str());
-    }
-    reg[pwm.type()] = pwm.create();
-    return true;
+    return ClassRegistry<PeakWidthModel>::add(ref);
+}
+
+
+bool aliasPeakWidthModel(const string& tp, const string& al)
+{
+    return ClassRegistry<PeakWidthModel>::alias(tp, al);
 }
 
 }   // namespace srreal

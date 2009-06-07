@@ -13,7 +13,10 @@
 ******************************************************************************
 *
 * class ClassRegistry -- template class providing registry for factories
-*   of various concrete classes
+*   of various concrete classes.  Make sure that for a particular base,
+*   this template class is used in just one cpp file, otherwise the registry
+*   may not be unique.  Usually the ClassRegistry is used via
+*   createSomeBase, registerSomeBase, aliasSomeBase wrappers.
 *
 * $Id$
 *
@@ -125,27 +128,6 @@ class ClassRegistry
 };  // End of class ClassRegistry
 
 
-
-
 }   // namespace diffpy
-
-/*
-//#define DIFFPY_CLASS_REGISTRY(TBase) \
-//    namespace diffpy { \
-//    template<class T> \
-//    typename ClassRegistry<T>::RegistryType& \
-//    ClassRegistry<T>::getRegistry() \
-//    { \
-//        static std::auto_ptr<RegistryType> the_registry; \
-//        if (!the_registry.get()) \
-//        { \
-//            the_registry.reset(new RegistryType()); \
-//        } \
-//        return *the_registry; \
-//    } \
-//    ClassRegistry<TBase> expand_TBase; \
-//    } \
-
-*/
 
 #endif  // CLASSREGISTRY_HPP_INCLUDED

@@ -24,9 +24,12 @@
 #include <memory>
 #include <sstream>
 #include <stdexcept>
+
 #include <diffpy/srreal/PeakProfile.hpp>
+#include <diffpy/ClassRegistry.hpp>
 
 using namespace std;
+using diffpy::ClassRegistry;
 
 namespace diffpy {
 namespace srreal {
@@ -35,54 +38,25 @@ namespace srreal {
 // class PeakProfile
 //////////////////////////////////////////////////////////////////////////////
 
-PeakProfile::RegistryType& PeakProfile::getRegistry()
-{
-    static auto_ptr<RegistryType> the_registry;
-    if (!the_registry.get())  the_registry.reset(new RegistryType());
-    return *the_registry;
-}
-
 // Factory Functions ---------------------------------------------------------
 
-const PeakProfile* borrowPeakProfile(const std::string& tp)
+PeakProfile* createPeakProfile(const string& tp)
 {
-    using namespace std;
-    PeakProfile::RegistryType& reg = PeakProfile::getRegistry();
-    PeakProfile::RegistryType::iterator iprfl;
-    iprfl = reg.find(tp);
-    if (iprfl == reg.end())
-    {
-        ostringstream emsg;
-        emsg << "Unknown type of PeakProfile '" << tp << "'.";
-        throw invalid_argument(emsg.str());
-    }
-    const PeakProfile* rv = iprfl->second;
-    return rv;
+    return ClassRegistry<PeakProfile>::create(tp);
 }
 
 
-PeakProfile* createPeakProfile(const std::string& tp)
+bool registerPeakProfile(const PeakProfile& ref)
 {
-    const PeakProfile* ppf = borrowPeakProfile(tp);
-    PeakProfile* rv = ppf->copy();
-    return rv;
+    return ClassRegistry<PeakProfile>::add(ref);
 }
 
 
-bool registerPeakProfile(const PeakProfile& prfl)
+bool aliasPeakProfile(const string& tp, const string& al)
 {
-    using namespace std;
-    PeakProfile::RegistryType& reg = PeakProfile::getRegistry();
-    if (reg.count(prfl.type()))
-    {
-        ostringstream emsg;
-        emsg << "PeakProfile type '" << prfl.type() <<
-            "' is already registered.";
-        throw logic_error(emsg.str());
-    }
-    reg[prfl.type()] = prfl.copy();
-    return true;
+    return ClassRegistry<PeakProfile>::alias(tp, al);
 }
+
 
 //////////////////////////////////////////////////////////////////////////////
 // class GaussPeakProfile
@@ -97,7 +71,7 @@ class GaussPeakProfile : public PeakProfile
         PeakProfile* copy() const;
 
         // methods
-        const std::string& type() const;
+        const string& type() const;
         double y(double x, double fwhm) const;
         double xboundlo(double eps_y, double fwhm) const;
         double xboundhi(double eps_y, double fwhm) const;
