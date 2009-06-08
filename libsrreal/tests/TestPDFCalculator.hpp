@@ -18,8 +18,7 @@
 *
 *****************************************************************************/
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
+#include <cxxtest/TestSuite.h>
 
 #include <diffpy/srreal/PDFCalculator.hpp>
 #include <diffpy/srreal/JeongPeakWidth.hpp>
@@ -28,14 +27,8 @@
 using namespace std;
 using namespace diffpy::srreal;
 
-class TestPDFCalculator : public CppUnit::TestFixture
+class TestPDFCalculator : public CxxTest::TestSuite
 {
-
-    CPPUNIT_TEST_SUITE(TestPDFCalculator);
-    CPPUNIT_TEST(test_setPeakWidthModel);
-    CPPUNIT_TEST(test_getPeakWidthModel);
-    CPPUNIT_TEST_SUITE_END();
-
 private:
 
     auto_ptr<PDFCalculator> mpdfc;
@@ -48,13 +41,19 @@ public:
     }
 
 
-    void test_setPeakWidthModel()
+    void testAddition( void )
+    {
+        TS_ASSERT( 1 + 1 > 1 );
+        TS_ASSERT_EQUALS( 1 + 1, 2 );
+    }
+
+    void testSetPeakWidthModel()
     {
         const JeongPeakWidth& jpw0 =
             dynamic_cast<const JeongPeakWidth&>(mpdfc->getPeakWidthModel());
-        CPPUNIT_ASSERT_EQUAL(0.0, jpw0.getDelta1());
-        CPPUNIT_ASSERT_EQUAL(0.0, jpw0.getDelta2());
-        CPPUNIT_ASSERT_EQUAL(0.0, jpw0.getQbroad());
+        TS_ASSERT_EQUALS(0.0, jpw0.getDelta1());
+        TS_ASSERT_EQUALS(0.0, jpw0.getDelta2());
+        TS_ASSERT_EQUALS(0.0, jpw0.getQbroad());
         JeongPeakWidth jpw;
         jpw.setDelta1(1.0);
         jpw.setDelta2(2.0);
@@ -62,29 +61,25 @@ public:
         mpdfc->setPeakWidthModel(jpw);
         const JeongPeakWidth& jpw1 =
             dynamic_cast<const JeongPeakWidth&>(mpdfc->getPeakWidthModel());
-        CPPUNIT_ASSERT_EQUAL(1.0, jpw1.getDelta1());
-        CPPUNIT_ASSERT_EQUAL(2.0, jpw1.getDelta2());
-        CPPUNIT_ASSERT_EQUAL(3.0, jpw1.getQbroad());
+        TS_ASSERT_EQUALS(1.0, jpw1.getDelta1());
+        TS_ASSERT_EQUALS(2.0, jpw1.getDelta2());
+        TS_ASSERT_EQUALS(3.0, jpw1.getQbroad());
     }
 
 
-    void test_getPeakWidthModel()
+    void testGetPeakWidthModel()
     {
         string tp = "jeong";
-        CPPUNIT_ASSERT_EQUAL(tp, mpdfc->getPeakWidthModel().type());
+        TS_ASSERT_EQUALS(tp, mpdfc->getPeakWidthModel().type());
         auto_ptr<PeakWidthModel> pwm(createPeakWidthModel("debye-waller"));
         mpdfc->setPeakWidthModel(*pwm);
         tp = "debye-waller";
-        CPPUNIT_ASSERT_EQUAL(tp, mpdfc->getPeakWidthModel().type());
+        TS_ASSERT_EQUALS(tp, mpdfc->getPeakWidthModel().type());
         mpdfc->setPeakWidthModel(ConstantPeakWidth());
         tp = "constant";
-        CPPUNIT_ASSERT_EQUAL(tp, mpdfc->getPeakWidthModel().type());
+        TS_ASSERT_EQUALS(tp, mpdfc->getPeakWidthModel().type());
     }
 
-
 };
-
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(TestPDFCalculator);
 
 // End of file
