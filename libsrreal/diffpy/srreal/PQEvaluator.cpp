@@ -52,8 +52,8 @@ void PQEvaluatorBasic::updateValue(PairQuantity& pq)
     auto_ptr<BaseBondGenerator> bnds;
     bnds.reset(pq.mstructure->createBondGenerator());
     pq.configureBondGenerator(*bnds);
-    int nsites = pq.mstructure->countSites();
-    for (int i0 = 0; i0 < nsites; ++i0)
+    int cntsites = pq.mstructure->countSites();
+    for (int i0 = 0; i0 < cntsites; ++i0)
     {
         bnds->selectAnchorSite(i0);
         bnds->selectSiteRange(0, i0 + 1);
@@ -96,7 +96,7 @@ PQEvaluatorBasic* createPQEvaluator(PQEvaluatorType pqtp)
         default:
             ostringstream emsg;
             emsg << "Invalid PQEvaluatorType value " << pqtp;
-            throw invalid_argument("base vectors are degenerate");
+            throw invalid_argument(emsg.str());
     }
     return rv;
 }
