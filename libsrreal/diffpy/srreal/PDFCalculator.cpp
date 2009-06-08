@@ -218,41 +218,70 @@ const PeakWidthModel& PDFCalculator::getPeakWidthModel() const
 
 QuantityType PDFCalculator::applyEnvelopes(const QuantityType& a) const
 {
-    // FIXME
-    return a;
+    QuantityType rv = a;
+    QuantityType rgrid = this->getRgrid();
+    EnvelopeStorage::const_iterator evit;
+    for (evit = menvelope.begin(); evit != menvelope.end(); ++evit)
+    {
+        PDFEnvelope& fenvelope = *(evit->second);
+        QuantityType::iterator ri = rgrid.begin();
+        QuantityType::iterator fi = rv.begin();
+        for (; ri != rgrid.end(); ++ri, ++fi)
+        {
+            *fi *= fenvelope(*ri);
+        }
+    }
+    return rv;
 }
 
 
-/*
 void PDFCalculator::addEnvelope(const PDFEnvelope& envlp)
 {
+    menvelope[envlp.type()].reset(envlp.copy());
 }
 
 
 void PDFCalculator::addEnvelope(const string& tp)
 {
+    // this throws invalid_argument for invalid type
+    PDFEnvelope* penvlp = createPDFEnvelope(tp);
+    // we get here only when createPDFEnvelope was successful
+    menvelope[penvlp->type()].reset(penvlp);
 }
 
 
 const PDFEnvelope& PDFCalculator::getEnvelope(const std::string& tp) const
 {
+    // call non-constant method
+    PDFEnvelope& rv = const_cast<PDFCalculator*>(this)->getEnvelope(tp);
+    return rv;
 }
 
 
 PDFEnvelope& PDFCalculator::getEnvelope(const std::string& tp)
 {
+    if (!menvelope.count(tp))  this->addEnvelope(tp);
+    PDFEnvelope& rv = *(menvelope[tp]);
+    return rv;
 }
 
 
 set<string> PDFCalculator::usedEnvelopeTypes() const
 {
+    set<string> rv;
+    EnvelopeStorage::const_iterator evit;
+    for (evit = menvelope.begin(); evit != menvelope.end(); ++evit)
+    {
+        rv.insert(rv.end(), evit->first);
+    }
+    return rv;
 }
 
 
 void PDFCalculator::clearEnvelopes()
 {
+    menvelope.clear();
 }
-*/
 
 /*
         void setScatteringFactorTable(const ScatteringFactorTable&);

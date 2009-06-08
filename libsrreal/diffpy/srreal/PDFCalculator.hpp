@@ -23,15 +23,15 @@
 
 #include <memory>
 #include <set>
+#include <boost/shared_ptr.hpp>
 
 #include <diffpy/srreal/PairQuantity.hpp>
 #include <diffpy/srreal/PeakWidthModel.hpp>
+#include <diffpy/srreal/PDFEnvelope.hpp>
 #include <diffpy/srreal/ScatteringFactorTable.hpp>
 
 namespace diffpy {
 namespace srreal {
-
-class PDFEnvelope;  // FIXME -- temporary, to be removed
 
 class PDFCalculator : public PairQuantity
 {
@@ -63,8 +63,10 @@ class PDFCalculator : public PairQuantity
         const PeakWidthModel& getPeakWidthModel() const;
 
         // PDF envelope functions
+
         // application on an array
         QuantityType applyEnvelopes(const QuantityType&) const;
+
         // configuration of envelopes
         void addEnvelope(const PDFEnvelope&);
         void addEnvelope(const std::string& tp);
@@ -82,6 +84,9 @@ class PDFCalculator : public PairQuantity
         double sfAtomType(const std::string&) const;
 
     protected:
+
+        // types
+        typedef std::map<std::string, boost::shared_ptr<PDFEnvelope> > EnvelopeStorage;
 
         // methods - PairQuantity overloads
         // FIXME
@@ -108,6 +113,7 @@ class PDFCalculator : public PairQuantity
         double mqmax;
         double mrstep;
         std::auto_ptr<PeakWidthModel> mpwmodel;
+        EnvelopeStorage menvelope;
         std::auto_ptr<ScatteringFactorTable> msftable;
         std::vector<double> msfsite;
 };
