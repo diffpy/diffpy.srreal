@@ -31,10 +31,10 @@ using namespace diffpy::srreal;
 double StructureAdapter::totalOccupancy() const
 {
     double total_occupancy = 0.0;
-    int cnt_sites = this->countSites();
-    for (int i = 0; i < cnt_sites; ++i)
+    int cntsites = this->countSites();
+    for (int i = 0; i < cntsites; ++i)
     {
-        total_occupancy += this->siteOccupancy(i);
+        total_occupancy += this->siteOccupancy(i) * this->siteMultiplicity(i);
     }
     return total_occupancy;
 }
@@ -43,6 +43,19 @@ double StructureAdapter::totalOccupancy() const
 double StructureAdapter::numberDensity() const
 {
     return 0.0;
+}
+
+
+const string& StructureAdapter::siteAtomType(int idx) const
+{
+    static string rv = "";
+    return rv;
+}
+
+
+double StructureAdapter::siteMultiplicity(int idx) const
+{
+    return 1.0;
 }
 
 

@@ -75,7 +75,7 @@ class PDFCalculator : public PairQuantity
         std::set<std::string> usedEnvelopeTypes() const;
         void clearEnvelopes();
 
-        // scattering factors configuration
+        // access and configuration of scattering factors
         void setScatteringFactorTable(const ScatteringFactorTable&);
         const ScatteringFactorTable& getScatteringFactorTable() const;
         void setRadiationType(const std::string&);

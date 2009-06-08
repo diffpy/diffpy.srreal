@@ -55,8 +55,14 @@ class StructureAdapter
         /// number density in the structure model or 0 when not defined.
         virtual double numberDensity() const;
 
+        /// symbol for element or ion at the independent site @param idx
+        virtual const std::string& siteAtomType(int idx) const;
+
         /// Cartesian coordinates of the independent site @param idx
         virtual const R3::Vector& siteCartesianPosition(int idx) const = 0;
+
+        /// multiplicity of the independent site @param idx in the structure
+        virtual double siteMultiplicity(int idx) const;
 
         /// site occupancy at the independent site @param idx
         virtual double siteOccupancy(int idx) const;

@@ -283,14 +283,45 @@ void PDFCalculator::clearEnvelopes()
     menvelope.clear();
 }
 
-/*
-        void setScatteringFactorTable(const ScatteringFactorTable&);
-        const ScatteringFactorTable& getScatteringFactorTable() const;
-        void setRadiationType(const std::string&);
-        const std::string& getRadiationType() const;
-        // scattering factors lookup
-        double sfAtomType(const std::string&) const;
-*/
+// access and configuration of scattering factors
+
+void PDFCalculator::setScatteringFactorTable(const ScatteringFactorTable& sft)
+{
+    msftable.reset(sft.copy());
+    this->update_msfsite();
+}
+
+
+const ScatteringFactorTable& PDFCalculator::getScatteringFactorTable() const
+{
+    return *msftable;
+}
+
+
+void PDFCalculator::setRadiationType(const string& tp)
+{
+    ScatteringFactorTable* p = createScatteringFactorTable(tp);
+    msftable.reset(p);
+    this->update_msfsite();
+}
+
+
+const string& PDFCalculator::getRadiationType() const
+{
+    assert(msftable.get());
+    const string& tp = msftable->type();
+    return tp;
+}
+
+
+double PDFCalculator::sfAtomType(const string& smbl) const
+{
+    assert(msftable.get());
+    double rv = msftable->lookup(smbl);
+    return rv;
+}
+
+
 
 // Protected Methods ---------------------------------------------------------
 
@@ -389,12 +420,27 @@ double PDFCalculator::sfAverage() const
 {
     double totsf = 0.0;
     int cntsites = mstructure->countSites();
-    for (int i = 0; i < cntsites; ++i)  { totsf += this->sfSite(i); }
+    for (int i = 0; i < cntsites; ++i) 
+    {
+        totsf += this->sfSite(i) *
+            mstructure->siteOccupancy(i) * mstructure->siteMultiplicity(i);
+    }
     double totocc = mstructure->totalOccupancy();
     double rv = (totocc == 0.0) ? 0.0 : (totsf / totocc);
     return rv;
 }
 
+
+void PDFCalculator::update_msfsite()
+{
+    int cntsites = mstructure->countSites();
+    msfsite.resize(cntsites);
+    for (int i = 0; i < cntsites; ++i)
+    {
+        const string& smbl = mstructure->siteAtomType(i);
+        msfsite[i] = this->sfAtomType(smbl);
+    }
+}
 
 // Local Helpers -------------------------------------------------------------
 
@@ -417,7 +463,7 @@ double maxUii(const StructureAdapter* stru)
     double rv = 0.0;
     for (int i = 0; i < stru->countSites(); ++i)
     {
-        const R3::Matrix U = stru->siteCartesianUij(i);
+        const R3::Matrix& U = stru->siteCartesianUij(i);
         for (int k = 0; k < R3::Ndim; k++)
         {
             if (U(k,k) > rv)   rv = U(k,k);
