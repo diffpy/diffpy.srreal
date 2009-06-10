@@ -27,6 +27,7 @@
 
 #include <diffpy/srreal/PeakProfile.hpp>
 #include <diffpy/ClassRegistry.hpp>
+#include <diffpy/mathutils.hpp>
 
 using namespace std;
 using diffpy::ClassRegistry;
@@ -37,6 +38,19 @@ namespace srreal {
 //////////////////////////////////////////////////////////////////////////////
 // class PeakProfile
 //////////////////////////////////////////////////////////////////////////////
+
+// Public Methods ------------------------------------------------------------
+
+void PeakProfile::setPrecision(double eps)
+{
+    mprecision = eps;
+}
+
+
+double PeakProfile::getPrecision() const
+{
+    return mprecision;
+}
 
 // Factory Functions ---------------------------------------------------------
 
@@ -69,12 +83,19 @@ class GaussPeakProfile : public PeakProfile
         // constructors
         PeakProfile* create() const;
         PeakProfile* copy() const;
+        GaussPeakProfile() : PeakProfile(), mhalfboundrel(0.0)  { }
 
         // methods
         const string& type() const;
         double y(double x, double fwhm) const;
-        double xboundlo(double eps_y, double fwhm) const;
-        double xboundhi(double eps_y, double fwhm) const;
+        double xboundlo(double fwhm) const;
+        double xboundhi(double fwhm) const;
+        void setPrecision(double eps);
+
+    private:
+
+        // data
+        double mhalfboundrel;
 
 };
 
@@ -109,18 +130,28 @@ double GaussPeakProfile::y(double x, double fwhm) const
 }
 
 
-double GaussPeakProfile::xboundlo(double eps_y, double fwhm) const
+double GaussPeakProfile::xboundlo(double fwhm) const
 {
-    return -1 * this->xboundhi(eps_y, fwhm);
+    return -1 * this->xboundhi(fwhm);
 }
 
 
-double GaussPeakProfile::xboundhi(double eps_y, double fwhm) const
+double GaussPeakProfile::xboundhi(double fwhm) const
 {
-    double rv = (eps_y >= 1.0 || fwhm <= 0.0) ? 0.0 :
-        fwhm * sqrt(-log(eps_y) / (4 * M_LN2));
+    double rv = (fwhm <= 0.0) ? 0.0 : (mhalfboundrel * fwhm);
     return rv;
 }
+
+
+void GaussPeakProfile::setPrecision(double eps)
+{
+    using diffpy::mathutils::DOUBLE_MAX;
+    this->PeakProfile::setPrecision(eps);
+    if (eps <= 0.0)  mhalfboundrel = DOUBLE_MAX;
+    else if (eps < 1.0)  mhalfboundrel = sqrt(-log(eps) / (4 * M_LN2));
+    else  mhalfboundrel = 0.0;
+}
+
 
 // Registration --------------------------------------------------------------
 

@@ -25,8 +25,10 @@
 
 #include <diffpy/srreal/PDFCalculator.hpp>
 #include <diffpy/srreal/StructureAdapter.hpp>
+#include <diffpy/srreal/BaseBondGenerator.hpp>
 #include <diffpy/srreal/R3linalg.hpp>
 #include <diffpy/srreal/PDFUtils.hpp>
+#include <diffpy/mathutils.hpp>
 
 using namespace std;
 using namespace diffpy::srreal;
@@ -67,10 +69,13 @@ class PDFBaseLine
 
 PDFCalculator::PDFCalculator() : PairQuantity()
 {
+    using diffpy::mathutils::SQRT_DOUBLE_EPS;
     // default configuration
     this->setPeakWidthModel("jeong");
     this->setPeakProfile("gauss");
+    this->setPeakPrecision(SQRT_DOUBLE_EPS);
     this->setScatteringFactorTable("SFTperiodictableXray");
+    this->setRmax(10.0);
 }
 
 // Public Methods ------------------------------------------------------------
@@ -246,6 +251,22 @@ const PeakProfile& PDFCalculator::getPeakProfile() const
     return *mpeakprofile;
 }
 
+
+void PDFCalculator::setPeakPrecision(double eps)
+{
+    if (this->getPeakProfile().getPrecision() == eps)  return;
+    auto_ptr<PeakProfile> npkf(this->getPeakProfile().copy());
+    npkf->setPrecision(eps);
+    this->setPeakProfile(*npkf);
+}
+
+
+double PDFCalculator::getPeakPrecision() const
+{
+    double rv = this->getPeakProfile().getPrecision();
+    return rv;
+}
+
 // PDF envelope methods
 
 QuantityType PDFCalculator::applyEnvelopes(const QuantityType& a) const
@@ -358,17 +379,40 @@ double PDFCalculator::sfAtomType(const string& smbl) const
 
 // PairQuantity overloads
 
-/*
-void PDFCalculator::addPairContribution(const BaseBondGenerator& bnds)
-{
-}
-*/
-
 void PDFCalculator::resetValue()
 {
     this->PairQuantity::resetValue();
     this->update_msfsite();
 }
+
+
+void PDFCalculator::configureBondGenerator(BaseBondGenerator& bnds)
+{
+    bnds.setRmin(this->rextlo());
+    bnds.setRmax(this->rexthi());
+}
+
+
+void PDFCalculator::addPairContribution(const BaseBondGenerator& bnds)
+{
+    double sfprod = this->sfSite(bnds.site0()) * this->sfSite(bnds.site1());
+    double fwhm = this->getPeakWidthModel().calculate(bnds);
+    const PeakProfile& pkf = this->getPeakProfile();
+    double dist = bnds.distance();
+    double xlo = dist + pkf.xboundlo(fwhm);
+    double xhi = dist + pkf.xboundhi(fwhm);
+    int i = max(0, this->totalIndex(xlo));
+    int ilast = min(this->totalPoints(), this->totalIndex(xhi) + 1);
+    double x0 = this->rextlo();
+    assert(ilast <= int(mvalue.size()));
+    for (; i < ilast; ++i)
+    {
+        double x = x0 + i * this->getRstep();
+        double y = pkf.y(x, fwhm);
+        mvalue[i] += sfprod * y;
+    }
+}
+
 
 // calculation specific
 

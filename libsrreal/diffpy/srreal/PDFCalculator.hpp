@@ -68,6 +68,8 @@ class PDFCalculator : public PairQuantity
         void setPeakProfile(const PeakProfile&);
         void setPeakProfile(const std::string& tp);
         const PeakProfile& getPeakProfile() const;
+        void setPeakPrecision(double);
+        double getPeakPrecision() const;
 
         // PDF envelope functions
         // application on an array
@@ -94,9 +96,9 @@ class PDFCalculator : public PairQuantity
         typedef std::map<std::string, boost::shared_ptr<PDFEnvelope> > EnvelopeStorage;
 
         // methods - PairQuantity overloads
-        // FIXME
         virtual void resetValue();
-//      virtual void addPairContribution(const BaseBondGenerator&);
+        virtual void configureBondGenerator(BaseBondGenerator&);
+        virtual void addPairContribution(const BaseBondGenerator&);
 
         // methods - calculation specific
         double rextlo() const;
@@ -118,8 +120,8 @@ class PDFCalculator : public PairQuantity
         double mqmin;
         double mqmax;
         double mrstep;
-        std::auto_ptr<PeakProfile> mpeakprofile;
         std::auto_ptr<PeakWidthModel> mpwmodel;
+        std::auto_ptr<PeakProfile> mpeakprofile;
         EnvelopeStorage menvelope;
         std::auto_ptr<ScatteringFactorTable> msftable;
         std::vector<double> msfsite;

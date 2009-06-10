@@ -15,9 +15,9 @@
 * class PeakProfile -- base class for calculation of peak profiles.
 *     When possible total integrated area of the profile should eqaul 1.
 *     The method y(x, fwhm) returns amplitude of a zero-centered profile.
-*     Methods xboundlo(eps_y, fwhm), xboundhi(eps_y, fwhm) return low and
-*     high x-boundaries, where amplitude relative to the maximum becomes
-*     smaller than eps_y.
+*     Methods xboundlo(fwhm), xboundhi(fwhm) return low and high x-boundaries,
+*     where amplitude relative to the maximum becomes smaller than precision
+*     set by setPrecision().
 *
 * $Id$
 *
@@ -39,13 +39,21 @@ class PeakProfile
         // constructors
         virtual PeakProfile* create() const = 0;
         virtual PeakProfile* copy() const = 0;
+        PeakProfile() : mprecision(0.0)  { }
         virtual ~PeakProfile()  { }
 
         // methods
         virtual const std::string& type() const = 0;
         virtual double y(double x, double fwhm) const = 0;
-        virtual double xboundlo(double eps_y, double fwhm) const = 0;
-        virtual double xboundhi(double eps_y, double fwhm) const = 0;
+        virtual double xboundlo(double fwhm) const = 0;
+        virtual double xboundhi(double fwhm) const = 0;
+        virtual void setPrecision(double eps);
+        virtual double getPrecision() const;
+
+    private:
+
+        // data
+        double mprecision;
 };
 
 // Factory functions for Peak Width Models -----------------------------------

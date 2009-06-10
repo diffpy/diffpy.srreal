@@ -38,6 +38,7 @@ class TestPeakProfile : public CppUnit::TestFixture
     CPPUNIT_TEST(test_y);
     CPPUNIT_TEST(test_xboundlo);
     CPPUNIT_TEST(test_xboundhi);
+    CPPUNIT_TEST(test_setPrecision);
     CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -73,28 +74,42 @@ public:
     void test_xboundlo()
     {
         double epsy = 1e-8;
-        double xblo1 = mpkgauss->xboundlo(epsy, 1);
-        double xblo3 = mpkgauss->xboundlo(epsy, 3);
+        mpkgauss->setPrecision(epsy);
+        double xblo1 = mpkgauss->xboundlo(1);
+        double xblo3 = mpkgauss->xboundlo(3);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(epsy, mpkgauss->y(xblo1, 1), mdigits);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(epsy, mpkgauss->y(xblo3, 3), mdigits);
         CPPUNIT_ASSERT(xblo1 < 0);
         CPPUNIT_ASSERT(xblo3 < 0);
-        CPPUNIT_ASSERT_EQUAL(0.0, mpkgauss->xboundlo(10, 1));
-        CPPUNIT_ASSERT_EQUAL(0.0, mpkgauss->xboundlo(0.1, 0));
-        CPPUNIT_ASSERT_EQUAL(0.0, mpkgauss->xboundlo(0.1, -1));
+        mpkgauss->setPrecision(10);
+        CPPUNIT_ASSERT_EQUAL(0.0, mpkgauss->xboundlo(1));
+        mpkgauss->setPrecision(0.1);
+        CPPUNIT_ASSERT_EQUAL(0.0, mpkgauss->xboundlo(0));
+        CPPUNIT_ASSERT_EQUAL(0.0, mpkgauss->xboundlo(-1));
     }
 
 
     void test_xboundhi()
     {
         double epsy = 1e-8;
-        double xbhi1 = mpkgauss->xboundhi(epsy, 1);
-        double xbhi3 = mpkgauss->xboundhi(epsy, 3);
+        mpkgauss->setPrecision(epsy);
+        double xbhi1 = mpkgauss->xboundhi(1);
+        double xbhi3 = mpkgauss->xboundhi(3);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(epsy, mpkgauss->y(xbhi1, 1), mdigits);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(epsy, mpkgauss->y(xbhi3, 3), mdigits);
         CPPUNIT_ASSERT(xbhi1 > 0);
         CPPUNIT_ASSERT(xbhi3 > 0);
     }
+
+
+    void test_setPrecision()
+    {
+        double epsy = 1e-7;
+        CPPUNIT_ASSERT_EQUAL(0.0, mpkgauss->getPrecision());
+        mpkgauss->setPrecision(epsy);
+        CPPUNIT_ASSERT_EQUAL(epsy, mpkgauss->getPrecision());
+    }
+
 
 };
 
