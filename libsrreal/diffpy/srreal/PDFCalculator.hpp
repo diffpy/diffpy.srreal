@@ -26,6 +26,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include <diffpy/srreal/PairQuantity.hpp>
+#include <diffpy/srreal/PeakProfile.hpp>
 #include <diffpy/srreal/PeakWidthModel.hpp>
 #include <diffpy/srreal/PDFEnvelope.hpp>
 #include <diffpy/srreal/ScatteringFactorTable.hpp>
@@ -60,13 +61,17 @@ class PDFCalculator : public PairQuantity
 
         // PDF peak width configuration
         void setPeakWidthModel(const PeakWidthModel&);
+        void setPeakWidthModel(const std::string& tp);
         const PeakWidthModel& getPeakWidthModel() const;
 
-        // PDF envelope functions
+        // PDF profile configuration
+        void setPeakProfile(const PeakProfile&);
+        void setPeakProfile(const std::string& tp);
+        const PeakProfile& getPeakProfile() const;
 
+        // PDF envelope functions
         // application on an array
         QuantityType applyEnvelopes(const QuantityType&) const;
-
         // configuration of envelopes
         void addEnvelope(const PDFEnvelope&);
         void addEnvelope(const std::string& tp);
@@ -77,8 +82,8 @@ class PDFCalculator : public PairQuantity
 
         // access and configuration of scattering factors
         void setScatteringFactorTable(const ScatteringFactorTable&);
+        void setScatteringFactorTable(const std::string& tp);
         const ScatteringFactorTable& getScatteringFactorTable() const;
-        void setRadiationType(const std::string&);
         const std::string& getRadiationType() const;
         // scattering factors lookup
         double sfAtomType(const std::string&) const;
@@ -90,6 +95,7 @@ class PDFCalculator : public PairQuantity
 
         // methods - PairQuantity overloads
         // FIXME
+        virtual void resetValue();
 //      virtual void addPairContribution(const BaseBondGenerator&);
 
         // methods - calculation specific
@@ -112,6 +118,7 @@ class PDFCalculator : public PairQuantity
         double mqmin;
         double mqmax;
         double mrstep;
+        std::auto_ptr<PeakProfile> mpeakprofile;
         std::auto_ptr<PeakWidthModel> mpwmodel;
         EnvelopeStorage menvelope;
         std::auto_ptr<ScatteringFactorTable> msftable;

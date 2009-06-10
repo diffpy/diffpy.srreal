@@ -67,8 +67,10 @@ class PDFBaseLine
 
 PDFCalculator::PDFCalculator() : PairQuantity()
 {
-    auto_ptr<PeakWidthModel> pwm(createPeakWidthModel("jeong"));
-    this->setPeakWidthModel(*pwm);
+    // default configuration
+    this->setPeakWidthModel("jeong");
+    this->setPeakProfile("gauss");
+    this->setScatteringFactorTable("SFTperiodictableXray");
 }
 
 // Public Methods ------------------------------------------------------------
@@ -204,7 +206,15 @@ const double& PDFCalculator::getRstep() const
 
 void PDFCalculator::setPeakWidthModel(const PeakWidthModel& pwm)
 {
+    if (mpwmodel.get() == &pwm)   return;
     mpwmodel.reset(pwm.copy());
+}
+
+
+void PDFCalculator::setPeakWidthModel(const string& tp)
+{
+    auto_ptr<PeakWidthModel> ppwm(createPeakWidthModel(tp));
+    this->setPeakWidthModel(*ppwm);
 }
 
 
@@ -212,6 +222,28 @@ const PeakWidthModel& PDFCalculator::getPeakWidthModel() const
 {
     assert(mpwmodel.get());
     return *mpwmodel;
+}
+
+// PDF peak profile configuration
+
+void PDFCalculator::setPeakProfile(const PeakProfile& pkf)
+{
+    if (mpeakprofile.get() == &pkf)  return;
+    mpeakprofile.reset(pkf.copy());
+}
+
+
+void PDFCalculator::setPeakProfile(const string& tp)
+{
+    auto_ptr<PeakProfile> pkf(createPeakProfile(tp));
+    this->setPeakProfile(*pkf);
+}
+
+
+const PeakProfile& PDFCalculator::getPeakProfile() const
+{
+    assert(mpeakprofile.get());
+    return *mpeakprofile;
 }
 
 // PDF envelope methods
@@ -287,37 +319,36 @@ void PDFCalculator::clearEnvelopes()
 
 void PDFCalculator::setScatteringFactorTable(const ScatteringFactorTable& sft)
 {
+    if (msftable.get() == &sft)   return;
     msftable.reset(sft.copy());
-    this->update_msfsite();
+}
+
+
+void PDFCalculator::setScatteringFactorTable(const string& tp)
+{
+    auto_ptr<ScatteringFactorTable> sft(createScatteringFactorTable(tp));
+    this->setScatteringFactorTable(*sft);
 }
 
 
 const ScatteringFactorTable& PDFCalculator::getScatteringFactorTable() const
 {
+    assert(msftable.get());
     return *msftable;
-}
-
-
-void PDFCalculator::setRadiationType(const string& tp)
-{
-    ScatteringFactorTable* p = createScatteringFactorTable(tp);
-    msftable.reset(p);
-    this->update_msfsite();
 }
 
 
 const string& PDFCalculator::getRadiationType() const
 {
-    assert(msftable.get());
-    const string& tp = msftable->type();
+    const string& tp = this->getScatteringFactorTable().radiationType();
     return tp;
 }
 
 
 double PDFCalculator::sfAtomType(const string& smbl) const
 {
-    assert(msftable.get());
-    double rv = msftable->lookup(smbl);
+    const ScatteringFactorTable& sft = this->getScatteringFactorTable();
+    double rv = sft.lookup(smbl);
     return rv;
 }
 
@@ -332,6 +363,12 @@ void PDFCalculator::addPairContribution(const BaseBondGenerator& bnds)
 {
 }
 */
+
+void PDFCalculator::resetValue()
+{
+    this->PairQuantity::resetValue();
+    this->update_msfsite();
+}
 
 // calculation specific
 

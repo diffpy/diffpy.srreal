@@ -93,6 +93,13 @@ class SFTperiodictableXray : public ScatteringFactorTable
             return rv;
         }
 
+
+        const string& radiationType() const
+        {
+            static string rv = "X";
+            return rv;
+        }
+
     protected:
 
         // methods
@@ -146,6 +153,13 @@ class SFTperiodictableNeutron : public ScatteringFactorTable
         const string& type() const
         {
             static string rv = "SFTperiodictableNeutron";
+            return rv;
+        }
+
+
+        const string& radiationType() const
+        {
+            static string rv = "N";
             return rv;
         }
 
