@@ -1,7 +1,7 @@
 Import('env')
 
 # Environment for building unit test driver
-env_test = env.Clone(tools=['default', 'cxxtest'])
+env_test = env.Clone(tools=['default', 'cxxtest'], CXXTEST_SUFFIX='.hpp')
 env_test.ParseConfig('pkg-config --cflags --libs cppunit')
 lib_dir = Dir('#/').abspath
 env_test.PrependUnique(LIBS='libsrreal', LIBPATH=lib_dir)
