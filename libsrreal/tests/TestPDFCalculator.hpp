@@ -41,13 +41,7 @@ public:
     }
 
 
-    void testAddition( void )
-    {
-        TS_ASSERT( 1 + 1 > 1 );
-        TS_ASSERT_EQUALS( 1 + 1, 2 );
-    }
-
-    void testSetPeakWidthModel()
+    void test_setPeakWidthModel()
     {
         const JeongPeakWidth& jpw0 =
             dynamic_cast<const JeongPeakWidth&>(mpdfc->getPeakWidthModel());
@@ -67,7 +61,7 @@ public:
     }
 
 
-    void testGetPeakWidthModel()
+    void test_getPeakWidthModel()
     {
         string tp = "jeong";
         TS_ASSERT_EQUALS(tp, mpdfc->getPeakWidthModel().type());
