@@ -207,7 +207,6 @@ def findCxxTestGen(env):
               )
     
     if cxxtest:
-        print os.path.realpath(cxxtest)
         return os.path.realpath(cxxtest)
     else:
         # If we weren't able to locate the cxxtestgen.py script, complain...
