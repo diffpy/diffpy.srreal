@@ -39,16 +39,15 @@ class BaseBondGenerator
 
         // methods
         // loop control
-        void rewind();
+        virtual void rewind();
         bool finished() const;
         void next();
 
         // configuration
         void selectAnchorSite(int);
         void selectSiteRange(int first, int last);
-        void includeSelfPairs(bool);
-        void setRmin(double);
-        void setRmax(double);
+        virtual void setRmin(double);
+        virtual void setRmax(double);
 
         // get data
         const double& getRmin() const;
@@ -70,7 +69,6 @@ class BaseBondGenerator
         int msite_first;
         int msite_last;
         int msite_current;
-        bool minclude_self_pairs;
         double mrmin;
         double mrmax;
         const StructureAdapter* mstructure;
@@ -81,6 +79,7 @@ class BaseBondGenerator
 
         // methods
         virtual bool iterateSymmetry();
+        virtual void rewindSymmetry()  { }
 
     private:
 
@@ -89,9 +88,10 @@ class BaseBondGenerator
 
         // methods
         void getNextBond();
+        void advanceWhileInvalid();
         bool bondOutOfRange() const;
         void checkIfRangeSet();
-        void skipSelfPair();
+        bool atSelfPair() const;
         void setFinishedFlag();
 
 };

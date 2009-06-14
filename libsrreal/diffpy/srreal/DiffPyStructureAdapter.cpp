@@ -185,23 +185,48 @@ DiffPyStructureBondGenerator::DiffPyStructureBondGenerator(
         const DiffPyStructureAdapter* adpt) : BaseBondGenerator(adpt)
 {
     mdpstructure = adpt;
-    const Lattice& L = mdpstructure->getLattice();
-    msphere.reset(new PointsInSphere(0.0, 0.0, L));
-    this->includeSelfPairs(true);
 }
 
 // Public Methods ------------------------------------------------------------
 
-const R3::Vector& DiffPyStructureBondGenerator::r0() const
+void DiffPyStructureBondGenerator::rewind()
 {
-    return mr0ucv;
+    // Delay msphere instantiation to here instead of in constructor,
+    // so it is possible to use setRmin, setRmax.
+    if (!msphere.get())
+    {
+        const Lattice& L = mdpstructure->getLattice();
+        double buffzone = L.ucMaxDiagonalLength();
+        double rsphmin = this->getRmin() - buffzone;
+        double rsphmax = this->getRmax() + buffzone;
+        msphere.reset(new PointsInSphere(rsphmin, rsphmax, L));
+    }
+    msphere->rewind();
+    this->BaseBondGenerator::rewind();
+}
+
+
+void DiffPyStructureBondGenerator::setRmin(double rmin)
+{
+    // destroy msphere so it will be created on rewind with new rmin
+    if (this->getRmin() != rmin)    msphere.reset(NULL);
+    this->BaseBondGenerator::setRmin(rmin);
+}
+
+
+void DiffPyStructureBondGenerator::setRmax(double rmax)
+{
+    // destroy msphere so it will be created on rewind with new rmax
+    if (this->getRmax() != rmax)    msphere.reset(NULL);
+    this->BaseBondGenerator::setRmax(rmax);
 }
 
 
 const R3::Vector& DiffPyStructureBondGenerator::r1() const
 {
     static R3::Vector rv;
-    rv = mr1ucv + msphere->r();
+    const Lattice& L = mdpstructure->getLattice();
+    rv = this->BaseBondGenerator::r1() + L.cartesian(msphere->mno());
     return rv;
 }
 
@@ -218,6 +243,20 @@ double DiffPyStructureBondGenerator::msd1() const
     double rv = this->msdSiteDir(this->site1(), this->r01());
     return rv;
 }
+
+
+bool DiffPyStructureBondGenerator::iterateSymmetry()
+{
+    msphere->next();
+    return !msphere->finished();
+}
+
+
+void DiffPyStructureBondGenerator::rewindSymmetry()
+{
+    msphere->rewind();
+}
+
 
 // Private Methods -----------------------------------------------------------
 

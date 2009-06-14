@@ -26,6 +26,7 @@
 using namespace std;
 using namespace diffpy::srreal;
 using diffpy::mathutils::DOUBLE_MAX;
+using diffpy::mathutils::SQRT_DOUBLE_EPS;
 
 // Constructor ---------------------------------------------------------------
 
@@ -34,7 +35,6 @@ BaseBondGenerator::BaseBondGenerator(const StructureAdapter* stru)
     mstructure = stru;
     this->setRmin(0.0);
     this->setRmax(DOUBLE_MAX);
-    this->includeSelfPairs(false);
     this->selectAnchorSite(0);
     this->selectSiteRange(0, mstructure->countSites());
 }
@@ -46,15 +46,14 @@ BaseBondGenerator::BaseBondGenerator(const StructureAdapter* stru)
 void BaseBondGenerator::rewind()
 {
     msite_current = msite_first;
-    this->skipSelfPair();
-    while (!this->finished() && this->bondOutOfRange())  this->getNextBond();
+    this->advanceWhileInvalid();
 }
 
 
 void BaseBondGenerator::next()
 {
     this->getNextBond();
-    while (!this->finished() && this->bondOutOfRange())  this->getNextBond();
+    this->advanceWhileInvalid();
 }
 
 
@@ -77,13 +76,6 @@ void BaseBondGenerator::selectSiteRange(int first, int last)
     msite_first = first;
     msite_last = last;
     this->setFinishedFlag();
-}
-
-
-void BaseBondGenerator::includeSelfPairs(bool flag)
-{
-    if (minclude_self_pairs != flag)  this->setFinishedFlag();
-    minclude_self_pairs = flag;
 }
 
 
@@ -187,7 +179,17 @@ void BaseBondGenerator::getNextBond()
 {
     if (this->iterateSymmetry())  return;
     msite_current += 1;
-    this->skipSelfPair();
+    this->rewindSymmetry();
+}
+
+
+void BaseBondGenerator::advanceWhileInvalid()
+{
+    while (!this->finished() &&
+            (this->bondOutOfRange() || this->atSelfPair()))
+    {
+        this->getNextBond();
+    }
 }
 
 
@@ -209,10 +211,11 @@ void BaseBondGenerator::checkIfRangeSet()
 }
 
 
-void BaseBondGenerator::skipSelfPair()
+bool BaseBondGenerator::atSelfPair() const
 {
-    if (minclude_self_pairs)    return;
-    if (msite_anchor == msite_current)    msite_current += 1;
+    bool rv = (this->site0() == this->site1()) &&
+        (this->distance() < SQRT_DOUBLE_EPS);
+    return rv;
 }
 
 

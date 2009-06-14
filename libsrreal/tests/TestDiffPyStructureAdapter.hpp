@@ -52,9 +52,19 @@ python::object loadTestStructure(const string& tailname)
     return stru;
 }
 
+
+int countBonds(BaseBondGenerator& bnds)
+{
+    int rv = 0;
+    for (bnds.rewind(); !bnds.finished(); bnds.next())  ++rv;
+    return rv;
+}
+
 }   // namespace
 
-// class TestDiffPyStructureAdapter ------------------------------------------
+//////////////////////////////////////////////////////////////////////////////
+// class TestDiffPyStructureAdapter
+//////////////////////////////////////////////////////////////////////////////
 
 class TestDiffPyStructureAdapter : public CxxTest::TestSuite
 {
@@ -187,7 +197,70 @@ public:
         TS_ASSERT_EQUALS(87.96, L.gamma() );
     }
 
-
 };  // class TestDiffPyStructureAdapter
+
+//////////////////////////////////////////////////////////////////////////////
+// class TestDiffPyStructureBondGenerator
+//////////////////////////////////////////////////////////////////////////////
+
+class TestDiffPyStructureBondGenerator : public CxxTest::TestSuite
+{
+private:
+
+    auto_ptr<DiffPyStructureAdapter> m_ni;
+    auto_ptr<BaseBondGenerator> m_nibnds;
+
+public:
+
+    void setUp()
+    {
+        diffpy::initializePython();
+        if (!m_ni.get())
+        {
+            python::object stru;
+            stru = loadTestStructure("Ni.cif");
+            m_ni.reset(new DiffPyStructureAdapter(stru));
+        }
+        m_nibnds.reset(m_ni->createBondGenerator());
+    }
+
+
+    void test_bondCountNickel()
+    {
+        m_nibnds->selectAnchorSite(0);
+        m_nibnds->setRmin(0);
+        m_nibnds->setRmax(1.0);
+        TS_ASSERT_EQUALS(0, countBonds(*m_nibnds));
+        m_nibnds->selectAnchorSite(3);
+        TS_ASSERT_EQUALS(0, countBonds(*m_nibnds));
+        m_nibnds->setRmin(-10);
+        TS_ASSERT_EQUALS(0, countBonds(*m_nibnds));
+        // there are 12 nearest neighbors at 2.49
+        m_nibnds->setRmax(3);
+        TS_ASSERT_EQUALS(12, countBonds(*m_nibnds));
+        m_nibnds->selectAnchorSite(0);
+        TS_ASSERT_EQUALS(12, countBonds(*m_nibnds));
+        // there are no self neighbors below the cell length of 3.52
+        m_nibnds->selectAnchorSite(0);
+        m_nibnds->selectSiteRange(0, 1);
+        TS_ASSERT_EQUALS(0, countBonds(*m_nibnds));
+        // and any other unit cell atom would give 4 neighbors
+        m_nibnds->selectAnchorSite(0);
+        m_nibnds->selectSiteRange(3, 4);
+        TS_ASSERT_EQUALS(4, countBonds(*m_nibnds));
+        // there are no bonds between 2.6 and 3.4
+        m_nibnds->setRmin(2.6);
+        m_nibnds->setRmax(3.4);
+        m_nibnds->selectSiteRange(0, 4);
+        TS_ASSERT_EQUALS(0, countBonds(*m_nibnds));
+        // there are 6 second nearest neighbors at 3.52
+        m_nibnds->setRmax(3.6);
+        TS_ASSERT_EQUALS(6, countBonds(*m_nibnds));
+        // which sums to 18 neigbhors within radius 3.6
+        m_nibnds->setRmin(0);
+        TS_ASSERT_EQUALS(18, countBonds(*m_nibnds));
+    }
+
+};  // class TestDiffPyStructureBondGenerator
 
 // End of file

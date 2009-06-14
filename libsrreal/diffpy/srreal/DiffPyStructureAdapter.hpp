@@ -36,7 +36,6 @@
 namespace diffpy {
 namespace srreal {
 
-class Lattice;
 class PointsInSphere;
 
 class DiffPyStructureAdapter : public StructureAdapter
@@ -88,10 +87,23 @@ class DiffPyStructureBondGenerator : public BaseBondGenerator
         DiffPyStructureBondGenerator(const DiffPyStructureAdapter*);
 
         // methods
-        virtual const R3::Vector& r0() const;
+        // loop control
+        virtual void rewind();
+
+        // configuration
+        virtual void setRmin(double);
+        virtual void setRmax(double);
+
+        // data access
         virtual const R3::Vector& r1() const;
         virtual double msd0() const;
         virtual double msd1() const;
+
+    protected:
+
+        // methods
+        virtual bool iterateSymmetry();
+        virtual void rewindSymmetry();
 
     private:
 
