@@ -76,6 +76,8 @@ PDFCalculator::PDFCalculator() : PairQuantity()
     this->setPeakPrecision(SQRT_DOUBLE_EPS);
     this->setScatteringFactorTable("SFTperiodictableXray");
     this->setRmax(10.0);
+    this->setRstep(0.01);
+    this->setQmax(0.0);
 }
 
 // Public Methods ------------------------------------------------------------
@@ -88,14 +90,14 @@ QuantityType PDFCalculator::getPDF() const
     QuantityType rdf = this->getRDF();
     QuantityType rgrid = this->getRgrid();
     assert(pdf.size() == rdf.size() && pdf.size() == rgrid.size());
-    PDFBaseLine baseline(mstructure->numberDensity());
+    PDFBaseLine baseline(mstructure_cache.numberdensity);
     QuantityType::iterator pdfi = pdf.begin();
     QuantityType::const_iterator rdfi = rdf.begin();
     QuantityType::const_iterator ri = rgrid.begin();
     for (; pdfi != pdf.end(); ++pdfi, ++rdfi, ++ri)
     {
         *pdfi = (*ri == 0.0) ? (0.0) :
-            (*pdfi / *ri + baseline(*ri));
+            (*rdfi / *ri + baseline(*ri));
     }
     // fixme - factor out baseline application to a separate method
     QuantityType& pdf0 = pdf;
@@ -108,7 +110,7 @@ QuantityType PDFCalculator::getPDF() const
 QuantityType PDFCalculator::getRDF() const
 {
     QuantityType rdf(this->rgridPoints());
-    double totocc = mstructure->totalOccupancy();
+    const double& totocc = mstructure_cache.totaloccupancy;
     double sfavg = this->sfAverage();
     double rdf_scale = (totocc * sfavg == 0.0) ? 0.0 :
         1.0 / (totocc * sfavg * sfavg);
@@ -381,8 +383,9 @@ double PDFCalculator::sfAtomType(const string& smbl) const
 
 void PDFCalculator::resetValue()
 {
+    this->resizeValue(this->totalPoints());
     this->PairQuantity::resetValue();
-    this->update_msfsite();
+    this->cacheStructureData();
 }
 
 
@@ -395,6 +398,7 @@ void PDFCalculator::configureBondGenerator(BaseBondGenerator& bnds)
 
 void PDFCalculator::addPairContribution(const BaseBondGenerator& bnds)
 {
+    int summationscale = (bnds.site0() == bnds.site1()) ? 1 : 2;
     double sfprod = this->sfSite(bnds.site0()) * this->sfSite(bnds.site1());
     double fwhm = this->getPeakWidthModel().calculate(bnds);
     const PeakProfile& pkf = this->getPeakProfile();
@@ -407,9 +411,9 @@ void PDFCalculator::addPairContribution(const BaseBondGenerator& bnds)
     assert(ilast <= int(mvalue.size()));
     for (; i < ilast; ++i)
     {
-        double x = x0 + i * this->getRstep();
+        double x = x0 + i * this->getRstep() - dist;
         double y = pkf.y(x, fwhm);
-        mvalue[i] += sfprod * y;
+        mvalue[i] += summationscale * sfprod * y;
     }
 }
 
@@ -426,7 +430,7 @@ double PDFCalculator::rextlo() const
 
 double PDFCalculator::rexthi() const
 {
-    double rxhi = this->getRmin() + this->extMagnitude();
+    double rxhi = this->getRmax() + this->extMagnitude();
     return rxhi;
 }
 
@@ -438,6 +442,7 @@ double PDFCalculator::extMagnitude() const
     // extension due to termination ripples
     double ext_ripples = (this->getQmax() > 0.0) ?
         (nripples*2*M_PI / this->getQmax()) : 0.0;
+    // FIXME - use xboundlo, etc. for ext_pkwidth
     // extension due to peak width
     const int n_gaussian_sigma = 5;
     double ext_pkwidth = n_gaussian_sigma * sqrt(maxUii(mstructure));
@@ -485,42 +490,46 @@ int PDFCalculator::totalIndex(double r) const
 {
     int npts;
     npts = int(ceil((r - this->rextlo()) / this->getRstep()));
-    assert(0 <= npts && npts < this->totalPoints());
     return npts;
 }
 
 
 const double& PDFCalculator::sfSite(int siteidx) const
 {
-    assert(0 <= siteidx && siteidx < int(msfsite.size()));
-    return msfsite[siteidx];
+    assert(0 <= siteidx && siteidx < int(mstructure_cache.sfsite.size()));
+    return mstructure_cache.sfsite[siteidx];
 }
 
 
 double PDFCalculator::sfAverage() const
 {
-    double totsf = 0.0;
+    return mstructure_cache.sfaverage;
+}
+
+
+void PDFCalculator::cacheStructureData()
+{
     int cntsites = mstructure->countSites();
+    // sfsite
+    mstructure_cache.sfsite.resize(cntsites);
+    for (int i = 0; i < cntsites; ++i)
+    {
+        const string& smbl = mstructure->siteAtomType(i);
+        mstructure_cache.sfsite[i] = this->sfAtomType(smbl);
+    }
+    // sfaverage
+    double totocc = mstructure->totalOccupancy();
+    double totsf = 0.0;
     for (int i = 0; i < cntsites; ++i) 
     {
         totsf += this->sfSite(i) *
             mstructure->siteOccupancy(i) * mstructure->siteMultiplicity(i);
     }
-    double totocc = mstructure->totalOccupancy();
-    double rv = (totocc == 0.0) ? 0.0 : (totsf / totocc);
-    return rv;
-}
-
-
-void PDFCalculator::update_msfsite()
-{
-    int cntsites = mstructure->countSites();
-    msfsite.resize(cntsites);
-    for (int i = 0; i < cntsites; ++i)
-    {
-        const string& smbl = mstructure->siteAtomType(i);
-        msfsite[i] = this->sfAtomType(smbl);
-    }
+    mstructure_cache.sfaverage = (totocc == 0.0) ? 0.0 : (totsf / totocc);
+    // totaloccupancy
+    mstructure_cache.totaloccupancy = totocc;
+    // numberdensity
+    mstructure_cache.numberdensity = mstructure->numberDensity();
 }
 
 // Local Helpers -------------------------------------------------------------
