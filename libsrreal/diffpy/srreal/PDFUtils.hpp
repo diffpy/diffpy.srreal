@@ -23,6 +23,7 @@
 #ifndef PDFUTILS_HPP_INCLUDED
 #define PDFUTILS_HPP_INCLUDED
 
+#include <valarray>
 #include <diffpy/srreal/R3linalg.hpp>
 
 namespace diffpy {
@@ -34,9 +35,17 @@ double meanSquareDisplacement(const R3::Matrix& Uijcartn, const R3::Vector& s,
 
 // Apply band pass filter to a sequence of doubles
 template <class Ti>
-void bandPassFilter(Ti first, Ti last, double dr, double qmin, double qmax) { /*FIXME*/ }
+void bandPassFilter(Ti first, Ti last, double dr, double qmin, double qmax);
+
+// Implementation of bandPassFilter using padded complex valarray
+void bandPassFilterCValarray(std::valarray<double>& ycpa,
+        double dr, double qmin, double qmax);
 
 }   // namespace srreal
 }   // namespace diffpy
+
+// Implementation ------------------------------------------------------------
+
+#include <diffpy/srreal/PDFUtils.ipp>
 
 #endif  // PDFUTILS_HPP_INCLUDED
