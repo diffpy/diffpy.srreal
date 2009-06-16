@@ -27,7 +27,11 @@ env.ParseConfig("python-config --ldflags")
 env.ParseConfig("gsl-config --cflags --libs")
 
 if env['build'] == 'debug':
-   env.Append(CCFLAGS='-g')
+    env.Append(CCFLAGS='-g')
+elif env['build'] == 'fast':
+    env.AppendUnique(CCFLAGS=['-O3', '-ffast-math'])
+    env.AppendUnique(CPPDEFINES='NDEBUG')
+
 env.Append(CCFLAGS='-Wall')
 env.PrependUnique(CPPPATH='#/')
 
