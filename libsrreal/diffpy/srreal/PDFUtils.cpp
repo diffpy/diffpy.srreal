@@ -67,7 +67,8 @@ void bandPassFilterCValarray(valarray<double>& ycpa, double dr,
     // error message for FT failure
     const char* emsgft = "Fourier Transformation failed.";
     double* yc = &(ycpa[0]);
-    int padlen = ycpa.size();
+    // ycpa is a complex array, its actual length is half the size
+    int padlen = ycpa.size() / 2;
     // apply fft
     int status;
     status = gsl_fft_complex_radix2_forward(yc, 1, padlen);
