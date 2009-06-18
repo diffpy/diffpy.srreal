@@ -18,11 +18,13 @@
 *
 *****************************************************************************/
 
+#include <memory>
 #include <cxxtest/TestSuite.h>
 
 #include <diffpy/srreal/PDFCalculator.hpp>
 #include <diffpy/srreal/JeongPeakWidth.hpp>
 #include <diffpy/srreal/ConstantPeakWidth.hpp>
+#include <diffpy/srreal/QResolutionEnvelope.hpp>
 
 using namespace std;
 using namespace diffpy::srreal;
@@ -72,6 +74,40 @@ public:
         mpdfc->setPeakWidthModel(ConstantPeakWidth());
         tp = "constant";
         TS_ASSERT_EQUALS(tp, mpdfc->getPeakWidthModel().type());
+    }
+
+
+    void test_access_PeakProfile()
+    {
+        auto_ptr<PeakProfile> pkf(mpdfc->getPeakProfile().copy());
+        pkf->setPrecision(1.1);
+        mpdfc->setPeakProfile(*pkf);
+        TS_ASSERT_EQUALS(1.1, mpdfc->getPeakProfile().getPrecision());
+        TS_ASSERT_EQUALS(1.1, mpdfc->getPeakPrecision());
+        mpdfc->setPeakPrecision(0.2);
+        TS_ASSERT_EQUALS(0.2, mpdfc->getPeakPrecision());
+        TS_ASSERT_EQUALS(pkf->type(), mpdfc->getPeakProfile().type());
+        mpdfc->setPeakProfile("gauss");
+        TS_ASSERT_DIFFERS(0.2, mpdfc->getPeakPrecision());
+        TS_ASSERT_THROWS(mpdfc->setPeakProfile("invalid"), logic_error);
+    }
+
+
+    void test_access_Envelopes()
+    {
+        TS_ASSERT(mpdfc->usedEnvelopeTypes().empty());
+        TS_ASSERT_EQUALS(1.0, mpdfc->getScale());
+        TS_ASSERT_EQUALS(0.0, mpdfc->getQdamp());
+        TS_ASSERT(mpdfc->usedEnvelopeTypes().size());
+        mpdfc->setScale(3);
+        TS_ASSERT_EQUALS(3.0, mpdfc->getScale());
+        mpdfc->addEnvelope("scale");
+        TS_ASSERT_EQUALS(1.0, mpdfc->getScale());
+        QResolutionEnvelope qdamp4;
+        qdamp4.setQdamp(4);
+        mpdfc->addEnvelope(qdamp4);
+        TS_ASSERT_EQUALS(4.0, mpdfc->getQdamp());
+        TS_ASSERT_THROWS(mpdfc->addEnvelope("invalid"), logic_error);
     }
 
 };

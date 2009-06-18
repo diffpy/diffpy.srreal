@@ -12,7 +12,7 @@
 *
 ******************************************************************************
 *
-* class QResolutionEnvelope -- constant scaling factor
+* class QResolutionEnvelope -- Gaussian envelope due to limited Q resolution
 *
 * $Id$
 *
@@ -20,72 +20,62 @@
 
 #include <cmath>
 
-#include <diffpy/srreal/PDFEnvelope.hpp>
+#include <diffpy/srreal/QResolutionEnvelope.hpp>
 
 using namespace std;
 
 namespace diffpy {
 namespace srreal {
 
-class QResolutionEnvelope : public PDFEnvelope
+// Constructor ---------------------------------------------------------------
+
+QResolutionEnvelope::QResolutionEnvelope()
 {
-    public:
-
-        // constructors
-
-        QResolutionEnvelope()
-        {
-            this->setQDamp(0.0);
-        }
+    this->setQdamp(0.0);
+}
 
 
-        PDFEnvelope* create() const
-        {
-            PDFEnvelope* rv = new QResolutionEnvelope();
-            return rv;
-        }
+PDFEnvelope* QResolutionEnvelope::create() const
+{
+    PDFEnvelope* rv = new QResolutionEnvelope();
+    return rv;
+}
 
 
-        PDFEnvelope* copy() const
-        {
-            PDFEnvelope* rv = new QResolutionEnvelope(*this);
-            return rv;
-        }
+PDFEnvelope* QResolutionEnvelope::copy() const
+{
+    PDFEnvelope* rv = new QResolutionEnvelope(*this);
+    return rv;
+}
 
-        // methods
+// Public Methods ------------------------------------------------------------
 
-        const string& type() const
-        {
-            static string rv = "qresolution";
-            return rv;
-        }
-
-
-        double operator()(const double& r) const
-        {
-            double rv = (mqdamp > 0.0) ?
-                exp(-pow(r * mqdamp, 2) / 2) :
-                1.0;
-            return rv;
-        }
+const string& QResolutionEnvelope::type() const
+{
+    static string rv = "qresolution";
+    return rv;
+}
 
 
-        void setQDamp(double sc)
-        {
-            mqdamp = sc;
-        }
+double QResolutionEnvelope::operator()(const double& r) const
+{
+    double rv = (mqdamp > 0.0) ?
+        exp(-pow(r * mqdamp, 2) / 2) :
+        1.0;
+    return rv;
+}
 
 
-        const double& getQDamp() const
-        {
-            return mqdamp;
-        }
+void QResolutionEnvelope::setQdamp(double sc)
+{
+    mqdamp = sc;
+}
 
-    private:
 
-        double mqdamp;
-
-};  // class QResolutionEnvelope
+const double& QResolutionEnvelope::getQdamp() const
+{
+    return mqdamp;
+}
 
 // Registration --------------------------------------------------------------
 

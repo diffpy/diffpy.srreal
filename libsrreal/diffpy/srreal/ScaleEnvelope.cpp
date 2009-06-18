@@ -18,69 +18,60 @@
 *
 *****************************************************************************/
 
-#include <diffpy/srreal/PDFEnvelope.hpp>
+#include <diffpy/srreal/ScaleEnvelope.hpp>
 
 using namespace std;
 
 namespace diffpy {
 namespace srreal {
 
-class ScaleEnvelope : public PDFEnvelope
+// Constructors --------------------------------------------------------------
+
+ScaleEnvelope::ScaleEnvelope()
 {
-    public:
-
-        // constructors
-
-        ScaleEnvelope()
-        {
-            this->setScale(1.0);
-        }
+    this->setScale(1.0);
+}
 
 
-        PDFEnvelope* create() const
-        {
-            PDFEnvelope* rv = new ScaleEnvelope();
-            return rv;
-        }
+PDFEnvelope* ScaleEnvelope::create() const
+{
+    PDFEnvelope* rv = new ScaleEnvelope();
+    return rv;
+}
 
 
-        PDFEnvelope* copy() const
-        {
-            PDFEnvelope* rv = new ScaleEnvelope(*this);
-            return rv;
-        }
+PDFEnvelope* ScaleEnvelope::copy() const
+{
+    PDFEnvelope* rv = new ScaleEnvelope(*this);
+    return rv;
+}
 
-        // methods
+// Public Methods ------------------------------------------------------------
 
-        const string& type() const
-        {
-            static string rv = "scale";
-            return rv;
-        }
-
-
-        double operator()(const double& r) const
-        {
-            return this->getScale();
-        }
+const string& ScaleEnvelope::type() const
+{
+    static string rv = "scale";
+    return rv;
+}
 
 
-        void setScale(double sc)
-        {
-            mscale = sc;
-        }
+double ScaleEnvelope::operator()(const double& r) const
+{
+    return this->getScale();
+}
 
 
-        const double& getScale() const
-        {
-            return mscale;
-        }
+void ScaleEnvelope::setScale(double sc)
+{
+    mscale = sc;
+}
 
-    private:
 
-        double mscale;
+const double& ScaleEnvelope::getScale() const
+{
+    return mscale;
+}
 
-};  // class ScaleEnvelope
 
 // Registration --------------------------------------------------------------
 

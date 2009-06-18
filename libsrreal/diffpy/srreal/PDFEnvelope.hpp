@@ -43,8 +43,8 @@ class PDFEnvelope
         virtual ~PDFEnvelope()  { }
 
         // methods
-        virtual double operator()(const double& r) const = 0;
         virtual const std::string& type() const = 0;
+        virtual double operator()(const double& r) const = 0;
 };
 
 // Factory functions for concrete PDF envelopes ------------------------------

@@ -69,9 +69,14 @@ class PDFCalculator : public PairQuantity
         void setPeakProfile(const std::string& tp);
         const PeakProfile& getPeakProfile() const;
         void setPeakPrecision(double);
-        double getPeakPrecision() const;
+        const double& getPeakPrecision() const;
 
         // PDF envelope functions
+        // convenience functions for handling common envelopes
+        void setScale(double);
+        const double& getScale() const;
+        void setQdamp(double);
+        const double& getQdamp() const;
         // application on an array
         QuantityType applyEnvelopes(const QuantityType&) const;
         // configuration of envelopes

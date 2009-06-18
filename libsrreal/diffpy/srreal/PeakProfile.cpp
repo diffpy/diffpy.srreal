@@ -47,7 +47,7 @@ void PeakProfile::setPrecision(double eps)
 }
 
 
-double PeakProfile::getPrecision() const
+const double& PeakProfile::getPrecision() const
 {
     return mprecision;
 }

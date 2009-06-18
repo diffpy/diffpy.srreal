@@ -28,6 +28,8 @@
 #include <diffpy/srreal/BaseBondGenerator.hpp>
 #include <diffpy/srreal/R3linalg.hpp>
 #include <diffpy/srreal/PDFUtils.hpp>
+#include <diffpy/srreal/ScaleEnvelope.hpp>
+#include <diffpy/srreal/QResolutionEnvelope.hpp>
 #include <diffpy/mathutils.hpp>
 
 using namespace std;
@@ -263,13 +265,46 @@ void PDFCalculator::setPeakPrecision(double eps)
 }
 
 
-double PDFCalculator::getPeakPrecision() const
+const double& PDFCalculator::getPeakPrecision() const
 {
-    double rv = this->getPeakProfile().getPrecision();
+    const double& rv = this->getPeakProfile().getPrecision();
     return rv;
 }
 
 // PDF envelope methods
+
+void PDFCalculator::setScale(double scale)
+{
+    ScaleEnvelope envelope;
+    envelope.setScale(scale);
+    this->addEnvelope(envelope);
+}
+
+
+const double& PDFCalculator::getScale() const
+{
+    const ScaleEnvelope& envelope =
+        dynamic_cast<const ScaleEnvelope&>(this->getEnvelope("scale"));
+    return envelope.getScale();
+}
+
+
+void PDFCalculator::setQdamp(double qdamp)
+{
+    QResolutionEnvelope envelope;
+    envelope.setQdamp(qdamp);
+    this->addEnvelope(envelope);
+}
+
+
+const double& PDFCalculator::getQdamp() const
+{
+    const QResolutionEnvelope& envelope =
+        dynamic_cast<const QResolutionEnvelope&>(
+                this->getEnvelope("qresolution"));
+    return envelope.getQdamp();
+}
+
 
 QuantityType PDFCalculator::applyEnvelopes(const QuantityType& a) const
 {

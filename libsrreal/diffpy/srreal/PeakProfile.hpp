@@ -48,7 +48,7 @@ class PeakProfile
         virtual double xboundlo(double fwhm) const = 0;
         virtual double xboundhi(double fwhm) const = 0;
         virtual void setPrecision(double eps);
-        virtual double getPrecision() const;
+        virtual const double& getPrecision() const;
 
     private:
 
