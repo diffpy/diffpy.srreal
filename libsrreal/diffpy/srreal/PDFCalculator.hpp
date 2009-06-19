@@ -46,6 +46,10 @@ class PDFCalculator : public PairQuantity
         QuantityType getRDF() const;
         QuantityType getRgrid() const;
 
+        QuantityType getExtendedPDF() const;
+        QuantityType getExtendedRDF() const;
+        QuantityType getExtendedRgrid() const;
+
         // Q-range configuration
         void setQmin(double);
         const double& getQmin() const;
@@ -58,6 +62,10 @@ class PDFCalculator : public PairQuantity
         virtual void setRmax(double);
         void setRstep(double);
         const double& getRstep() const;
+        void setMaxExtension(double);
+        const double& getMaxExtension() const;
+        const double& getExtendedRmin() const;
+        const double& getExtendedRmax() const;
 
         // PDF peak width configuration
         void setPeakWidthModel(const PeakWidthModel&);
@@ -78,7 +86,7 @@ class PDFCalculator : public PairQuantity
         void setQdamp(double);
         const double& getQdamp() const;
         // application on an array
-        QuantityType applyEnvelopes(const QuantityType&) const;
+        QuantityType applyEnvelopes(const QuantityType& x, const QuantityType& y) const;
         // configuration of envelopes
         void addEnvelope(const PDFEnvelope&);
         void addEnvelope(const std::string& tp);
@@ -105,13 +113,19 @@ class PDFCalculator : public PairQuantity
         virtual void configureBondGenerator(BaseBondGenerator&);
         virtual void addPairContribution(const BaseBondGenerator&);
 
+    private:
+
         // methods - calculation specific
-        double rextlo() const;
-        double rexthi() const;
-        double extMagnitude() const;
+        const double& rextlo() const;
+        const double& rexthi() const;
+        double extTerminationRipples() const;
+        double extPeakTails() const;
         int extloPoints() const;
         int exthiPoints() const;
+        int ripplesloPoints() const;
+        int rippleshiPoints() const;
         int rgridPoints() const;
+        int extendedPoints() const;
         int totalPoints() const;
         int totalIndex(double r) const;
 
@@ -119,12 +133,14 @@ class PDFCalculator : public PairQuantity
         const double& sfSite(int) const;
         double sfAverage() const;
         void cacheStructureData();
+        void cacheRlimitsData();
 
         // data
         // configuration
         double mqmin;
         double mqmax;
         double mrstep;
+        double mmaxextension;
         std::auto_ptr<PeakWidthModel> mpwmodel;
         std::auto_ptr<PeakProfile> mpeakprofile;
         EnvelopeStorage menvelope;
@@ -135,6 +151,12 @@ class PDFCalculator : public PairQuantity
             double totaloccupancy;
             double numberdensity;
         } mstructure_cache;
+        struct {
+            double extendedrmin;
+            double extendedrmax;
+            double rextlow;
+            double rexthigh;
+        } mrlimits_cache;
 
 };  // class PDFCalculator
 
