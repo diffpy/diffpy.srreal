@@ -107,7 +107,7 @@ class ColorFromOverlap(object):
             print f, optcost, getcoloring(optstru)
         cbest, fbest, strubest = min(zip(
             self.optimized_costs, self.structfiles, self.optimized_structures))
-        print "# BEST " + (72 - 7) * '-'
+        print "# BEST " + (78 - 7) * '-'
         print fbest, cbest, getcoloring(strubest)
         self.saveOutstru()
         return
