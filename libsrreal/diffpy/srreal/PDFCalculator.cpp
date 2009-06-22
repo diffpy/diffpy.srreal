@@ -88,6 +88,7 @@ PDFCalculator::PDFCalculator() : PairQuantity()
     this->setScatteringFactorTable("SFTperiodictableXray");
     this->setRmax(10.0);
     this->setRstep(0.01);
+    this->setQmin(0.0);
     this->setQmax(0.0);
     this->setMaxExtension(10.0);
 }
@@ -556,10 +557,12 @@ double PDFCalculator::extTerminationRipples() const
 
 double PDFCalculator::extPeakTails() const
 {
-    // FIXME - use xboundlo, etc. for ext_pkwidth
-    // rgrid extension due to peak tails
-    const int n_gaussian_sigma = 5;
-    double rv = n_gaussian_sigma * sqrt(maxUii(mstructure));
+    double maxmsd = 2 * maxUii(mstructure);
+    double maxfwhm = this->getPeakWidthModel().calculateFromMSD(maxmsd);
+    const PeakProfile& pkf = this->getPeakProfile();
+    double xleft = fabs(pkf.xboundlo(maxfwhm));
+    double xright = fabs(pkf.xboundhi(maxfwhm));
+    double rv = max(xleft, xright);
     return rv;
 }
 

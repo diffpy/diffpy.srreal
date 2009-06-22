@@ -42,7 +42,7 @@ void bandPassFilter(Ti first, Ti last, double dr, double qmin, double qmax)
     // perform the filtering
     bandPassFilterCValarray(ycpa, dr, qmin, qmax);
     // copy real components back to the input sequence
-    yci = ycfirst;
+    yci = &(ycpa[0]);
     for (Ti p = first; p != last; ++p, yci += 2)  { *p = *yci; }
 }
 

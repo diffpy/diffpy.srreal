@@ -71,6 +71,12 @@ double ConstantPeakWidth::calculate(const BaseBondGenerator& bnds) const
     return this->getWidth();
 }
 
+
+double ConstantPeakWidth::calculateFromMSD(double msdval) const
+{
+    return this->getWidth();
+}
+
 // data access
 
 const double& ConstantPeakWidth::getWidth() const
