@@ -28,6 +28,7 @@ namespace diffpy {
 namespace srreal {
 
 class BaseBondGenerator;
+class PairQuantity;
 
 /// @class StructureAdapter
 /// @brief abstract adaptor to structure data needed by
@@ -74,6 +75,10 @@ class StructureAdapter
         /// tensor of atom displacement parameters converted in
         /// Cartesian coordinate system at independent site @param idx
         virtual const R3::Matrix& siteCartesianUij(int idx) const = 0;
+
+        /// this method allows custom special configuration for a concrete 
+        /// pair of StructureAdapter and PairQuantity objects.
+        virtual void customPQConfig(PairQuantity& pq) const  { }
 };
 
 

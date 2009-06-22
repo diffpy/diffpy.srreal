@@ -28,6 +28,8 @@
 #include <diffpy/srreal/DiffPyStructureAdapter.hpp>
 #include <diffpy/srreal/PDFUtils.hpp>
 #include <diffpy/srreal/PointsInSphere.hpp>
+#include <diffpy/srreal/PDFCalculator.hpp>
+#include <diffpy/srreal/JeongPeakWidth.hpp>
 
 using namespace std;
 using namespace boost;
@@ -107,6 +109,16 @@ const string& DiffPyStructureAdapter::siteAtomType(int idx) const
     return matomtypes[idx];
 }
 
+
+void DiffPyStructureAdapter::customPQConfig(PairQuantity& pq) const
+{
+    if (typeid(pq) == typeid(PDFCalculator))
+    {
+        PDFCalculator& pdfc = static_cast<PDFCalculator&>(pq);
+        this->configurePDFCalculator(pdfc);
+    }
+}
+
 // Protected Methods ---------------------------------------------------------
 
 void DiffPyStructureAdapter::fetchPythonData()
@@ -174,6 +186,53 @@ void DiffPyStructureAdapter::fetchPythonData()
     assert(int(mcartesian_uijs.size()) == this->countSites());
     assert(int(matomtypes.size()) == this->countSites());
 }
+
+void DiffPyStructureAdapter::configurePDFCalculator(PDFCalculator& pdfc) const
+{
+    // this is only needed if diffpy.Structure instance has pdffit attribute
+    // with PDF-related structure properties
+    if (!PyObject_HasAttrString(mdpstructure->ptr(), "pdffit"))  return;
+    python::object stru_pdffit = mdpstructure->attr("pdffit");
+    // get method of the stru.pdffit dictionary
+    python::object pfget = stru_pdffit.attr("get");
+    // scale
+    double scale = python::extract<double>(pfget("scale", 1.0));
+    pdfc.setScale(scale);
+    // delta1, delta2 - set these only when using JeongPeakWidth model
+    if (pdfc.getPeakWidthModel().type() == "jeong")
+    {
+        double delta1 = python::extract<double>(pfget("delta1", 0.0));
+        double delta2 = python::extract<double>(pfget("delta2", 0.0));
+        JeongPeakWidth jpwm =
+            static_cast<const JeongPeakWidth&>(pdfc.getPeakWidthModel());
+        jpwm.setDelta1(delta1);
+        jpwm.setDelta2(delta2);
+        pdfc.setPeakWidthModel(jpwm);
+    }
+    // spdiameter
+    double spdiameter = python::extract<double>(pfget("spdiameter", 0.0));
+    pdfc.popEnvelope("spdiameter");
+    if (spdiameter > 0.0)
+    {
+        /* FIXME
+        auto_ptr<PDFEnvelope> envlp = createPDFEnvelope("sphere");
+        envlp->setDoubleAttr("spdiameter", spdiameter);
+        pdfc.addEnvelope(*envlp);
+        */
+    }
+    // stepcut
+    pdfc.popEnvelope("stepcut");
+    double stepcut = python::extract<double>(pfget("stepcut", 0.0));
+    if (stepcut > 0.0)
+    {
+        /* FIXME
+        auto_ptr<PDFEnvelope> envlp = createPDFEnvelope("stepcut");
+        envlp->setDoubleAttr("stepcut", stepcut);
+        pdfc.addEnvelope(*envlp);
+        */
+    }
+}
+
 
 //////////////////////////////////////////////////////////////////////////////
 // class DiffPyStructureBondGenerator

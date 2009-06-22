@@ -21,7 +21,7 @@
 #include <memory>
 
 #include <diffpy/srreal/PairQuantity.hpp>
-//#include <diffpy/srreal/StructureAdapter.hpp>
+#include <diffpy/srreal/StructureAdapter.hpp>
 #include <diffpy/srreal/BaseBondGenerator.hpp>
 #include <diffpy/mathutils.hpp>
 
@@ -44,6 +44,7 @@ PairQuantity::PairQuantity() : BasePairQuantity()
 const QuantityType& PairQuantity::eval(const StructureAdapter& stru)
 {
     mstructure = &stru;
+    mstructure->customPQConfig(*this);
     mevaluator->updateValue(*this);
     mstructure = NULL;
     return this->value();
