@@ -83,6 +83,7 @@ void bandPassFilterCValarray(valarray<double>& ycpa, double dr,
     // they need to be integer to catch cases with huge qmax/dQ
     int loQmaxidx = int( ceil(qmax/dQ) );
     int hiQmaxidx = padlen + 1 - loQmaxidx;
+    hiQmaxidx = min(padlen, hiQmaxidx);
     // zero high Q components in yc
     for (int i = loQmaxidx; i < hiQmaxidx; ++i)
     {

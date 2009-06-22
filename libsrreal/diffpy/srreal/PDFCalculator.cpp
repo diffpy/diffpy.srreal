@@ -221,8 +221,12 @@ const double& PDFCalculator::getQmax() const
 QuantityType PDFCalculator::applyBandPassFilter(const QuantityType& a) const
 {
     QuantityType rv(a);
-    bandPassFilter(rv.begin(), rv.end(),
-            this->getRstep(), this->getQmin(), this->getQmax());
+    const double infinite_Qmax = 1e6;
+    if (0 < this->getQmax() && this->getQmax() < infinite_Qmax)
+    {
+        bandPassFilter(rv.begin(), rv.end(),
+                this->getRstep(), this->getQmin(), this->getQmax());
+    }
     return rv;
 }
 
