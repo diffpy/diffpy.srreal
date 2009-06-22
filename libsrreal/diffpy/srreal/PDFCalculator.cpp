@@ -352,9 +352,16 @@ const double& PDFCalculator::getPeakPrecision() const
 
 void PDFCalculator::setScale(double scale)
 {
-    ScaleEnvelope envelope;
-    envelope.setScale(scale);
-    this->addEnvelope(envelope);
+    if (scale == 1.0)
+    {
+        this->popEnvelope("scale");
+    }
+    else
+    {
+        ScaleEnvelope envelope;
+        envelope.setScale(scale);
+        this->addEnvelope(envelope);
+    }
 }
 
 
@@ -418,7 +425,13 @@ void PDFCalculator::addEnvelope(const string& tp)
 }
 
 
-const PDFEnvelope& PDFCalculator::getEnvelope(const std::string& tp) const
+void PDFCalculator::popEnvelope(const string& tp)
+{
+    menvelope.erase(tp);
+}
+
+
+const PDFEnvelope& PDFCalculator::getEnvelope(const string& tp) const
 {
     // call non-constant method
     PDFEnvelope& rv = const_cast<PDFCalculator*>(this)->getEnvelope(tp);
@@ -426,7 +439,7 @@ const PDFEnvelope& PDFCalculator::getEnvelope(const std::string& tp) const
 }
 
 
-PDFEnvelope& PDFCalculator::getEnvelope(const std::string& tp)
+PDFEnvelope& PDFCalculator::getEnvelope(const string& tp)
 {
     if (!menvelope.count(tp))  this->addEnvelope(tp);
     PDFEnvelope& rv = *(menvelope[tp]);
