@@ -23,7 +23,6 @@
 #include <cmath>
 #include <memory>
 #include <sstream>
-#include <stdexcept>
 
 #include <diffpy/srreal/PeakProfile.hpp>
 #include <diffpy/ClassRegistry.hpp>

@@ -19,7 +19,6 @@
 *****************************************************************************/
 
 #include <sstream>
-#include <stdexcept>
 #include <memory>
 
 #include <diffpy/srreal/PDFEnvelope.hpp>
