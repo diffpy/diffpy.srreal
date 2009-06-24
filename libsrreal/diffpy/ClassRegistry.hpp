@@ -99,7 +99,7 @@ class ClassRegistry
         }
 
 
-        static std::set<std::string> types()
+        static std::set<std::string> getTypes()
         {
             using namespace std;
             set<string> rv;

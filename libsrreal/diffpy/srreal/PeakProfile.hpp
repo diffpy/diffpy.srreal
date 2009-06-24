@@ -27,7 +27,7 @@
 #define PEAKPROFILE_HPP_INCLUDED
 
 #include <string>
-#include <map>
+#include <set>
 
 namespace diffpy {
 namespace srreal {
@@ -61,6 +61,7 @@ class PeakProfile
 PeakProfile* createPeakProfile(const std::string& tp);
 bool registerPeakProfile(const PeakProfile&);
 bool aliasPeakProfile(const std::string& tp, const std::string& al);
+std::set<std::string> getPeakProfileTypes();
 
 }   // namespace srreal
 }   // namespace diffpy

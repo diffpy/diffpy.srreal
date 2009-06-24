@@ -25,7 +25,7 @@
 #define PDFENVELOPE_HPP_INCLUDED
 
 #include <string>
-#include <map>
+#include <set>
 
 #include <diffpy/Attributes.hpp>
 
@@ -54,6 +54,7 @@ class PDFEnvelope : public diffpy::Attributes
 PDFEnvelope* createPDFEnvelope(const std::string& tp);
 bool registerPDFEnvelope(const PDFEnvelope&);
 bool aliasPDFEnvelope(const std::string& tp, const std::string& al);
+std::set<std::string> getPDFEnvelopeTypes();
 
 }   // namespace srreal
 }   // namespace diffpy

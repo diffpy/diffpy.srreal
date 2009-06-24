@@ -50,6 +50,11 @@ bool aliasPDFEnvelope(const string& tp, const string& al)
     return ClassRegistry<PDFEnvelope>::alias(tp, al);
 }
 
+set<string> getPDFEnvelopeTypes()
+{
+    return ClassRegistry<PDFEnvelope>::getTypes();
+}
+
 }   // namespace srreal
 }   // namespace diffpy
 

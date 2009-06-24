@@ -25,7 +25,7 @@
 #define PEAKWIDTHMODEL_HPP_INCLUDED
 
 #include <string>
-#include <map>
+#include <set>
 
 #include <diffpy/Attributes.hpp>
 
@@ -57,6 +57,7 @@ class PeakWidthModel : public diffpy::Attributes
 PeakWidthModel* createPeakWidthModel(const std::string& tp);
 bool registerPeakWidthModel(const PeakWidthModel&);
 bool aliasPeakWidthModel(const std::string& tp, const std::string& al);
+std::set<std::string> getPeakWidthTypes();
 
 }   // namespace srreal
 }   // namespace diffpy

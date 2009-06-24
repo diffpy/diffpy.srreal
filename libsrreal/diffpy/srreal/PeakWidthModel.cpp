@@ -50,6 +50,12 @@ bool aliasPeakWidthModel(const string& tp, const string& al)
     return ClassRegistry<PeakWidthModel>::alias(tp, al);
 }
 
+
+set<string> getPeakWidthTypes()
+{
+    return ClassRegistry<PeakWidthModel>::getTypes();
+}
+
 }   // namespace srreal
 }   // namespace diffpy
 

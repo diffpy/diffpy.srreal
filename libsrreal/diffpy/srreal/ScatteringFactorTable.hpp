@@ -23,6 +23,7 @@
 
 #include <string>
 #include <map>
+#include <set>
 
 namespace diffpy {
 namespace srreal {
@@ -55,6 +56,7 @@ class ScatteringFactorTable
 ScatteringFactorTable* createScatteringFactorTable(const std::string& tp);
 bool registerScatteringFactorTable(const ScatteringFactorTable&);
 bool aliasScatteringFactorTable(const std::string& tp, const std::string& al);
+std::set<std::string> getScatteringFactorTableTypes();
 
 }   // namespace srreal
 }   // namespace diffpy

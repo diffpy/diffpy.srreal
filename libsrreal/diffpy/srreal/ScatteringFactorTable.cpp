@@ -86,6 +86,12 @@ bool aliasScatteringFactorTable(const string& tp, const string& al)
     return ClassRegistry<ScatteringFactorTable>::alias(tp, al);
 }
 
+
+set<string> getScatteringFactorTableTypes()
+{
+    return ClassRegistry<ScatteringFactorTable>::getTypes();
+}
+
 }   // namespace srreal
 }   // namespace diffpy
 
