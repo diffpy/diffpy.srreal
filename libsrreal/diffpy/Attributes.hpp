@@ -31,6 +31,8 @@
 namespace diffpy {
 namespace attributes {
 
+class Attributes;
+
 /// @class BaseDoubleAttribute
 /// @brief abstract base class for accessing a particular double attribute
 
@@ -38,11 +40,9 @@ class BaseDoubleAttribute
 {
     public:
         virtual ~BaseDoubleAttribute() { }
-        virtual double getValue() const = 0;
-        virtual void setValue(double value) = 0;
+        virtual double getValue(const Attributes* obj) const = 0;
+        virtual void setValue(Attributes* obj, double value) = 0;
 };
-
-}   // namespace attributes
 
 /// @class Attributes
 /// @brief implementation of attribute access.  The client classes
@@ -52,6 +52,9 @@ class BaseDoubleAttribute
 class Attributes
 {
     public:
+
+        // class needs to be virtual to allow dynamic_cast in getValue
+        virtual ~Attributes() { }
 
         // methods
         double getDoubleAttr(const std::string& name) const;
@@ -78,10 +81,14 @@ class Attributes
 
 };
 
+}   // namespace attributes
 }   // namespace diffpy
 
 // Implementation ------------------------------------------------------------
 
 #include <diffpy/Attributes.ipp>
+
+// make the Attributes class visible in diffpy namespace
+namespace diffpy { using attributes::Attributes; }
 
 #endif  // ATTRIBUTES_HPP_INCLUDED

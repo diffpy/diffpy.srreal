@@ -24,7 +24,9 @@
 #include <diffpy/Attributes.hpp>
 
 using namespace std;
+
 namespace diffpy {
+namespace attributes {
 
 //////////////////////////////////////////////////////////////////////////////
 // class DoubleAttribute
@@ -36,7 +38,7 @@ double Attributes::getDoubleAttr(const string& name) const
 {
     DoubleAttributeStorage::const_iterator ati = mdoubleattrs.find(name);
     if (ati == mdoubleattrs.end())  this->raiseInvalidAttribute(name);
-    double rv = ati->second->getValue();
+    double rv = ati->second->getValue(this);
     return rv;
 }
 
@@ -45,7 +47,7 @@ void Attributes::setDoubleAttr(const string& name, double value)
 {
     DoubleAttributeStorage::iterator ati = mdoubleattrs.find(name);
     if (ati == mdoubleattrs.end())  this->raiseInvalidAttribute(name);
-    ati->second->setValue(value);
+    ati->second->setValue(this, value);
 }
 
 
@@ -75,6 +77,7 @@ void Attributes::raiseInvalidAttribute(const std::string& name) const
     throw invalid_argument(emsg.str());
 }
 
+}   // namespace attributes
 }   // namespace diffpy
 
 // End of file

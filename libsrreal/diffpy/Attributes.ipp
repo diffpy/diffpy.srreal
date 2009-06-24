@@ -23,6 +23,7 @@
 #define ATTRIBUTES_IPP_INCLUDED
 
 #include <stdexcept>
+#include <cassert>
 
 namespace diffpy {
 namespace attributes {
@@ -37,20 +38,21 @@ class DoubleAttribute : public BaseDoubleAttribute
     public:
 
         // constructor
-        DoubleAttribute(T* obj, Getter g, Setter s)
+        DoubleAttribute(Getter g, Setter s)
         {
-            mobject = obj;
             mgetter = g;
             msetter = s;
         }
 
-        double getValue() const
+        double getValue(const Attributes* obj) const
         {
-            double rv = (mobject->*mgetter)();
+            const T* tobj = dynamic_cast<const T*>(obj);
+            assert(tobj);
+            double rv = (tobj->*mgetter)();
             return rv;
         }
 
-        void setValue(double value)
+        void setValue(Attributes* obj, double value)
         {
             if (!msetter)
             {
@@ -58,18 +60,17 @@ class DoubleAttribute : public BaseDoubleAttribute
                     "Cannot change value of read-only DoubleAttribute.";
                 throw std::logic_error(emsg);
             }
-            (mobject->*msetter)(value);
+            T* tobj = dynamic_cast<T*>(obj);
+            assert(tobj);
+            (tobj->*msetter)(value);
         }
 
     private:
         // data
-        T* mobject;
         Getter mgetter;
         Setter msetter;
 
 };
-
-}   // namespace attributes
 
 //////////////////////////////////////////////////////////////////////////////
 // class Attributes
@@ -81,12 +82,12 @@ template <class T, class Getter, class Setter>
 void Attributes::registerDoubleAttribute(
         const std::string& name, T* obj, Getter g, Setter s)
 {
-    using diffpy::attributes::DoubleAttribute;
     mdoubleattrs[name].reset(
-        new DoubleAttribute<T, Getter, Setter>(obj, g, s)
+        new DoubleAttribute<T, Getter, Setter>(g, s)
         );
 }
 
+}   // namespace attributes
 }   // namespace diffpy
 
 // vim:ft=cpp:
