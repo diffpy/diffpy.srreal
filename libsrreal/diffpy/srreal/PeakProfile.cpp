@@ -21,8 +21,6 @@
 *****************************************************************************/
 
 #include <cmath>
-#include <memory>
-#include <sstream>
 
 #include <diffpy/srreal/PeakProfile.hpp>
 #include <diffpy/ClassRegistry.hpp>

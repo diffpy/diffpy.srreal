@@ -18,8 +18,6 @@
 *
 *****************************************************************************/
 
-#include <memory>
-
 #include <diffpy/srreal/PairQuantity.hpp>
 #include <diffpy/srreal/StructureAdapter.hpp>
 #include <diffpy/srreal/BaseBondGenerator.hpp>

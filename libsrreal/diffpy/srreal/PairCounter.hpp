@@ -21,8 +21,6 @@
 #ifndef PAIRCOUNTER_HPP_INCLUDED
 #define PAIRCOUNTER_HPP_INCLUDED
 
-#include <memory>
-
 #include <diffpy/srreal/PairQuantity.hpp>
 
 namespace diffpy {

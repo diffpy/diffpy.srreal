@@ -18,9 +18,6 @@
 *
 *****************************************************************************/
 
-#include <sstream>
-#include <memory>
-
 #include <diffpy/srreal/PeakWidthModel.hpp>
 #include <diffpy/ClassRegistry.hpp>
 

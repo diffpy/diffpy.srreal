@@ -19,7 +19,6 @@
 *
 *****************************************************************************/
 
-#include <memory>
 #include <diffpy/srreal/StructureAdapter.hpp>
 #include <diffpy/srreal/BaseBondGenerator.hpp>
 
