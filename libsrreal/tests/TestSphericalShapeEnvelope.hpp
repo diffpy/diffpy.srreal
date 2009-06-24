@@ -12,7 +12,7 @@
 *
 ******************************************************************************
 *
-* class TestStepCutEnvelope -- unit tests for StepCutEnvelope class
+* class TestSphericalShapeEnvelope -- unit tests for SphericalShapeEnvelope
 *
 * $Id$
 *
@@ -26,7 +26,7 @@
 using namespace std;
 using namespace diffpy::srreal;
 
-class TestStepCutEnvelope : public CxxTest::TestSuite
+class TestSphericalShapeEnvelope : public CxxTest::TestSuite
 {
 private:
 
@@ -36,47 +36,46 @@ public:
 
     void setUp()
     {
-        menvelope.reset(createPDFEnvelope("stepcut"));
+        menvelope.reset(createPDFEnvelope("sphericalshape"));
     }
 
 
     void test_create()
     {
-        TS_ASSERT_EQUALS(0.0, menvelope->getDoubleAttr("stepcut"));
-        menvelope->setDoubleAttr("stepcut", 13.0);
-        TS_ASSERT_EQUALS(13.0, menvelope->getDoubleAttr("stepcut"));
+        TS_ASSERT_EQUALS(0.0, menvelope->getDoubleAttr("spdiameter"));
+        menvelope->setDoubleAttr("spdiameter", 13.0);
+        TS_ASSERT_EQUALS(13.0, menvelope->getDoubleAttr("spdiameter"));
         auto_ptr<PDFEnvelope> e1(menvelope->create());
-        TS_ASSERT_EQUALS(0.0, e1->getDoubleAttr("stepcut"));
+        TS_ASSERT_EQUALS(0.0, e1->getDoubleAttr("spdiameter"));
     }
 
 
     void test_copy()
     {
-        menvelope->setDoubleAttr("stepcut", 13.0);
-        TS_ASSERT_EQUALS(13.0, menvelope->getDoubleAttr("stepcut"));
+        menvelope->setDoubleAttr("spdiameter", 13.0);
+        TS_ASSERT_EQUALS(13.0, menvelope->getDoubleAttr("spdiameter"));
         auto_ptr<PDFEnvelope> e1(menvelope->copy());
-        TS_ASSERT_EQUALS(13.0, e1->getDoubleAttr("stepcut"));
+        TS_ASSERT_EQUALS(13.0, e1->getDoubleAttr("spdiameter"));
     }
 
 
     void test_type()
     {
-        TS_ASSERT_EQUALS("stepcut", menvelope->type());
+        TS_ASSERT_EQUALS("sphericalshape", menvelope->type());
     }
 
 
     void test_parentheses_operator()
     {
         const PDFEnvelope& fne = *menvelope;
-        TS_ASSERT_EQUALS(1.0, fne(-1.0));
         TS_ASSERT_EQUALS(1.0, fne(0.0));
-        TS_ASSERT_EQUALS(1.0, fne(+1.0));
-        menvelope->setDoubleAttr("stepcut", 1.0);
-        TS_ASSERT_EQUALS(1.0, fne(-1.0));
+        TS_ASSERT_EQUALS(1.0, fne(100.0));
+        menvelope->setDoubleAttr("spdiameter", 10.0);
         TS_ASSERT_EQUALS(1.0, fne(0.0));
-        TS_ASSERT_EQUALS(1.0, fne(+1.0));
-        TS_ASSERT_EQUALS(0.0, fne(+1.0001));
-        TS_ASSERT_EQUALS(0.0, fne(+2.0));
+        TS_ASSERT_EQUALS(0.0, fne(10.0));
+        TS_ASSERT_EQUALS(0.0, fne(100));
+        TS_ASSERT(fne(9.99) > 0.0);
+        TS_ASSERT_DELTA(0.3125, fne(5), 1e-8);
     }
 
 };  // class TestDiffPyStructureBondGenerator
