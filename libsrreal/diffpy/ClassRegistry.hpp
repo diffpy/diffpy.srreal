@@ -32,6 +32,8 @@
 #include <sstream>
 #include <memory>
 
+#include <boost/shared_ptr.hpp>
+
 namespace diffpy {
 
 template <class TBase>
@@ -40,7 +42,8 @@ class ClassRegistry
     public:
 
         // types
-        typedef std::map<std::string, const TBase*> RegistryType;
+        typedef std::map<std::string,
+                boost::shared_ptr<const TBase> > RegistryType;
 
         // class methods
 
@@ -55,7 +58,7 @@ class ClassRegistry
                     "' is already registered.";
                 throw logic_error(emsg.str());
             }
-            reg[prot.type()] = prot.copy();
+            reg[prot.type()].reset(prot.copy());
             return true;
         }
 
