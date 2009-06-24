@@ -75,7 +75,7 @@ class DoubleAttribute : public BaseDoubleAttribute
 // class Attributes
 //////////////////////////////////////////////////////////////////////////////
 
-// Template Public Methods ---------------------------------------------------
+// Template Protected Methods ------------------------------------------------
 
 template <class T, class Getter, class Setter>
 void Attributes::registerDoubleAttribute(

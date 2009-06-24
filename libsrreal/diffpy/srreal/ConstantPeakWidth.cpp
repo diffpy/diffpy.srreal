@@ -29,6 +29,8 @@ using namespace diffpy::srreal;
 ConstantPeakWidth::ConstantPeakWidth()
 {
     this->setWidth(0.0);
+    this->registerDoubleAttribute("width", this,
+            &ConstantPeakWidth::getWidth, &ConstantPeakWidth::setWidth);
 }
 
 

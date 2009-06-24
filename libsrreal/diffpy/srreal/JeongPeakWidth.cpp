@@ -34,6 +34,12 @@ JeongPeakWidth::JeongPeakWidth()
     this->setDelta1(0.0);
     this->setDelta2(0.0);
     this->setQbroad(0.0);
+    this->registerDoubleAttribute("delta1",
+            this, &JeongPeakWidth::getDelta1, &JeongPeakWidth::setDelta1);
+    this->registerDoubleAttribute("delta2",
+            this, &JeongPeakWidth::getDelta2, &JeongPeakWidth::setDelta2);
+    this->registerDoubleAttribute("qbroad",
+            this, &JeongPeakWidth::getQbroad, &JeongPeakWidth::setQbroad);
 }
 
 

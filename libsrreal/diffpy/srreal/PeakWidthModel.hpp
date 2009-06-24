@@ -27,12 +27,14 @@
 #include <string>
 #include <map>
 
+#include <diffpy/Attributes.hpp>
+
 namespace diffpy {
 namespace srreal {
 
 class BaseBondGenerator;
 
-class PeakWidthModel
+class PeakWidthModel : public diffpy::Attributes
 {
     public:
 

@@ -58,6 +58,9 @@ class Attributes
         void setDoubleAttr(const std::string& name, double value);
         bool hasDoubleAttr(const std::string& name) const;
         std::set<std::string> namesOfDoubleAttributes() const;
+
+    protected:
+
         template <class T, class Getter, class Setter>
             void registerDoubleAttribute(const std::string& name, T* obj, Getter, Setter);
 

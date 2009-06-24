@@ -45,21 +45,19 @@ public:
 
     void test_setPeakWidthModel()
     {
-        const JeongPeakWidth& jpw0 =
-            dynamic_cast<const JeongPeakWidth&>(mpdfc->getPeakWidthModel());
-        TS_ASSERT_EQUALS(0.0, jpw0.getDelta1());
-        TS_ASSERT_EQUALS(0.0, jpw0.getDelta2());
-        TS_ASSERT_EQUALS(0.0, jpw0.getQbroad());
+        const PeakWidthModel& jpw0 = mpdfc->getPeakWidthModel();
+        TS_ASSERT_EQUALS(0.0, jpw0.getDoubleAttr("delta1"));
+        TS_ASSERT_EQUALS(0.0, jpw0.getDoubleAttr("delta2"));
+        TS_ASSERT_EQUALS(0.0, jpw0.getDoubleAttr("qbroad"));
         JeongPeakWidth jpw;
         jpw.setDelta1(1.0);
         jpw.setDelta2(2.0);
         jpw.setQbroad(3.0);
         mpdfc->setPeakWidthModel(jpw);
-        const JeongPeakWidth& jpw1 =
-            dynamic_cast<const JeongPeakWidth&>(mpdfc->getPeakWidthModel());
-        TS_ASSERT_EQUALS(1.0, jpw1.getDelta1());
-        TS_ASSERT_EQUALS(2.0, jpw1.getDelta2());
-        TS_ASSERT_EQUALS(3.0, jpw1.getQbroad());
+        const PeakWidthModel& jpw1 = mpdfc->getPeakWidthModel();
+        TS_ASSERT_EQUALS(1.0, jpw1.getDoubleAttr("delta1"));
+        TS_ASSERT_EQUALS(2.0, jpw1.getDoubleAttr("delta2"));
+        TS_ASSERT_EQUALS(3.0, jpw1.getDoubleAttr("qbroad"));
     }
 
 

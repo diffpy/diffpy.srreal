@@ -29,7 +29,6 @@
 #include <diffpy/srreal/PDFUtils.hpp>
 #include <diffpy/srreal/PointsInSphere.hpp>
 #include <diffpy/srreal/PDFCalculator.hpp>
-#include <diffpy/srreal/JeongPeakWidth.hpp>
 
 using namespace std;
 using namespace boost;
@@ -203,11 +202,10 @@ void DiffPyStructureAdapter::configurePDFCalculator(PDFCalculator& pdfc) const
     {
         double delta1 = python::extract<double>(pfget("delta1", 0.0));
         double delta2 = python::extract<double>(pfget("delta2", 0.0));
-        JeongPeakWidth jpwm =
-            static_cast<const JeongPeakWidth&>(pdfc.getPeakWidthModel());
-        jpwm.setDelta1(delta1);
-        jpwm.setDelta2(delta2);
-        pdfc.setPeakWidthModel(jpwm);
+        auto_ptr<PeakWidthModel> jpwm(pdfc.getPeakWidthModel().copy());
+        jpwm->setDoubleAttr("delta1", delta1);
+        jpwm->setDoubleAttr("delta2", delta2);
+        pdfc.setPeakWidthModel(*jpwm);
     }
     // spdiameter
     double spdiameter = python::extract<double>(pfget("spdiameter", 0.0));
