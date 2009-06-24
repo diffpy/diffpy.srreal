@@ -29,9 +29,10 @@ namespace srreal {
 
 LinearBaseline::LinearBaseline()
 {
-    this->setSlope(1.0);
-    this->registerDoubleAttribute("slope",
-            this, &LinearBaseline::getSlope, &LinearBaseline::setSlope);
+    this->setSlope(0.0);
+    this->registerDoubleAttribute("slope", this,
+            &LinearBaseline::getSlope,
+            &LinearBaseline::setSlope);
 }
 
 

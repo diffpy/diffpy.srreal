@@ -28,6 +28,7 @@
 #include <diffpy/srreal/PairQuantity.hpp>
 #include <diffpy/srreal/PeakProfile.hpp>
 #include <diffpy/srreal/PeakWidthModel.hpp>
+#include <diffpy/srreal/PDFBaseline.hpp>
 #include <diffpy/srreal/PDFEnvelope.hpp>
 #include <diffpy/srreal/ScatteringFactorTable.hpp>
 
@@ -78,6 +79,11 @@ class PDFCalculator : public PairQuantity
         const PeakProfile& getPeakProfile() const;
         void setPeakPrecision(double);
         double getPeakPrecision() const;
+
+        // PDF baseline configuration
+        void setBaseline(const PDFBaseline&);
+        void setBaseline(const std::string& tp);
+        const PDFBaseline& getBaseline() const;
 
         // PDF envelope functions
         // convenience functions for handling common envelopes
@@ -144,13 +150,13 @@ class PDFCalculator : public PairQuantity
         double mmaxextension;
         std::auto_ptr<PeakWidthModel> mpwmodel;
         std::auto_ptr<PeakProfile> mpeakprofile;
+        std::auto_ptr<PDFBaseline> mbaseline;
         EnvelopeStorage menvelope;
         std::auto_ptr<ScatteringFactorTable> msftable;
         struct {
             std::vector<double> sfsite;
             double sfaverage;
             double totaloccupancy;
-            double numberdensity;
         } mstructure_cache;
         struct {
             double extendedrmin;

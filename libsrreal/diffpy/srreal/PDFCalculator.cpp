@@ -30,6 +30,7 @@
 #include <diffpy/srreal/PDFUtils.hpp>
 #include <diffpy/srreal/ScaleEnvelope.hpp>
 #include <diffpy/srreal/QResolutionEnvelope.hpp>
+#include <diffpy/srreal/LinearBaseline.hpp>
 #include <diffpy/mathutils.hpp>
 
 using namespace std;
@@ -42,29 +43,6 @@ namespace {
 void ensureNonNegative(const string& vname, double value);
 double maxUii(const StructureAdapter*);
 
-
-class PDFBaseLine
-{
-    private:
-
-        // data
-        double mslope;
-
-    public:
-
-        PDFBaseLine(double num_density)
-        {
-            mslope = (num_density > 0) ? (-4 * M_PI * num_density) : 0.0;
-        }
-
-        double operator()(const double& ri) const
-        {
-            return mslope * ri;
-        }
-
-};
-
-
 }   // namespace
 
 // Constructor ---------------------------------------------------------------
@@ -75,7 +53,6 @@ PDFCalculator::PDFCalculator() : PairQuantity()
     // initialize mstructure_cache
     mstructure_cache.sfaverage = 0.0;
     mstructure_cache.totaloccupancy = 0.0;
-    mstructure_cache.numberdensity = 0.0;
     // initialize mrlimits_cache
     mrlimits_cache.extendedrmin = 0.0;
     mrlimits_cache.extendedrmax = 0.0;
@@ -85,6 +62,7 @@ PDFCalculator::PDFCalculator() : PairQuantity()
     this->setPeakWidthModel("jeong");
     this->setPeakProfile("gauss");
     this->setPeakPrecision(SQRT_DOUBLE_EPS);
+    this->setBaseline("linear");
     this->setScatteringFactorTable("SFTperiodictableXray");
     this->setRmax(10.0);
     this->setRstep(0.01);
@@ -137,7 +115,7 @@ QuantityType PDFCalculator::getExtendedPDF() const
     QuantityType rgrid_ext = this->getExtendedRgrid();
     assert(pdf_ext.size() == rdf_ext.size());
     assert(pdf_ext.size() == rgrid_ext.size());
-    PDFBaseLine baseline(mstructure_cache.numberdensity);
+    const PDFBaseline& baseline = this->getBaseline();
     QuantityType::iterator pdfi = pdf_ext.begin();
     QuantityType::const_iterator rdfi = rdf_ext.begin();
     QuantityType::const_iterator ri = rgrid_ext.begin();
@@ -348,6 +326,28 @@ double PDFCalculator::getPeakPrecision() const
     return rv;
 }
 
+// PDF baseline configuration
+
+void PDFCalculator::setBaseline(const PDFBaseline& baseline)
+{
+    if (mbaseline.get() == &baseline)  return;
+    mbaseline.reset(baseline.copy());
+}
+
+
+void PDFCalculator::setBaseline(const std::string& tp)
+{
+    auto_ptr<PDFBaseline> pbl(createPDFBaseline(tp));
+    this->setBaseline(*pbl);
+}
+
+
+const PDFBaseline& PDFCalculator::getBaseline() const
+{
+    assert(mbaseline.get());
+    return *mbaseline;
+}
+
 // PDF envelope methods
 
 void PDFCalculator::setScale(double scale)
@@ -510,6 +510,15 @@ void PDFCalculator::resetValue()
     // totalPoints requires that structure and rlimits data are cached.
     this->cacheStructureData();
     this->cacheRlimitsData();
+    // when applicable, configure linear baseline 
+    double numdensity = mstructure->numberDensity();
+    if (numdensity > 0 && this->getBaseline().type() == "linear")
+    {
+        LinearBaseline bl =
+            dynamic_cast<const LinearBaseline&>(this->getBaseline());
+        bl.setSlope(-4 * M_PI * numdensity);
+        this->setBaseline(bl);
+    }
     this->resizeValue(this->totalPoints());
     this->PairQuantity::resetValue();
 }
@@ -682,8 +691,6 @@ void PDFCalculator::cacheStructureData()
     mstructure_cache.sfaverage = (totocc == 0.0) ? 0.0 : (totsf / totocc);
     // totaloccupancy
     mstructure_cache.totaloccupancy = totocc;
-    // numberdensity
-    mstructure_cache.numberdensity = mstructure->numberDensity();
 }
 
 
