@@ -27,13 +27,15 @@
 #include <string>
 #include <map>
 
+#include <diffpy/Attributes.hpp>
+
 namespace diffpy {
 namespace srreal {
 
 /// @class PDFEnvelope
 /// @brief abstract base class for PDF envelope scaling function
 
-class PDFEnvelope
+class PDFEnvelope : public diffpy::Attributes
 {
     public:
 

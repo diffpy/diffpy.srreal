@@ -30,6 +30,8 @@ namespace srreal {
 ScaleEnvelope::ScaleEnvelope()
 {
     this->setScale(1.0);
+    this->registerDoubleAttribute("scale",
+            this, &ScaleEnvelope::getScale, &ScaleEnvelope::setScale);
 }
 
 

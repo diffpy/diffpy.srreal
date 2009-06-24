@@ -213,7 +213,7 @@ void DiffPyStructureAdapter::configurePDFCalculator(PDFCalculator& pdfc) const
     if (spdiameter > 0.0)
     {
         /* FIXME
-        auto_ptr<PDFEnvelope> envlp = createPDFEnvelope("sphere");
+        auto_ptr<PDFEnvelope> envlp = createPDFEnvelope("sphericalshape");
         envlp->setDoubleAttr("spdiameter", spdiameter);
         pdfc.addEnvelope(*envlp);
         */

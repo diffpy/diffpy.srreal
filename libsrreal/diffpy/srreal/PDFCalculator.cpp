@@ -342,9 +342,9 @@ void PDFCalculator::setPeakPrecision(double eps)
 }
 
 
-const double& PDFCalculator::getPeakPrecision() const
+double PDFCalculator::getPeakPrecision() const
 {
-    const double& rv = this->getPeakProfile().getPrecision();
+    double rv = this->getPeakProfile().getPrecision();
     return rv;
 }
 
@@ -365,7 +365,7 @@ void PDFCalculator::setScale(double scale)
 }
 
 
-const double& PDFCalculator::getScale() const
+double PDFCalculator::getScale() const
 {
     const ScaleEnvelope& envelope =
         dynamic_cast<const ScaleEnvelope&>(this->getEnvelope("scale"));
@@ -381,7 +381,7 @@ void PDFCalculator::setQdamp(double qdamp)
 }
 
 
-const double& PDFCalculator::getQdamp() const
+double PDFCalculator::getQdamp() const
 {
     const QResolutionEnvelope& envelope =
         dynamic_cast<const QResolutionEnvelope&>(

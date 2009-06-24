@@ -32,6 +32,8 @@ namespace srreal {
 QResolutionEnvelope::QResolutionEnvelope()
 {
     this->setQdamp(0.0);
+    this->registerDoubleAttribute("qdamp", this,
+            &QResolutionEnvelope::getQdamp, &QResolutionEnvelope::setQdamp);
 }
 
 
