@@ -34,7 +34,7 @@
 namespace diffpy {
 namespace srreal {
 
-class PeakProfile : public diffpy::Attributes
+class PeakProfile
 {
     public:
 
