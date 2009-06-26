@@ -8,6 +8,8 @@ vars.Add('tests', 'Custom list of unit test sources', None)
 vars.Add(EnumVariable('build',
     'compiler settings', 'debug',
     allowed_values=('debug', 'fast')))
+vars.Add(BoolVariable('profile',
+    'build with profiling information', False))
 vars.Add(PathVariable('prefix',
     'installation prefix directory', '/usr/local'))
 vars.Add(PathVariable('libdir',
@@ -31,6 +33,10 @@ if env['build'] == 'debug':
 elif env['build'] == 'fast':
     env.AppendUnique(CCFLAGS=['-O3', '-ffast-math'])
     env.AppendUnique(CPPDEFINES='NDEBUG')
+
+if env['profile']:
+    env.AppendUnique(CCFLAGS='-pg')
+    env.AppendUnique(LINKFLAGS='-pg')
 
 env.Append(CCFLAGS='-Wall')
 env.PrependUnique(CPPPATH='#/')
