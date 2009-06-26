@@ -65,9 +65,11 @@ public:
     void test_y()
     {
         double Afwhm1 = 2 * sqrt(M_LN2 / M_PI);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(Afwhm1, mpkgauss->y(0, 1), mdigits);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(Afwhm1 / 2, mpkgauss->y(1, 1), mdigits);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(Afwhm1 / 2, mpkgauss->y(-1, 1), mdigits);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(Afwhm1, mpkgauss->yvalue(0, 1), mdigits);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(Afwhm1 / 2,
+                mpkgauss->yvalue(1, 1), mdigits);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(Afwhm1 / 2,
+                mpkgauss->yvalue(-1, 1), mdigits);
     }
 
 
@@ -77,8 +79,8 @@ public:
         mpkgauss->setPrecision(epsy);
         double xblo1 = mpkgauss->xboundlo(1);
         double xblo3 = mpkgauss->xboundlo(3);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(epsy, mpkgauss->y(xblo1, 1), mdigits);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(epsy, mpkgauss->y(xblo3, 3), mdigits);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(epsy, mpkgauss->yvalue(xblo1, 1), mdigits);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(epsy, mpkgauss->yvalue(xblo3, 3), mdigits);
         CPPUNIT_ASSERT(xblo1 < 0);
         CPPUNIT_ASSERT(xblo3 < 0);
         mpkgauss->setPrecision(10);
@@ -95,8 +97,10 @@ public:
         mpkgauss->setPrecision(epsy);
         double xbhi1 = mpkgauss->xboundhi(1);
         double xbhi3 = mpkgauss->xboundhi(3);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(epsy, mpkgauss->y(xbhi1, 1), mdigits);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(epsy, mpkgauss->y(xbhi3, 3), mdigits);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(epsy,
+                mpkgauss->yvalue(xbhi1, 1), mdigits);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(epsy,
+                mpkgauss->yvalue(xbhi3, 3), mdigits);
         CPPUNIT_ASSERT(xbhi1 > 0);
         CPPUNIT_ASSERT(xbhi3 > 0);
     }

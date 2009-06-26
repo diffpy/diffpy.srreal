@@ -57,7 +57,7 @@ const string& GaussPeakProfile::type() const
 }
 
 
-double GaussPeakProfile::y(double x, double fwhm) const
+double GaussPeakProfile::yvalue(double x, double fwhm) const
 {
     double xrel = x / fwhm;
     double rv = 2 * sqrt(M_LN2 / M_PI) / fwhm * exp(-4 * M_LN2 * xrel * xrel);

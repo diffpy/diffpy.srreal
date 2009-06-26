@@ -547,7 +547,7 @@ void PDFCalculator::addPairContribution(const BaseBondGenerator& bnds)
     for (; i < ilast; ++i)
     {
         double x = x0 + i * this->getRstep() - dist;
-        double y = pkf.y(x, fwhm);
+        double y = pkf.yvalue(x, fwhm);
         mvalue[i] += summationscale * sfprod * y;
     }
 }

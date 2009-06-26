@@ -38,7 +38,7 @@ class GaussPeakProfile : public PeakProfile
 
         // methods
         const std::string& type() const;
-        double y(double x, double fwhm) const;
+        double yvalue(double x, double fwhm) const;
         double xboundlo(double fwhm) const;
         double xboundhi(double fwhm) const;
         void setPrecision(double eps);
