@@ -29,17 +29,19 @@
 #include <string>
 #include <set>
 
+#include <diffpy/Attributes.hpp>
+
 namespace diffpy {
 namespace srreal {
 
-class PeakProfile
+class PeakProfile : public diffpy::Attributes
 {
     public:
 
         // constructors
         virtual PeakProfile* create() const = 0;
         virtual PeakProfile* copy() const = 0;
-        PeakProfile() : mprecision(0.0)  { }
+        PeakProfile();
         virtual ~PeakProfile()  { }
 
         // methods

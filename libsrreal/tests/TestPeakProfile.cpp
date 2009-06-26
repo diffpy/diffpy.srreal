@@ -108,6 +108,11 @@ public:
         CPPUNIT_ASSERT_EQUAL(0.0, mpkgauss->getPrecision());
         mpkgauss->setPrecision(epsy);
         CPPUNIT_ASSERT_EQUAL(epsy, mpkgauss->getPrecision());
+        CPPUNIT_ASSERT_EQUAL(epsy, mpkgauss->getDoubleAttr("precision"));
+        double xbhi1 = mpkgauss->xboundhi(1);
+        mpkgauss->setDoubleAttr("precision", 1e-4);
+        CPPUNIT_ASSERT_EQUAL(1e-4, mpkgauss->getDoubleAttr("precision"));
+        CPPUNIT_ASSERT(xbhi1 != mpkgauss->xboundhi(1));
     }
 
 

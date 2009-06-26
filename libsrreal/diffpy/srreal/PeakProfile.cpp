@@ -36,6 +36,16 @@ namespace srreal {
 // class PeakProfile
 //////////////////////////////////////////////////////////////////////////////
 
+// Constructors --------------------------------------------------------------
+
+PeakProfile::PeakProfile() : mprecision(0.0)
+{
+    this->registerDoubleAttribute("precision", this,
+            &PeakProfile::getPrecision,
+            &PeakProfile::setPrecision);
+}
+
+
 // Public Methods ------------------------------------------------------------
 
 void PeakProfile::setPrecision(double eps)

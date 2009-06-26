@@ -32,9 +32,9 @@ class GaussPeakProfile : public PeakProfile
     public:
 
         // constructors
+        GaussPeakProfile();
         PeakProfile* create() const;
         PeakProfile* copy() const;
-        GaussPeakProfile() : mhalfboundrel(0.0)  { }
 
         // methods
         const std::string& type() const;

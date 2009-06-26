@@ -31,6 +31,10 @@ namespace srreal {
 
 // Constructors --------------------------------------------------------------
 
+GaussPeakProfile::GaussPeakProfile() : mhalfboundrel(0.0)
+{ }
+
+
 PeakProfile* GaussPeakProfile::create() const
 {
     PeakProfile* rv = new GaussPeakProfile();
