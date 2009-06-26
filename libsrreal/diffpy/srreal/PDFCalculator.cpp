@@ -300,6 +300,8 @@ void PDFCalculator::setPeakProfile(const PeakProfile& pkf)
 void PDFCalculator::setPeakProfile(const string& tp)
 {
     auto_ptr<PeakProfile> pkf(createPeakProfile(tp));
+    // If peak profile already exists, copy its precision data
+    if (mpeakprofile.get())  *pkf = *mpeakprofile;
     this->setPeakProfile(*pkf);
 }
 

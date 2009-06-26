@@ -43,6 +43,7 @@ class PeakProfile
         virtual PeakProfile* copy() const = 0;
         PeakProfile();
         virtual ~PeakProfile()  { }
+        PeakProfile& operator=(const PeakProfile&);
 
         // methods
         virtual const std::string& type() const = 0;
