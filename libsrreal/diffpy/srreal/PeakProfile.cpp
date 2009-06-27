@@ -14,7 +14,7 @@
 *
 * Concrete implementations of the abstract PeakProfile class:
 *
-* class GaussPeakProfile -- registered as "gauss"
+* class GaussianProfile -- registered as "gaussian"
 *
 * $Id$
 *

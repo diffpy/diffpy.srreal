@@ -60,7 +60,7 @@ PDFCalculator::PDFCalculator() : PairQuantity()
     mrlimits_cache.rexthigh = 0.0;
     // default configuration
     this->setPeakWidthModel("jeong");
-    this->setPeakProfile("gauss");
+    this->setPeakProfile("gaussian");
     this->setPeakPrecision(SQRT_DOUBLE_EPS);
     this->setBaseline("linear");
     this->setScatteringFactorTable("SFTperiodictableXray");

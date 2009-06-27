@@ -12,8 +12,8 @@
 *
 ******************************************************************************
 *
-* class GaussPeakProfile -- full scale concrete implementation of the
-*     PeakProfile class.  GaussPeakProfile is registered as "gauss".
+* class GaussianProfile -- concrete implementation of the PeakProfile class. 
+*     GaussianProfile is registered as "gaussian".
 *
 * $Id$
 *
@@ -21,7 +21,7 @@
 
 #include <cmath>
 
-#include <diffpy/srreal/GaussPeakProfile.hpp>
+#include <diffpy/srreal/GaussianProfile.hpp>
 #include <diffpy/mathutils.hpp>
 
 using namespace std;
@@ -31,33 +31,33 @@ namespace srreal {
 
 // Constructors --------------------------------------------------------------
 
-GaussPeakProfile::GaussPeakProfile() : mhalfboundrel(0.0)
+GaussianProfile::GaussianProfile() : mhalfboundrel(0.0)
 { }
 
 
-PeakProfile* GaussPeakProfile::create() const
+PeakProfile* GaussianProfile::create() const
 {
-    PeakProfile* rv = new GaussPeakProfile();
+    PeakProfile* rv = new GaussianProfile();
     return rv;
 }
 
 
-PeakProfile* GaussPeakProfile::copy() const
+PeakProfile* GaussianProfile::copy() const
 {
-    PeakProfile* rv = new GaussPeakProfile(*this);
+    PeakProfile* rv = new GaussianProfile(*this);
     return rv;
 }
 
 // Public Methods ------------------------------------------------------------
 
-const string& GaussPeakProfile::type() const
+const string& GaussianProfile::type() const
 {
-    static string rv = "gauss";
+    static string rv = "gaussian";
     return rv;
 }
 
 
-double GaussPeakProfile::yvalue(double x, double fwhm) const
+double GaussianProfile::yvalue(double x, double fwhm) const
 {
     double xrel = x / fwhm;
     double rv = 2 * sqrt(M_LN2 / M_PI) / fwhm * exp(-4 * M_LN2 * xrel * xrel);
@@ -65,20 +65,20 @@ double GaussPeakProfile::yvalue(double x, double fwhm) const
 }
 
 
-double GaussPeakProfile::xboundlo(double fwhm) const
+double GaussianProfile::xboundlo(double fwhm) const
 {
-    return -1 * this->GaussPeakProfile::xboundhi(fwhm);
+    return -1 * this->GaussianProfile::xboundhi(fwhm);
 }
 
 
-double GaussPeakProfile::xboundhi(double fwhm) const
+double GaussianProfile::xboundhi(double fwhm) const
 {
     double rv = (fwhm <= 0.0) ? 0.0 : (mhalfboundrel * fwhm);
     return rv;
 }
 
 
-void GaussPeakProfile::setPrecision(double eps)
+void GaussianProfile::setPrecision(double eps)
 {
     using diffpy::mathutils::DOUBLE_EPS;
     using diffpy::mathutils::DOUBLE_MAX;
@@ -91,7 +91,7 @@ void GaussPeakProfile::setPrecision(double eps)
 
 // Registration --------------------------------------------------------------
 
-bool reg_GaussPeakProfile = registerPeakProfile(GaussPeakProfile());
+bool reg_GaussianProfile = registerPeakProfile(GaussianProfile());
 
 }   // namespace srreal
 }   // namespace diffpy

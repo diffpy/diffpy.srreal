@@ -12,27 +12,27 @@
 *
 ******************************************************************************
 *
-* class GaussPeakProfile -- full scale concrete implementation of the
-*     PeakProfile class.  GaussPeakProfile is registered as "gauss".
+* class GaussianProfile -- concrete implementation of the PeakProfile class. 
+*     GaussianProfile is registered as "gaussian".
 *
 * $Id$
 *
 *****************************************************************************/
 
-#ifndef GAUSSPEAKPROFILE_HPP_INCLUDED
-#define GAUSSPEAKPROFILE_HPP_INCLUDED
+#ifndef GAUSSIANPROFILE_HPP_INCLUDED
+#define GAUSSIANPROFILE_HPP_INCLUDED
 
 #include <diffpy/srreal/PeakProfile.hpp>
 
 namespace diffpy {
 namespace srreal {
 
-class GaussPeakProfile : public PeakProfile
+class GaussianProfile : public PeakProfile
 {
     public:
 
         // constructors
-        GaussPeakProfile();
+        GaussianProfile();
         PeakProfile* create() const;
         PeakProfile* copy() const;
 
@@ -53,4 +53,4 @@ class GaussPeakProfile : public PeakProfile
 }   // namespace srreal
 }   // namespace diffpy
 
-#endif  // GAUSSPEAKPROFILE_HPP_INCLUDED
+#endif  // GAUSSIANPROFILE_HPP_INCLUDED

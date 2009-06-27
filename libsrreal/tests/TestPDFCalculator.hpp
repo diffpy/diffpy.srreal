@@ -85,7 +85,7 @@ public:
         mpdfc->setPeakPrecision(0.2);
         TS_ASSERT_EQUALS(0.2, mpdfc->getPeakPrecision());
         TS_ASSERT_EQUALS(pkf->type(), mpdfc->getPeakProfile().type());
-        mpdfc->setPeakProfile("gauss");
+        mpdfc->setPeakProfile("gaussian");
         TS_ASSERT_EQUALS(0.2, mpdfc->getPeakPrecision());
         TS_ASSERT_THROWS(mpdfc->setPeakProfile("invalid"), logic_error);
     }

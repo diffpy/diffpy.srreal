@@ -12,7 +12,7 @@
 *
 ******************************************************************************
 *
-* class TestPeakProfile -- unit tests for class GaussPeakProfile
+* class TestPeakProfile -- unit tests for various PeakProfile classes
 *
 * $Id$
 *
@@ -50,7 +50,7 @@ public:
 
     void setUp()
     {
-        mpkgauss.reset(createPeakProfile("gauss"));
+        mpkgauss.reset(createPeakProfile("gaussian"));
     }
 
 
@@ -58,7 +58,7 @@ public:
     {
         CPPUNIT_ASSERT_THROW(createPeakProfile("invalid"),
                 invalid_argument);
-        CPPUNIT_ASSERT_EQUAL(string("gauss"), mpkgauss->type());
+        CPPUNIT_ASSERT_EQUAL(string("gaussian"), mpkgauss->type());
     }
 
 
