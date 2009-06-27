@@ -67,7 +67,7 @@ double GaussPeakProfile::yvalue(double x, double fwhm) const
 
 double GaussPeakProfile::xboundlo(double fwhm) const
 {
-    return -1 * this->xboundhi(fwhm);
+    return -1 * this->GaussPeakProfile::xboundhi(fwhm);
 }
 
 
@@ -80,10 +80,12 @@ double GaussPeakProfile::xboundhi(double fwhm) const
 
 void GaussPeakProfile::setPrecision(double eps)
 {
+    using diffpy::mathutils::DOUBLE_EPS;
     using diffpy::mathutils::DOUBLE_MAX;
-    this->PeakProfile::setPrecision(eps);
-    if (eps <= 0.0)  mhalfboundrel = DOUBLE_MAX;
-    else if (eps < 1.0)  mhalfboundrel = sqrt(-log(eps) / (4 * M_LN2));
+    // correct any settings below DOUBLE_EPS
+    double eps1 = max(eps, DOUBLE_EPS);
+    this->PeakProfile::setPrecision(eps1);
+    if (eps1 < 1.0)  mhalfboundrel = sqrt(-log(eps1) / (4 * M_LN2));
     else  mhalfboundrel = 0.0;
 }
 

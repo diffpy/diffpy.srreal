@@ -315,7 +315,6 @@ const PeakProfile& PDFCalculator::getPeakProfile() const
 
 void PDFCalculator::setPeakPrecision(double eps)
 {
-    if (this->getPeakProfile().getPrecision() == eps)  return;
     auto_ptr<PeakProfile> npkf(this->getPeakProfile().copy());
     npkf->setPrecision(eps);
     this->setPeakProfile(*npkf);

@@ -43,7 +43,7 @@ class GaussPeakProfile : public PeakProfile
         double xboundhi(double fwhm) const;
         void setPrecision(double eps);
 
-    private:
+    protected:
 
         // data
         double mhalfboundrel;
