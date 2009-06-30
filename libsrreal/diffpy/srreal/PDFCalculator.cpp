@@ -56,8 +56,8 @@ PDFCalculator::PDFCalculator() : PairQuantity()
     // initialize mrlimits_cache
     mrlimits_cache.extendedrmin = 0.0;
     mrlimits_cache.extendedrmax = 0.0;
-    mrlimits_cache.rextlow = 0.0;
-    mrlimits_cache.rexthigh = 0.0;
+    mrlimits_cache.rcalclow = 0.0;
+    mrlimits_cache.rcalchigh = 0.0;
     // default configuration
     this->setPeakWidthModel("jeong");
     this->setPeakProfile("gaussian");
@@ -557,13 +557,13 @@ void PDFCalculator::addPairContribution(const BaseBondGenerator& bnds)
 
 const double& PDFCalculator::rcalclo() const
 {
-    return mrlimits_cache.rextlow;
+    return mrlimits_cache.rcalclow;
 }
 
 
 const double& PDFCalculator::rcalchi() const
 {
-    return mrlimits_cache.rexthigh;
+    return mrlimits_cache.rcalchigh;
 }
 
 
@@ -713,9 +713,9 @@ void PDFCalculator::cacheRlimitsData()
     mrlimits_cache.extendedrmin = max(0.0, mrlimits_cache.extendedrmin);
     mrlimits_cache.extendedrmax = this->getRmax() + ext_ripples;
     // complete calculation range, extended for both ripples and peak tails
-    mrlimits_cache.rextlow = this->getRmin() - ext_total;
-    mrlimits_cache.rextlow = max(0.0, mrlimits_cache.rextlow);
-    mrlimits_cache.rexthigh = this->getRmax() + ext_total;
+    mrlimits_cache.rcalclow = this->getRmin() - ext_total;
+    mrlimits_cache.rcalclow = max(0.0, mrlimits_cache.rcalclow);
+    mrlimits_cache.rcalchigh = this->getRmax() + ext_total;
 }
 
 // Local Helpers -------------------------------------------------------------

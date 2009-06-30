@@ -182,8 +182,8 @@ class PDFCalculator : public PairQuantity
         struct {
             double extendedrmin;
             double extendedrmax;
-            double rextlow;
-            double rexthigh;
+            double rcalclow;
+            double rcalchigh;
         } mrlimits_cache;
 
 };  // class PDFCalculator
