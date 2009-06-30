@@ -141,8 +141,8 @@ QuantityType PDFCalculator::getExtendedRDF() const
     QuantityType::iterator iirdf = rdf.begin();
     QuantityType::const_iterator iival, iival_last;
     iival = this->value().begin() +
-        this->extloPoints() - this->ripplesloPoints();
-    iival_last = this->value().end() - this->exthiPoints()
+        this->calcloPoints() - this->ripplesloPoints();
+    iival_last = this->value().end() - this->calchiPoints()
         + this->rippleshiPoints();
     assert(iival >= this->value().begin());
     assert(iival_last <= this->value().end());
@@ -508,7 +508,7 @@ double PDFCalculator::sfAtomType(const string& smbl) const
 
 void PDFCalculator::resetValue()
 {
-    // totalPoints requires that structure and rlimits data are cached.
+    // calcPoints requires that structure and rlimits data are cached.
     this->cacheStructureData();
     this->cacheRlimitsData();
     // when applicable, configure linear baseline 
@@ -520,15 +520,15 @@ void PDFCalculator::resetValue()
         bl.setSlope(-4 * M_PI * numdensity);
         this->setBaseline(bl);
     }
-    this->resizeValue(this->totalPoints());
+    this->resizeValue(this->calcPoints());
     this->PairQuantity::resetValue();
 }
 
 
 void PDFCalculator::configureBondGenerator(BaseBondGenerator& bnds)
 {
-    bnds.setRmin(this->rextlo());
-    bnds.setRmax(this->rexthi());
+    bnds.setRmin(this->rcalclo());
+    bnds.setRmax(this->rcalchi());
 }
 
 
@@ -541,9 +541,9 @@ void PDFCalculator::addPairContribution(const BaseBondGenerator& bnds)
     double dist = bnds.distance();
     double xlo = dist + pkf.xboundlo(fwhm);
     double xhi = dist + pkf.xboundhi(fwhm);
-    int i = max(0, this->totalIndex(xlo));
-    int ilast = min(this->totalPoints(), this->totalIndex(xhi) + 1);
-    double x0 = this->rextlo();
+    int i = max(0, this->calcIndex(xlo));
+    int ilast = min(this->calcPoints(), this->calcIndex(xhi) + 1);
+    double x0 = this->rcalclo();
     assert(ilast <= int(mvalue.size()));
     for (; i < ilast; ++i)
     {
@@ -555,19 +555,19 @@ void PDFCalculator::addPairContribution(const BaseBondGenerator& bnds)
 
 // calculation specific
 
-const double& PDFCalculator::rextlo() const
+const double& PDFCalculator::rcalclo() const
 {
     return mrlimits_cache.rextlow;
 }
 
 
-const double& PDFCalculator::rexthi() const
+const double& PDFCalculator::rcalchi() const
 {
     return mrlimits_cache.rexthigh;
 }
 
 
-double PDFCalculator::extTerminationRipples() const
+double PDFCalculator::extFromTerminationRipples() const
 {
     // number of termination ripples for extending the r-range
     const int nripples = 6;
@@ -578,7 +578,7 @@ double PDFCalculator::extTerminationRipples() const
 }
 
 
-double PDFCalculator::extPeakTails() const
+double PDFCalculator::extFromPeakTails() const
 {
     double maxmsd = 2 * maxUii(mstructure);
     double maxfwhm = this->getPeakWidthModel().calculateFromMSD(maxmsd);
@@ -590,19 +590,19 @@ double PDFCalculator::extPeakTails() const
 }
 
 
-int PDFCalculator::extloPoints() const
+int PDFCalculator::calcloPoints() const
 {
     int npts;
-    npts = int(floor((this->getRmin() - this->rextlo()) / this->getRstep()));
+    npts = int(floor((this->getRmin() - this->rcalclo()) / this->getRstep()));
     return npts;
 }
 
 
-int PDFCalculator::exthiPoints() const
+int PDFCalculator::calchiPoints() const
 {
     // evaluate all with respect to rmin
     int npts;
-    npts = int(ceil((this->rexthi() - this->getRmin()) / this->getRstep()));
+    npts = int(ceil((this->rcalchi() - this->getRmin()) / this->getRstep()));
     npts -= this->rgridPoints();
     return npts;
 }
@@ -642,18 +642,18 @@ int PDFCalculator::extendedPoints() const
 }
 
 
-int PDFCalculator::totalPoints() const
+int PDFCalculator::calcPoints() const
 {
     int npts;
-    npts = this->extloPoints() + this->rgridPoints() + this->exthiPoints();
+    npts = this->calcloPoints() + this->rgridPoints() + this->calchiPoints();
     return npts;
 }
 
 
-int PDFCalculator::totalIndex(double r) const
+int PDFCalculator::calcIndex(double r) const
 {
     int npts;
-    npts = int(ceil((r - this->rextlo()) / this->getRstep()));
+    npts = int(ceil((r - this->rcalclo()) / this->getRstep()));
     return npts;
 }
 
@@ -698,8 +698,8 @@ void PDFCalculator::cacheStructureData()
 void PDFCalculator::cacheRlimitsData()
 {
     // obtain extension magnitudes and rescale to fit maximum extension
-    double ext_ripples = this->extTerminationRipples();
-    double ext_pktails = this->extPeakTails();
+    double ext_ripples = this->extFromTerminationRipples();
+    double ext_pktails = this->extFromPeakTails();
     double ext_total = ext_ripples + ext_pktails;
     if (ext_total > this->getMaxExtension())
     {

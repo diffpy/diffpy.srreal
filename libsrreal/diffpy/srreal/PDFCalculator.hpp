@@ -47,8 +47,11 @@ class PDFCalculator : public PairQuantity
         QuantityType getRDF() const;
         QuantityType getRgrid() const;
 
+        /// PDF on extended range to allow propagation of termination ripples
         QuantityType getExtendedPDF() const;
+        /// RDF on extended range to allow propagation of termination ripples
         QuantityType getExtendedRDF() const;
+        /// extended r-grid that allows propagation of termination ripples
         QuantityType getExtendedRgrid() const;
 
         // Q-range configuration
@@ -63,9 +66,15 @@ class PDFCalculator : public PairQuantity
         virtual void setRmax(double);
         void setRstep(double);
         const double& getRstep() const;
+        /// maximum total extension of the r-range accounting for both
+        /// termination ripples and peak tails
         void setMaxExtension(double);
+        /// maximum total extension of the r-range accounting for both
+        /// termination ripples and peak tails
         const double& getMaxExtension() const;
+        /// lower bound for the r-range extended for termination ripples
         const double& getExtendedRmin() const;
+        /// upper bound of the r-range extended for termination ripples
         const double& getExtendedRmax() const;
 
         // PDF peak width configuration
@@ -123,18 +132,30 @@ class PDFCalculator : public PairQuantity
     private:
 
         // methods - calculation specific
-        const double& rextlo() const;
-        const double& rexthi() const;
-        double extTerminationRipples() const;
-        double extPeakTails() const;
-        int extloPoints() const;
-        int exthiPoints() const;
+        /// complete lower bound extension of the calculated grid
+        const double& rcalclo() const;
+        /// complete upper bound extension of the calculated grid
+        const double& rcalchi() const;
+        /// r-range extension to allow propagation of termination ripples
+        double extFromTerminationRipples() const;
+        /// r-range extension to account for tails from out-of-range peaks
+        double extFromPeakTails() const;
+        /// number of data points in the complete extension of the lower bound
+        int calcloPoints() const;
+        /// number of data points in the complete extension of the upper bound
+        int calchiPoints() const;
+        /// number of points in the lower extension due to termination ripples
         int ripplesloPoints() const;
+        /// number of points in the upper extension due to termination ripples
         int rippleshiPoints() const;
+        /// number of points within the user requested r-grid
         int rgridPoints() const;
+        /// number of points in the r-grid extended with termination ripples
         int extendedPoints() const;
-        int totalPoints() const;
-        int totalIndex(double r) const;
+        /// number of points in the complete calculated r-grid
+        int calcPoints() const;
+        /// index of a nearby point in the complete calculated r-grid
+        int calcIndex(double r) const;
 
         // structure factors - fast lookup by site index
         const double& sfSite(int) const;
