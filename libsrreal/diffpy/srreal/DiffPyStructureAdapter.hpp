@@ -120,19 +120,6 @@ class DiffPyStructureBondGenerator : public BaseBondGenerator
         double msdSiteDir(int siteidx, const R3::Vector& s) const;
 };
 
-//////////////////////////////////////////////////////////////////////////////
-// Definitions
-//////////////////////////////////////////////////////////////////////////////
-
-// Inline Routines -----------------------------------------------------------
-
-inline
-StructureAdapter* createPQAdapter(const boost::python::object& dpstru)
-{
-    StructureAdapter* adapter = new DiffPyStructureAdapter(dpstru);
-    return adapter;
-}
-
 
 }   // namespace srreal
 }   // namespace diffpy
