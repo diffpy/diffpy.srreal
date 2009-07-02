@@ -21,7 +21,8 @@
 #ifndef PAIRQUANTITY_HPP_INCLUDED
 #define PAIRQUANTITY_HPP_INCLUDED
 
-#include <memory>
+#include <boost/scoped_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include <diffpy/srreal/BasePairQuantity.hpp>
 #include <diffpy/srreal/PQEvaluator.hpp>
@@ -66,7 +67,7 @@ class PairQuantity : public BasePairQuantity
         const StructureAdapter* mstructure;
         double mrmin;
         double mrmax;
-        std::auto_ptr<PQEvaluatorBasic> mevaluator;
+        boost::shared_ptr<PQEvaluatorBasic> mevaluator;
 
 };
 
@@ -75,7 +76,7 @@ class PairQuantity : public BasePairQuantity
 template <class T>
 const QuantityType& PairQuantity::eval(const T& stru)
 {
-    std::auto_ptr<StructureAdapter> bstru(createPQAdapter(stru));
+    boost::scoped_ptr<StructureAdapter> bstru(createPQAdapter(stru));
     return this->eval(*bstru);
 }
 

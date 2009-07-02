@@ -21,7 +21,6 @@
 #ifndef PDFCALCULATOR_HPP_INCLUDED
 #define PDFCALCULATOR_HPP_INCLUDED
 
-#include <memory>
 #include <set>
 #include <boost/shared_ptr.hpp>
 
@@ -169,11 +168,11 @@ class PDFCalculator : public PairQuantity
         double mqmax;
         double mrstep;
         double mmaxextension;
-        std::auto_ptr<PeakWidthModel> mpwmodel;
-        std::auto_ptr<PeakProfile> mpeakprofile;
-        std::auto_ptr<PDFBaseline> mbaseline;
+        boost::shared_ptr<PeakWidthModel> mpwmodel;
+        boost::shared_ptr<PeakProfile> mpeakprofile;
+        boost::shared_ptr<PDFBaseline> mbaseline;
         EnvelopeStorage menvelope;
-        std::auto_ptr<ScatteringFactorTable> msftable;
+        boost::shared_ptr<ScatteringFactorTable> msftable;
         struct {
             std::vector<double> sfsite;
             double sfaverage;
