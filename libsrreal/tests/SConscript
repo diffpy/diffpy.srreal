@@ -2,7 +2,6 @@ Import('env')
 
 # Environment for building unit test driver
 env_test = env.Clone(tools=['default', 'cxxtest'], CXXTEST_SUFFIX='.hpp')
-env_test.ParseConfig('pkg-config --cflags --libs cppunit')
 lib_dir = Dir('#/').abspath
 env_test.PrependUnique(LIBS='libsrreal', LIBPATH=lib_dir)
 env_test.PrependENVPath('LD_LIBRARY_PATH', lib_dir)
@@ -11,29 +10,18 @@ env_test.AppendUnique(LIBS='libboost_python')
 # Targets --------------------------------------------------------------------
 
 # alltests -- the unit test driver
-cppunit_sources = ['alltests.cpp']
-cxxunit_sources = []
+test_sources = []
 
 # add all unit test modules when variable tests was not set.
 if env_test.get('tests') is None:
-    cppunit_sources += Glob('Test*.cpp')
-    cxxunit_sources += Glob('Test*.hpp')
+    test_sources += Glob('Test*.hpp')
 else:
     test_sources = Split(env_test['tests']) 
-    cppunit_sources += [f for f in test_sources if str(f).endswith('.cpp')]
-    cxxunit_sources += [f for f in test_sources if str(f).endswith('.hpp')]
 
-def includesCppUnit(f):
-    src = open(str(f)).read()
-    return ('\n#include <cppunit/' in src)
-cppunit_sources = filter(includesCppUnit, cppunit_sources)
-
-alltests = env_test.Program('alltests', cppunit_sources)
-alltests1 = env_test.CxxTest('alltests1', cxxunit_sources)
+alltests = env_test.CxxTest('alltests', test_sources)
 
 # test -- alias for executing unit tests.
-test = env_test.Alias('test', [alltests, alltests1],
-       alltests[0].abspath + ' && ' + alltests1[0].abspath)
+test = env_test.Alias('test', alltests, alltests[0].abspath)
 AlwaysBuild(test)
 
 # vim: ft=python

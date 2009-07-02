@@ -18,8 +18,7 @@
 *
 *****************************************************************************/
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
+#include <cxxtest/TestSuite.h>
 
 #include <diffpy/srreal/PairCounter.hpp>
 #include <diffpy/srreal/VR3Structure.hpp>
@@ -27,14 +26,8 @@
 using namespace std;
 using namespace diffpy::srreal;
 
-class TestPairCounter : public CppUnit::TestFixture
+class TestPairCounter : public CxxTest::TestSuite
 {
-
-    CPPUNIT_TEST_SUITE(TestPairCounter);
-    CPPUNIT_TEST(test_call);
-    CPPUNIT_TEST(test_setRmin);
-    CPPUNIT_TEST(test_setRmax);
-    CPPUNIT_TEST_SUITE_END();
 
 private:
 
@@ -63,25 +56,25 @@ public:
         for (int i = 0; i < 100; ++i)
         {
             int npairs = i * (i - 1) / 2;
-            CPPUNIT_ASSERT_EQUAL(npairs, pcount(mstru));
+            TS_ASSERT_EQUALS(npairs, pcount(mstru));
             R3::Vector P(1.0*i, 0.0, 0.0);
             mstru.push_back(P);
         }
         mstru.clear();
-        CPPUNIT_ASSERT_EQUAL(0, pcount(mstru));
+        TS_ASSERT_EQUALS(0, pcount(mstru));
     }
 
 
     void test_setRmin()
     {
         PairCounter pcount;
-        CPPUNIT_ASSERT_EQUAL(100*99/2, pcount(mline100));
+        TS_ASSERT_EQUALS(100*99/2, pcount(mline100));
         pcount.setRmin(100);
-        CPPUNIT_ASSERT_EQUAL(0, pcount(mline100));
+        TS_ASSERT_EQUALS(0, pcount(mline100));
         pcount.setRmin(99.0);
-        CPPUNIT_ASSERT_EQUAL(1, pcount(mline100));
+        TS_ASSERT_EQUALS(1, pcount(mline100));
         pcount.setRmin(1.1);
-        CPPUNIT_ASSERT_EQUAL(100*99/2 - 99, pcount(mline100));
+        TS_ASSERT_EQUALS(100*99/2 - 99, pcount(mline100));
     }
 
 
@@ -89,16 +82,13 @@ public:
     {
         PairCounter pcount;
         pcount.setRmax(0.9);
-        CPPUNIT_ASSERT_EQUAL(0, pcount(mline100));
+        TS_ASSERT_EQUALS(0, pcount(mline100));
         pcount.setRmax(1.1);
-        CPPUNIT_ASSERT_EQUAL(99, pcount(mline100));
+        TS_ASSERT_EQUALS(99, pcount(mline100));
         pcount.setRmax(98.5);
-        CPPUNIT_ASSERT_EQUAL(100*99/2 - 1, pcount(mline100));
+        TS_ASSERT_EQUALS(100*99/2 - 1, pcount(mline100));
     }
 
-};
-
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(TestPairCounter);
+};  // class TestPairCounter
 
 // End of file

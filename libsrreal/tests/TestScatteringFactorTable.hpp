@@ -21,8 +21,7 @@
 
 #include <stdexcept>
 #include <memory>
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
+#include <cxxtest/TestSuite.h>
 
 #include <diffpy/srreal/ScatteringFactorTable.hpp>
 #include <diffpy/PythonInterface.hpp>
@@ -31,15 +30,8 @@ using namespace std;
 using namespace diffpy::srreal;
 
 
-class TestScatteringFactorTable : public CppUnit::TestFixture
+class TestScatteringFactorTable : public CxxTest::TestSuite
 {
-
-    CPPUNIT_TEST_SUITE(TestScatteringFactorTable);
-    CPPUNIT_TEST(test_factory);
-    CPPUNIT_TEST(test_setCustom);
-    CPPUNIT_TEST(test_periodictableXray);
-    CPPUNIT_TEST(test_periodictableNeutron);
-    CPPUNIT_TEST_SUITE_END();
 
 private:
 
@@ -51,58 +43,55 @@ public:
     void test_factory()
     {
         typedef auto_ptr<ScatteringFactorTable> APSFT;
-        CPPUNIT_ASSERT_THROW(createScatteringFactorTable("invalid"),
+        TS_ASSERT_THROWS(createScatteringFactorTable("invalid"),
                 invalid_argument);
         APSFT sfx0(createScatteringFactorTable("SFTperiodictableXray"));
         APSFT sfx1(createScatteringFactorTable("X"));
-        CPPUNIT_ASSERT(sfx0.get());
-        CPPUNIT_ASSERT_EQUAL(sfx0->type(), sfx1->type());
+        TS_ASSERT(sfx0.get());
+        TS_ASSERT_EQUALS(sfx0->type(), sfx1->type());
         APSFT sfn0(createScatteringFactorTable("SFTperiodictableNeutron"));
         APSFT sfn1(createScatteringFactorTable("N"));
-        CPPUNIT_ASSERT(sfn0.get());
-        CPPUNIT_ASSERT_EQUAL(sfn0->type(), sfn1->type());
+        TS_ASSERT(sfn0.get());
+        TS_ASSERT_EQUALS(sfn0->type(), sfn1->type());
     }
 
 
     void test_setCustom()
     {
         sftb.reset(createScatteringFactorTable("X"));
-        CPPUNIT_ASSERT_EQUAL(6.0, sftb->lookup("C"));
+        TS_ASSERT_EQUALS(6.0, sftb->lookup("C"));
         sftb->setCustom("C", 6.3);
-        CPPUNIT_ASSERT_THROW(sftb->lookup("Ccustom"), invalid_argument);
+        TS_ASSERT_THROWS(sftb->lookup("Ccustom"), invalid_argument);
         sftb->setCustom("Ccustom", 6.5);
-        CPPUNIT_ASSERT_EQUAL(6.5, sftb->lookup("Ccustom"));
+        TS_ASSERT_EQUALS(6.5, sftb->lookup("Ccustom"));
         sftb->resetCustom("C");
-        CPPUNIT_ASSERT_EQUAL(6.5, sftb->lookup("Ccustom"));
-        CPPUNIT_ASSERT_EQUAL(6.0, sftb->lookup("C"));
+        TS_ASSERT_EQUALS(6.5, sftb->lookup("Ccustom"));
+        TS_ASSERT_EQUALS(6.0, sftb->lookup("C"));
         sftb->resetAll();
-        CPPUNIT_ASSERT_THROW(sftb->lookup("Ccustom"), invalid_argument);
-        CPPUNIT_ASSERT_EQUAL(6.0, sftb->lookup("C"));
+        TS_ASSERT_THROWS(sftb->lookup("Ccustom"), invalid_argument);
+        TS_ASSERT_EQUALS(6.0, sftb->lookup("C"));
     }
 
 
     void test_periodictableXray()
     {
         sftb.reset(createScatteringFactorTable("X"));
-        CPPUNIT_ASSERT_EQUAL(1.0, sftb->lookup("H"));
-        CPPUNIT_ASSERT_EQUAL(8.0, sftb->lookup("O"));
-        CPPUNIT_ASSERT_EQUAL(74.0, sftb->lookup("W"));
-        CPPUNIT_ASSERT_EQUAL(88.0, sftb->lookup("Ra"));
+        TS_ASSERT_EQUALS(1.0, sftb->lookup("H"));
+        TS_ASSERT_EQUALS(8.0, sftb->lookup("O"));
+        TS_ASSERT_EQUALS(74.0, sftb->lookup("W"));
+        TS_ASSERT_EQUALS(88.0, sftb->lookup("Ra"));
     }
 
 
     void test_periodictableNeutron()
     {
         sftb.reset(createScatteringFactorTable("N"));
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(3.63, sftb->lookup("Na"), mtol);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.37, sftb->lookup("Ti"), mtol);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(5.805, sftb->lookup("O"), mtol);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(6.6484, sftb->lookup("C"), mtol);
+        TS_ASSERT_DELTA(3.63, sftb->lookup("Na"), mtol);
+        TS_ASSERT_DELTA(-3.37, sftb->lookup("Ti"), mtol);
+        TS_ASSERT_DELTA(5.805, sftb->lookup("O"), mtol);
+        TS_ASSERT_DELTA(6.6484, sftb->lookup("C"), mtol);
     }
 
 };
-
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(TestScatteringFactorTable);
 
 // End of file

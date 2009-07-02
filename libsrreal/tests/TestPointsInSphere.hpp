@@ -21,8 +21,8 @@
 ***********************************************************************/
 
 #include <algorithm>
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
+
+#include <cxxtest/TestSuite.h>
 
 #include <diffpy/srreal/PointsInSphere.hpp>
 
@@ -74,15 +74,8 @@ ostream& operator<<(ostream &s, const vidxgroup &x)
 
 using diffpy::srreal::pointsinsphere::LatticeParameters;
 
-class TestPointsInSphere : public CppUnit::TestFixture
+class TestPointsInSphere : public CxxTest::TestSuite
 {
-
-    CPPUNIT_TEST_SUITE(TestPointsInSphere);
-    CPPUNIT_TEST(test_Cubic);
-    CPPUNIT_TEST(test_Orthorombic);
-    CPPUNIT_TEST(test_Hexagonal);
-    CPPUNIT_TEST(test_FCC);
-    CPPUNIT_TEST_SUITE_END();
 
 private:
 
@@ -129,13 +122,13 @@ public:
 	latpar->a = latpar->b = latpar->c = 1.0;
 	latpar->alpha = latpar->beta = latpar->gamma = 90.0;
 	latpar->update();
-	CPPUNIT_ASSERT_EQUAL(0, count(0.0, 0.0));
-	CPPUNIT_ASSERT_EQUAL(0, count(eps, 0.5));
-	CPPUNIT_ASSERT_EQUAL(0, count(1.0 + eps, 1.1));
-	CPPUNIT_ASSERT_EQUAL(1, count(0.0, eps));
-	CPPUNIT_ASSERT_EQUAL(7, count(0.0, 1 + eps));
-	CPPUNIT_ASSERT_EQUAL(19, count(0.0, sqrt(2.0) + eps));
-	CPPUNIT_ASSERT_EQUAL(12, count(1.0 + eps, sqrt(2.0) + eps));
+	TS_ASSERT_EQUALS(0, count(0.0, 0.0));
+	TS_ASSERT_EQUALS(0, count(eps, 0.5));
+	TS_ASSERT_EQUALS(0, count(1.0 + eps, 1.1));
+	TS_ASSERT_EQUALS(1, count(0.0, eps));
+	TS_ASSERT_EQUALS(7, count(0.0, 1 + eps));
+	TS_ASSERT_EQUALS(19, count(0.0, sqrt(2.0) + eps));
+	TS_ASSERT_EQUALS(12, count(1.0 + eps, sqrt(2.0) + eps));
     }
 
     void test_Orthorombic()
@@ -143,8 +136,8 @@ public:
 	latpar->a = 1.0; latpar->b = 2.0; latpar->c = 3.0;
 	latpar->alpha = latpar->beta = latpar->gamma = 90.0;
 	latpar->update();
-	CPPUNIT_ASSERT_EQUAL(3, count(0.0, 1.1));
-	CPPUNIT_ASSERT_EQUAL(4, count(1.9, 2.1));
+	TS_ASSERT_EQUALS(3, count(0.0, 1.1));
+	TS_ASSERT_EQUALS(4, count(1.9, 2.1));
 	vidxgroup ep[] = {
 	    vidxgroup(0, 0, 0, 0),
 	    vidxgroup(1, -1, 0, 0),
@@ -168,10 +161,10 @@ public:
 	};
 	vector<vidxgroup> exp_pts(ep, ep + sizeof(ep)/sizeof(vidxgroup));
 	vector<vidxgroup> act_pts = sortedPoints(0.0, 3.0+eps);
-	CPPUNIT_ASSERT_EQUAL(exp_pts.size(), act_pts.size());
+	TS_ASSERT_EQUALS(exp_pts.size(), act_pts.size());
 	for (size_t i = 0; i != exp_pts.size(); ++i)
 	{
-	    CPPUNIT_ASSERT_EQUAL(exp_pts[i], act_pts[i]);
+	    TS_ASSERT_EQUALS(exp_pts[i], act_pts[i]);
 	}
     }
 
@@ -180,7 +173,7 @@ public:
 	latpar->a = 1.0; latpar->b = 1.0; latpar->c = 2.0;
 	latpar->alpha = latpar->beta = 90.0; latpar->gamma = 120.0;
 	latpar->update();
-	CPPUNIT_ASSERT_EQUAL(7, count(0.0, 1+eps));
+	TS_ASSERT_EQUALS(7, count(0.0, 1+eps));
 	vidxgroup ep[] = {
 	    vidxgroup(0, 0, 0, 0),
 	    vidxgroup(1, -1, -1, 0),
@@ -206,10 +199,10 @@ public:
 	};
 	vector<vidxgroup> exp_pts(ep, ep + sizeof(ep)/sizeof(vidxgroup));
 	vector<vidxgroup> act_pts = sortedPoints(0.0, 2.0+eps);
-	CPPUNIT_ASSERT_EQUAL(exp_pts.size(), act_pts.size());
+	TS_ASSERT_EQUALS(exp_pts.size(), act_pts.size());
 	for (size_t i = 0; i != exp_pts.size(); ++i)
 	{
-	    CPPUNIT_ASSERT_EQUAL(exp_pts[i], act_pts[i]);
+	    TS_ASSERT_EQUALS(exp_pts[i], act_pts[i]);
 	}
     }
 
@@ -218,13 +211,10 @@ public:
 	latpar->a = latpar->b = latpar->c = sqrt(0.5);
 	latpar->alpha = latpar->beta = latpar->gamma = 60.0;
 	latpar->update();
-	CPPUNIT_ASSERT_EQUAL(13, count(0.0, sqrt(0.5)+eps));
-	CPPUNIT_ASSERT_EQUAL(19, count(0.0, 1.0+eps));
+	TS_ASSERT_EQUALS(13, count(0.0, sqrt(0.5)+eps));
+	TS_ASSERT_EQUALS(19, count(0.0, 1.0+eps));
     }
 
-};
-
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(TestPointsInSphere);
+};  // class TestPointsInSphere
 
 // End of file
