@@ -27,6 +27,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include <diffpy/srreal/PQEvaluator.hpp>
+#include <diffpy/Attributes.hpp>
 
 namespace diffpy {
 namespace srreal {
@@ -36,7 +37,7 @@ class StructureAdapter;
 
 typedef std::vector<double> QuantityType;
 
-class PairQuantity
+class PairQuantity : public diffpy::Attributes
 {
     public:
 

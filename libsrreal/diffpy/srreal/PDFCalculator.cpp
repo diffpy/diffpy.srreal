@@ -69,6 +69,30 @@ PDFCalculator::PDFCalculator()
     this->setQmin(0.0);
     this->setQmax(0.0);
     this->setMaxExtension(10.0);
+    // attributes
+    this->registerDoubleAttribute("qmin", this,
+            &PDFCalculator::getQmin, &PDFCalculator::setQmin);
+    this->registerDoubleAttribute("qmax", this,
+            &PDFCalculator::getQmax, &PDFCalculator::setQmax);
+    this->registerDoubleAttribute("rmin", this,
+            &PDFCalculator::getRmin, &PDFCalculator::setRmin);
+    this->registerDoubleAttribute("rmax", this,
+            &PDFCalculator::getRmax, &PDFCalculator::setRmax);
+    this->registerDoubleAttribute("rstep", this,
+            &PDFCalculator::getRstep, &PDFCalculator::setRstep);
+    this->registerDoubleAttribute("maxextension", this,
+            &PDFCalculator::getMaxExtension, &PDFCalculator::setMaxExtension);
+    this->registerDoubleAttribute("extendedrmin", this,
+            &PDFCalculator::getExtendedRmin);
+    this->registerDoubleAttribute("extendedrmax", this,
+            &PDFCalculator::getExtendedRmax);
+    this->registerDoubleAttribute("peakprecision", this,
+            &PDFCalculator::getPeakPrecision,
+            &PDFCalculator::setPeakPrecision);
+    this->registerDoubleAttribute("scale", this,
+            &PDFCalculator::getScale, &PDFCalculator::setScale);
+    this->registerDoubleAttribute("qdamp", this,
+            &PDFCalculator::getQdamp, &PDFCalculator::setQdamp);
 }
 
 // Public Methods ------------------------------------------------------------

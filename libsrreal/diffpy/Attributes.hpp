@@ -64,6 +64,8 @@ class Attributes
 
     protected:
 
+        template <class T, class Getter>
+            void registerDoubleAttribute(const std::string& name, T* obj, Getter);
         template <class T, class Getter, class Setter>
             void registerDoubleAttribute(const std::string& name, T* obj, Getter, Setter);
 

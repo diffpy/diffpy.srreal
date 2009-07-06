@@ -58,6 +58,7 @@ class DoubleAttribute : public BaseDoubleAttribute
             {
                 const char* emsg =
                     "Cannot change value of read-only DoubleAttribute.";
+                // FIXME: replace with custom attribute exception
                 throw std::logic_error(emsg);
             }
             T* tobj = dynamic_cast<T*>(obj);
@@ -77,6 +78,15 @@ class DoubleAttribute : public BaseDoubleAttribute
 //////////////////////////////////////////////////////////////////////////////
 
 // Template Protected Methods ------------------------------------------------
+
+template <class T, class Getter>
+void Attributes::registerDoubleAttribute(
+        const std::string& name, T* obj, Getter g)
+{
+    typedef  void (T::*Setter)(double x);
+    mdoubleattrs[name].reset(new DoubleAttribute<T, Getter, Setter>(g, NULL));
+}
+
 
 template <class T, class Getter, class Setter>
 void Attributes::registerDoubleAttribute(
