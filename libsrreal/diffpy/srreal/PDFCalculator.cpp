@@ -47,7 +47,7 @@ double maxUii(const StructureAdapter*);
 
 // Constructor ---------------------------------------------------------------
 
-PDFCalculator::PDFCalculator() : PairQuantity()
+PDFCalculator::PDFCalculator()
 {
     using diffpy::mathutils::SQRT_DOUBLE_EPS;
     // initialize mstructure_cache

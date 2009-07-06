@@ -28,7 +28,7 @@ using namespace diffpy::srreal;
 
 // Constructor ---------------------------------------------------------------
 
-PairQuantity::PairQuantity() : BasePairQuantity()
+PairQuantity::PairQuantity()
 {
     using diffpy::mathutils::DOUBLE_MAX;
     this->setRmin(0.0);
