@@ -211,7 +211,9 @@ class ColorFromOverlap(object):
 
         Return a tuple of (cost, colored_structure).
         """
-        coststru = []
+        from diffpy.srreal.atomconflicts import AtomConflicts
+        ac = AtomConflicts(stru)
+        coststru = [(self.cost(ac), ac.getStructure())]
         for i in range(self.repeats):
             ac0 = self.initialAtomConflicts(stru)
             ac1 = self.downhillOverlapMinimization(ac0)
