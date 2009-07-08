@@ -10,7 +10,18 @@ Scripts:    (none yet)
 """
 
 from setuptools import setup, find_packages
+from setuptools import Extension
 import fix_setuptools_chmod
+
+# define extension here
+srrealmodule = Extension('diffpy.srreal.pdf_ext', [
+            'srrealmodule/pdf_ext.cpp',
+            ],
+        include_dirs = ['libsrreal'],
+        extra_compile_args = [],
+        extra_link_args = [],
+        libraries = ['srreal', 'boost_python'],
+)
 
 # define distribution
 dist = setup(
@@ -18,6 +29,7 @@ dist = setup(
         version = "0.1a",
         namespace_packages = ['diffpy'],
         packages = find_packages(exclude=['PDFAPI']),
+        ext_modules = [srrealmodule],
         entry_points = {
             'console_scripts' : [
                 'downhill1=diffpy.srreal.applications.downhill1:main',
