@@ -39,7 +39,10 @@ namespace srreal {
 // Constructors --------------------------------------------------------------
 
 PeakProfile::PeakProfile() : mprecision(0.0)
-{ }
+{
+    this->registerDoubleAttribute("peakprecision",
+            this, &PeakProfile::getPrecision, &PeakProfile::setPrecision);
+}
 
 
 PeakProfile& PeakProfile::operator=(const PeakProfile& other)
