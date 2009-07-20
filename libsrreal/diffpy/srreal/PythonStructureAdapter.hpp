@@ -24,6 +24,8 @@
 
 #include <boost/python.hpp>
 
+#include <diffpy/srreal/DiffPyStructureAdapter.hpp>
+
 namespace diffpy {
 namespace srreal {
 

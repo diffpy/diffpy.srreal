@@ -24,7 +24,6 @@
 #include <string>
 
 #include <diffpy/srreal/PythonStructureAdapter.hpp>
-#include <diffpy/srreal/DiffPyStructureAdapter.hpp>
 
 using namespace boost;
 
