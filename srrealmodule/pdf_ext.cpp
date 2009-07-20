@@ -19,6 +19,9 @@
 *****************************************************************************/
 
 
+#include <set>
+#include <string>
+
 #include <boost/python/class.hpp>
 #include <boost/python/module.hpp>
 #include <boost/python/def.hpp>
@@ -26,6 +29,7 @@
 #include <numpy/arrayobject.h>
 
 #include <diffpy/srreal/PDFCalculator.hpp>
+#include <diffpy/srreal/PythonStructureAdapter.hpp>
 
 using namespace boost;
 using diffpy::srreal::PDFCalculator;
@@ -45,22 +49,48 @@ python::object convertQuantityType(const QuantityType& v)
 }
 
 
-python::object getPDFarray(const PDFCalculator& obj)
+python::object convertSetOfStrings(const std::set<std::string>& s)
+{
+    using namespace std;
+    python::object rv(python::handle<>(PySet_New(NULL)));
+    std::set<string>::const_iterator si;
+    for (si = s.begin(); si != s.end(); ++si)
+    {
+        rv.attr("add")(*si);
+    }
+    return rv;
+}
+
+
+python::object namesOfDoubleAttributes_asset(const PDFCalculator& obj)
+{
+    return convertSetOfStrings(obj.namesOfDoubleAttributes());
+}
+
+
+python::object getPDF_asarray(const PDFCalculator& obj)
 {
     return convertQuantityType(obj.getPDF());
 }
 
 
-python::object getRDFarray(const PDFCalculator& obj)
+python::object getRDF_asarray(const PDFCalculator& obj)
 {
     return convertQuantityType(obj.getRDF());
 }
 
 
-python::object getRgridarray(const PDFCalculator& obj)
+python::object getRgrid_asarray(const PDFCalculator& obj)
 {
     return convertQuantityType(obj.getRgrid());
 }
+
+
+python::object eval_asarray(PDFCalculator& obj, const python::object& stru)
+{
+    return convertQuantityType(obj.eval(stru));
+}
+
 
 }   // namespace
 
@@ -74,10 +104,10 @@ BOOST_PYTHON_MODULE(pdf_ext)
     class_<PDFCalculator>("PDFCalculator")
         .def("_getDoubleAttr", &PDFCalculator::getDoubleAttr)
         .def("_setDoubleAttr", &PDFCalculator::setDoubleAttr)
-        .def("_namesOfDoubleAttributes",
-                &PDFCalculator::namesOfDoubleAttributes)
-        .def("getPDF", getPDFarray)
-        .def("getRDF", getRDFarray)
-        .def("getRgrid", getRgridarray)
+        .def("_namesOfDoubleAttributes", namesOfDoubleAttributes_asset)
+        .def("getPDF", getPDF_asarray)
+        .def("getRDF", getRDF_asarray)
+        .def("getRgrid", getRgrid_asarray)
+        .def("eval", eval_asarray)
         ;
 }
