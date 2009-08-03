@@ -39,7 +39,8 @@ if env['profile']:
     env.AppendUnique(LINKFLAGS='-pg')
 
 env.Append(CCFLAGS='-Wall')
-env.PrependUnique(CPPPATH='#/')
+env.PrependUnique(CPPPATH=['#/'])
+env.Append(LIBPATH = "./")
 
 # Define lists for storing library source and include files.
 env['lib_includes'] = []
@@ -53,7 +54,7 @@ Export('env')
 SConscript('diffpy/SConscript')
 
 # Define any targets related to testing.
-SConscript('tests/SConscript')
+#SConscript('tests/SConscript')
 
 # Top Level Targets ----------------------------------------------------------
 

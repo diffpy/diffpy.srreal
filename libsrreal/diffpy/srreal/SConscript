@@ -1,5 +1,9 @@
 Import('env')
 
+# For ObjCryst
+env.Append(CPPFLAGS = " -DREAL=double")
+env.Prepend(LIBS = "objcryst")
+
 env['lib_includes'] += Glob('*.[hi]pp')
 env['lib_sources'] += Glob('*.cpp')
 
