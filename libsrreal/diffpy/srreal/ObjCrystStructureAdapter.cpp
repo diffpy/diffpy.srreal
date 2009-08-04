@@ -45,7 +45,6 @@ using namespace diffpy::srreal;
 namespace {
 
 // Two coordinates are the same if they are within this tolerance
-const double toler = 1e-5;
 const double rtod = 180 / M_PI;
 const double UtoB = 8 * M_PI * M_PI;
 const double BtoU = 1.0 / UtoB;
@@ -53,11 +52,14 @@ const double BtoU = 1.0 / UtoB;
 }
 
 
+
 //////////////////////////////////////////////////////////////////////////////
 // class ObjCrystStructureAdapter
 //////////////////////////////////////////////////////////////////////////////
 
 // Constructor ---------------------------------------------------------------
+
+const double ObjCrystStructureAdapter::toler = 1e-5;
 
 ObjCrystStructureAdapter::
 ObjCrystStructureAdapter(const ObjCryst::Crystal* cryst) : pcryst(cryst)
@@ -88,7 +90,7 @@ int
 ObjCrystStructureAdapter::
 countSites() const
 {
-    return vssc.size();
+    return vsc.size();
 }
 
 
@@ -114,8 +116,7 @@ ObjCrystStructureAdapter::
 siteCartesianPosition(int idx) const
 {
     assert(0 <= idx && idx < this->countSites());
-    
-    return vssc[idx].xyz;
+    return *(vsym[idx].begin());
 }
 
 
@@ -124,7 +125,7 @@ ObjCrystStructureAdapter::
 siteOccupancy(int idx) const
 {
     assert(0 <= idx && idx < this->countSites());
-    return vssc[idx].sc->mOccupancy;
+    return vsc[idx].mOccupancy;
 }
 
 
@@ -136,13 +137,21 @@ siteAnisotropy(int idx) const
     return false;
 }
 
+double
+ObjCrystStructureAdapter::
+siteMultiplicity(int idx) const
+{
+
+    assert(0 <= idx && idx < this->countSites());
+    return vsym[idx].size();
+}
 
 const R3::Matrix&
 ObjCrystStructureAdapter::
 siteCartesianUij(int idx) const
 {
     assert(0 <= idx && idx < this->countSites());
-    return vssc[idx].uij;
+    return vuij[idx];
 }
 
 
@@ -151,7 +160,7 @@ ObjCrystStructureAdapter::
 siteAtomType(int idx) const
 {
     assert(0 <= idx && idx < this->countSites());
-    return vssc[idx].sc->mpScattPow->GetSymbol();
+    return vsc[idx].mpScattPow->GetSymbol();
 }
 
 
@@ -164,41 +173,38 @@ getUnitCell()
 {
     // Expand each scattering component in the primitive cell and record the
     // new scatterers.
-    const ObjCryst::ScatteringComponentList& scl 
-        = pcryst->GetScatteringComponentList();
-
+    const ObjCryst::ScatteringComponentList& scl = pcryst->GetScatteringComponentList();
     size_t nbComponent = scl.GetNbComponent();
 
     size_t nbSymmetrics = pcryst->GetSpaceGroup().GetNbSymmetrics();
 
     double x, y, z, junk;
     CrystMatrix<double> symmetricsCoords;
-    set<ShiftedSC> workset;
-    ShiftedSC workssc;
+
+    vsc.clear();
+    vsym.clear();
+    vuij.clear();
+    vsc.resize(nbComponent);
+    vsym.resize(nbComponent);
+    vuij.resize(nbComponent);
+
     // For each scattering component, find its position in the primitive cell
-    // and expand that position. Record this as a ShiftedSC.
-    // NOTE - I've also tried this algorithm by finding the unique elements in a
-    // vector. The speed of that method is comparable to this one.
+    // and expand that position. Record the translation from the original
+    // position.
     for(size_t i=0;i<nbComponent;++i)
     {
-        // We don't want to record dummy atoms...
-        if(NULL == scl(i).mpScattPow)
-        {
-            continue;
-        }
 
-        // NOTE - there is an option in GetAllSymmetrics to return only distinct
-        // atom positions. The way it is done below is faster.
-        // NOTE - this identifies unique atoms by their scattering power.
-        // Therefore, if multiple atoms exist on the same site and have the
-        // same ScatteringPower, then only one will make it into the unit cell.
+
+        vsc[i] = scl(i);
+
+        // Get all the symmetric coordinates
         symmetricsCoords = pcryst->GetSpaceGroup().GetAllSymmetrics(
             scl(i).mX, 
             scl(i).mY, 
             scl(i).mZ
             );
 
-        // Put each symmetric position in the unit cell
+        // Collect the unique symmetry operations.
         for(size_t j=0;j<nbSymmetrics;++j)
         {
             x=modf(symmetricsCoords(j,0),&junk);
@@ -214,94 +220,28 @@ getUnitCell()
             // Get this in cartesian
             pcryst->FractionalToOrthonormalCoords(x,y,z);
 
-            // Store it in the scatterer set. This will eliminate duplicates.
-            workssc = ShiftedSC(&scl(i),x,y,z);
-            workset.insert(workssc);
+            // Record the position
+            R3::Vector xyz;
+            xyz[0] = x;
+            xyz[1] = y;
+            xyz[2] = z;
+
+            vsym[i].insert(xyz);
+
         }
 
+
+        // Store the uij tensor
+        R3::Matrix& uij = vuij[i];
+        double uiso = scl(i).mpScattPow->GetBiso();
+        uiso *= BtoU;
+        uij(0,0) = uij(1,1) = uij(2,2) = uiso;
+        uij(0,1) = uij(1,0) = 0;
+        uij(0,2) = uij(2,0) = 0;
+        uij(2,1) = uij(1,2) = 0;
+
     }
-
-    // Now record the unique scatterers in vssc
-    vssc.resize( workset.size() );
-    copy(workset.begin(), workset.end(), vssc.begin());
 }
-
-//////////////////////////////////////////////////////////////////////////////
-// class ObjCrystStructureAdapter::ShiftedSC
-//////////////////////////////////////////////////////////////////////////////
-
-/* Constructor */
-ObjCrystStructureAdapter::ShiftedSC::
-ShiftedSC(const ObjCryst::ScatteringComponent *_sc,
-    const double& x, const double& y, const double& z) : sc(_sc)
-{
-    xyz[0] = x;
-    xyz[1] = y;
-    xyz[2] = z;
-
-    double uiso = _sc->mpScattPow->GetBiso();
-    uiso *= BtoU;
-    uij(0,0) = uij(1,1) = uij(2,2) = uiso;
-    uij(0,1) = uij(1,0) = 0;
-    uij(0,2) = uij(2,0) = 0;
-    uij(2,1) = uij(1,2) = 0;
-
-}
-
-/* Copy Constructor */
-ObjCrystStructureAdapter::ShiftedSC::
-ShiftedSC(const ShiftedSC& _ssc) : sc(_ssc.sc), xyz(_ssc.xyz), uij(_ssc.uij)
-{}
-
-/* Default Constructor - This is only used for sorting. It should not be called
- * directly.
-*/
-ObjCrystStructureAdapter::ShiftedSC::
-ShiftedSC() : sc(NULL) 
-{};
-
-/* Ordering operator - required by the set used in getUnitCell */
-bool
-ObjCrystStructureAdapter::ShiftedSC::
-operator<(const ShiftedSC& rhs) const
-{
-    // The sign of A-B is equal the sign of the first non-zero component of the
-    // vector.
-
-    size_t l;
-
-    for(l = 0; l < 3; ++l)
-    {
-        if( fabs(xyz[l] - rhs.xyz[l]) > toler )
-        {
-            return xyz[l] < rhs.xyz[l];
-        }
-    }
-    if(sc == NULL or rhs.sc == NULL) return false;
-
-    // If we get here then the vectors are equal. We compare the addresses of
-    // the ScatteringPower member of the ScatteringComponent
-    return sc->mpScattPow < rhs.sc->mpScattPow;
-
-}
-
-/* Equality operator. */
-bool
-ObjCrystStructureAdapter::ShiftedSC::
-operator==(const ShiftedSC& rhs) const
-{
-
-    bool poseq = ((xyz[0] == rhs.xyz[0]) 
-        && (xyz[1] == rhs.xyz[1]) 
-        && (xyz[2] == rhs.xyz[2]));
-
-    bool sceq;
-    if(sc == NULL or rhs.sc == NULL) sceq = true;
-    else sceq = (*sc == *(rhs.sc));
-
-    return poseq && sceq;
-}
-
 
 //////////////////////////////////////////////////////////////////////////////
 // class ObjCrystBondGenerator
@@ -312,7 +252,8 @@ operator==(const ShiftedSC& rhs) const
 ObjCrystBondGenerator::
 ObjCrystBondGenerator(const ObjCrystStructureAdapter* adpt) 
     : BaseBondGenerator(adpt), pstructure(adpt)
-{}
+{
+}
 
 // Public Methods ------------------------------------------------------------
 
@@ -332,6 +273,7 @@ rewind()
         msphere.reset(new PointsInSphere(rsphmin, rsphmax, L));
     }
     msphere->rewind();
+    symiter = pstructure->vsym[msite_first].begin();
     this->BaseBondGenerator::rewind();
 }
 
@@ -362,7 +304,8 @@ r1() const
 {
     static R3::Vector rv;
     const Lattice& L = pstructure->getLattice();
-    rv = this->BaseBondGenerator::r1() + L.cartesian(msphere->mno());
+    assert( symiter != pstructure->vsym[msite_current].end() );
+    rv = *symiter + L.cartesian(msphere->mno());
     return rv;
 }
 
@@ -371,8 +314,8 @@ double
 ObjCrystBondGenerator::
 msd0() const
 {
-    double rv = this->msdSiteDir(this->site0(), this->r01());
-    return rv;
+    // Isotropic Uij
+    return pstructure->siteCartesianUij(this->site0())(0,0);
 }
 
 
@@ -380,8 +323,8 @@ double
 ObjCrystBondGenerator::
 msd1() const
 {
-    double rv = this->msdSiteDir(this->site1(), this->r01());
-    return rv;
+    // Isotropic Uij
+    return pstructure->siteCartesianUij(this->site1())(0,0);
 }
 
 
@@ -389,8 +332,18 @@ bool
 ObjCrystBondGenerator::
 iterateSymmetry()
 {
+    // Iterate the sphere. If it is finished, rewind and iterate the symmetry
+    // iterator. If that is also finished, then we're done.
     msphere->next();
-    return !msphere->finished();
+    if( msphere->finished() )
+    {
+        if(++symiter == pstructure->vsym[msite_current].end())
+        {
+            return false;
+        }
+        msphere->rewind();
+    }
+    return true;
 }
 
 
@@ -399,18 +352,8 @@ ObjCrystBondGenerator::
 rewindSymmetry()
 {
     msphere->rewind();
+    symiter = pstructure->vsym[msite_current].begin();
 }
 
-
-double 
-ObjCrystBondGenerator::
-msdSiteDir(int siteidx, const R3::Vector& s) const
-{
-    // FIXME We don't need to worry about anisotropy for now
-    //const R3::Matrix& Uijcartn = pstructure->siteCartesianUij(siteidx);
-    //bool anisotropy = pstructure->siteAnisotropy(siteidx);
-    //double rv = meanSquareDisplacement(Uijcartn, s, anisotropy);
-    return pstructure->siteCartesianUij(siteidx)(0,0);
-}
 
 // End of file

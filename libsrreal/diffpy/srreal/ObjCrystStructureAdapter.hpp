@@ -26,6 +26,7 @@
 #define OBJCRYSTSTRUCTUREADAPTER_HPP_INCLUDED
 
 #include <memory>
+#include <set>
 #include <vector>
 
 #include <diffpy/srreal/R3linalg.hpp>
@@ -36,8 +37,11 @@
 #include <ObjCryst/Crystal.h>
 #include <ObjCryst/ScatteringPower.h>
 
+struct _cmpVector;
+
 namespace diffpy {
 namespace srreal {
+
 
 class PointsInSphere;
 class PDFCalculator;
@@ -57,57 +61,48 @@ class ObjCrystStructureAdapter : public StructureAdapter
         virtual const R3::Vector& siteCartesianPosition(int idx) const;
         virtual double siteOccupancy(int idx) const;
         virtual bool siteAnisotropy(int idx) const;
+        virtual double siteMultiplicity(int idx) const;
         virtual const R3::Matrix& siteCartesianUij(int idx) const;
         virtual const std::string& siteAtomType(int idx) const;
 
         const Lattice& getLattice() const;
 
+
     private:
-
-        /* ShiftedSC
-        *
-        * Class for holding a shifted scattering component in an
-        * ObjCryst::Crystal.  It holds the cartesian position of a scatterer
-        * within the conventional unit cell, along with a pointer to the
-        * unshifted ScatteringComponent.
-        * 
-        */
-        class ShiftedSC {
-
-            public:
-            ShiftedSC(const ObjCryst::ScatteringComponent* _sc,
-                const double& x, const double& y, const double& z);
-
-            ShiftedSC(const ShiftedSC& _ssc);
-            ShiftedSC();
-
-            /* Data members */
-
-            // Pointer to a ScatteringComponent
-            const ObjCryst::ScatteringComponent* sc;
-
-            // Orthonormal coordinates
-            R3::Vector xyz;
-            // Orthonormal displacement parameters
-            R3::Matrix uij;
-
-            /* Operators */
-
-            bool operator<(const ShiftedSC& rhs) const;
-
-            // Compares equality.
-            bool operator==(const ShiftedSC& rhs) const;
-
-        };
 
         // methods - own
         void getUnitCell();
 
-        // data
-        const ObjCryst::Crystal* pcryst;
-        std::vector<ShiftedSC> vssc;
-        Lattice mlattice;
 
+        // For comparing vectors - this is needed by the R3::Vector set that holds
+        // symmetry operations.
+        struct cmp
+        {
+            bool operator()(const R3::Vector& v1, const R3::Vector& v2) const
+            {
+                for(size_t l = 0; l < 3; ++l)
+                {
+                    if( fabs(v1[l] - v2[l]) > toler )
+                    {
+                        return v1[l] < v2[l];
+                    }
+                }
+                return false;
+            }
+        };
+
+        // Tolerance on distance measurments
+        static const double toler;
+        // The ObjCryst::Crystal
+        const ObjCryst::Crystal* pcryst;
+        // The asymmetric unit cell of ScatteringComponent instances
+        std::vector< ObjCryst::ScatteringComponent > vsc;
+        // The symmetry-related operations on the asymmetric unit cell
+        std::vector< std::set< R3::Vector, cmp > > vsym;
+        // The Uij for the scatterers
+        std::vector< R3::Matrix > vuij;
+        // The Lattice instance needed by the ObjCrystBondGenerator
+        Lattice mlattice;
 
 };
 
@@ -142,10 +137,10 @@ class ObjCrystBondGenerator : public BaseBondGenerator
 
         // data
         const ObjCrystStructureAdapter* pstructure;
+        std::set< R3::Vector >::const_iterator symiter;
         std::auto_ptr<PointsInSphere> msphere;
 
-        // methods
-        double msdSiteDir(int siteidx, const R3::Vector& s) const;
+        
 
 };
 
@@ -164,8 +159,6 @@ createPQAdapter(const ObjCryst::Crystal& cryst)
     StructureAdapter* adapter = new ObjCrystStructureAdapter(&cryst);
     return adapter;
 }
-
-
 
 
 }   // namespace srreal

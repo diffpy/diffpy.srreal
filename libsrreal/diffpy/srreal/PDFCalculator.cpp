@@ -560,6 +560,7 @@ void PDFCalculator::addPairContribution(const BaseBondGenerator& bnds)
 {
     int summationscale = (bnds.site0() == bnds.site1()) ? 1 : 2;
     double sfprod = this->sfSite(bnds.site0()) * this->sfSite(bnds.site1());
+    sfprod *= mstructure->siteMultiplicity(bnds.site0());
     double fwhm = this->getPeakWidthModel().calculate(bnds);
     const PeakProfile& pkf = this->getPeakProfile();
     double dist = bnds.distance();
@@ -703,15 +704,15 @@ void PDFCalculator::cacheStructureData()
     for (int i = 0; i < cntsites; ++i)
     {
         const string& smbl = mstructure->siteAtomType(i);
-        mstructure_cache.sfsite[i] = this->sfAtomType(smbl);
+        mstructure_cache.sfsite[i] = this->sfAtomType(smbl) *
+            mstructure->siteOccupancy(i);
     }
     // sfaverage
     double totocc = mstructure->totalOccupancy();
     double totsf = 0.0;
     for (int i = 0; i < cntsites; ++i)
     {
-        totsf += this->sfSite(i) *
-            mstructure->siteOccupancy(i) * mstructure->siteMultiplicity(i);
+        totsf += this->sfSite(i) * mstructure->siteMultiplicity(i);
     }
     mstructure_cache.sfaverage = (totocc == 0.0) ? 0.0 : (totsf / totocc);
     // totaloccupancy
