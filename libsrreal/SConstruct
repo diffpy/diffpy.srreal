@@ -39,8 +39,7 @@ if env['profile']:
     env.AppendUnique(LINKFLAGS='-pg')
 
 env.Append(CCFLAGS='-Wall')
-env.PrependUnique(CPPPATH=['#/'])
-env.Append(LIBPATH = "./")
+env.PrependUnique(CPPPATH='#/')
 
 # Define lists for storing library source and include files.
 env['lib_includes'] = []
