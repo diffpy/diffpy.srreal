@@ -160,7 +160,6 @@ createPQAdapter(const ObjCryst::Crystal& cryst)
     return adapter;
 }
 
-
 }   // namespace srreal
 }   // namespace diffpy
 

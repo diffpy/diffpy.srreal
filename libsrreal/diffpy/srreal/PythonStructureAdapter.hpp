@@ -25,6 +25,7 @@
 #include <boost/python.hpp>
 
 #include <diffpy/srreal/DiffPyStructureAdapter.hpp>
+#include <diffpy/srreal/ObjCrystStructureAdapter.hpp>
 
 namespace diffpy {
 namespace srreal {

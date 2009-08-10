@@ -95,7 +95,7 @@ python::object eval_asarray(PDFCalculator& obj, const python::object& stru)
 }   // namespace
 
 
-BOOST_PYTHON_MODULE(pdf_ext)
+BOOST_PYTHON_MODULE(_pdf)
 {
     using namespace boost::python;
     // initialize numpy arrays

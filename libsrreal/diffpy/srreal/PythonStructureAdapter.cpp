@@ -63,6 +63,35 @@ StructureAdapter* createDiffPyStructureAdapter(const python::object& stru)
 
 }   // namespace
 
+StructureAdapter* createPyObjCrystStructureAdapter(const python::object& cryst)
+{
+    static python::object cls_Crystal;
+    static bool loaded_cls_Crystal;
+    if (!loaded_cls_Crystal)
+    {
+        loaded_cls_Crystal = true;
+        try {
+            cls_Crystal =
+                python::import("pyobjcryst.crystal").attr("Crystal");
+        }
+        // Ignore import errors when pyobjcryst is not installed
+        catch (python::error_already_set e) {
+            PyErr_Clear();
+        }
+    }
+    if (cls_Crystal.ptr() &&
+        PyObject_IsInstance(cryst.ptr(), cls_Crystal.ptr()));
+    {
+        StructureAdapter* rv = createPQAdapter( 
+                python::extract< ObjCryst::Crystal* >(cryst) );
+        return rv;
+    }
+    return NULL;
+}
+
+
+
+
 // Routines ------------------------------------------------------------------
 
 StructureAdapter* createPQAdapter(const boost::python::object& stru)
@@ -72,6 +101,9 @@ StructureAdapter* createPQAdapter(const boost::python::object& stru)
     StructureAdapter* rv = NULL;
     // Check if stru is a diffpy.Structure or derived object
     rv = createDiffPyStructureAdapter(stru);
+    if (rv)  return rv;
+    // Check if stru is a pyobjcryst.Crystal or derived object
+    rv = createPyObjCrystStructureAdapter(stru);
     if (rv)  return rv;
     // add other python adapters here ...
     //

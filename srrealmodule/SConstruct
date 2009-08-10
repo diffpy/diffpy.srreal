@@ -1,0 +1,34 @@
+#Import("env")
+#
+## Let's not mess up the global environment
+#wrapperenv = env.Clone()
+wrapperenv = DefaultEnvironment()
+
+# Make sure we use the proper python build options
+wrapperenv.ParseConfig("python-config --includes")
+wrapperenv.ParseConfig("python-config --ldflags")
+
+# Look here for our shared library
+wrapperenv.Append(LIBPATH = "../libsrreal")
+
+# Get rid of the lib prefix
+wrapperenv["SHLIBPREFIX"]=""
+
+# Make correct suffix
+import os
+if os.name == 'nt':
+    wrapperenv['SHLIBSUFFIX']='.pyd'
+else: 
+    wrapperenv['SHLIBSUFFIX']='.so'
+
+# Append objcryst libraries and required boost library
+wrapperenv.Append(LIBS = ["srreal", "boost_python"])
+
+# Identify the headers for SrReal
+wrapperenv.Append(CPPPATH = "../libsrreal")
+
+# Get the modules
+modfiles = Glob("*_ext.cpp")
+
+# Create the monlithic wrapper
+wrapper = wrapperenv.LoadableModule("_pdf", modfiles)
