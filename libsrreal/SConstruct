@@ -1,5 +1,21 @@
-Environment().EnsureSConsVersion(0, 98)
-import os.path
+import os
+
+# copy system environment variables related to compilation
+DefaultEnvironment(ENV={
+        'PATH' : os.environ['PATH'],
+        'PYTHONPATH' : os.environ.get('PYTHONPATH', ''),
+        'CPATH' : os.environ.get('CPATH', ''),
+        'LIBRARY_PATH' : os.environ.get('LIBRARY_PATH', ''),
+        'LD_LIBRARY_PATH' : os.environ.get('LD_LIBRARY_PATH', ''),
+    }
+)
+
+
+# Create construction environment
+env = DefaultEnvironment().Clone()
+
+# Variables definitions below work only with 0.98 or later.
+env.EnsureSConsVersion(0, 98)
 
 # Customizable compile variables
 vars = Variables('sconsvars.py')
@@ -12,17 +28,15 @@ vars.Add(BoolVariable('profile',
     'build with profiling information', False))
 vars.Add(PathVariable('prefix',
     'installation prefix directory', '/usr/local'))
+vars.Update(env)
 vars.Add(PathVariable('libdir',
-    'object code library directory [prefix/lib]', None))
+    'object code library directory [prefix/lib]',
+    env['prefix'] + '/lib'))
 vars.Add(PathVariable('includedir',
-    'installation directory for C++ header files [prefix/include]', None))
-
-# Default build environment
-env = DefaultEnvironment(variables=vars, ENV={
-    'PATH' : os.environ['PATH'],
-    'PYTHONPATH' : os.environ['PYTHONPATH'],
-    })
-Help(vars.GenerateHelpText(env))
+    'installation directory for C++ header files [prefix/include]',
+    env['prefix'] + '/include'))
+vars.Update(env)
+env.Help(vars.GenerateHelpText(env))
 
 env.ParseConfig("python-config --includes")
 env.ParseConfig("python-config --ldflags")
@@ -52,8 +66,10 @@ Export('env')
 # This SConscript updates lib_includes and lib_sources.
 SConscript('diffpy/SConscript')
 
-# Define any targets related to testing.
-#SConscript('tests/SConscript')
+# Define targets related to testing.  Do so only when testing is requested.
+# This enables library build on machines without cxxtest.
+if 'test' in COMMAND_LINE_TARGETS:
+    SConscript('tests/SConscript')
 
 # Top Level Targets ----------------------------------------------------------
 
