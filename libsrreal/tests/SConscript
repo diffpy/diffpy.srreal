@@ -22,5 +22,6 @@ alltests = env_test.CxxTest('alltests', test_sources)
 
 # test -- alias for executing unit tests.
 test = env_test.Alias('test', alltests, alltests[0].abspath)
+AlwaysBuild(test)
 
 # vim: ft=python
