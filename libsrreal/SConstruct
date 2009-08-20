@@ -38,10 +38,24 @@ vars.Add(PathVariable('includedir',
 vars.Update(env)
 env.Help(vars.GenerateHelpText(env))
 
+# Configure external libraries.
 env.ParseConfig("python-config --includes")
 env.ParseConfig("python-config --ldflags")
 env.ParseConfig("gsl-config --cflags --libs")
+env.AppendUnique(LIBS='boost_python')
+# ObjCryst
+# Determine paths to ObjCryst headers and shared library
+# We should replace this with an objcryst-config script.
+from pkg_resources import get_distribution
+ocbase = get_distribution("pyobjcryst").location
+ocinclude = os.path.join(ocbase, 'include/ObjCryst')
+oclib = os.path.join(ocbase, "lib")
+env.AppendUnique(CPPPATH=ocinclude)
+env.AppendUnique(LIBPATH=oclib)
+env.AppendUnique(CPPDEFINES='REAL=double')
+env.AppendUnique(LIBS="objcryst")
 
+# Configure build variants
 if env['build'] == 'debug':
     env.Append(CCFLAGS='-g')
 elif env['build'] == 'fast':
@@ -52,7 +66,7 @@ if env['profile']:
     env.AppendUnique(CCFLAGS='-pg')
     env.AppendUnique(LINKFLAGS='-pg')
 
-env.Append(CCFLAGS='-Wall')
+env.AppendUnique(CCFLAGS='-Wall')
 env.PrependUnique(CPPPATH='#/')
 
 # Define lists for storing library source and include files.

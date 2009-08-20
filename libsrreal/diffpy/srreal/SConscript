@@ -1,18 +1,5 @@
 Import('env')
 
-# For ObjCryst
-env.Append(CPPFLAGS = " -DREAL=double")
-env.Prepend(LIBS = "objcryst")
-
-# Find the location of ObjCryst headers from pyobjcryst
-from pkg_resources import get_distribution
-import os.path
-dist = get_distribution("pyobjcryst")
-ocinclude = os.path.join(dist.location, "include/ObjCryst")
-oclib = os.path.join(dist.location, "lib")
-env.Append(CPPPATH = ocinclude)
-env.Append(LIBPATH = oclib)
-
 env['lib_includes'] += Glob('*.[hi]pp')
 env['lib_sources'] += Glob('*.cpp')
 
