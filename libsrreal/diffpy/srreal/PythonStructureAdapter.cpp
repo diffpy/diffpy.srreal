@@ -22,10 +22,12 @@
 #include <stdexcept>
 #include <sstream>
 #include <string>
+#include <map>
 
 #include <diffpy/srreal/PythonStructureAdapter.hpp>
 
 using namespace boost;
+using namespace std;
 
 namespace diffpy {
 namespace srreal {
@@ -34,69 +36,65 @@ namespace srreal {
 
 namespace {
 
+/// Obtain object from specified Python module or None when not available
+
+python::object importFromPyModule(const string& modname, const string& item)
+{
+    static map<string, python::object> cacheditems;
+    string fullname = modname + "." + item;
+    // perform import when not in the cache
+    if (!cacheditems.count(fullname))
+    {
+        try {
+            cacheditems[fullname] =
+                python::import(modname.c_str()).attr(item.c_str());
+        }
+        // Ignore import errors when item could not be recovered.
+        catch (python::error_already_set e) {
+            PyErr_Clear();
+            cacheditems[fullname] = python::object();
+        }
+    }
+    return cacheditems[fullname];
+}
+
+
 // diffpy.Structure.Structure and derived classes
 
 StructureAdapter* createDiffPyStructureAdapter(const python::object& stru)
 {
-    static python::object cls_Structure;
-    static bool loaded_cls_Structure;
-    if (!loaded_cls_Structure)
-    {
-        loaded_cls_Structure = true;
-        try {
-            cls_Structure =
-                python::import("diffpy.Structure").attr("Structure");
-        }
-        // Ignore import errors when diffpy.Structure is not installed
-        catch (python::error_already_set e) {
-            PyErr_Clear();
-        }
-    }
+    python::object cls_Structure;
+    cls_Structure = importFromPyModule("diffpy.Structure", "Structure");
+    StructureAdapter* rv = NULL;
     if (cls_Structure.ptr() &&
         PyObject_IsInstance(stru.ptr(), cls_Structure.ptr()))
     {
-        StructureAdapter* rv = new DiffPyStructureAdapter(stru);
-        return rv;
+        rv = new DiffPyStructureAdapter(stru);
     }
-    return NULL;
+    return rv;
 }
 
-}   // namespace
+// pyobjcryst.crystal.Crystal and derived classes
 
 StructureAdapter* createPyObjCrystStructureAdapter(const python::object& cryst)
 {
-    static python::object cls_Crystal;
-    static bool loaded_cls_Crystal;
-    if (!loaded_cls_Crystal)
-    {
-        loaded_cls_Crystal = true;
-        try {
-            cls_Crystal =
-                python::import("pyobjcryst.crystal").attr("Crystal");
-        }
-        // Ignore import errors when pyobjcryst is not installed
-        catch (python::error_already_set e) {
-            PyErr_Clear();
-        }
-    }
+    python::object cls_Crystal;
+    cls_Crystal = importFromPyModule("pyobjcryst.crystal", "Crystal");
+    StructureAdapter* rv = NULL;
     if (cls_Crystal.ptr() &&
         PyObject_IsInstance(cryst.ptr(), cls_Crystal.ptr()));
     {
-        StructureAdapter* rv = createPQAdapter( 
-                python::extract< ObjCryst::Crystal* >(cryst) );
-        return rv;
+        rv = createPQAdapter( python::extract< ObjCryst::Crystal* >(cryst) );
     }
-    return NULL;
+    return rv;
 }
 
-
-
+}   // namespace
 
 // Routines ------------------------------------------------------------------
 
 StructureAdapter* createPQAdapter(const boost::python::object& stru)
 {
-    using namespace std;
     // NOTE: This may be later replaced with a Boost Python converter.
     StructureAdapter* rv = NULL;
     // Check if stru is a diffpy.Structure or derived object
