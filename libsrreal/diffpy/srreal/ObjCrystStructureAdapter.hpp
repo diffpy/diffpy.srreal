@@ -52,7 +52,7 @@ class ObjCrystStructureAdapter : public StructureAdapter
     public:
 
         // constructors
-        ObjCrystStructureAdapter(const ObjCryst::Crystal*);
+        ObjCrystStructureAdapter(const ObjCryst::Crystal&);
 
         // methods - overloaded
         virtual BaseBondGenerator* createBondGenerator() const;
@@ -144,19 +144,12 @@ class ObjCrystBondGenerator : public BaseBondGenerator
 
 };
 
-inline
-StructureAdapter* 
-createPQAdapter(const ObjCryst::Crystal* cryst)
-{
-    StructureAdapter* adapter = new ObjCrystStructureAdapter(cryst);
-    return adapter;
-}
 
 inline
 StructureAdapter* 
 createPQAdapter(const ObjCryst::Crystal& cryst)
 {
-    StructureAdapter* adapter = new ObjCrystStructureAdapter(&cryst);
+    StructureAdapter* adapter = new ObjCrystStructureAdapter(cryst);
     return adapter;
 }
 

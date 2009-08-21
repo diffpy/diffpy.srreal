@@ -76,15 +76,17 @@ StructureAdapter* createDiffPyStructureAdapter(const python::object& stru)
 
 // pyobjcryst.crystal.Crystal and derived classes
 
-StructureAdapter* createPyObjCrystStructureAdapter(const python::object& cryst)
+StructureAdapter* createPyObjCrystStructureAdapter(const python::object& stru)
 {
     python::object cls_Crystal;
     cls_Crystal = importFromPyModule("pyobjcryst.crystal", "Crystal");
     StructureAdapter* rv = NULL;
     if (cls_Crystal.ptr() &&
-        PyObject_IsInstance(cryst.ptr(), cls_Crystal.ptr()));
+        PyObject_IsInstance(stru.ptr(), cls_Crystal.ptr()));
     {
-        rv = createPQAdapter( python::extract< ObjCryst::Crystal* >(cryst) );
+        const ObjCryst::Crystal* pcryst =
+            python::extract<ObjCryst::Crystal*>(stru);
+        rv = createPQAdapter(*pcryst);
     }
     return rv;
 }

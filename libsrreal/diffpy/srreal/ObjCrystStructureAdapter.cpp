@@ -62,17 +62,15 @@ const double BtoU = 1.0 / UtoB;
 const double ObjCrystStructureAdapter::toler = 1e-5;
 
 ObjCrystStructureAdapter::
-ObjCrystStructureAdapter(const ObjCryst::Crystal* cryst) : pcryst(cryst)
+ObjCrystStructureAdapter(const ObjCryst::Crystal& cryst) : pcryst(&cryst)
 {
-
-    getUnitCell();
-    mlattice.setLatPar( cryst->GetLatticePar(0), 
-                        cryst->GetLatticePar(1),
-                        cryst->GetLatticePar(2), 
-                        rtod*cryst->GetLatticePar(3),
-                        rtod*cryst->GetLatticePar(4), 
-                        rtod*cryst->GetLatticePar(5) );
-
+    this->getUnitCell();
+    mlattice.setLatPar( pcryst->GetLatticePar(0), 
+                        pcryst->GetLatticePar(1),
+                        pcryst->GetLatticePar(2), 
+                        rtod * pcryst->GetLatticePar(3),
+                        rtod * pcryst->GetLatticePar(4), 
+                        rtod * pcryst->GetLatticePar(5) );
 }
 
 // Public Methods ------------------------------------------------------------
