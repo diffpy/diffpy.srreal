@@ -157,7 +157,9 @@ class PDFCalculator : public PairQuantity
         int calcIndex(double r) const;
 
         // structure factors - fast lookup by site index
+        /// effective scattering factor at a given site scaled by occupancy
         const double& sfSite(int) const;
+        /// average scattering factor
         double sfAverage() const;
         void cacheStructureData();
         void cacheRlimitsData();
