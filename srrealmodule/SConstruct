@@ -34,13 +34,12 @@ from pkg_resources import get_distribution
 ocbase = get_distribution("pyobjcryst").location
 ocinclude = os.path.join(ocbase, 'include/ObjCryst')
 wrapperenv.AppendUnique(CPPPATH=ocinclude)
-print ocinclude
 
 # Get the modules
 modfiles = Glob("*_ext.cpp")
 
 # 2009-08-21 PJ - let's just keep loadable modules separate
-# I consider building with setup.py as a simple extension,
-# assuming all the srreal and objcryst libraries are properly
+# I consider using setup.py to build as simple extension,
+# assuming srreal and objcryst libraries are properly
 # installed.  This needs more thought.
 pdf_ext = wrapperenv.LoadableModule("pdf_ext.cpp")
