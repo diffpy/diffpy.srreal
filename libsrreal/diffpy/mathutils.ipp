@@ -91,6 +91,27 @@ double asind(double x)
 }
 
 
+inline
+bool eps_eq(const double& x, const double& y, double eps)
+{
+    return fabs(x-y) < eps;
+}
+
+
+inline
+bool eps_gt(const double& x, const double& y, double eps)
+{
+    return x > y + eps;
+}
+
+
+inline
+bool eps_lt(const double& x, const double& y, double eps)
+{
+    return x < y - eps;
+}
+
+
 } // namespace mathutils
 } // namespace diffpy
 

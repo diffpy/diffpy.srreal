@@ -26,8 +26,10 @@
 #include <gsl/gsl_fft_complex.h>
 
 #include <diffpy/srreal/PDFUtils.hpp>
+#include <diffpy/mathutils.hpp>
 
 using namespace std;
+using diffpy::mathutils::eps_eq;
 
 namespace diffpy {
 namespace srreal {
@@ -40,9 +42,9 @@ double meanSquareDisplacement(const R3::Matrix& Uijcartn,
     if (anisotropy)
     {
         assert(R3::norm(s) > 0);
-        assert(Uijcartn(0,1) == Uijcartn(1,0));
-        assert(Uijcartn(0,2) == Uijcartn(2,0));
-        assert(Uijcartn(1,2) == Uijcartn(2,1));
+        assert(eps_eq(Uijcartn(0,1), Uijcartn(1,0)));
+        assert(eps_eq(Uijcartn(0,2), Uijcartn(2,0)));
+        assert(eps_eq(Uijcartn(1,2), Uijcartn(2,1)));
         static R3::Vector sn;
         sn = s / R3::norm(s);
         rv = Uijcartn(0,0) * sn(0) * sn(0) +
@@ -54,8 +56,8 @@ double meanSquareDisplacement(const R3::Matrix& Uijcartn,
     }
     else
     {
-        assert(Uijcartn(0,0) == Uijcartn(1,1));
-        assert(Uijcartn(0,0) == Uijcartn(2,2));
+        assert(eps_eq(Uijcartn(0,0), Uijcartn(1,1)));
+        assert(eps_eq(Uijcartn(0,0), Uijcartn(2,2)));
         rv = Uijcartn(0,0);
     }
     return rv;

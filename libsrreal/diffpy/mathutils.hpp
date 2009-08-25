@@ -40,6 +40,12 @@ double sind(double x);
 double acosd(double x);
 double asind(double x);
 
+// round-off aware comparison operations
+
+bool eps_eq(const double& x, const double& y, double eps=SQRT_DOUBLE_EPS);
+bool eps_gt(const double& x, const double& y, double eps=SQRT_DOUBLE_EPS);
+bool eps_lt(const double& x, const double& y, double eps=SQRT_DOUBLE_EPS);
+
 }   // namespace mathutils
 }   // namespace diffpy
 
