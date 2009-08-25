@@ -52,7 +52,7 @@ ocinclude = os.path.join(ocbase, 'include/ObjCryst')
 oclib = os.path.join(ocbase, "lib")
 env.AppendUnique(CPPPATH=ocinclude)
 env.AppendUnique(LIBPATH=oclib)
-env.AppendUnique(CPPDEFINES='REAL=double')
+env.AppendUnique(CPPDEFINES={'REAL' : 'double'})
 env.AppendUnique(LIBS="objcryst")
 
 # Configure build variants
@@ -60,7 +60,7 @@ if env['build'] == 'debug':
     env.Append(CCFLAGS='-g')
 elif env['build'] == 'fast':
     env.AppendUnique(CCFLAGS=['-O3', '-ffast-math'])
-    env.AppendUnique(CPPDEFINES='NDEBUG')
+    env.AppendUnique(CPPDEFINES={'NDEBUG' : None})
 
 if env['profile']:
     env.AppendUnique(CCFLAGS='-pg')
