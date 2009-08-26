@@ -152,11 +152,19 @@ def plotComparison(cmpdata):
     pylab.subplot(211)
     pylab.title('qmax=%(qmax)g  peakprecision=%(peakprecision)g' % cmpdata)
     pylab.ylabel('G')
-    pylab.plot(cmpdata['r'], cmpdata['g0'], cmpdata['r'], cmpdata['g1'])
+    r = cmpdata['r']
+    g0 = cmpdata['g0']
+    g1 = cmpdata['g1']
+    gdiff = cmpdata['gdiff']
+    pylab.plot(r, g0, r, g1)
     pylab.subplot(212)
-    pylab.plot(cmpdata['r'], cmpdata['gdiff'], 'r')
+    pylab.plot(r, gdiff, 'r')
+    slope = numpy.sum(r * gdiff) / numpy.sum(r**2)
+    pylab.plot(r, slope * r, '--')
     pylab.xlabel('r')
     pylab.ylabel('Gdiff')
+    pylab.title('slope = %g' % slope)
+    pylab.draw()
     return
 
 
@@ -169,7 +177,7 @@ def main():
         plotComparison(cmpdata)
         import pylab
         pylab.show()
-    sys.exit()
+    return
 
 
 if __name__ == '__main__':
