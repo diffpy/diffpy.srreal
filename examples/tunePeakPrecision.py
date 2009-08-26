@@ -137,7 +137,6 @@ def processCommandLineArguments():
         peakprecision = float(sys.argv[2])
     if argc > 3:
         createplot = sys.argv[3].lower() in ('y', 'yes', '1', 'true')
-    print repr(createplot)
     return
 
 
