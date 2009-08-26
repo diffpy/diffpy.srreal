@@ -43,6 +43,11 @@ namespace {
 void ensureNonNegative(const string& vname, double value);
 double maxUii(const StructureAdapter*);
 
+/// Default peak precision was obtained from the tunePeakPrecision.py script
+/// and it was tuned to give average zero slope in the difference curve
+/// between pdffit2 and PDFCalculator results.
+const double DEFAULT_PEAK_PRECISION = 3.33e-6;
+
 }   // namespace
 
 // Constructor ---------------------------------------------------------------
@@ -61,7 +66,7 @@ PDFCalculator::PDFCalculator()
     // default configuration
     this->setPeakWidthModel("jeong");
     this->setPeakProfile("gaussian");
-    this->setPeakPrecision(SQRT_DOUBLE_EPS);
+    this->setPeakPrecision(DEFAULT_PEAK_PRECISION);
     this->setBaseline("linear");
     this->setScatteringFactorTable("SFTperiodictableXray");
     this->setRmax(10.0);
