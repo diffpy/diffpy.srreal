@@ -41,19 +41,11 @@ env.Help(vars.GenerateHelpText(env))
 # Configure external libraries.
 env.ParseConfig("python-config --includes")
 env.ParseConfig("python-config --ldflags")
+env.ParseConfig("pyobjcryst-config --cflags")
+env.ParseConfig("pyobjcryst-config --ldflags")
+env.ParseConfig("python-config --ldflags")
 env.ParseConfig("gsl-config --cflags --libs")
 env.AppendUnique(LIBS='boost_python')
-# ObjCryst
-# Determine paths to ObjCryst headers and shared library
-# We should replace this with an objcryst-config script.
-from pkg_resources import get_distribution
-ocbase = get_distribution("pyobjcryst").location
-ocinclude = os.path.join(ocbase, 'include/ObjCryst')
-oclib = os.path.join(ocbase, "lib")
-env.AppendUnique(CPPPATH=ocinclude)
-env.AppendUnique(LIBPATH=oclib)
-env.AppendUnique(CPPDEFINES={'REAL' : 'double'})
-env.AppendUnique(LIBS="objcryst")
 
 # Configure build variants
 if env['build'] == 'debug':
