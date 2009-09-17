@@ -36,46 +36,146 @@ namespace attributes {
 
 double Attributes::getDoubleAttr(const string& name) const
 {
-    DoubleAttributeStorage::const_iterator ati = mdoubleattrs.find(name);
-    if (ati == mdoubleattrs.end())  this->raiseInvalidAttribute(name);
-    double rv = ati->second->getValue(this);
-    return rv;
+    this->checkAttributeName(name);
+    GetDoubleAttrVisitor vg(name);
+    this->accept(vg);
+    return vg.getValue();
 }
 
 
 void Attributes::setDoubleAttr(const string& name, double value)
 {
-    DoubleAttributeStorage::iterator ati = mdoubleattrs.find(name);
-    if (ati == mdoubleattrs.end())  this->raiseInvalidAttribute(name);
-    ati->second->setValue(this, value);
+    this->checkAttributeName(name);
+    SetDoubleAttrVisitor vs(name, value);
+    this->accept(vs);
 }
 
 
 bool Attributes::hasDoubleAttr(const string& name) const
 {
-    return mdoubleattrs.count(name);
+    CountDoubleAttrVisitor vc(name);
+    this->accept(vc);
+    return vc.count();
 }
 
 
 set<string> Attributes::namesOfDoubleAttributes() const
 {
-    set<string> rv;
-    DoubleAttributeStorage::const_iterator ati;
-    for (ati = mdoubleattrs.begin(); ati != mdoubleattrs.end(); ++ati)
-    {
-        rv.insert(ati->first);
-    }
+    NamesOfDoubleAttributesVisitor vn;
+    this->accept(vn);
+    set<string> rv = vn.names();
     return rv;
 }
 
-// Protected Methods ---------------------------------------------------------
+// Private Methods -----------------------------------------------------------
 
-void Attributes::raiseInvalidAttribute(const std::string& name) const
+void Attributes::checkAttributeName(const string& name) const
 {
-    ostringstream emsg;
-    emsg << "Invalid attribute name '" << name << "'.";
-    throw invalid_argument(emsg.str());
+    CountDoubleAttrVisitor v(name);
+    this->accept(v);
+    if (v.count() == 0)
+    {
+        ostringstream emsg;
+        emsg << "Invalid attribute name '" << name << "'.";
+        throw invalid_argument(emsg.str());
+    }
+    else if (v.count() > 1)
+    {
+        ostringstream emsg;
+        emsg << "Duplicate attribute '" << name << "'.";
+        throw logic_error(emsg.str());
+    }
 }
+
+// Visitor Classes -----------------------------------------------------------
+
+// CountDoubleAttrVisitor
+
+Attributes::CountDoubleAttrVisitor::
+CountDoubleAttrVisitor(const string& name) :
+    mname(name),
+    mcount(0)
+{ }
+
+
+void Attributes::CountDoubleAttrVisitor::
+visit(const Attributes& a)
+{
+    mcount += a.mdoubleattrs.count(mname);
+}
+
+
+int Attributes::CountDoubleAttrVisitor::
+count() const
+{
+    return mcount;
+}
+
+// GetDoubleAttrVisitor
+
+Attributes::GetDoubleAttrVisitor::
+GetDoubleAttrVisitor(const string& name) :
+    mname(name)
+{ }
+
+
+void Attributes::GetDoubleAttrVisitor::
+visit(const Attributes& a)
+{
+    DoubleAttributeStorage::const_iterator ai;
+    ai = a.mdoubleattrs.find(mname);
+    if (ai != a.mdoubleattrs.end())
+    {
+        mvalue = ai->second->getValue(&a);
+    }
+}
+
+
+double Attributes::GetDoubleAttrVisitor::
+getValue() const
+{
+    return mvalue;
+}
+
+// SetDoubleAttrVisitor
+
+Attributes::SetDoubleAttrVisitor::
+SetDoubleAttrVisitor(const string& name, double value) :
+    mname(name),
+    mvalue(value)
+{ }
+
+
+void Attributes::SetDoubleAttrVisitor::
+visit(Attributes& a)
+{
+    DoubleAttributeStorage::const_iterator ai;
+    ai = a.mdoubleattrs.find(mname);
+    if (ai != a.mdoubleattrs.end())
+    {
+        ai->second->setValue(&a, mvalue);
+    }
+}
+
+// NamesOfDoubleAttributesVisitor
+
+void Attributes::NamesOfDoubleAttributesVisitor::
+visit(const Attributes& a)
+{
+    DoubleAttributeStorage::const_iterator ati;
+    for (ati = a.mdoubleattrs.begin(); ati != a.mdoubleattrs.end(); ++ati)
+    {
+        mnames.insert(ati->first);
+    }
+}
+
+
+const set<string>& Attributes::NamesOfDoubleAttributesVisitor::
+names() const
+{
+    return mnames;
+}
+
 
 }   // namespace attributes
 }   // namespace diffpy

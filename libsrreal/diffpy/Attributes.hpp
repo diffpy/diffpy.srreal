@@ -25,6 +25,7 @@
 #include <string>
 #include <set>
 #include <map>
+#include <stdexcept>
 
 #include <boost/shared_ptr.hpp>
 
@@ -39,9 +40,30 @@ class Attributes;
 class BaseDoubleAttribute
 {
     public:
+
         virtual ~BaseDoubleAttribute() { }
         virtual double getValue(const Attributes* obj) const = 0;
         virtual void setValue(Attributes* obj, double value) = 0;
+};
+
+
+class BaseAttributesVisitor
+{
+    public:
+
+        virtual ~BaseAttributesVisitor() { }
+
+        virtual void visit(const Attributes& a)
+        {
+            const char* emsg =
+                "Visitor must be implemented in a derived class.";
+            throw std::logic_error(emsg);
+        }
+
+        virtual void visit(Attributes& a)
+        {
+            visit(static_cast<const Attributes&>(a));
+        }
 };
 
 /// @class Attributes
@@ -54,7 +76,7 @@ class Attributes
     public:
 
         // class needs to be virtual to allow dynamic_cast in getValue
-        virtual ~Attributes() { }
+        virtual ~Attributes()  { }
 
         // methods
         double getDoubleAttr(const std::string& name) const;
@@ -68,6 +90,8 @@ class Attributes
             void registerDoubleAttribute(const std::string& name, T* obj, Getter);
         template <class T, class Getter, class Setter>
             void registerDoubleAttribute(const std::string& name, T* obj, Getter, Setter);
+        virtual void accept(BaseAttributesVisitor& v)  { v.visit(*this); }
+        virtual void accept(BaseAttributesVisitor& v) const  { v.visit(*this); }
 
     private:
 
@@ -79,9 +103,72 @@ class Attributes
         DoubleAttributeStorage mdoubleattrs;
 
         // methods
-        void raiseInvalidAttribute(const std::string& name) const;
+        void checkAttributeName(const std::string& name) const;
 
-};
+        // visitor classes
+
+        class CountDoubleAttrVisitor : public BaseAttributesVisitor
+        {
+            public:
+
+                CountDoubleAttrVisitor(const std::string& name);
+                virtual void visit(const Attributes& a);
+                int count() const;
+
+            private:
+
+                // data
+                const std::string& mname;
+                int mcount;
+        };
+
+
+        class GetDoubleAttrVisitor : public BaseAttributesVisitor
+        {
+            public:
+
+                GetDoubleAttrVisitor(const std::string& name);
+                virtual void visit(const Attributes& a);
+                double getValue() const;
+
+            private:
+
+                // data
+                const std::string& mname;
+                double mvalue;
+        };
+
+
+        class SetDoubleAttrVisitor : public BaseAttributesVisitor
+        {
+            public:
+
+                SetDoubleAttrVisitor(const std::string& name, double value);
+                virtual void visit(Attributes& a);
+
+            private:
+
+                // data
+                const std::string& mname;
+                double mvalue;
+        };
+
+
+        class NamesOfDoubleAttributesVisitor : public BaseAttributesVisitor
+        {
+            public:
+
+                virtual void visit(const Attributes& a);
+                const std::set<std::string>& names() const;
+
+            private:
+
+                // data
+                std::set<std::string> mnames;
+        };
+
+};  // class Attributes
+
 
 }   // namespace attributes
 }   // namespace diffpy
