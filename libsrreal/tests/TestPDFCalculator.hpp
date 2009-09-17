@@ -93,18 +93,17 @@ public:
 
     void test_access_Envelopes()
     {
-        TS_ASSERT(mpdfc->usedEnvelopeTypes().empty());
-        TS_ASSERT_EQUALS(1.0, mpdfc->getScale());
-        TS_ASSERT_EQUALS(0.0, mpdfc->getQdamp());
-        TS_ASSERT(mpdfc->usedEnvelopeTypes().size());
-        mpdfc->setScale(3);
-        TS_ASSERT_EQUALS(3.0, mpdfc->getScale());
+        TS_ASSERT_EQUALS(2u, mpdfc->usedEnvelopeTypes().size());
+        TS_ASSERT_EQUALS(1.0, mpdfc->getDoubleAttr("scale"));
+        TS_ASSERT_EQUALS(0.0, mpdfc->getDoubleAttr("qdamp"));
+        mpdfc->setDoubleAttr("scale", 3.0);
+        TS_ASSERT_EQUALS(3.0, mpdfc->getDoubleAttr("scale"));
         mpdfc->addEnvelope("scale");
-        TS_ASSERT_EQUALS(1.0, mpdfc->getScale());
+        TS_ASSERT_EQUALS(1.0, mpdfc->getDoubleAttr("scale"));
         QResolutionEnvelope qdamp4;
         qdamp4.setQdamp(4);
         mpdfc->addEnvelope(qdamp4);
-        TS_ASSERT_EQUALS(4.0, mpdfc->getQdamp());
+        TS_ASSERT_EQUALS(4.0, mpdfc->getDoubleAttr("qdamp"));
         TS_ASSERT_THROWS(mpdfc->addEnvelope("invalid"), logic_error);
     }
 

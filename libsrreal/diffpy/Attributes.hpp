@@ -83,6 +83,9 @@ class Attributes
         void setDoubleAttr(const std::string& name, double value);
         bool hasDoubleAttr(const std::string& name) const;
         std::set<std::string> namesOfDoubleAttributes() const;
+        // visitors
+        virtual void accept(BaseAttributesVisitor& v)  { v.visit(*this); }
+        virtual void accept(BaseAttributesVisitor& v) const  { v.visit(*this); }
 
     protected:
 
@@ -90,8 +93,6 @@ class Attributes
             void registerDoubleAttribute(const std::string& name, T* obj, Getter);
         template <class T, class Getter, class Setter>
             void registerDoubleAttribute(const std::string& name, T* obj, Getter, Setter);
-        virtual void accept(BaseAttributesVisitor& v)  { v.visit(*this); }
-        virtual void accept(BaseAttributesVisitor& v) const  { v.visit(*this); }
 
     private:
 
@@ -177,7 +178,10 @@ class Attributes
 
 #include <diffpy/Attributes.ipp>
 
-// make the Attributes class visible in diffpy namespace
-namespace diffpy { using attributes::Attributes; }
+// make selected classes visible in diffpy namespace
+namespace diffpy {
+    using attributes::Attributes;
+    using attributes::BaseAttributesVisitor;
+}
 
 #endif  // ATTRIBUTES_HPP_INCLUDED

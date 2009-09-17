@@ -74,6 +74,9 @@ PDFCalculator::PDFCalculator()
     this->setQmin(0.0);
     this->setQmax(0.0);
     this->setMaxExtension(10.0);
+    // envelopes
+    this->addEnvelope(ScaleEnvelope());
+    this->addEnvelope(QResolutionEnvelope());
     // attributes
     this->registerDoubleAttribute("qmin", this,
             &PDFCalculator::getQmin, &PDFCalculator::setQmin);
@@ -94,10 +97,6 @@ PDFCalculator::PDFCalculator()
     this->registerDoubleAttribute("peakprecision", this,
             &PDFCalculator::getPeakPrecision,
             &PDFCalculator::setPeakPrecision);
-    this->registerDoubleAttribute("scale", this,
-            &PDFCalculator::getScale, &PDFCalculator::setScale);
-    this->registerDoubleAttribute("qdamp", this,
-            &PDFCalculator::getQdamp, &PDFCalculator::setQdamp);
 }
 
 // Public Methods ------------------------------------------------------------
@@ -380,46 +379,6 @@ const PDFBaseline& PDFCalculator::getBaseline() const
 
 // PDF envelope methods
 
-void PDFCalculator::setScale(double scale)
-{
-    if (scale == 1.0)
-    {
-        this->popEnvelope("scale");
-    }
-    else
-    {
-        ScaleEnvelope envelope;
-        envelope.setScale(scale);
-        this->addEnvelope(envelope);
-    }
-}
-
-
-double PDFCalculator::getScale() const
-{
-    const ScaleEnvelope& envelope =
-        dynamic_cast<const ScaleEnvelope&>(this->getEnvelope("scale"));
-    return envelope.getScale();
-}
-
-
-void PDFCalculator::setQdamp(double qdamp)
-{
-    QResolutionEnvelope envelope;
-    envelope.setQdamp(qdamp);
-    this->addEnvelope(envelope);
-}
-
-
-double PDFCalculator::getQdamp() const
-{
-    const QResolutionEnvelope& envelope =
-        dynamic_cast<const QResolutionEnvelope&>(
-                this->getEnvelope("qresolution"));
-    return envelope.getQdamp();
-}
-
-
 QuantityType PDFCalculator::applyEnvelopes(
         const QuantityType& x, const QuantityType& y) const
 {
@@ -533,6 +492,38 @@ double PDFCalculator::sfAtomType(const string& smbl) const
 
 // Protected Methods ---------------------------------------------------------
 
+// Attributes overloads
+
+void PDFCalculator::accept(diffpy::BaseAttributesVisitor& v)
+{
+    mpwmodel->accept(v);
+    mpeakprofile->accept(v);
+    mbaseline->accept(v);
+    // PDF envelopes
+    EnvelopeStorage::iterator evit;
+    for (evit = menvelope.begin(); evit != menvelope.end(); ++evit)
+    {
+        evit->second->accept(v);
+    }
+    // finally call standard accept
+    this->diffpy::Attributes::accept(v);
+}
+
+void PDFCalculator::accept(diffpy::BaseAttributesVisitor& v) const
+{
+    mpwmodel->accept(v);
+    mpeakprofile->accept(v);
+    mbaseline->accept(v);
+    // PDF envelopes
+    EnvelopeStorage::const_iterator evit;
+    for (evit = menvelope.begin(); evit != menvelope.end(); ++evit)
+    {
+        evit->second->accept(v);
+    }
+    // finally call standard accept
+    this->diffpy::Attributes::accept(v);
+}
+
 // PairQuantity overloads
 
 void PDFCalculator::resetValue()
@@ -540,7 +531,7 @@ void PDFCalculator::resetValue()
     // calcPoints requires that structure and rlimits data are cached.
     this->cacheStructureData();
     this->cacheRlimitsData();
-    // when applicable, configure linear baseline 
+    // when applicable, configure linear baseline
     double numdensity = mstructure->numberDensity();
     if (numdensity > 0 && this->getBaseline().type() == "linear")
     {

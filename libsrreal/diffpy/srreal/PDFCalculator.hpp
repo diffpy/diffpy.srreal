@@ -94,11 +94,6 @@ class PDFCalculator : public PairQuantity
         const PDFBaseline& getBaseline() const;
 
         // PDF envelope functions
-        // convenience functions for handling common envelopes
-        void setScale(double);
-        double getScale() const;
-        void setQdamp(double);
-        double getQdamp() const;
         // application on an array
         QuantityType applyEnvelopes(const QuantityType& x, const QuantityType& y) const;
         // configuration of envelopes
@@ -123,7 +118,11 @@ class PDFCalculator : public PairQuantity
         // types
         typedef std::map<std::string, boost::shared_ptr<PDFEnvelope> > EnvelopeStorage;
 
-        // methods - PairQuantity overloads
+        // Attributes overload to direct visitors around data structures
+        virtual void accept(diffpy::BaseAttributesVisitor& v);
+        virtual void accept(diffpy::BaseAttributesVisitor& v) const;
+
+        // PairQuantity overloads
         virtual void resetValue();
         virtual void configureBondGenerator(BaseBondGenerator&);
         virtual void addPairContribution(const BaseBondGenerator&);
