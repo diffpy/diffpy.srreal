@@ -41,9 +41,7 @@ env.Help(vars.GenerateHelpText(env))
 # Configure external libraries.
 env.ParseConfig("python-config --includes")
 env.ParseConfig("python-config --ldflags")
-env.ParseConfig("pyobjcryst-config --cflags")
-env.ParseConfig("pyobjcryst-config --ldflags")
-env.ParseConfig("python-config --ldflags")
+env.ParseConfig("pyobjcryst-config --cflags --ldflags")
 env.ParseConfig("gsl-config --cflags --libs")
 env.AppendUnique(LIBS='boost_python')
 
