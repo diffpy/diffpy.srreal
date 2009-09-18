@@ -54,7 +54,7 @@ python::object convertSetOfStrings(const std::set<std::string>& s)
 {
     using namespace std;
     python::object rv(python::handle<>(PySet_New(NULL)));
-    std::set<string>::const_iterator si;
+    set<string>::const_iterator si;
     for (si = s.begin(); si != s.end(); ++si)
     {
         rv.attr("add")(*si);
@@ -94,6 +94,7 @@ python::object eval_asarray(PDFCalculator& obj, const python::object& stru)
 
 python::object getScatteringFactorTableTypes_asset()
 {
+    using namespace std;
     using diffpy::srreal::getScatteringFactorTableTypes;
     set<string> sftt = getScatteringFactorTableTypes();
     return convertSetOfStrings(sftt);
