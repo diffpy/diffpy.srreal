@@ -149,7 +149,7 @@ SetDoubleAttrVisitor(const string& name, double value) :
 void Attributes::SetDoubleAttrVisitor::
 visit(Attributes& a)
 {
-    DoubleAttributeStorage::const_iterator ai;
+    DoubleAttributeStorage::iterator ai;
     ai = a.mdoubleattrs.find(mname);
     if (ai != a.mdoubleattrs.end())
     {
