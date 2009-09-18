@@ -81,12 +81,12 @@ public:
         pkf->setPrecision(1.1);
         mpdfc->setPeakProfile(*pkf);
         TS_ASSERT_EQUALS(1.1, mpdfc->getPeakProfile().getPrecision());
-        TS_ASSERT_EQUALS(1.1, mpdfc->getPeakPrecision());
-        mpdfc->setPeakPrecision(0.2);
-        TS_ASSERT_EQUALS(0.2, mpdfc->getPeakPrecision());
+        TS_ASSERT_EQUALS(1.1, mpdfc->getDoubleAttr("peakprecision"));
+        mpdfc->setDoubleAttr("peakprecision", 0.2);
+        TS_ASSERT_EQUALS(0.2, mpdfc->getDoubleAttr("peakprecision"));
         TS_ASSERT_EQUALS(pkf->type(), mpdfc->getPeakProfile().type());
         mpdfc->setPeakProfile("gaussian");
-        TS_ASSERT_EQUALS(0.2, mpdfc->getPeakPrecision());
+        TS_ASSERT_EQUALS(0.2, mpdfc->getDoubleAttr("peakprecision"));
         TS_ASSERT_THROWS(mpdfc->setPeakProfile("invalid"), logic_error);
     }
 

@@ -85,8 +85,6 @@ class PDFCalculator : public PairQuantity
         void setPeakProfile(const PeakProfile&);
         void setPeakProfile(const std::string& tp);
         const PeakProfile& getPeakProfile() const;
-        void setPeakPrecision(double);
-        double getPeakPrecision() const;
 
         // PDF baseline configuration
         void setBaseline(const PDFBaseline&);

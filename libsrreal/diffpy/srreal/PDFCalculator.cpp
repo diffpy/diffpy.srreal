@@ -31,6 +31,7 @@
 #include <diffpy/srreal/ScaleEnvelope.hpp>
 #include <diffpy/srreal/QResolutionEnvelope.hpp>
 #include <diffpy/srreal/LinearBaseline.hpp>
+#include <diffpy/srreal/GaussianProfile.hpp>
 #include <diffpy/mathutils.hpp>
 
 using namespace std;
@@ -65,8 +66,9 @@ PDFCalculator::PDFCalculator()
     mrlimits_cache.rcalchigh = 0.0;
     // default configuration
     this->setPeakWidthModel("jeong");
-    this->setPeakProfile("gaussian");
-    this->setPeakPrecision(DEFAULT_PEAK_PRECISION);
+    GaussianProfile pkf;
+    pkf.setPrecision(DEFAULT_PEAK_PRECISION);
+    this->setPeakProfile(pkf);
     this->setBaseline("linear");
     this->setScatteringFactorTable("SFTperiodictableXray");
     this->setRmax(10.0);
@@ -94,9 +96,6 @@ PDFCalculator::PDFCalculator()
             &PDFCalculator::getExtendedRmin);
     this->registerDoubleAttribute("extendedrmax", this,
             &PDFCalculator::getExtendedRmax);
-    this->registerDoubleAttribute("peakprecision", this,
-            &PDFCalculator::getPeakPrecision,
-            &PDFCalculator::setPeakPrecision);
 }
 
 // Public Methods ------------------------------------------------------------
@@ -338,21 +337,6 @@ const PeakProfile& PDFCalculator::getPeakProfile() const
 {
     assert(mpeakprofile.get());
     return *mpeakprofile;
-}
-
-
-void PDFCalculator::setPeakPrecision(double eps)
-{
-    auto_ptr<PeakProfile> npkf(this->getPeakProfile().copy());
-    npkf->setPrecision(eps);
-    this->setPeakProfile(*npkf);
-}
-
-
-double PDFCalculator::getPeakPrecision() const
-{
-    double rv = this->getPeakProfile().getPrecision();
-    return rv;
 }
 
 // PDF baseline configuration
