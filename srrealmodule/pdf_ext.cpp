@@ -30,6 +30,7 @@
 
 #include <diffpy/srreal/PDFCalculator.hpp>
 #include <diffpy/srreal/PythonStructureAdapter.hpp>
+#include <diffpy/srreal/ScatteringFactorTable.hpp>
 
 using namespace boost;
 using diffpy::srreal::PDFCalculator;
@@ -91,15 +92,26 @@ python::object eval_asarray(PDFCalculator& obj, const python::object& stru)
     return convertQuantityType(obj.eval(stru));
 }
 
+python::object getScatteringFactorTableTypes_asset()
+{
+    using diffpy::srreal::getScatteringFactorTableTypes;
+    set<string> sftt = getScatteringFactorTableTypes();
+    return convertSetOfStrings(sftt);
+}
+
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(setsft_overloads,
+        setScatteringFactorTable, 1, 1)
 
 }   // namespace
-
 
 BOOST_PYTHON_MODULE(pdf_ext)
 {
     using namespace boost::python;
     // initialize numpy arrays
     import_array();
+
+    def("getScatteringFactorTableTypes", getScatteringFactorTableTypes_asset);
 
     class_<PDFCalculator>("PDFCalculator")
         .def("_getDoubleAttr", &PDFCalculator::getDoubleAttr)
@@ -109,5 +121,11 @@ BOOST_PYTHON_MODULE(pdf_ext)
         .def("getRDF", getRDF_asarray)
         .def("getRgrid", getRgrid_asarray)
         .def("eval", eval_asarray)
+        .def("setScatteringFactorTable",
+                (void(PDFCalculator::*)(const string&)) NULL,
+                setsft_overloads())
+        .def("getRadiationType",
+                &PDFCalculator::getRadiationType,
+                return_value_policy<copy_const_reference>())
         ;
 }
