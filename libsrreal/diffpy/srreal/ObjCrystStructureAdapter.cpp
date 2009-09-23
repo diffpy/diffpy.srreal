@@ -64,13 +64,13 @@ const double ObjCrystStructureAdapter::toler = 1e-5;
 ObjCrystStructureAdapter::
 ObjCrystStructureAdapter(const ObjCryst::Crystal& cryst) : pcryst(&cryst)
 {
-    this->getUnitCell();
     mlattice.setLatPar( pcryst->GetLatticePar(0), 
                         pcryst->GetLatticePar(1),
                         pcryst->GetLatticePar(2), 
                         rtod * pcryst->GetLatticePar(3),
                         rtod * pcryst->GetLatticePar(4), 
                         rtod * pcryst->GetLatticePar(5) );
+    this->getUnitCell();
 }
 
 // Public Methods ------------------------------------------------------------
@@ -132,7 +132,7 @@ ObjCrystStructureAdapter::
 siteAnisotropy(int idx) const
 {
     assert(0 <= idx && idx < this->countSites());
-    return false;
+    return vsc[idx].mpScattPow->IsIsotropic();
 }
 
 double
@@ -171,12 +171,14 @@ getUnitCell()
 {
     // Expand each scattering component in the primitive cell and record the
     // new scatterers.
-    const ObjCryst::ScatteringComponentList& scl = pcryst->GetScatteringComponentList();
+    const ObjCryst::ScatteringComponentList& scl =
+        pcryst->GetScatteringComponentList();
     size_t nbComponent = scl.GetNbComponent();
 
     size_t nbSymmetrics = pcryst->GetSpaceGroup().GetNbSymmetrics();
 
     double x, y, z, junk;
+    const ObjCryst::ScatteringPower* sp  = NULL;
     CrystMatrix<double> symmetricsCoords;
 
     vsc.clear();
@@ -230,14 +232,27 @@ getUnitCell()
 
 
         // Store the uij tensor
-        R3::Matrix& uij = vuij[i];
-        double uiso = scl(i).mpScattPow->GetBiso();
-        uiso *= BtoU;
-        uij(0,0) = uij(1,1) = uij(2,2) = uiso;
-        uij(0,1) = uij(1,0) = 0;
-        uij(0,2) = uij(2,0) = 0;
-        uij(2,1) = uij(1,2) = 0;
-
+        R3::Matrix Ucart;
+        sp = vsc[i].mpScattPow;
+        if( sp->IsIsotropic() )
+        {
+            Ucart(0,0) = Ucart(1,1) = Ucart(2,2) = sp->GetBiso() * BtoU;
+            Ucart(0,1) = Ucart(1,0) = 0;
+            Ucart(0,2) = Ucart(2,0) = 0;
+            Ucart(2,1) = Ucart(1,2) = 0;
+        }
+        else
+        {
+            R3::Matrix Ufrac;
+            Ufrac(0,0) = sp->GetBij(1,1) * BtoU;
+            Ufrac(1,1) = sp->GetBij(2,2) * BtoU;
+            Ufrac(2,2) = sp->GetBij(3,3) * BtoU;
+            Ufrac(0,1) = Ufrac(1,0) = sp->GetBij(1,2) * BtoU;
+            Ufrac(0,2) = Ufrac(2,0) = sp->GetBij(1,3) * BtoU;
+            Ufrac(1,2) = Ufrac(2,1) = sp->GetBij(2,3) * BtoU;
+            Ucart = mlattice.cartesianMatrix(Ufrac);
+        }
+        vuij[i] = Ucart;
     }
 }
 
@@ -312,8 +327,8 @@ double
 ObjCrystBondGenerator::
 msd0() const
 {
-    // Isotropic Uij
-    return pstructure->siteCartesianUij(this->site0())(0,0);
+    double rv = this->msdSiteDir(this->site0(), this->r01());
+    return rv;
 }
 
 
@@ -321,8 +336,8 @@ double
 ObjCrystBondGenerator::
 msd1() const
 {
-    // Isotropic Uij
-    return pstructure->siteCartesianUij(this->site1())(0,0);
+    double rv = this->msdSiteDir(this->site1(), this->r01());
+    return rv;
 }
 
 
@@ -352,6 +367,18 @@ rewindSymmetry()
     msphere->rewind();
     symiter = pstructure->vsym[msite_current].begin();
 }
+
+
+double 
+ObjCrystBondGenerator::
+msdSiteDir(int siteidx, const R3::Vector& s) const
+{
+    const R3::Matrix& Uijcartn = pstructure->siteCartesianUij(siteidx);
+    bool anisotropy = pstructure->siteAnisotropy(siteidx);
+    double rv = meanSquareDisplacement(Uijcartn, s, anisotropy);
+    return rv;
+}
+
 
 
 // End of file

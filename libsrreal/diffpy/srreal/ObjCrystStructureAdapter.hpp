@@ -140,7 +140,7 @@ class ObjCrystBondGenerator : public BaseBondGenerator
         std::set< R3::Vector >::const_iterator symiter;
         std::auto_ptr<PointsInSphere> msphere;
 
-        
+        double msdSiteDir(int siteidx, const R3::Vector& s) const;
 
 };
 
