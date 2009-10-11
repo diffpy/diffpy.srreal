@@ -41,7 +41,7 @@ namespace {
 python::object convertQuantityType(const QuantityType& v)
 {
     using std::copy;
-    int vsize = v.size();
+    npy_intp vsize = v.size();
     python::object rv(
             python::handle<>(PyArray_SimpleNew(1, &vsize, PyArray_DOUBLE)));
     double* rvdata = (double*) PyArray_DATA((PyArrayObject*) rv.ptr());
