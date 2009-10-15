@@ -17,7 +17,10 @@ import fix_setuptools_chmod
 srrealmodule = Extension('diffpy.srreal.pdf_ext', [
             'srrealmodule/pdf_ext.cpp',
             ],
-        include_dirs = ['libsrreal'],
+        # FIXME get this from pyobjcryst-config
+        # include_dirs = [],  # relying on CPATH
+        define_macros = [('REAL', 'double')],
+        undef_macros = ['NDEBUG'],
         extra_compile_args = [],
         extra_link_args = [],
         libraries = ['srreal', 'boost_python'],
@@ -44,7 +47,7 @@ dist = setup(
         install_requires = [
             'diffpy.Structure',
             'diffpy.pdffit2',
-            'elements',
+            'periodictable',
         ],
         dependency_links = [
             # REMOVE dev.danse.us for a public release.
