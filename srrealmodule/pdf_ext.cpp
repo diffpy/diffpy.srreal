@@ -108,6 +108,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(setsft_overloads,
 
 BOOST_PYTHON_MODULE(pdf_ext)
 {
+    using namespace std;
     using namespace boost::python;
     // initialize numpy arrays
     import_array();
