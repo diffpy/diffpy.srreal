@@ -17,14 +17,12 @@ import fix_setuptools_chmod
 srrealmodule = Extension('diffpy.srreal.pdf_ext', [
             'srrealmodule/pdf_ext.cpp',
             ],
-        # FIXME get this from pyobjcryst-config
-        # include_dirs = [],  # relying on CPATH
         define_macros = [('REAL', 'double')],
         undef_macros = ['NDEBUG'],
         extra_compile_args = [],
         extra_link_args = [],
         # FIXME get this from libdiffpy-config
-        libraries = ['diffpy', 'boost_python-mt-py26'],
+        libraries = ['diffpy', 'boost_python-mt'],
 )
 
 # define distribution
