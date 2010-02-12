@@ -21,8 +21,7 @@ srrealmodule = Extension('diffpy.srreal.pdf_ext', [
         undef_macros = ['NDEBUG'],
         extra_compile_args = [],
         extra_link_args = [],
-        # FIXME get this from libdiffpy-config
-        libraries = ['diffpy', 'boost_python-mt'],
+        libraries = ['diffpy'],
 )
 
 # define distribution
