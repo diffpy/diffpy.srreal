@@ -107,7 +107,7 @@ class ColorFromOverlap(object):
             print f, optcost, getcoloring(optstru)
         cbest, fbest, strubest = min(zip(
             self.optimized_costs, self.structfiles, self.optimized_structures))
-        print "# BEST " + (78 - 7) * '-'
+        print "# BEST " + (72 - 7) * '-'
         print fbest, cbest, getcoloring(strubest)
         self.saveOutstru()
         return
@@ -136,7 +136,7 @@ class ColorFromOverlap(object):
         Return instance of AtomConflicts.
         """
         import numpy
-        from diffpy.srreal01.atomconflicts import AtomConflicts
+        from diffpy.srreal.atomconflicts import AtomConflicts
         ac0 = AtomConflicts(stru)
         shuffle = numpy.random.permutation(self.expanded_formula)
         ac0.setSiteColoring(shuffle)
@@ -211,11 +211,7 @@ class ColorFromOverlap(object):
 
         Return a tuple of (cost, colored_structure).
         """
-        # use initialAtomConflicts to setup proper atom radii
-        ac = self.initialAtomConflicts(stru)
-        # undo site shuffling
-        ac.setStructure(stru)
-        coststru = [(self.cost(ac), ac.getStructure())]
+        coststru = []
         for i in range(self.repeats):
             ac0 = self.initialAtomConflicts(stru)
             ac1 = self.downhillOverlapMinimization(ac0)

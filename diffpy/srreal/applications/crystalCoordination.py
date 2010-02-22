@@ -101,7 +101,7 @@ class CrystalCoordinationScript(ColorFromOverlap):
 
         Return instance of AtomConflicts.
         """
-        from diffpy.srreal01.atomconflicts import AtomConflicts
+        from diffpy.srreal.atomconflicts import AtomConflicts
         ac0 = AtomConflicts(stru)
         if self.expanded_formula:
             ac0.setSiteColoring(self.expanded_formula)
