@@ -27,25 +27,11 @@ srrealmodule = Extension('diffpy.srreal.pdf_ext', [
 # define distribution
 dist = setup(
         name = "diffpy.srreal",
-        version = "0.1a",
+        version = "0.2a1",
         namespace_packages = ['diffpy'],
-        packages = find_packages(exclude=['PDFAPI']),
+        packages = find_packages(),
         ext_modules = [srrealmodule],
-        entry_points = {
-            'console_scripts' : [
-                'downhill1=diffpy.srreal.applications.downhill1:main',
-                'colorFromOverlap=' + \
-                    'diffpy.srreal.applications.colorFromOverlap:main',
-                'colorFromOverlapCmpPDF=' + \
-                    'diffpy.srreal.applications.colorFromOverlapCmpPDF:main',
-                'crystalCoordination=' + \
-                    'diffpy.srreal.applications.crystalCoordination:main',
-            ],
-        },
         install_requires = [
-            'diffpy.Structure',
-            'diffpy.pdffit2',
-            'periodictable',
         ],
         dependency_links = [
             # REMOVE dev.danse.us for a public release.
