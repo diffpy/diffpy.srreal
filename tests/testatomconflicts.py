@@ -15,8 +15,8 @@ thisfile = locals().get('__file__', 'file.py')
 tests_dir = os.path.dirname(os.path.abspath(thisfile))
 testdata_dir = os.path.join(tests_dir, 'testdata')
 
-from diffpy.srreal.atomconflicts import getCovalentRadius
-from diffpy.srreal.atomconflicts import AtomConflicts
+from diffpy.srreal01.atomconflicts import getCovalentRadius
+from diffpy.srreal01.atomconflicts import AtomConflicts
 
 
 ##############################################################################

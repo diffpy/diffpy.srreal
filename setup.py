@@ -2,10 +2,10 @@
 
 # Installation script for diffpy.Structure
 
-"""diffpy.srreal - prototype for new PDF calculator and assortment
+"""diffpy.srreal01 - prototype for new PDF calculator and assortment
 of real space utilities.
 
-Packages:   diffpy.srreal
+Packages:   diffpy.srreal01
 Scripts:    (none yet)
 """
 
@@ -14,19 +14,19 @@ import fix_setuptools_chmod
 
 # define distribution
 dist = setup(
-        name = "diffpy.srreal",
+        name = "diffpy.srreal01",
         version = "0.1a1",
         namespace_packages = ['diffpy'],
         packages = find_packages(exclude=['PDFAPI']),
         entry_points = {
             'console_scripts' : [
-                'downhill1=diffpy.srreal.applications.downhill1:main',
+                'downhill1=diffpy.srreal01.applications.downhill1:main',
                 'colorFromOverlap=' + \
-                    'diffpy.srreal.applications.colorFromOverlap:main',
+                    'diffpy.srreal01.applications.colorFromOverlap:main',
                 'colorFromOverlapCmpPDF=' + \
-                    'diffpy.srreal.applications.colorFromOverlapCmpPDF:main',
+                    'diffpy.srreal01.applications.colorFromOverlapCmpPDF:main',
                 'crystalCoordination=' + \
-                    'diffpy.srreal.applications.crystalCoordination:main',
+                    'diffpy.srreal01.applications.crystalCoordination:main',
             ],
         },
         install_requires = [

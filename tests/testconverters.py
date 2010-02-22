@@ -9,7 +9,7 @@ __id__ = '$Id$'
 import os
 import unittest
 
-from diffpy.srreal.pdf import converters
+from diffpy.srreal01.pdf import converters
 
 thisfile = locals().get('__file__', 'file.py')
 tests_dir = os.path.dirname(os.path.abspath(thisfile))

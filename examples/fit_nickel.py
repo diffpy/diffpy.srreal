@@ -2,7 +2,7 @@
 """\
 This script partially demonstrates SrFit UC1-1 and UC1-2. An instance of
 diffpy.Structure.Structure is created by reading strutural information from file
-and is then converted to a srreal.CrystalStructure instance that can be refined
+and is then converted to a srreal01.CrystalStructure instance that can be refined
 by park.  Constraints on parameters are made using mechanisms provided by park.
 Introspection capabilities from SrFit are not demonstrated in this script.
 
@@ -20,9 +20,9 @@ def fitNickelFromFile(dataname, stype):
 
     import park
     import numpy
-    from diffpy.srreal.pdf import PDFModel
-    from diffpy.srreal.pdf import phaseFromStructure
-    from diffpy.srreal.pdf import structureFromPhase
+    from diffpy.srreal01.pdf import PDFModel
+    from diffpy.srreal01.pdf import phaseFromStructure
+    from diffpy.srreal01.pdf import structureFromPhase
 
     outname = ".".join(dataname.split(".")[:-1])
 
@@ -120,9 +120,9 @@ def fitTwoNickel():
 
     import park
     import numpy
-    from diffpy.srreal.pdf import PDFModel
-    from diffpy.srreal.pdf import phaseFromStructure
-    from diffpy.srreal.pdf import structureFromPhase
+    from diffpy.srreal01.pdf import PDFModel
+    from diffpy.srreal01.pdf import phaseFromStructure
+    from diffpy.srreal01.pdf import structureFromPhase
 
     # Use diffpy.Structure to read the structure from file
     import diffpy.Structure

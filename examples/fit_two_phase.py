@@ -13,7 +13,7 @@ def fitSiNi():
 
     import park
     import numpy
-    from diffpy.srreal.pdf import PDFModel, phaseFromStructure, structureFromPhase
+    from diffpy.srreal01.pdf import PDFModel, phaseFromStructure, structureFromPhase
 
     # Create a new refinement model
     model = PDFModel("SiNiModel")
@@ -118,7 +118,7 @@ def calcSiNi():
 
     import park
     import numpy
-    from diffpy.srreal.pdf import PDFModel, phaseFromStructure, structureFromPhase
+    from diffpy.srreal01.pdf import PDFModel, phaseFromStructure, structureFromPhase
 
     # Create a new refinement model
     model = PDFModel("SiNiModel")

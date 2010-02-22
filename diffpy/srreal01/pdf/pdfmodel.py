@@ -5,8 +5,8 @@ __id__ = "$Id$"
 
 import numpy
 import park
-from diffpy.srreal.pdf.dynamicmodel import DynamicModel
-from diffpy.srreal.pdf.parameters import PDFTopLevelParameter
+from diffpy.srreal01.pdf.dynamicmodel import DynamicModel
+from diffpy.srreal01.pdf.parameters import PDFTopLevelParameter
 
 class PDFModel(DynamicModel):
     """park.Model for PDF refinement"""
@@ -99,7 +99,7 @@ class PDFModel(DynamicModel):
             # If the phase was loaded from a structure, this will save some
             # time when the phase is added to the engine.
             if phase._stru is None:
-                from diffpy.srreal.pdf import converters
+                from diffpy.srreal01.pdf import converters
                 phase._stru = converters.structureFromPhase(phase)
             self._engine.add_structure(phase._stru)
             phase._addEngine(self._engine, i+1)

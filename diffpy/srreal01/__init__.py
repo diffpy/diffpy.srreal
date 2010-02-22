@@ -13,19 +13,11 @@
 ########################################################################
 
 
-"""Definition of __version__ and __date__ for diffpy.srreal.
+"""Tools for real space structure analysis.
 """
 
-# module version
-__id__ = "$Id$"
-
-# obtain version information
-from pkg_resources import get_distribution
-__version__ = get_distribution('diffpy.srreal').version
-
-# we assume that tag_date was used and __version__ ends in YYYYMMDD
-__date__ = __version__[-8:-4] + '-' + \
-           __version__[-4:-2] + '-' + __version__[-2:]
+# package version
+from diffpy.srreal01.version import __version__
 
 
 # End of file

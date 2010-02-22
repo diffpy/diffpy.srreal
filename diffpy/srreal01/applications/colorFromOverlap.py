@@ -136,7 +136,7 @@ class ColorFromOverlap(object):
         Return instance of AtomConflicts.
         """
         import numpy
-        from diffpy.srreal.atomconflicts import AtomConflicts
+        from diffpy.srreal01.atomconflicts import AtomConflicts
         ac0 = AtomConflicts(stru)
         shuffle = numpy.random.permutation(self.expanded_formula)
         ac0.setSiteColoring(shuffle)

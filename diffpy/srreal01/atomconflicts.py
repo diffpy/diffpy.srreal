@@ -247,7 +247,7 @@ class AtomConflicts(object):
         """
         if self._pair_lengths_cached:
             return
-        from diffpy.srreal.pairhistogram import PairHistogram
+        from diffpy.srreal01.pairhistogram import PairHistogram
         pf = PairHistogram._getPdfFit()
         # Because, this method only evaluates geometry, let us use
         # all carbon atoms so there are no problems with unknown types.

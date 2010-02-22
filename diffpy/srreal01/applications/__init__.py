@@ -13,7 +13,7 @@
 ########################################################################
 
 
-"""Example applications using the diffpy.srreal library.
+"""Example applications using the diffpy.srreal01 library.
 """
 
 # End of file

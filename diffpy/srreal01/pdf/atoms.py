@@ -7,7 +7,7 @@ See the class documentation for more information.
 __id__ = "$Id$"
 
 import park
-from diffpy.srreal.pdf.parameters import PDFPhaseParameter
+from diffpy.srreal01.pdf.parameters import PDFPhaseParameter
 
 class Atom(park.ParameterSet):
     """Class for atomic information.

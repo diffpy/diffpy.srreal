@@ -15,14 +15,14 @@ def phaseFromStructure(S, name=None):
     phasenum += 1
 
     # Start with a phase
-    from diffpy.srreal.pdf import phases
+    from diffpy.srreal01.pdf import phases
     if name is None: name = "phase%i"%phasenum
     _p = phases.CrystalPhase(name)
     import diffpy.Structure
     _p._stru = diffpy.Structure.Structure(S)
 
     # Start with the lattice
-    from diffpy.srreal.pdf import lattice
+    from diffpy.srreal01.pdf import lattice
     _l = lattice.Lattice()
     parlist = ["a", "b", "c", "alpha", "beta", "gamma"]
     for name in parlist:
@@ -31,7 +31,7 @@ def phaseFromStructure(S, name=None):
     _p.setLattice(_l)
 
     # Now the atoms
-    from diffpy.srreal.pdf import atoms
+    from diffpy.srreal01.pdf import atoms
     namedict = {}
     for a in S:
         # Name the atom as the element plus a number.
