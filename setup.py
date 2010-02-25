@@ -13,16 +13,20 @@ from setuptools import setup, find_packages
 from setuptools import Extension
 import fix_setuptools_chmod
 
-# define extension here
-srrealmodule = Extension('diffpy.srreal.pdf_ext', [
-            'srrealmodule/pdf_ext.cpp',
-            ],
-        define_macros = [('REAL', 'double')],
-        undef_macros = ['NDEBUG'],
-        extra_compile_args = [],
-        extra_link_args = [],
-        libraries = ['diffpy'],
-)
+# define extensions here
+ext_objects = ['srrealmodule/srreal_converters.cpp']
+ext_kws = {
+        'libraries' : ['diffpy'],
+        'undef_macros' : ['NDEBUG'],
+        'extra_compile_args' : [],
+        'extra_link_args' : [],
+}
+srrealmodules = [
+    Extension('diffpy.srreal.pdf_ext',
+        ['srrealmodule/pdf_ext.cpp'] + ext_objects, **ext_kws),
+    Extension('diffpy.srreal.bvs_ext',
+        ['srrealmodule/bvs_ext.cpp'] + ext_objects, **ext_kws),
+]
 
 # define distribution
 dist = setup(
@@ -30,8 +34,9 @@ dist = setup(
         version = "0.2a1",
         namespace_packages = ['diffpy'],
         packages = find_packages(),
-        ext_modules = [srrealmodule],
+        ext_modules = srrealmodules,
         install_requires = [
+            'diffpy.Structure',
         ],
         dependency_links = [
             # REMOVE dev.danse.us for a public release.

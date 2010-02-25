@@ -18,112 +18,50 @@
 *
 *****************************************************************************/
 
-
-#include <set>
 #include <string>
 
-#include <boost/python/class.hpp>
-#include <boost/python/module.hpp>
-#include <boost/python/def.hpp>
-
-#include <numpy/arrayobject.h>
+#include <boost/python.hpp>
 
 #include <diffpy/srreal/PDFCalculator.hpp>
 #include <diffpy/srreal/PythonStructureAdapter.hpp>
 #include <diffpy/srreal/ScatteringFactorTable.hpp>
+#include "srreal_converters.hpp"
 
-using namespace boost;
-using diffpy::srreal::PDFCalculator;
-using diffpy::srreal::QuantityType;
+
+// Helpers -------------------------------------------------------------------
 
 namespace {
-
-python::object convertQuantityType(const QuantityType& v)
-{
-    using std::copy;
-    npy_intp vsize = v.size();
-    python::object rv(
-            python::handle<>(PyArray_SimpleNew(1, &vsize, PyArray_DOUBLE)));
-    double* rvdata = (double*) PyArray_DATA((PyArrayObject*) rv.ptr());
-    copy(v.begin(), v.end(), rvdata);
-    return rv;
-}
-
-
-python::object convertSetOfStrings(const std::set<std::string>& s)
-{
-    using namespace std;
-    python::object rv(python::handle<>(PySet_New(NULL)));
-    set<string>::const_iterator si;
-    for (si = s.begin(); si != s.end(); ++si)
-    {
-        rv.attr("add")(*si);
-    }
-    return rv;
-}
-
-
-python::object namesOfDoubleAttributes_asset(const PDFCalculator& obj)
-{
-    return convertSetOfStrings(obj.namesOfDoubleAttributes());
-}
-
-
-python::object getPDF_asarray(const PDFCalculator& obj)
-{
-    return convertQuantityType(obj.getPDF());
-}
-
-
-python::object getRDF_asarray(const PDFCalculator& obj)
-{
-    return convertQuantityType(obj.getRDF());
-}
-
-
-python::object getRgrid_asarray(const PDFCalculator& obj)
-{
-    return convertQuantityType(obj.getRgrid());
-}
-
-
-python::object eval_asarray(PDFCalculator& obj, const python::object& stru)
-{
-    return convertQuantityType(obj.eval(stru));
-}
-
-python::object getScatteringFactorTableTypes_asset()
-{
-    using namespace std;
-    using diffpy::srreal::getScatteringFactorTableTypes;
-    set<string> sftt = getScatteringFactorTableTypes();
-    return convertSetOfStrings(sftt);
-}
-
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(setsft_overloads,
         setScatteringFactorTable, 1, 1)
 
 }   // namespace
 
+// Module Definitions --------------------------------------------------------
+
 BOOST_PYTHON_MODULE(pdf_ext)
 {
-    using namespace std;
+    using std::string;
     using namespace boost::python;
-    // initialize numpy arrays
-    import_array();
+    using diffpy::srreal::PDFCalculator;
+    using diffpy::srreal::getScatteringFactorTableTypes;
 
-    def("getScatteringFactorTableTypes", getScatteringFactorTableTypes_asset);
+    // initialize converters
+    initialize_srreal_converters();
+
+    def("getScatteringFactorTableTypes", getScatteringFactorTableTypes);
 
     class_<PDFCalculator>("PDFCalculator")
         .def("_getDoubleAttr", &PDFCalculator::getDoubleAttr)
         .def("_setDoubleAttr", &PDFCalculator::setDoubleAttr)
         .def("_hasDoubleAttr", &PDFCalculator::hasDoubleAttr)
-        .def("_namesOfDoubleAttributes", namesOfDoubleAttributes_asset)
-        .def("getPDF", getPDF_asarray)
-        .def("getRDF", getRDF_asarray)
-        .def("getRgrid", getRgrid_asarray)
-        .def("eval", eval_asarray)
+        .def("_namesOfDoubleAttributes",
+                &PDFCalculator::namesOfDoubleAttributes)
+        .def("getPDF", &PDFCalculator::getPDF)
+        .def("getRDF", &PDFCalculator::getRDF)
+        .def("getRgrid", &PDFCalculator::getRgrid)
+        .def("eval", &PDFCalculator::eval<object>,
+                return_value_policy<copy_const_reference>())
         .def("setScatteringFactorTable",
                 (void(PDFCalculator::*)(const string&)) NULL,
                 setsft_overloads())
@@ -132,3 +70,5 @@ BOOST_PYTHON_MODULE(pdf_ext)
                 return_value_policy<copy_const_reference>())
         ;
 }
+
+// End of file
