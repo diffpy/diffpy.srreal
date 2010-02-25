@@ -2,7 +2,7 @@
 *
 * diffpy.srreal     by DANSE Diffraction group
 *                   Simon J. L. Billinge
-*                   (c) 2009 Trustees of the Columbia University
+*                   (c) 2010 Trustees of the Columbia University
 *                   in the City of New York.  All rights reserved.
 *
 * File coded by:    Pavol Juhas
@@ -12,7 +12,7 @@
 *
 ******************************************************************************
 *
-* pdf_ext - boost python wrap to PDF related C++ classes and functions
+* srreal_ext - boost python interface to srreal function in libdiffpy
 *
 * $Id$
 *
@@ -23,8 +23,10 @@
 #include <boost/python.hpp>
 
 #include <diffpy/srreal/PDFCalculator.hpp>
+#include <diffpy/srreal/BVSCalculator.hpp>
 #include <diffpy/srreal/PythonStructureAdapter.hpp>
 #include <diffpy/srreal/ScatteringFactorTable.hpp>
+
 #include "srreal_converters.hpp"
 
 
@@ -39,18 +41,36 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(setsft_overloads,
 
 // Module Definitions --------------------------------------------------------
 
-BOOST_PYTHON_MODULE(pdf_ext)
+BOOST_PYTHON_MODULE(srreal_ext)
 {
-    using std::string;
     using namespace boost::python;
-    using diffpy::srreal::PDFCalculator;
-    using diffpy::srreal::getScatteringFactorTableTypes;
 
     // initialize converters
-    initialize_srreal_converters();
+    register_srreal_converters();
 
+    // BVSCalculator
+
+    using diffpy::srreal::BVSCalculator;
+
+    class_<BVSCalculator>("BVSCalculator")
+        .def("_getDoubleAttr", &BVSCalculator::getDoubleAttr)
+        .def("_setDoubleAttr", &BVSCalculator::setDoubleAttr)
+        .def("_hasDoubleAttr", &BVSCalculator::hasDoubleAttr)
+        .def("_namesOfDoubleAttributes",
+                &BVSCalculator::namesOfDoubleAttributes)
+        .def("valences", &BVSCalculator::valences)
+        .def("bvmsdiff", &BVSCalculator::bvmsdiff)
+        .def("bvrmsdiff", &BVSCalculator::bvrmsdiff)
+        .def("eval", &BVSCalculator::eval<object>,
+                return_value_policy<copy_const_reference>())
+        ;
+
+    // PDFCalculator
+
+    using diffpy::srreal::getScatteringFactorTableTypes;
     def("getScatteringFactorTableTypes", getScatteringFactorTableTypes);
 
+    using diffpy::srreal::PDFCalculator;
     class_<PDFCalculator>("PDFCalculator")
         .def("_getDoubleAttr", &PDFCalculator::getDoubleAttr)
         .def("_setDoubleAttr", &PDFCalculator::setDoubleAttr)
@@ -63,7 +83,7 @@ BOOST_PYTHON_MODULE(pdf_ext)
         .def("eval", &PDFCalculator::eval<object>,
                 return_value_policy<copy_const_reference>())
         .def("setScatteringFactorTable",
-                (void(PDFCalculator::*)(const string&)) NULL,
+                (void(PDFCalculator::*)(const std::string&)) NULL,
                 setsft_overloads())
         .def("getRadiationType",
                 &PDFCalculator::getRadiationType,

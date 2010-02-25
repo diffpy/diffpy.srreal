@@ -69,10 +69,8 @@ struct stl_to_pyset
 }   // namespace
 
 
-void initialize_srreal_converters()
+void register_srreal_converters()
 {
-    static bool did_initialize = false;
-    if (did_initialize)   return;
     // initialize numpy arrays
     import_array();
     // Data type converters
@@ -80,7 +78,6 @@ void initialize_srreal_converters()
     to_python_converter<QuantityType, QuantityType_to_numpyarray>();
     typedef std::set<std::string> stlsetstring;
     to_python_converter<stlsetstring, stl_to_pyset<stlsetstring> >();
-    did_initialize = true;
 }
 
 // End of file.

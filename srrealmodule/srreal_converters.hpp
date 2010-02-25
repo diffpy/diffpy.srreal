@@ -22,6 +22,6 @@
 #define SRREAL_CONVERTERS_HPP_INCLUDED
 
 /// initialize srreal converters
-void initialize_srreal_converters();
+void register_srreal_converters();
 
 #endif  // SRREAL_CONVERTERS_HPP_INCLUDED
