@@ -54,7 +54,7 @@ gl_opts = [
 # output logger
 outlog = logging.getLogger("colorFromOverlap")
 outlog.setLevel(logging.INFO)
-ch = logging.StreamHandler()
+ch = logging.StreamHandler(sys.stdout)
 ch.setFormatter(logging.Formatter("%(message)s"))
 outlog.addHandler(ch)
 del ch
