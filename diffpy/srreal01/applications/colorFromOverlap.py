@@ -13,6 +13,8 @@ Options:
                             not specified, use composition from structfile1.
   -l, --latpar=a,b,c,A,B,G  override lattice parameters in structfiles.
   -o, --outstru=FILE        Filename for saving the best fitting structure.
+                            Write to the standard output when "-" and suppress
+                            any other output.
       --outfmt=FORMAT       Output format for outstru, by default "discus"
                             Can be any format supported by diffpy.Structure.
   -r, --radia=A1:r1,...     Redefine element radia.  By default use covalent
@@ -30,6 +32,7 @@ Options:
 __id__ = "$Id$"
 
 import sys
+import logging
 
 # global variables
 gl_doc = __doc__
@@ -47,6 +50,15 @@ gl_opts = [
         "h",    "help",
         "V",    "version",
 ]
+
+# output logger
+outlog = logging.getLogger("colorFromOverlap")
+outlog.setLevel(logging.INFO)
+ch = logging.StreamHandler()
+ch.setFormatter(logging.Formatter("%(message)s"))
+outlog.addHandler(ch)
+del ch
+
 
 class ColorFromOverlap(object):
     """Class for running overlap optimization script.
@@ -104,11 +116,11 @@ class ColorFromOverlap(object):
             optcost, optstru = self.optimizeColoring(stru)
             self.optimized_costs.append(optcost)
             self.optimized_structures.append(optstru)
-            print f, optcost, getcoloring(optstru)
+            outlog.info("%s %g %r", f, optcost, getcoloring(optstru))
         cbest, fbest, strubest = min(zip(
             self.optimized_costs, self.structfiles, self.optimized_structures))
-        print "# BEST " + (78 - 7) * '-'
-        print fbest, cbest, getcoloring(strubest)
+        outlog.info("# BEST " + (78 - 7) * '-')
+        outlog.info("%s %g %r", fbest, cbest, getcoloring(strubest))
         self.saveOutstru()
         return
 
@@ -256,7 +268,11 @@ class ColorFromOverlap(object):
         from numpy import argmin
         idx = argmin(self.optimized_costs)
         stru = self.optimized_structures[idx]
-        stru.write(self.outstru, format=self.outfmt)
+        if self.outstru == '-':
+            s = stru.writeStr(format=self.outfmt)
+            sys.stdout.write(s)
+        else:
+            stru.write(self.outstru, format=self.outfmt)
         return
 
 
@@ -379,6 +395,8 @@ class ColorFromOverlap(object):
 
     def _parseOption_outstru(self, a):
         self.outstru = a
+        if self.outstru == "-":
+            outlog.setLevel(logging.WARNING)
         return
 
     def _parseOption_outfmt(self, a):
@@ -459,6 +477,10 @@ def main():
             raise
         print >> sys.stderr, err
         sys.exit(2)
+    return
+
 
 if __name__ == "__main__":
     main()
+
+# End of file
