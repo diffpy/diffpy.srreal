@@ -29,6 +29,7 @@
 
 #include "srreal_converters.hpp"
 
+using diffpy::srreal::PairQuantity;
 using diffpy::srreal::PDFCalculator;
 using diffpy::srreal::getScatteringFactorTableTypes;
 using diffpy::srreal::BVSCalculator;
@@ -44,22 +45,23 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(setsft_overloads,
 
 // Common wrappers
 
-DECLARE_PYARRAY_METHOD_WRAPPER(value, eval_asarray)
-DECLARE_PYSET_METHOD_WRAPPER(namesOfDoubleAttributes, namesOfDoubleAttributes_asset)
+DECLARE_PYARRAY_METHOD_WRAPPER(value, value_asarray)
+DECLARE_PYSET_METHOD_WRAPPER(namesOfDoubleAttributes,
+        namesOfDoubleAttributes_asset)
 
-// PairQuantity::eval is template method, so it needs an explicit wrapper
+// PairQuantity::eval is a template non-constant method,
+// so it needs a special wrapper
 
 template <class T>
-python::object eval_asarray(const T& obj, const python::object& a)
+python::object eval_asarray(T& obj, const python::object& a)
 {
-    python::object rv = convertToNumPyArray(obj.method(a));
+    python::object rv = convertToNumPyArray(obj.eval(a));
     return rv;
 }
 
 
 // BVSCalculator wrappers
 
-DECLARE_PYARRAY_METHOD_WRAPPER(value, value_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(valences, valences_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(bvdiff, bvdiff_asarray)
 
