@@ -104,7 +104,7 @@ BOOST_PYTHON_MODULE(srreal_ext)
 
     def("getScatteringFactorTableTypes", getScatteringFactorTableTypes_asset);
 
-    class_<PDFCalculator>("PDFCalculator")
+    class_<PDFCalculator>("PDFCalculator_ext")
         .def("_getDoubleAttr", &PDFCalculator::getDoubleAttr)
         .def("_setDoubleAttr", &PDFCalculator::setDoubleAttr)
         .def("_hasDoubleAttr", &PDFCalculator::hasDoubleAttr)
