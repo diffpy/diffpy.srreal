@@ -19,4 +19,3 @@ from profilecalculator import *
 # pdfcalculator
 from pdfcalculator import *
 
-

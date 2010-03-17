@@ -89,85 +89,31 @@ ObjCryst::Crystal* makeZnS()
     return crystal;
 }
 
-void test1()
+ObjCryst::Crystal* makeCaF2()
 {
-    ObjCryst::Crystal& crystal = *makeLaMnO3();
-
-    BondIterator biter(crystal, 0, 5);
-    vector<ShiftedSC> unitcell = biter.getUnitCell();
-    for(size_t i=0; i<unitcell.size(); ++i)
-    {
-        cout << unitcell[i] << endl;
-    }
-
-    ObjCryst::ScatteringComponentList scl 
-        = crystal.GetScatteringComponentList();
-    BondPair bp;
-    for(int i=0; i < scl.GetNbComponent(); ++i)
-    {
-        biter.setScatteringComponent(scl(i));
-        cout << "---- " << i << " ----" << endl;
-
-        for(biter.rewind(); !biter.finished(); biter.next())
-        {
-            bp = biter.getBondPair();
-
-            cout << bp.getDistance() << " ";
-            cout << bp << endl;
-        }
-    }
-
+    // Create the ZnS structure
+    ObjCryst::Crystal* crystal 
+        = new ObjCryst::Crystal(5.4625, 5.4625, 5.4625, 90, 90, 120, "F m -3 m");
+    ObjCryst::ScatteringPowerAtom* casp 
+        = new ObjCryst::ScatteringPowerAtom("Ca", "Ca");
+    ObjCryst::ScatteringPowerAtom* fsp 
+        = new ObjCryst::ScatteringPowerAtom("F", "F");
+    casp->SetBiso(8*M_PI*M_PI*0.003);
+    fsp->SetBiso(8*M_PI*M_PI*0.003);
+    // Atoms only belong to one crystal. They must be allocated in the heap.
+    ObjCryst::Atom *caatomp = 
+        new ObjCryst::Atom(0, 0, 0, "Ca", casp);
+    ObjCryst::Atom *fatomp = 
+        new ObjCryst::Atom(0.25, 0.25, 0.25, "F", fsp);
+    crystal->AddScatterer(caatomp);
+    crystal->AddScatterer(fatomp);
+    return crystal;
 }
 
-void test2()
-{
-    ObjCryst::Crystal& crystal = *makeZnS();
-
-    std::vector<ShiftedSC> uc = getUnitCell(crystal);
-
-    std::vector<ShiftedSC>::iterator ssciter;
-
-    for(ssciter=uc.begin(); ssciter!=uc.end(); ++ssciter)
-    {
-        cout << *ssciter << endl;
-    }
-
-    BondIterator biter(crystal, 0, 5);
-    ObjCryst::ScatteringComponentList scl 
-        = crystal.GetScatteringComponentList();
-    BondPair bp;
-    double dist = 0;
-    for(int i=0; i < scl.GetNbComponent(); ++i)
-    {
-        biter.setScatteringComponent(scl(i));
-        cout << "---- " << i << " ----" << endl;
-
-        for(biter.rewind(); !biter.finished(); biter.next())
-        {
-            bp = biter.getBondPair();
-            dist = 0;
-
-            for(int i = 0; i < 3; ++i )
-            {
-                dist += pow(bp.getXYZ1(i)-bp.getXYZ2(i),2);
-            }
-            dist = sqrt(dist);
-
-            cout << dist << " ";
-            cout << bp << endl;
-        }
-    }
-    ObjCryst::RefinablePar x = crystal.GetScatt("Zn").GetPar("x");
-    x.SetValue(0);
-    biter.rewind();
-    biter.rewind();
-
-}
-
-void test3()
+void calculateTest( ObjCryst::Crystal* (*f)() )
 {
 
-    ObjCryst::Crystal& crystal = *makeLaMnO3();
+    ObjCryst::Crystal& crystal = *(f());
 
     // Create the calculation points
     float rmin, rmax, dr;
@@ -193,10 +139,10 @@ void test3()
 
     float *pdf = pdfcalc.getPDF();
 
-    for(size_t i=0; i<numpoints; ++i)
-    {
-        cout << rvals[i] << "  " << pdf[i] << endl;
-    }
+    //for(size_t i=0; i<numpoints; ++i)
+    //{
+    //    cout << rvals[i] << "  " << pdf[i] << endl;
+    //}
 
     delete [] rvals;
     delete [] pdf;
@@ -205,10 +151,10 @@ void test3()
 
 }
 
-void speedTest()
+void speedTest( ObjCryst::Crystal* (*f)() )
 {
 
-    ObjCryst::Crystal& crystal = *makeLaMnO3();
+    ObjCryst::Crystal& crystal = *(f());
     // Create the calculation points
     float rmin, rmax, dr;
     rmin = 0;
@@ -237,34 +183,10 @@ void speedTest()
 
     // Change an x-coordinate
     cout << "change 1 scatt" << endl;
-    ObjCryst::Scatterer& scatla = crystal.GetScatt("La1");
-    scatla.GetClockScatterer().Print();
-    scatla.SetX(0.8);
-    scatla.GetClockScatterer().Print();
-    pdfcalc.getPDF();
-
-    // Change an thermal parameter
-    cout << "Change Biso" << endl;
-    ObjCryst::ScatteringPower& sp = crystal.GetScatteringPower("La1");
-    sp.SetBiso(8*M_PI*M_PI*0.008);
-    pdfcalc.getPDF();
-
-    // Change another atom
-    cout << "Change in atom coordinate" << endl;
-    ObjCryst::Scatterer& scato1 = crystal.GetScatt("O1");
-    scato1.GetClockScatterer().Print();
-    scato1.SetX(0.05);
-    scato1.GetClockScatterer().Print();
-    pdfcalc.getPDF();
-
-    // Change properties of two atoms. Should
-    cout << "Change in two atoms" << endl;
-    scatla.GetClockScatterer().Print();
-    scatla.SetX(0.9);
-    scatla.GetClockScatterer().Print();
-    scato1.GetClockScatterer().Print();
-    scato1.SetX(0.07);
-    scato1.GetClockScatterer().Print();
+    ObjCryst::Scatterer& scat = crystal.GetScatt(0);
+    scat.GetClockScatterer().Print();
+    scat.SetX(0.8);
+    scat.GetClockScatterer().Print();
     pdfcalc.getPDF();
 
     return;
@@ -272,5 +194,5 @@ void speedTest()
 
 int main()
 {
-    speedTest();
+    speedTest(&makeNi);
 }

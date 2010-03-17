@@ -5,11 +5,11 @@
 #include <gsl/gsl_fft_complex.h>
 #include <gsl/gsl_errno.h>
 #include <cassert>
+#include <cstdlib>
 
 #include "profilecalculator.h"
 #include "pdfcalculator.h"
 
-#define NDEBUG 1
 /****************************************************************************/
 
 namespace {
@@ -209,10 +209,16 @@ getCorrectedProfile(float* df)
         y2 = ffta[2*cridx];
         profile[l] = y2 - (y2-y1) * (cr - rvals[l])/cdr;
 
-        // Apply the resolution correction and scale factor
+        // Apply scale factor
         profile[l] *= scale;
-        if(qdamp != 0)
+    }
+
+    // Apply the resolution correction
+    if(qdamp != 0)
+    {
+        for(size_t l = 0; l < numpoints; ++l)
         {
+
             profile[l] *= exp(-0.5*pow(qdamp*rvals[l],2));
         }
     }
@@ -251,7 +257,6 @@ updateRDF()
     else
     {
         bool reshape = 0;
-        bool recalc = 0;
         // If any scatterers have changed, we modify the RDF
         for(int i=0; i<crystal.GetNbScatterer(); ++i)
         {

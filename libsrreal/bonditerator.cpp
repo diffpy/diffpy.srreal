@@ -199,7 +199,8 @@ update()
     //std::cout << "iterator clock: ";
     //itclock.Print();
 
-    // FIXME - don't need to recalculate when only atom occupancies change.
+    // FIXME - don't need to recalculate when only atom occupancies change or
+    // Biso values change.
     if(itclock < crystal.GetClockScattCompList()) 
     {
         //std::cout << "crystal changed" << std::endl;
@@ -211,13 +212,12 @@ update()
         calculateDegeneracy();
 
         // Synchronize the clocks
-        itclock = crystal.GetClockMaster();
+        itclock = crystal.GetClockScattCompList();
     }
 
     if(rmax != 0)
     {
 
-    
         if(latclock >= crystal.GetClockLatticePar()) return;
         latclock = crystal.GetClockLatticePar();
 
@@ -236,8 +236,7 @@ update()
 }
 
 
-/* This increments the iterator. We don't assume any symmetry in the position of
- * the origin atom, so the degeneracy is 1.
+/* This increments the iterator. 
  *
  * Returns true when the incrementer progressed, false otherwise.
  */
@@ -325,13 +324,16 @@ calculateDegeneracy()
 
     if(sc == NULL) return;
 
+    // Check if were dealing with 'P1' symmetry. If so, then we can speed this
+    // up a bit.
     if(crystal.GetSpaceGroup().GetName() == ObjCryst::SpaceGroup().GetName())
     {
         degen = 1;
         return;
     }
 
-    // FIXME This is a slow way to do things, but it works for now.
+    // Count the scattering components in the unit cell that are identical to
+    // the sc.
     for(iteri=sscvec.begin(); iteri != sscvec.end(); ++iteri)
     {
         if( (*(iteri->sc)) == *sc ) ++degen;
@@ -420,9 +422,6 @@ operator==(const ShiftedSC& rhs) const
 /* Utility functions */
 
 /* Get the conventional unit cell from the crystal.
- *
- * FIXME - This is the slowest part of the PDF calculation. It is worthwhile to
- * find ways to speed it up.
  */
 vector<ShiftedSC> 
 SrReal::
@@ -487,6 +486,7 @@ getUnitCell(const ObjCryst::Crystal& crystal)
             //std::cout << workssc << std::endl;
             workset.insert(workssc);
         }
+
     }
 
     //std::cout << "Unique Scatterers" << std::endl;

@@ -26,6 +26,9 @@ class BondWidthCalculatorWrap
         : BondWidthCalculator()
         {}
 
+    // Do not wrap. Workaround for missing copy consructor in RefinableObj.
+    BondWidthCalculatorWrap(const BondWidthCalculatorWrap& other) {}
+
     float default_calculate(BondPair& bp)
     { return BondWidthCalculator::calculate(bp); }
 
