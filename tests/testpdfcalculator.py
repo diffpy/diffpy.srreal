@@ -115,7 +115,6 @@ class TestPDFCalculator(unittest.TestCase):
         self.pdfcalc.rmin = 1
         self.pdfcalc.rmax = 30.0001
         # apply data scale
-        self.tio2rutile[2].U33 *= 1.3
         self.pdfcalc(self.tio2rutile)
         self.pdfcalc.scale *= dscale
         gcalc = self.pdfcalc.getPDF()
