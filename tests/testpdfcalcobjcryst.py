@@ -131,7 +131,8 @@ if __name__ == '__main__':
     stru = Structure(filename='testdata/TiO2_rutile-fit.cif')
     pcstru = _makePDFCalculator(stru, cfg)
     crst = _loadTestStructure('TiO2_rutile-fit.cif')
-    pccrst = _makePDFCalculator(stru, cfg)
+    pccrst = _makePDFCalculator(crst, cfg)
     import pylab
     pylab.plot(r, gobs, pcstru.getRgrid(), pcstru.getPDF(),
             pccrst.getRgrid(), pccrst.getPDF())
+    pylab.show()
