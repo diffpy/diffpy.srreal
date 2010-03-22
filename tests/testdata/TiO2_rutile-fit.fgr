@@ -1,10 +1,11 @@
 ##### PDFgui fit
-stype=X  x-ray scattering
-qmax=26.00
-qdamp=0.0665649
-dscale=0.655857
-rmin=1
-rmax=30
+# type = X
+# qmax = 26.00
+# qdamp = 0.0665649
+# scale = 0.655857
+# rmin = 1
+# rmax = 30.0001
+# delta2 = 2.309118
 ##### start data
 #L r(A) G(r)
 1 -0.515795

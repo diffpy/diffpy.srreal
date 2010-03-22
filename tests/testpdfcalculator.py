@@ -107,7 +107,7 @@ class TestPDFCalculator(unittest.TestCase):
         """check PDFCalculator.eval() on anisotropic rutile data
         """
         frutile = os.path.join(testdata_dir, 'TiO2_rutile-fit.fgr')
-        gpf2 = numpy.loadtxt(frutile, usecols=(1,), skiprows=7)
+        gpf2 = numpy.loadtxt(frutile, usecols=(1,))
         # configure calculator according to testdata/TiO2_ruitile-fit.fgr
         self.pdfcalc.qmax = 26
         self.pdfcalc.qdamp = 0.0665649
