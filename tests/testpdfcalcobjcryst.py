@@ -57,6 +57,9 @@ def _makePDFCalculator(crst, cfgdict):
     if 'type' in cfgdict:
         pdfc.setScatteringFactorTable(cfgdict['type'])
     pdfc.eval(crst)
+    # avoid metadata override by PDFFitStructure
+    for k, v in pdfcargs.items():
+        setattr(pdfc, k, v)
     return pdfc
 
 
@@ -108,10 +111,27 @@ class TestPDFCalcObjcryst(unittest.TestCase):
         return
 
 
+    def test_rutileaniso(self):
+        self._comparePDFs('rutileaniso',
+                'TiO2_rutile-fit.fgr', 'TiO2_rutile-fit.cif')
+        print self.rutileaniso_mxnd
+        self.failUnless(self.rutileaniso_mxnd < 0.012)
+        return
+
+
 # End of class TestPDFCalcObjcryst
 
 
 if __name__ == '__main__':
-    unittest.main()
-
-# End of file
+#   unittest.main()
+    # temporary comparison of diffpy.Structure and objcryst results
+    # to be removed once this gets fixed.
+    from diffpy.Structure import Structure
+    r, gobs, cfg = _loadExpectedPDF('TiO2_rutile-fit.fgr')
+    stru = Structure(filename='testdata/TiO2_rutile-fit.cif')
+    pcstru = _makePDFCalculator(stru, cfg)
+    crst = _loadTestStructure('TiO2_rutile-fit.cif')
+    pccrst = _makePDFCalculator(stru, cfg)
+    import pylab
+    pylab.plot(r, gobs, pcstru.getRgrid(), pcstru.getPDF(),
+            pccrst.getRgrid(), pccrst.getPDF())
