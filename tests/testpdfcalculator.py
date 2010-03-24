@@ -30,8 +30,8 @@ def _maxNormDiff(yobs, ycalc):
     '''Returned maximum difference normalized by RMS of the yobs
     '''
     yobsa = numpy.array(yobs)
-    yrms = numpy.sqrt(numpy.mean(yobsa ** 2))
-    ynmdiff = (yobsa - ycalc) / yrms
+    obsmax = numpy.max(numpy.fabs(yobsa)) or 1
+    ynmdiff = (yobsa - ycalc) / obsmax
     rv = max(numpy.fabs(ynmdiff))
     return rv
 
@@ -100,7 +100,7 @@ class TestPDFCalculator(unittest.TestCase):
         self.pdfcalc._setDoubleAttr('rmax', 10.0001)
         self.pdfcalc.eval(self.nickel)
         gcalc = self.pdfcalc.getPDF()
-        self.failUnless(_maxNormDiff(gpf2, gcalc) < 1e-3)
+        self.failUnless(_maxNormDiff(gpf2, gcalc) < 1e-5)
         return
 
     def test_eval_rutile(self):
@@ -118,9 +118,12 @@ class TestPDFCalculator(unittest.TestCase):
         self.pdfcalc(self.tio2rutile)
         self.pdfcalc.scale *= dscale
         gcalc = self.pdfcalc.getPDF()
-        # termination at rmin is poorly cut in PDFfit2, compare from 1.5
-        mxnd = _maxNormDiff(gpf2[50:], gcalc[50:])
-        self.failUnless(mxnd < 0.012)
+        # termination at rmin is poorly cut in PDFfit2
+        mxnd = _maxNormDiff(gpf2, gcalc)
+        self.failUnless(mxnd < 0.057)
+        # more accurate from 1.5
+        mxnd1 = _maxNormDiff(gpf2[50:], gcalc[50:])
+        self.failUnless(mxnd1 < 0.0056)
         return
 
 

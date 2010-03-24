@@ -13,6 +13,8 @@ import unittest
 import numpy
 from diffpy.srreal.pdfcalculator import PDFCalculator
 
+from testpdfcalculator import _maxNormDiff
+
 # useful variables
 thisfile = locals().get('__file__', 'file.py')
 tests_dir = os.path.dirname(os.path.abspath(thisfile))
@@ -63,23 +65,8 @@ def _makePDFCalculator(crst, cfgdict):
     return pdfc
 
 
-def _maxNormDiff(yobs, ycalc):
-    '''Returned maximum difference normalized by RMS of the yobs
-    '''
-    yobsa = numpy.array(yobs)
-    yrms = numpy.sqrt(numpy.mean(yobsa ** 2))
-    ynmdiff = (yobsa - ycalc) / yrms
-    rv = max(numpy.fabs(ynmdiff))
-    return rv
-
-
 ##############################################################################
 class TestPDFCalcObjcryst(unittest.TestCase):
-
-    # constants
-
-    tol_maxnormdiff = 1e-6
-
 
     def _comparePDFs(self, nickname, pdfbasename, cifbasename):
         def setself(**kwtoset):
@@ -100,21 +87,20 @@ class TestPDFCalcObjcryst(unittest.TestCase):
     def test_CdSeN(self):
         self._comparePDFs('cdsen',
                 'CdSe_cadmoselite_N.fgr', 'CdSe_cadmoselite.cif')
-        self.failUnless(self.cdsen_mxnd < self.tol_maxnormdiff)
+        self.failUnless(self.cdsen_mxnd < 0.005)
         return
 
 
     def test_CdSeX(self):
         self._comparePDFs('cdsex',
                 'CdSe_cadmoselite_X.fgr', 'CdSe_cadmoselite.cif')
-        self.failUnless(self.cdsex_mxnd < self.tol_maxnormdiff)
+        self.failUnless(self.cdsex_mxnd < 0.005)
         return
 
 
     def test_rutileaniso(self):
         self._comparePDFs('rutileaniso',
                 'TiO2_rutile-fit.fgr', 'TiO2_rutile-fit.cif')
-        print self.rutileaniso_mxnd
         self.failUnless(self.rutileaniso_mxnd < 0.012)
         return
 
@@ -132,7 +118,8 @@ if __name__ == '__main__':
     pcstru = _makePDFCalculator(stru, cfg)
     crst = _loadTestStructure('TiO2_rutile-fit.cif')
     pccrst = _makePDFCalculator(crst, cfg)
-    import pylab
-    pylab.plot(r, gobs, pcstru.getRgrid(), pcstru.getPDF(),
+    from pylab import *
+    plot(r, gobs, pcstru.getRgrid(), pcstru.getPDF(),
             pccrst.getRgrid(), pccrst.getPDF())
-    pylab.show()
+    show(0)
+    import IPython.Shell; IPython.Shell.IPShellEmbed(argv=[])()
