@@ -22,6 +22,7 @@
 
 #include <boost/python.hpp>
 
+#include <diffpy/srreal/DebyePDFCalculator.hpp>
 #include <diffpy/srreal/PDFCalculator.hpp>
 #include <diffpy/srreal/BVSCalculator.hpp>
 #include <diffpy/srreal/PythonStructureAdapter.hpp>
@@ -30,6 +31,7 @@
 #include "srreal_converters.hpp"
 
 using diffpy::srreal::PairQuantity;
+using diffpy::srreal::DebyePDFCalculator;
 using diffpy::srreal::PDFCalculator;
 using diffpy::srreal::getScatteringFactorTableTypes;
 using diffpy::srreal::BVSCalculator;
@@ -65,11 +67,13 @@ python::object eval_asarray(T& obj, const python::object& a)
 DECLARE_PYARRAY_METHOD_WRAPPER(valences, valences_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(bvdiff, bvdiff_asarray)
 
-// PDFCalculator wrappers
+// DebyePDFCalculator and PDFCalculator wrappers
 
 DECLARE_PYARRAY_METHOD_WRAPPER(getPDF, getPDF_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(getRDF, getRDF_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(getRgrid, getRgrid_asarray)
+DECLARE_PYARRAY_METHOD_WRAPPER(getF, getF_asarray)
+DECLARE_PYARRAY_METHOD_WRAPPER(getQgrid, getQgrid_asarray)
 DECLARE_PYSET_FUNCTION_WRAPPER(getScatteringFactorTableTypes,
         getScatteringFactorTableTypes_asset)
 
@@ -100,9 +104,32 @@ BOOST_PYTHON_MODULE(srreal_ext)
         .def("bvrmsdiff", &BVSCalculator::bvrmsdiff)
         ;
 
-    // PDFCalculator
+    // DebyePDFCalculator
 
     def("getScatteringFactorTableTypes", getScatteringFactorTableTypes_asset);
+
+    class_<DebyePDFCalculator>("DebyePDFCalculator_ext")
+        .def("_getDoubleAttr", &DebyePDFCalculator::getDoubleAttr)
+        .def("_setDoubleAttr", &DebyePDFCalculator::setDoubleAttr)
+        .def("_hasDoubleAttr", &DebyePDFCalculator::hasDoubleAttr)
+        .def("_namesOfDoubleAttributes",
+                namesOfDoubleAttributes_asset<DebyePDFCalculator>)
+        .def("value", value_asarray<DebyePDFCalculator>)
+        .def("eval", eval_asarray<DebyePDFCalculator>)
+        .def("getPDF", getPDF_asarray<DebyePDFCalculator>)
+        .def("getRgrid", getRgrid_asarray<DebyePDFCalculator>)
+        .def("getF", getF_asarray<DebyePDFCalculator>)
+        .def("getQgrid", getQgrid_asarray<DebyePDFCalculator>)
+        .def("setOptimumQstep", &DebyePDFCalculator::setOptimumQstep)
+        .def("isOptimumQstep", &DebyePDFCalculator::isOptimumQstep)
+        .def("setScatteringFactorTable",
+                (void(DebyePDFCalculator::*)(const std::string&)) NULL,
+                setsft_overloads())
+        .def("getRadiationType",
+                &DebyePDFCalculator::getRadiationType,
+                return_value_policy<copy_const_reference>())
+        ;
+    // PDFCalculator
 
     class_<PDFCalculator>("PDFCalculator_ext")
         .def("_getDoubleAttr", &PDFCalculator::getDoubleAttr)
