@@ -30,11 +30,14 @@
 
 #include "srreal_converters.hpp"
 
+using diffpy::srreal::getPeakProfileTypes;
+using diffpy::srreal::getPeakWidthModelTypes;
+using diffpy::srreal::getScatteringFactorTableTypes;
 using diffpy::srreal::PairQuantity;
+using diffpy::srreal::BVSCalculator;
 using diffpy::srreal::DebyePDFCalculator;
 using diffpy::srreal::PDFCalculator;
-using diffpy::srreal::getScatteringFactorTableTypes;
-using diffpy::srreal::BVSCalculator;
+
 using namespace diffpy::srreal_converters;
 using namespace boost;
 
@@ -44,6 +47,8 @@ namespace {
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(setsft_overloads,
         setScatteringFactorTable, 1, 1)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(setpkf_overloads,
+        setPeakProfile, 1, 1)
 
 // Common wrappers
 
@@ -74,6 +79,10 @@ DECLARE_PYARRAY_METHOD_WRAPPER(getRDF, getRDF_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(getRgrid, getRgrid_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(getF, getF_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(getQgrid, getQgrid_asarray)
+DECLARE_PYSET_FUNCTION_WRAPPER(getPeakProfileTypes,
+        getPeakProfileTypes_asset)
+DECLARE_PYSET_FUNCTION_WRAPPER(getPeakWidthModelTypes,
+        getPeakWidthModelTypes_asset)
 DECLARE_PYSET_FUNCTION_WRAPPER(getScatteringFactorTableTypes,
         getScatteringFactorTableTypes_asset)
 
@@ -88,16 +97,19 @@ BOOST_PYTHON_MODULE(srreal_ext)
     // initialize numpy arrays
     import_array();
 
+    class_<PairQuantity>("PairQuantity")
+        .def("_getDoubleAttr", &PairQuantity::getDoubleAttr)
+        .def("_setDoubleAttr", &PairQuantity::setDoubleAttr)
+        .def("_hasDoubleAttr", &PairQuantity::hasDoubleAttr)
+        .def("_namesOfDoubleAttributes",
+                namesOfDoubleAttributes_asset<PairQuantity>)
+        .def("value", value_asarray<PairQuantity>)
+        .def("eval", eval_asarray<PairQuantity>)
+        ;
+
     // BVSCalculator
 
-    class_<BVSCalculator>("BVSCalculator")
-        .def("_getDoubleAttr", &BVSCalculator::getDoubleAttr)
-        .def("_setDoubleAttr", &BVSCalculator::setDoubleAttr)
-        .def("_hasDoubleAttr", &BVSCalculator::hasDoubleAttr)
-        .def("_namesOfDoubleAttributes",
-                namesOfDoubleAttributes_asset<BVSCalculator>)
-        .def("value", value_asarray<BVSCalculator>)
-        .def("eval", eval_asarray<BVSCalculator>)
+    class_<BVSCalculator, bases<PairQuantity> >("BVSCalculator")
         .def("valences", valences_asarray<BVSCalculator>)
         .def("bvdiff", bvdiff_asarray<BVSCalculator>)
         .def("bvmsdiff", &BVSCalculator::bvmsdiff)
@@ -106,16 +118,11 @@ BOOST_PYTHON_MODULE(srreal_ext)
 
     // DebyePDFCalculator
 
+    def("getPeakProfileTypes", getPeakProfileTypes_asset);
+    def("getPeakWidthModelTypes", getPeakWidthModelTypes_asset);
     def("getScatteringFactorTableTypes", getScatteringFactorTableTypes_asset);
 
-    class_<DebyePDFCalculator>("DebyePDFCalculator_ext")
-        .def("_getDoubleAttr", &DebyePDFCalculator::getDoubleAttr)
-        .def("_setDoubleAttr", &DebyePDFCalculator::setDoubleAttr)
-        .def("_hasDoubleAttr", &DebyePDFCalculator::hasDoubleAttr)
-        .def("_namesOfDoubleAttributes",
-                namesOfDoubleAttributes_asset<DebyePDFCalculator>)
-        .def("value", value_asarray<DebyePDFCalculator>)
-        .def("eval", eval_asarray<DebyePDFCalculator>)
+    class_<DebyePDFCalculator, bases<PairQuantity> >("DebyePDFCalculator_ext")
         .def("getPDF", getPDF_asarray<DebyePDFCalculator>)
         .def("getRgrid", getRgrid_asarray<DebyePDFCalculator>)
         .def("getF", getF_asarray<DebyePDFCalculator>)
@@ -131,17 +138,13 @@ BOOST_PYTHON_MODULE(srreal_ext)
         ;
     // PDFCalculator
 
-    class_<PDFCalculator>("PDFCalculator_ext")
-        .def("_getDoubleAttr", &PDFCalculator::getDoubleAttr)
-        .def("_setDoubleAttr", &PDFCalculator::setDoubleAttr)
-        .def("_hasDoubleAttr", &PDFCalculator::hasDoubleAttr)
-        .def("_namesOfDoubleAttributes",
-                namesOfDoubleAttributes_asset<PDFCalculator>)
-        .def("value", value_asarray<PDFCalculator>)
-        .def("eval", eval_asarray<PDFCalculator>)
+    class_<PDFCalculator, bases<PairQuantity> >("PDFCalculator_ext")
         .def("getPDF", getPDF_asarray<PDFCalculator>)
         .def("getRDF", getRDF_asarray<PDFCalculator>)
         .def("getRgrid", getRgrid_asarray<PDFCalculator>)
+        .def("setPeakProfile",
+                (void(PDFCalculator::*)(const std::string&)) NULL,
+                setpkf_overloads())
         .def("setScatteringFactorTable",
                 (void(PDFCalculator::*)(const std::string&)) NULL,
                 setsft_overloads())
