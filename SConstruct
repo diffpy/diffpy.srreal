@@ -34,9 +34,6 @@ vars.Add(BoolVariable('profile',
 vars.Update(env)
 env.Help(vars.GenerateHelpText(env))
 
-# Search for headers in the srrealmodule directory
-env.PrependUnique(CPPPATH="srrealmodule")
-
 # Declare external libraries.
 good_python_flags = lambda n : (
     n not in ('-g', '-Wstrict-prototypes'))
@@ -60,18 +57,9 @@ if env['profile']:
     env.AppendUnique(CCFLAGS='-pg')
     env.AppendUnique(LINKFLAGS='-pg')
 
-module_sources = env.Glob('srrealmodule/*.cpp')
+builddir = env.Dir('build/' + env['build'])
+Export('env')
 
-# Targets
-
-module = env.SharedLibrary('srrealmodule/srreal_ext',
-        module_sources, SHLIBPREFIX='')
-Alias('module', module)
-
-# install in a development mode
-Alias('develop', Install('diffpy/srreal', module))
-
-# default targets:
-Default(module)
+env.SConscript('srrealmodule/SConscript', variant_dir=builddir)
 
 # vim: ft=python
