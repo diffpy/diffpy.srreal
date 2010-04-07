@@ -27,6 +27,9 @@
 #include <boost/python.hpp>
 #include <numpy/arrayobject.h>
 
+#include <diffpy/srreal/R3linalg.hpp>
+#include <diffpy/srreal/PairQuantity.hpp>
+
 namespace diffpy {
 namespace srreal_converters {
 
@@ -62,19 +65,34 @@ namespace srreal_converters {
     } \
 
 
-/// template function for converting STL container to numpy array of doubles
-template <class T>
+/// template function for converting iterables to numpy array of doubles
+template <class Iter>
 ::boost::python::object
-convertToNumPyArray(const T& value)
+convertToNumPyArray(Iter first, Iter last)
 {
-    using ::std::copy;
     using namespace ::boost;
-    npy_intp sz = value.size();
+    npy_intp sz = last - first;
     python::object rv(
             python::handle<>(PyArray_SimpleNew(1, &sz, PyArray_DOUBLE)));
     double* rvdata = (double*) PyArray_DATA((PyArrayObject*) rv.ptr());
-    copy(value.begin(), value.end(), rvdata);
+    ::std::copy(first, last, rvdata);
     return rv;
+}
+
+
+/// specialization for R3::Vector
+inline ::boost::python::object
+convertToNumPyArray(const ::diffpy::srreal::R3::Vector& value)
+{
+    return convertToNumPyArray(value.data(), value.data() + value.length());
+}
+
+
+/// specialization for QuantityType
+inline ::boost::python::object
+convertToNumPyArray(const ::diffpy::srreal::QuantityType& value)
+{
+    return convertToNumPyArray(value.begin(), value.end());
 }
 
 
