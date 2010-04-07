@@ -41,6 +41,10 @@ using diffpy::srreal::PDFCalculator;
 using namespace diffpy::srreal_converters;
 using namespace boost;
 
+// Declaration of the external wrappers --------------------------------------
+
+void wrap_BaseBondGenerator();
+
 // Result converters ---------------------------------------------------------
 
 namespace {
@@ -96,6 +100,9 @@ BOOST_PYTHON_MODULE(srreal_ext)
 
     // initialize numpy arrays
     import_array();
+
+    // execute external wrappers
+    wrap_BaseBondGenerator();
 
     class_<PairQuantity>("PairQuantity")
         .def("_getDoubleAttr", &PairQuantity::getDoubleAttr)
