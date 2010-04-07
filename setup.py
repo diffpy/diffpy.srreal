@@ -17,12 +17,14 @@ import fix_setuptools_chmod
 ext_kws = {
         'libraries' : ['diffpy'],
         'undef_macros' : ['NDEBUG'],
+        'define_macros' : [
+            ('BUILDING_WITH_DISTUTILS', None),
+            ],
         'extra_compile_args' : [],
         'extra_link_args' : [],
 }
 srreal_ext = Extension('diffpy.srreal.srreal_ext', [
     'srrealmodule/srreal_ext.cpp',
-    'srrealmodule/wrap_BaseBondGenerator.cpp',
     ], **ext_kws)
 
 # define distribution

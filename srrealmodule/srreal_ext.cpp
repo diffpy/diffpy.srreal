@@ -30,6 +30,17 @@
 
 #include "srreal_converters.hpp"
 
+// Declaration of the external wrappers --------------------------------------
+
+void wrap_BaseBondGenerator();
+
+// Speed up distutils build by including all the wrappers here.
+// As an added benefit, setup.py needs no update with more wrappers added.
+
+#ifdef BUILDING_WITH_DISTUTILS
+#include "wrap_BaseBondGenerator.cpp"
+#endif  // BUILDING_WITH_DISTUTILS
+
 using diffpy::srreal::getPeakProfileTypes;
 using diffpy::srreal::getPeakWidthModelTypes;
 using diffpy::srreal::getScatteringFactorTableTypes;
@@ -41,9 +52,6 @@ using diffpy::srreal::PDFCalculator;
 using namespace diffpy::srreal_converters;
 using namespace boost;
 
-// Declaration of the external wrappers --------------------------------------
-
-void wrap_BaseBondGenerator();
 
 // Result converters ---------------------------------------------------------
 
