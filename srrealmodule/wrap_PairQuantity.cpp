@@ -36,6 +36,7 @@
 #include <diffpy/srreal/PythonStructureAdapter.hpp>
 
 #include "srreal_converters.hpp"
+#include "srreal_docstrings.hpp"
 
 namespace srrealmodule {
 namespace nswrap_PairQuantity {
@@ -162,8 +163,8 @@ void wrap_PairQuantity()
     using diffpy::Attributes;
 
     class_<PairQuantity, bases<Attributes> >("BasePairQuantity_ext")
-        .def("value", value_asarray<PairQuantityWrap>)
-        .def("eval", eval_asarray)
+        .def("value", value_asarray<PairQuantityWrap>, doc_BasePairQuantity_value)
+        .def("eval", eval_asarray, doc_BasePairQuantity_eval)
         ;
 
     class_<PairQuantityWrap, noncopyable,

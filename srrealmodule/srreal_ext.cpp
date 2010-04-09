@@ -32,6 +32,12 @@
 
 // Declaration of the external wrappers --------------------------------------
 
+namespace srrealmodule {
+void wrap_Attributes();
+void wrap_BaseBondGenerator();
+void wrap_PairQuantity();
+}   // namespace srrealmodule
+
 // Speed up distutils build by including all the wrappers here.
 // As an added benefit setup.py may stay the same as more files are used.
 
@@ -40,12 +46,6 @@
 #include "wrap_BaseBondGenerator.cpp"
 #include "wrap_PairQuantity.cpp"
 #endif  // BUILDING_WITH_DISTUTILS
-
-namespace srrealmodule {
-void wrap_Attributes();
-void wrap_BaseBondGenerator();
-void wrap_PairQuantity();
-}   // namespace srrealmodule
 
 // Result converters ---------------------------------------------------------
 

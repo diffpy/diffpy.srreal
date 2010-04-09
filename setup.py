@@ -26,6 +26,7 @@ ext_kws = {
 srreal_ext = Extension('diffpy.srreal.srreal_ext', [
     'srrealmodule/srreal_ext.cpp',
     'srrealmodule/srreal_converters.cpp',
+    'srrealmodule/srreal_docstrings.cpp',
     ], **ext_kws)
 
 # define distribution
