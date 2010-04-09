@@ -101,7 +101,7 @@ class TestPDFCalcObjcryst(unittest.TestCase):
     def test_rutileaniso(self):
         self._comparePDFs('rutileaniso',
                 'TiO2_rutile-fit.fgr', 'TiO2_rutile-fit.cif')
-        self.failUnless(self.rutileaniso_mxnd < 0.012)
+        self.failUnless(self.rutileaniso_mxnd < 0.057)
         return
 
 
