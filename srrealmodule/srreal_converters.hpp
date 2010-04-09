@@ -65,12 +65,26 @@ namespace srreal_converters {
     } \
 
 
+/// flag for imported numpy array
+static bool did_import_array;
+
+/// helper function for importing numpy array - once and only once.
+inline
+void initialize_numpy()
+{
+    if (did_import_array)  return;
+    import_array();
+    did_import_array = true;
+}
+
+
 /// template function for converting iterables to numpy array of doubles
 template <class Iter>
 ::boost::python::object
 convertToNumPyArray(Iter first, Iter last)
 {
     using namespace ::boost;
+    initialize_numpy();
     npy_intp sz = last - first;
     python::object rv(
             python::handle<>(PyArray_SimpleNew(1, &sz, PyArray_DOUBLE)));
