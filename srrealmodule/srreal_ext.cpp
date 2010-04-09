@@ -32,12 +32,8 @@
 
 // Declaration of the external wrappers --------------------------------------
 
-void wrap_Attributes();
-void wrap_BaseBondGenerator();
-void wrap_PairQuantity();
-
 // Speed up distutils build by including all the wrappers here.
-// As an added benefit, setup.py needs no update with more wrappers added.
+// As an added benefit setup.py may stay the same as more files are used.
 
 #ifdef BUILDING_WITH_DISTUTILS
 #include "wrap_Attributes.cpp"
@@ -45,21 +41,17 @@ void wrap_PairQuantity();
 #include "wrap_PairQuantity.cpp"
 #endif  // BUILDING_WITH_DISTUTILS
 
-using diffpy::srreal::getPeakProfileTypes;
-using diffpy::srreal::getPeakWidthModelTypes;
-using diffpy::srreal::getScatteringFactorTableTypes;
-using diffpy::srreal::PairQuantity;
-using diffpy::srreal::BVSCalculator;
-using diffpy::srreal::DebyePDFCalculator;
-using diffpy::srreal::PDFCalculator;
-
-using namespace diffpy::srreal_converters;
-using namespace boost;
-
+namespace srrealmodule {
+void wrap_Attributes();
+void wrap_BaseBondGenerator();
+void wrap_PairQuantity();
+}   // namespace srrealmodule
 
 // Result converters ---------------------------------------------------------
 
-namespace {
+namespace srrealmodule {
+
+using namespace diffpy::srreal;
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(setsft_overloads,
         setScatteringFactorTable, 1, 1)
@@ -85,13 +77,14 @@ DECLARE_PYSET_FUNCTION_WRAPPER(getPeakWidthModelTypes,
 DECLARE_PYSET_FUNCTION_WRAPPER(getScatteringFactorTableTypes,
         getScatteringFactorTableTypes_asset)
 
-}   // namespace
+}   // namespace srrealmodule
 
 // Module Definitions --------------------------------------------------------
 
 BOOST_PYTHON_MODULE(srreal_ext)
 {
     using namespace boost::python;
+    using namespace srrealmodule;
 
     // execute external wrappers
     wrap_Attributes();

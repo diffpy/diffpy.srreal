@@ -19,13 +19,11 @@
 *
 *****************************************************************************/
 
-namespace diffpy {
-namespace srreal_converters {
+namespace srrealmodule {
 
 // definition of the flag for accomplished numpy import
 bool did_import_array = false;
 
-}   // namespace srreal_converters
-}   // namespace diffpy
+}   // namespace srrealmodule
 
 // End of file

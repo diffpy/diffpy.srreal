@@ -30,8 +30,7 @@
 #include <diffpy/srreal/R3linalg.hpp>
 #include <diffpy/srreal/PairQuantity.hpp>
 
-namespace diffpy {
-namespace srreal_converters {
+namespace srrealmodule {
 
 /// this macro defines a wrapper function for a C++ method,
 /// that converts the result to numpy array
@@ -123,8 +122,6 @@ convertToPythonSet(const T& value)
     return rvset;
 }
 
-
-}   // namespace srreal_converters
-}   // namespace diffpy
+}   // namespace srrealmodule
 
 #endif  // SRREAL_CONVERTERS_HPP_INCLUDED

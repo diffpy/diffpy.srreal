@@ -28,8 +28,7 @@
 
 #include "srreal_converters.hpp"
 
-using namespace diffpy::srreal_converters;
-
+namespace srrealmodule {
 namespace nswrap_BaseBondGenerator {
 
 DECLARE_PYARRAY_METHOD_WRAPPER(r0, r0_asarray)
@@ -42,9 +41,9 @@ DECLARE_PYARRAY_METHOD_WRAPPER(r01, r01_asarray)
 
 void wrap_BaseBondGenerator()
 {
-    using namespace nswrap_BaseBondGenerator;
     using namespace boost::python;
     using namespace diffpy::srreal;
+    using namespace nswrap_BaseBondGenerator;
 
     class_<BaseBondGenerator>("BaseBondGenerator",
             init<const StructureAdapter*>())
@@ -71,5 +70,7 @@ void wrap_BaseBondGenerator()
         .def("msd", &BaseBondGenerator::msd)
         ;
 }
+
+}   // namespace srrealmodule
 
 // End of file

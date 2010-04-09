@@ -37,8 +37,7 @@
 
 #include "srreal_converters.hpp"
 
-using namespace diffpy::srreal_converters;
-
+namespace srrealmodule {
 namespace nswrap_PairQuantity {
 
 using namespace boost;
@@ -161,14 +160,14 @@ void wrap_PairQuantity()
 {
     using namespace nswrap_PairQuantity;
     using diffpy::Attributes;
-    using boost::noncopyable;
 
     class_<PairQuantity, bases<Attributes> >("BasePairQuantity_ext")
         .def("value", value_asarray<PairQuantityWrap>)
         .def("eval", eval_asarray)
         ;
 
-    class_<PairQuantityWrap, noncopyable, bases<PairQuantity> >("PairQuantity_ext")
+    class_<PairQuantityWrap, noncopyable,
+        bases<PairQuantity> >("PairQuantity_ext")
         .def("_resizeValue",
                 &PairQuantityExposed::resizeValue,
                 &PairQuantityWrap::default_resizeValue)
@@ -183,5 +182,7 @@ void wrap_PairQuantity()
                 &PairQuantityWrap::default_addPairContribution)
         ;
 }
+
+}   //  namespace srrealmodule
 
 // End of file

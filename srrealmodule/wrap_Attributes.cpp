@@ -24,14 +24,13 @@
 #include <diffpy/Attributes.hpp>
 #include "srreal_converters.hpp"
 
-using namespace diffpy::srreal_converters;
-
+namespace srrealmodule {
 namespace nswrap_Attributes {
 
 DECLARE_PYSET_METHOD_WRAPPER(namesOfDoubleAttributes,
         namesOfDoubleAttributes_asset)
 
-}   // nswrap_Attributes
+}   // namespace nswrap_Attributes
 
 // Wrapper definition --------------------------------------------------------
 
@@ -50,5 +49,7 @@ void wrap_Attributes()
         ;
 
 }
+
+}   // namespace srrealmodule
 
 // End of file
