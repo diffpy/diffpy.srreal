@@ -129,7 +129,7 @@ class PairQuantityWrap :
         void configureBondGenerator(BaseBondGenerator& bnds)
         {
             override f = this->get_override("_configureBondGenerator");
-            if (f)  f(bnds);
+            if (f)  f(ptr(&bnds));
             else    this->default_configureBondGenerator(bnds);
         }
 
@@ -142,7 +142,7 @@ class PairQuantityWrap :
         void addPairContribution(const BaseBondGenerator& bnds)
         {
             override f = this->get_override("_addPairContribution");
-            if (f)  f(bnds);
+            if (f)  f(ptr(&bnds));
             else    this->default_addPairContribution(bnds);
         }
 
