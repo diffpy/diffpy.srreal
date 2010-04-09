@@ -28,25 +28,23 @@
 
 #include "srreal_converters.hpp"
 
-using namespace diffpy::srreal;
 using namespace diffpy::srreal_converters;
 
-namespace {
+namespace nswrap_BaseBondGenerator {
 
 DECLARE_PYARRAY_METHOD_WRAPPER(r0, r0_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(r1, r1_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(r01, r01_asarray)
 
-}   // namespace
+}   // namespace nswrap_BaseBondGenerator
 
 // Wrapper definition --------------------------------------------------------
 
 void wrap_BaseBondGenerator()
 {
+    using namespace nswrap_BaseBondGenerator;
     using namespace boost::python;
-
-    // initialize numpy arrays
-    import_array();
+    using namespace diffpy::srreal;
 
     class_<BaseBondGenerator>("BaseBondGenerator",
             init<const StructureAdapter*>())

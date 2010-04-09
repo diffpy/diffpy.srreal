@@ -32,13 +32,17 @@
 
 // Declaration of the external wrappers --------------------------------------
 
+void wrap_Attributes();
 void wrap_BaseBondGenerator();
+void wrap_PairQuantity();
 
 // Speed up distutils build by including all the wrappers here.
 // As an added benefit, setup.py needs no update with more wrappers added.
 
 #ifdef BUILDING_WITH_DISTUTILS
+#include "wrap_Attributes.cpp"
 #include "wrap_BaseBondGenerator.cpp"
+#include "wrap_PairQuantity.cpp"
 #endif  // BUILDING_WITH_DISTUTILS
 
 using diffpy::srreal::getPeakProfileTypes;
@@ -61,23 +65,6 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(setsft_overloads,
         setScatteringFactorTable, 1, 1)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(setpkf_overloads,
         setPeakProfile, 1, 1)
-
-// Common wrappers
-
-DECLARE_PYARRAY_METHOD_WRAPPER(value, value_asarray)
-DECLARE_PYSET_METHOD_WRAPPER(namesOfDoubleAttributes,
-        namesOfDoubleAttributes_asset)
-
-// PairQuantity::eval is a template non-constant method,
-// so it needs a special wrapper
-
-template <class T>
-python::object eval_asarray(T& obj, const python::object& a)
-{
-    python::object rv = convertToNumPyArray(obj.eval(a));
-    return rv;
-}
-
 
 // BVSCalculator wrappers
 
@@ -106,21 +93,10 @@ BOOST_PYTHON_MODULE(srreal_ext)
 {
     using namespace boost::python;
 
-    // initialize numpy arrays
-    import_array();
-
     // execute external wrappers
+    wrap_Attributes();
     wrap_BaseBondGenerator();
-
-    class_<PairQuantity>("PairQuantity")
-        .def("_getDoubleAttr", &PairQuantity::getDoubleAttr)
-        .def("_setDoubleAttr", &PairQuantity::setDoubleAttr)
-        .def("_hasDoubleAttr", &PairQuantity::hasDoubleAttr)
-        .def("_namesOfDoubleAttributes",
-                namesOfDoubleAttributes_asset<PairQuantity>)
-        .def("value", value_asarray<PairQuantity>)
-        .def("eval", eval_asarray<PairQuantity>)
-        ;
+    wrap_PairQuantity();
 
     // BVSCalculator
 
