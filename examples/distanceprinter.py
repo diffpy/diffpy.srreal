@@ -4,12 +4,6 @@
 of pair distances in periodic and non-periodic structures.
 """
 
-# allow this to somewhat run without pyobjcryst
-try:
-    import pyobjcryst.crystal
-except ImportError:
-    pass
-
 from diffpy.srreal.pairquantity import PairQuantity
 from diffpy.Structure import Structure
 
@@ -22,8 +16,8 @@ class DistancePrinter(PairQuantity):
     def _resetValue(self):
         self.count = 0
 
-    def _addPairContribution(self, bnds):
-        self.count += 1
+    def _addPairContribution(self, bnds, sumscale):
+        self.count += bnds.multiplicity() * sumscale / 2.0
         print "%i %g %i %i" % (self.count,
                 bnds.distance(), bnds.site0(), bnds.site1())
         return

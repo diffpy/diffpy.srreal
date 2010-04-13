@@ -81,9 +81,9 @@ class PairQuantityExposed : public PairQuantity
         }
 
 
-        void addPairContribution(const BaseBondGenerator& bnds)
+        void addPairContribution(const BaseBondGenerator& bnds, int sumscale)
         {
-            this->PairQuantity::addPairContribution(bnds);
+            this->PairQuantity::addPairContribution(bnds, sumscale);
         }
 };
 
@@ -139,16 +139,18 @@ class PairQuantityWrap :
         }
 
 
-        void addPairContribution(const BaseBondGenerator& bnds)
+        void addPairContribution(const BaseBondGenerator& bnds,
+                int summationscale)
         {
             override f = this->get_override("_addPairContribution");
-            if (f)  f(ptr(&bnds));
-            else    this->default_addPairContribution(bnds);
+            if (f)  f(ptr(&bnds), summationscale);
+            else    this->default_addPairContribution(bnds, summationscale);
         }
 
-        void default_addPairContribution(const BaseBondGenerator& bnds)
+        void default_addPairContribution(const BaseBondGenerator& bnds,
+                int summationscale)
         {
-            this->PairQuantityExposed::addPairContribution(bnds);
+            this->PairQuantityExposed::addPairContribution(bnds, summationscale);
         }
 
 };  // class PairQuantityWrap
