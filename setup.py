@@ -9,6 +9,7 @@ Packages:   diffpy.srreal
 Scripts:    (none yet)
 """
 
+import glob
 from setuptools import setup, find_packages
 from setuptools import Extension
 import fix_setuptools_chmod
@@ -16,18 +17,13 @@ import fix_setuptools_chmod
 # define extensions here
 ext_kws = {
         'libraries' : ['diffpy'],
-        'undef_macros' : ['NDEBUG'],
-        'define_macros' : [
-            ('BUILDING_WITH_DISTUTILS', None),
-            ],
         'extra_compile_args' : [],
         'extra_link_args' : [],
 }
-srreal_ext = Extension('diffpy.srreal.srreal_ext', [
-    'srrealmodule/srreal_ext.cpp',
-    'srrealmodule/srreal_converters.cpp',
-    'srrealmodule/srreal_docstrings.cpp',
-    ], **ext_kws)
+
+srreal_ext = Extension('diffpy.srreal.srreal_ext',
+    glob.glob('srrealmodule/*.cpp'),
+    **ext_kws)
 
 # define distribution
 dist = setup(

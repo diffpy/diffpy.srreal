@@ -38,15 +38,6 @@ void wrap_BaseBondGenerator();
 void wrap_PairQuantity();
 }   // namespace srrealmodule
 
-// Speed up distutils build by including all the wrappers here.
-// As an added benefit setup.py may stay the same as more files are used.
-
-#ifdef BUILDING_WITH_DISTUTILS
-#include "wrap_Attributes.cpp"
-#include "wrap_BaseBondGenerator.cpp"
-#include "wrap_PairQuantity.cpp"
-#endif  // BUILDING_WITH_DISTUTILS
-
 // Result converters ---------------------------------------------------------
 
 namespace srrealmodule {
