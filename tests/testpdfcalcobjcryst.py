@@ -85,6 +85,8 @@ class TestPDFCalcObjcryst(unittest.TestCase):
 
 
     def test_CdSeN(self):
+        '''check PDFCalculator on ObjCryst loaded CIF, neutrons
+        '''
         self._comparePDFs('cdsen',
                 'CdSe_cadmoselite_N.fgr', 'CdSe_cadmoselite.cif')
         self.failUnless(self.cdsen_mxnd < 0.005)
@@ -92,6 +94,8 @@ class TestPDFCalcObjcryst(unittest.TestCase):
 
 
     def test_CdSeX(self):
+        '''check PDFCalculator on ObjCryst loaded CIF, xrays
+        '''
         self._comparePDFs('cdsex',
                 'CdSe_cadmoselite_X.fgr', 'CdSe_cadmoselite.cif')
         self.failUnless(self.cdsex_mxnd < 0.005)
@@ -99,6 +103,8 @@ class TestPDFCalcObjcryst(unittest.TestCase):
 
 
     def test_rutileaniso(self):
+        '''check PDFCalculator on ObjCryst loaded anisotropic rutile
+        '''
         self._comparePDFs('rutileaniso',
                 'TiO2_rutile-fit.fgr', 'TiO2_rutile-fit.cif')
         self.failUnless(self.rutileaniso_mxnd < 0.057)
@@ -109,17 +115,4 @@ class TestPDFCalcObjcryst(unittest.TestCase):
 
 
 if __name__ == '__main__':
-#   unittest.main()
-    # temporary comparison of diffpy.Structure and objcryst results
-    # to be removed once this gets fixed.
-    from diffpy.Structure import Structure
-    r, gobs, cfg = _loadExpectedPDF('TiO2_rutile-fit.fgr')
-    stru = Structure(filename='testdata/TiO2_rutile-fit.cif')
-    pcstru = _makePDFCalculator(stru, cfg)
-    crst = _loadTestStructure('TiO2_rutile-fit.cif')
-    pccrst = _makePDFCalculator(crst, cfg)
-    from pylab import *
-    plot(r, gobs, pcstru.getRgrid(), pcstru.getPDF(),
-            pccrst.getRgrid(), pccrst.getPDF())
-    show(0)
-    import IPython.Shell; IPython.Shell.IPShellEmbed(argv=[])()
+    unittest.main()

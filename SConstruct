@@ -62,4 +62,7 @@ Export('env')
 
 env.SConscript('srrealmodule/SConscript', variant_dir=builddir)
 
+test = env.Alias('test', env.Alias('develop'), 'alltests.py tests')
+AlwaysBuild(test)
+
 # vim: ft=python
