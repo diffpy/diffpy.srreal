@@ -68,12 +68,17 @@ class PairQuantity(PairQuantity_ext):
         return
 
 
-    def _addPairContribution(self, bnds):
+    def _addPairContribution(self, bnds, sumscale):
         '''Process pair contribution at the bond generator state.
         No action by default, needs to be overloaded to do something.
 
-        bnds -- instance of BaseBondGenerator holding data for
-                a particular pair of atoms during summation.
+        bnds     -- instance of BaseBondGenerator holding data for
+                    a particular pair of atoms during summation.
+
+        sumscale -- integer scaling for this contribution passed from
+                    PQEvaluator.  Equals 1 if bnds.site0() == bnds.site1(),
+                    2 otherwise.  Can be negative when contribution is
+                    removed for fast quantity updates.
 
         No return value.
         '''
