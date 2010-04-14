@@ -30,6 +30,7 @@
 *****************************************************************************/
 
 #include <boost/python.hpp>
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 
 #include <diffpy/srreal/PairQuantity.hpp>
 #include <diffpy/srreal/BaseBondGenerator.hpp>
@@ -57,11 +58,27 @@ python::object eval_asarray(PairQuantity& obj, const python::object& a)
 }
 
 
+// representation of QuantityType objects
+python::object repr_QuantityType(const QuantityType& v)
+{
+    python::object rv = python::str("QuantityType%r") %
+        python::make_tuple(python::tuple(v));
+    return rv;
+}
+
+
 // Helper C++ class for publicizing the protected methods.
 
 class PairQuantityExposed : public PairQuantity
 {
     public:
+
+        // non-constant version suitable for exposing mvalue in Python
+        QuantityType& value()
+        {
+            return mvalue;
+        }
+
 
         void resizeValue(size_t sz)
         {
@@ -164,8 +181,13 @@ void wrap_PairQuantity()
     using namespace nswrap_PairQuantity;
     using diffpy::Attributes;
 
+    class_<QuantityType>("QuantityType")
+        .def(vector_indexing_suite<QuantityType>())
+        .def("__repr__", repr_QuantityType)
+        ;
+
     class_<PairQuantity, bases<Attributes> >("BasePairQuantity_ext")
-        .def("value", value_asarray<PairQuantityWrap>, doc_BasePairQuantity_value)
+        .def("value", value_asarray<PairQuantity>, doc_BasePairQuantity_value)
         .def("eval", eval_asarray, doc_BasePairQuantity_eval)
         ;
 
@@ -183,6 +205,9 @@ void wrap_PairQuantity()
         .def("_addPairContribution",
                 &PairQuantityExposed::addPairContribution,
                 &PairQuantityWrap::default_addPairContribution)
+        .add_property("_value", make_function(&PairQuantityWrap::value,
+                    return_internal_reference<>()),
+                doc_PairQuantityWrap__value)
         ;
 }
 

@@ -23,7 +23,7 @@ namespace srrealmodule {
 // BasePairQuantity ----------------------------------------------------------
 
 const char* doc_BasePairQuantity_value = "\
-Return a copy of the internal total contributions.\n\
+Return total internal contributions as numpy array.\n\
 ";
 
 const char* doc_BasePairQuantity_eval = "\
@@ -33,6 +33,10 @@ stru -- structure object that can be converted to StructureAdapter\n\
 \n\
 Return a copy of the internal total contributions.\n\
 May need to be further transformed to get the desired value.\n\
+";
+
+const char* doc_PairQuantityWrap__value = "\
+Reference to the internal vector of total contributions.\n\
 ";
 
 }   // namespace srrealmodule

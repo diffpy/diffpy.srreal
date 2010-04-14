@@ -25,6 +25,7 @@ namespace srrealmodule {
 
 extern const char* doc_BasePairQuantity_value;
 extern const char* doc_BasePairQuantity_eval;
+extern const char* doc_PairQuantityWrap__value;
 
 }   // namespace srrealmodule
 
