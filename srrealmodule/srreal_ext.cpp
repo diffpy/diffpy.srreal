@@ -29,6 +29,7 @@
 #include <diffpy/srreal/ScatteringFactorTable.hpp>
 
 #include "srreal_converters.hpp"
+#include "srreal_docstrings.hpp"
 
 // Declaration of the external wrappers --------------------------------------
 
@@ -61,12 +62,13 @@ DECLARE_PYARRAY_METHOD_WRAPPER(getRDF, getRDF_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(getRgrid, getRgrid_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(getF, getF_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(getQgrid, getQgrid_asarray)
-DECLARE_PYSET_FUNCTION_WRAPPER(getPeakProfileTypes,
-        getPeakProfileTypes_asset)
 DECLARE_PYSET_FUNCTION_WRAPPER(getPeakWidthModelTypes,
         getPeakWidthModelTypes_asset)
 DECLARE_PYSET_FUNCTION_WRAPPER(getScatteringFactorTableTypes,
         getScatteringFactorTableTypes_asset)
+DECLARE_PYSET_FUNCTION_WRAPPER(getPeakProfileTypes, getPeakProfileTypes_asset)
+DECLARE_PYSET_FUNCTION_WRAPPER(getPDFEnvelopeTypes, getPDFEnvelopeTypes_asset)
+DECLARE_PYSET_FUNCTION_WRAPPER(getPDFBaselineTypes, getPDFBaselineTypes_asset)
 
 }   // namespace srrealmodule
 
@@ -93,10 +95,6 @@ BOOST_PYTHON_MODULE(srreal_ext)
 
     // DebyePDFCalculator
 
-    def("getPeakProfileTypes", getPeakProfileTypes_asset);
-    def("getPeakWidthModelTypes", getPeakWidthModelTypes_asset);
-    def("getScatteringFactorTableTypes", getScatteringFactorTableTypes_asset);
-
     class_<DebyePDFCalculator, bases<PairQuantity> >("DebyePDFCalculator_ext")
         .def("getPDF", getPDF_asarray<DebyePDFCalculator>)
         .def("getRgrid", getRgrid_asarray<DebyePDFCalculator>)
@@ -110,7 +108,17 @@ BOOST_PYTHON_MODULE(srreal_ext)
         .def("getRadiationType",
                 &DebyePDFCalculator::getRadiationType,
                 return_value_policy<copy_const_reference>())
+        // static methods
+        .def("getPeakWidthModelTypes",
+                getPeakWidthModelTypes_asset,
+                doc_getPeakWidthModelTypes)
+        .staticmethod("getPeakWidthModelTypes")
+        .def("getScatteringFactorTableTypes",
+                getScatteringFactorTableTypes_asset,
+                doc_getScatteringFactorTableTypes)
+        .staticmethod("getScatteringFactorTableTypes")
         ;
+
     // PDFCalculator
 
     class_<PDFCalculator, bases<PairQuantity> >("PDFCalculator_ext")
@@ -126,6 +134,24 @@ BOOST_PYTHON_MODULE(srreal_ext)
         .def("getRadiationType",
                 &PDFCalculator::getRadiationType,
                 return_value_policy<copy_const_reference>())
+        // static methods
+        .def("getPeakWidthModelTypes",
+                getPeakWidthModelTypes_asset,
+                doc_getPeakWidthModelTypes)
+        .staticmethod("getPeakWidthModelTypes")
+        .def("getScatteringFactorTableTypes",
+                getScatteringFactorTableTypes_asset,
+                doc_getScatteringFactorTableTypes)
+        .staticmethod("getScatteringFactorTableTypes")
+        .def("getPeakProfileTypes",
+                getPeakProfileTypes_asset, doc_getPeakProfileTypes)
+        .staticmethod("getPeakProfileTypes")
+        .def("getPDFEnvelopeTypes",
+                getPDFEnvelopeTypes_asset, doc_getPDFEnvelopeTypes)
+        .staticmethod("getPDFEnvelopeTypes")
+        .def("getPDFBaselineTypes",
+                getPDFBaselineTypes_asset, doc_getPDFBaselineTypes)
+        .staticmethod("getPDFBaselineTypes")
         ;
 }
 

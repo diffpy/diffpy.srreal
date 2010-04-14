@@ -39,6 +39,33 @@ const char* doc_PairQuantityWrap__value = "\
 Reference to the internal vector of total contributions.\n\
 ";
 
+// DebyePDFCalculator and PDFCalculator --------------------------------------
+
+const char* doc_getPeakWidthModelTypes = "\
+Set of string identifiers for registered PeakWidthModel classes.\n\
+These are allowed arguments for the setPeakWidthModel method.\n\
+";
+
+const char* doc_getScatteringFactorTableTypes = "\
+Set of string identifiers for registered ScatteringFactorTable classes.\n\
+These are allowed arguments for the setScatteringFactorTable method.\n\
+";
+
+const char* doc_getPeakProfileTypes = "\
+Set of string identifiers for registered PeakProfile classes.\n\
+These are allowed arguments for the setPeakProfile method.\n\
+";
+
+const char* doc_getPDFEnvelopeTypes = "\
+Set of string identifiers for registered PDFEnvelope classes.\n\
+These are allowed arguments for the setPDFEnvelope method.\n\
+";
+
+const char* doc_getPDFBaselineTypes = "\
+Set of string identifiers for registered PDFBaseline classes.\n\
+These are allowed arguments for the setPDFBaseline method.\n\
+";
+
 }   // namespace srrealmodule
 
 // End of file
