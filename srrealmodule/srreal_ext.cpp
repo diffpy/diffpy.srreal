@@ -90,7 +90,7 @@ BOOST_PYTHON_MODULE(srreal_ext)
 
     // BVSCalculator
 
-    class_<BVSCalculator, bases<PairQuantity> >("BVSCalculator")
+    class_<BVSCalculator, bases<PairQuantity> >("BVSCalculator_ext")
         .def("valences", valences_asarray<BVSCalculator>)
         .def("bvdiff", bvdiff_asarray<BVSCalculator>)
         .def("bvmsdiff", &BVSCalculator::bvmsdiff)
