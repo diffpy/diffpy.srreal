@@ -77,8 +77,8 @@ class BVSCalculator(BVSCalculator_ext):
         Return an array of calculated valence sums.
         See valences() for the expected values.
         '''
-        self.eval(structure)
-        return self
+        rv = self.eval(structure)
+        return rv
 
 # class PDFCalculator
 
