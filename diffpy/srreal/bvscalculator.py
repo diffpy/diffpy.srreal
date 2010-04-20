@@ -81,7 +81,8 @@ class BVSCalculator(BVSCalculator_ext):
 
         Return self.
         '''
-        return self.eval(structure)
+        self.eval(structure)
+        return self
 
 # class PDFCalculator
 
