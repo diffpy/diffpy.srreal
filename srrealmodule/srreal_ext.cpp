@@ -37,6 +37,7 @@ namespace srrealmodule {
 void wrap_Attributes();
 void wrap_BaseBondGenerator();
 void wrap_PairQuantity();
+void wrap_PeakProfile();
 }   // namespace srrealmodule
 
 // Result converters ---------------------------------------------------------
@@ -49,6 +50,8 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(setsft_overloads,
         setScatteringFactorTable, 1, 1)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(setpkf_overloads,
         setPeakProfile, 1, 1)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getpkf_overloads,
+        getPeakProfile, 0, 0)
 
 // BVSCalculator wrappers
 
@@ -83,6 +86,7 @@ BOOST_PYTHON_MODULE(srreal_ext)
     wrap_Attributes();
     wrap_BaseBondGenerator();
     wrap_PairQuantity();
+    wrap_PeakProfile();
 
     // BVSCalculator
 
@@ -128,6 +132,9 @@ BOOST_PYTHON_MODULE(srreal_ext)
         .def("setPeakProfile",
                 (void(PDFCalculator::*)(const std::string&)) NULL,
                 setpkf_overloads())
+        .def("getPeakProfile",
+                (PeakProfile&(PDFCalculator::*)()) NULL,
+                getpkf_overloads()[return_internal_reference<>()])
         .def("setScatteringFactorTable",
                 (void(PDFCalculator::*)(const std::string&)) NULL,
                 setsft_overloads())

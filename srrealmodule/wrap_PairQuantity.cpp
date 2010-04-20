@@ -20,6 +20,8 @@
 *
 * Exported classes in Python:
 *
+* class QuantityType -- wrapped std::vector<double>
+*
 * class BasePairQuantity_ext -- base class to all calculators in Python
 
 * class PairQuantity_ext -- derived class with publicized protected methods
