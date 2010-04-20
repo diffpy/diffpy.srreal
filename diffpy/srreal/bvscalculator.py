@@ -69,17 +69,13 @@ class BVSCalculator(BVSCalculator_ext):
 
 
     def __call__(self, structure):
-        '''Calculate bond valence sums for a structure and return self.
-        Intended for chaining with other methods, for example:
-        
-            bvcalc(structure).valences()
-            bvcalc(structure).values()
-            bvcalc(structure).bvrmsdiff()
+        '''Return bond valence sums at each atom site in the structure.
 
         structure    -- structure to be evaluated, an instance of diffpy Structure
                         or pyobjcryst Crystal
 
-        Return self.
+        Return an array of calculated valence sums.
+        See valences() for the expected values.
         '''
         self.eval(structure)
         return self
