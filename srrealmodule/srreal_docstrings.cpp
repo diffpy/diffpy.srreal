@@ -66,6 +66,27 @@ Set of string identifiers for registered PDFBaseline classes.\n\
 These are allowed arguments for the setPDFBaseline method.\n\
 ";
 
+// BVSCalculator -------------------------------------------------------------
+
+const char* doc_BVSCalculator_valences = "\
+Return valences expected at each site of the evaluated structure.\n\
+";
+
+const char* doc_BVSCalculator_bvdiff = "\
+Difference between expected and calculated valence magnitudes at each site.\n\
+Positive for underbonding, negative for overbonding.\n\
+";
+
+const char* doc_BVSCalculator_bvmsdiff = "\
+Mean square difference between expected and calculated valences.\n\
+Adjusted for multiplicity and occupancy of atom sites in the structure.\n\
+";
+
+const char* doc_BVSCalculator_bvrmsdiff = "\
+Root mean square difference between expected and calculated valences.\n\
+Adjusted for multiplicity and occupancy of atom sites in the structure.\n\
+";
+
 }   // namespace srrealmodule
 
 // End of file

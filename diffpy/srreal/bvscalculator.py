@@ -80,6 +80,13 @@ class BVSCalculator(BVSCalculator_ext):
         rv = self.eval(structure)
         return rv
 
+
+    def value(self):
+        '''Return bond valence sums per each atom site in the structure.
+        '''
+        rv = super(BVSCalculator, self).value()
+        return rv
+
 # class PDFCalculator
 
 # End of file

@@ -24,7 +24,6 @@
 
 #include <diffpy/srreal/DebyePDFCalculator.hpp>
 #include <diffpy/srreal/PDFCalculator.hpp>
-#include <diffpy/srreal/BVSCalculator.hpp>
 #include <diffpy/srreal/PythonStructureAdapter.hpp>
 #include <diffpy/srreal/ScatteringFactorTable.hpp>
 
@@ -38,6 +37,7 @@ void wrap_Attributes();
 void wrap_BaseBondGenerator();
 void wrap_PairQuantity();
 void wrap_PeakProfile();
+void wrap_BVSCalculator();
 }   // namespace srrealmodule
 
 // Result converters ---------------------------------------------------------
@@ -52,11 +52,6 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(setpkf_overloads,
         setPeakProfile, 1, 1)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getpkf_overloads,
         getPeakProfile, 0, 0)
-
-// BVSCalculator wrappers
-
-DECLARE_PYARRAY_METHOD_WRAPPER(valences, valences_asarray)
-DECLARE_PYARRAY_METHOD_WRAPPER(bvdiff, bvdiff_asarray)
 
 // DebyePDFCalculator and PDFCalculator wrappers
 
@@ -87,15 +82,7 @@ BOOST_PYTHON_MODULE(srreal_ext)
     wrap_BaseBondGenerator();
     wrap_PairQuantity();
     wrap_PeakProfile();
-
-    // BVSCalculator
-
-    class_<BVSCalculator, bases<PairQuantity> >("BVSCalculator_ext")
-        .def("valences", valences_asarray<BVSCalculator>)
-        .def("bvdiff", bvdiff_asarray<BVSCalculator>)
-        .def("bvmsdiff", &BVSCalculator::bvmsdiff)
-        .def("bvrmsdiff", &BVSCalculator::bvrmsdiff)
-        ;
+    wrap_BVSCalculator();
 
     // DebyePDFCalculator
 

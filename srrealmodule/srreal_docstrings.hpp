@@ -33,6 +33,11 @@ extern const char* doc_getPeakProfileTypes;
 extern const char* doc_getPDFEnvelopeTypes;
 extern const char* doc_getPDFBaselineTypes;
 
+extern const char* doc_BVSCalculator_valences;
+extern const char* doc_BVSCalculator_bvdiff;
+extern const char* doc_BVSCalculator_bvmsdiff;
+extern const char* doc_BVSCalculator_bvrmsdiff;
+
 }   // namespace srrealmodule
 
 #endif  // SRREAL_DOCSTRINGS_HPP_INCLUDED
