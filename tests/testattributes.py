@@ -62,7 +62,7 @@ class TestAttributes(unittest.TestCase):
 
 
     def test_garbage_collection(self):
-        """check if Python-defined Attributes cause leaks.
+        """check garbage collection for Python defined Attributes
         """
         # check if attributes are garbage collected
         pq = PairQuantity()
@@ -128,6 +128,8 @@ class TestAttributes(unittest.TestCase):
             d['value'] = value
             return
         a = Attributes()
+        wa = weakref.ref(a)
+        self.failIf(wa() is None)
         a._registerDoubleAttribute('a1', g, s)
         self.failIf('a1' in a.__dict__)
         self.failIf(d['g_called'])
@@ -139,6 +141,16 @@ class TestAttributes(unittest.TestCase):
         self.failUnless(d['s_called'])
         self.assertEqual(47, d['value'])
         self.failUnless(hasattr(a, 'a1'))
+        a._registerDoubleAttribute('a1readonly', g)
+        self.assertEqual(47, a.a1readonly)
+        self.failUnless(hasattr(a, 'a1readonly'))
+        self.assertRaises(Exception, a._setDoubleAttr, 'a1readonly', 7)
+        self.assertRaises(Exception, setattr, a, 'a1readonly', 5)
+        self.assertEqual(47, a.a1readonly)
+        a.a1 = 9
+        self.assertEqual(9, a.a1readonly)
+        del a
+        self.failUnless(wa() is None)
         return
 
 
