@@ -18,7 +18,8 @@
 *
 *****************************************************************************/
 
-#include <string>
+#include <cassert>
+#include <sstream>
 #include <boost/python.hpp>
 
 #include <diffpy/Attributes.hpp>
@@ -26,6 +27,11 @@
 
 namespace srrealmodule {
 namespace nswrap_Attributes {
+
+using std::string;
+using namespace boost;
+using namespace diffpy::attributes;
+
 
 DECLARE_PYSET_METHOD_WRAPPER(namesOfDoubleAttributes,
         namesOfDoubleAttributes_asset)
@@ -48,6 +54,70 @@ def __setattr__(self, name, value):\n\
     return\n\
 ";
 
+// Helper class to handle double attributes defined from Python
+
+class PythonDoubleAttribute : public BaseDoubleAttribute
+{
+    public:
+
+        // constructor
+        PythonDoubleAttribute(python::object owner,
+                python::object getter, python::object setter)
+        {
+            mowner = owner;
+            // PythonDoubleAttribute needs a borrowed reference to its owner,
+            // otherwise the owner would never get released.
+            // FIXME: any better way of creating borrowed reference?
+            python::decref(mowner.ptr());
+            mgetter = getter;
+            msetter = setter;
+        }
+
+        double getValue(const Attributes* obj) const
+        {
+            assert(obj == python::extract<const Attributes*>(mowner));
+            python::object pyrv = mgetter(mowner);
+            double rv = python::extract<double>(pyrv);
+            return rv;
+        }
+
+
+        void setValue(Attributes* obj, double value)
+        {
+            assert(obj == python::extract<Attributes*>(mowner));
+            msetter(mowner, value);
+        }
+
+    private:
+
+        // data
+        python::object mowner;
+        python::object mgetter;
+        python::object msetter;
+
+};  // class PythonDoubleAttribute
+
+
+void registerPythonDoubleAttribute(python::object owner,
+        const string& name, python::object g, python::object s)
+{
+    // when neither getter no setter are specified,
+    // make it use normal python attribute access
+    if (g.ptr() == Py_None && s.ptr() == Py_None)
+    {
+        python::object globals = python::import("__main__").attr("__dict__");
+        python::dict locals;
+        std::ostringstream gcode;
+        gcode << "lambda obj : object.__getattribute__(obj, '" << name << "')";
+        g = python::eval(gcode.str().c_str(), globals, locals);
+        std::ostringstream scode;
+        scode << "lambda obj, v : object.__setattr__(obj, '" << name << "', v)";
+        s = python::eval(scode.str().c_str(), globals, locals);
+    }
+    BaseDoubleAttribute* pa = new PythonDoubleAttribute(owner, g, s);
+    Attributes* cowner = python::extract<Attributes*>(owner);
+    registerBaseDoubleAttribute(cowner, name, pa);
+}
 
 }   // namespace nswrap_Attributes
 
@@ -55,9 +125,9 @@ def __setattr__(self, name, value):\n\
 
 void wrap_Attributes()
 {
-    using diffpy::Attributes;
-    using namespace boost::python;
     using namespace nswrap_Attributes;
+    using namespace boost::python;
+    const python::object None;
     // store custom __getattr__ and __setattr__ in the locals dictionary
     object globals = import("__main__").attr("__dict__");
     dict locals;
@@ -69,6 +139,9 @@ void wrap_Attributes()
         .def("_hasDoubleAttr", &Attributes::hasDoubleAttr)
         .def("_namesOfDoubleAttributes",
                 namesOfDoubleAttributes_asset<Attributes>)
+        .def("_registerDoubleAttribute",
+                registerPythonDoubleAttribute,
+                (python::arg("getter")=None, python::arg("setter")=None))
         .def("__getattr__", locals["__getattr__"])
         .def("__setattr__", locals["__setattr__"])
         ;
