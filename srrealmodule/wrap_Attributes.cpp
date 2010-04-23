@@ -64,19 +64,22 @@ class PythonDoubleAttribute : public BaseDoubleAttribute
         PythonDoubleAttribute(python::object owner,
                 python::object getter, python::object setter)
         {
-            mowner = owner;
-            // PythonDoubleAttribute needs a borrowed reference to its owner,
-            // otherwise the owner would never get released.
-            // FIXME: any better way of creating borrowed reference?
-            python::decref(mowner.ptr());
+            // PythonDoubleAttribute needs to know its Python owner, but it
+            // has to use a borrowed reference otherwise the owner would be
+            // never freed.  We store a pointer to the raw object and create
+            // a borrowed boost python wrapper as necessary.
+            mowner = owner.ptr();
             mgetter = getter;
             msetter = setter;
         }
 
+
         double getValue(const Attributes* obj) const
         {
-            assert(obj == python::extract<const Attributes*>(mowner));
-            python::object pyrv = mgetter(mowner);
+            // verify that mowner is indeed the obj wrapper
+            python::object owner(python::borrowed(mowner));
+            assert(obj == python::extract<const Attributes*>(owner));
+            python::object pyrv = mgetter(owner);
             double rv = python::extract<double>(pyrv);
             return rv;
         }
@@ -84,14 +87,17 @@ class PythonDoubleAttribute : public BaseDoubleAttribute
 
         void setValue(Attributes* obj, double value)
         {
-            assert(obj == python::extract<Attributes*>(mowner));
-            msetter(mowner, value);
+            if (msetter.ptr() == Py_None)  throwDoubleAttributeReadOnly();
+            // verify that mowner is indeed the obj wrapper
+            python::object owner(python::borrowed(mowner));
+            assert(obj == python::extract<Attributes*>(owner));
+            msetter(owner, value);
         }
 
     private:
 
         // data
-        python::object mowner;
+        PyObject* mowner;
         python::object mgetter;
         python::object msetter;
 
@@ -114,8 +120,8 @@ void registerPythonDoubleAttribute(python::object owner,
         scode << "lambda obj, v : object.__setattr__(obj, '" << name << "', v)";
         s = python::eval(scode.str().c_str(), globals, locals);
     }
-    BaseDoubleAttribute* pa = new PythonDoubleAttribute(owner, g, s);
     Attributes* cowner = python::extract<Attributes*>(owner);
+    BaseDoubleAttribute* pa = new PythonDoubleAttribute(owner, g, s);
     registerBaseDoubleAttribute(cowner, name, pa);
 }
 
