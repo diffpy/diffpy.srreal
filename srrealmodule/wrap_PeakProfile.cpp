@@ -43,12 +43,12 @@ class PeakProfileWrap :
 
         // constructors
 
-        PeakProfile* create() const
+        boost::shared_ptr<PeakProfile> create() const
         {
             return this->get_override("_create")();
         }
 
-        PeakProfile* clone() const
+        boost::shared_ptr<PeakProfile> clone() const
         {
             return this->get_override("_clone")();
         }
@@ -88,10 +88,8 @@ void wrap_PeakProfile()
 
     class_<PeakProfileWrap, noncopyable,
         bases<Attributes> >("PeakProfile_ext")
-        .def("_create", pure_virtual(&PeakProfile::create),
-                return_value_policy<manage_new_object>())
-        .def("_clone", pure_virtual(&PeakProfile::clone),
-                return_value_policy<manage_new_object>())
+        .def("_create", &PeakProfile::create)
+        .def("_clone", &PeakProfile::clone)
         .def("type", pure_virtual(&PeakProfile::type),
                 return_value_policy<copy_const_reference>())
         .def("yvalue", pure_virtual(&PeakProfile::yvalue))
