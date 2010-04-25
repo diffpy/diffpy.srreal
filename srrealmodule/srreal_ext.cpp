@@ -48,8 +48,6 @@ using namespace diffpy::srreal;
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(setsft_overloads,
         setScatteringFactorTable, 1, 1)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(setpkf_overloads,
-        setPeakProfile, 1, 1)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getpkf_overloads,
         getPeakProfile, 0, 0)
 
@@ -116,12 +114,10 @@ BOOST_PYTHON_MODULE(srreal_ext)
         .def("getPDF", getPDF_asarray<PDFCalculator>)
         .def("getRDF", getRDF_asarray<PDFCalculator>)
         .def("getRgrid", getRgrid_asarray<PDFCalculator>)
-        .def("setPeakProfile",
-                (void(PDFCalculator::*)(const std::string&)) NULL,
-                setpkf_overloads())
+        .def("setPeakProfile", &PDFCalculator::setPeakProfile)
+        .def("setPeakProfileByType", &PDFCalculator::setPeakProfileByType)
         .def("getPeakProfile",
-                (PeakProfile&(PDFCalculator::*)()) NULL,
-                getpkf_overloads()[return_internal_reference<>()])
+                (PeakProfilePtr(PDFCalculator::*)()) NULL)
         .def("setScatteringFactorTable",
                 (void(PDFCalculator::*)(const std::string&)) NULL,
                 setsft_overloads())
