@@ -50,6 +50,8 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(setsft_overloads,
         setScatteringFactorTable, 1, 1)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getpkf_overloads,
         getPeakProfile, 0, 0)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getbaseline_overloads,
+        getBaseline, 0, 0)
 
 // DebyePDFCalculator and PDFCalculator wrappers
 
@@ -114,17 +116,21 @@ BOOST_PYTHON_MODULE(srreal_ext)
         .def("getPDF", getPDF_asarray<PDFCalculator>)
         .def("getRDF", getRDF_asarray<PDFCalculator>)
         .def("getRgrid", getRgrid_asarray<PDFCalculator>)
+        // PDF peak profile
+        .def("getPeakProfile",
+                (PeakProfilePtr(PDFCalculator::*)()) NULL,
+                getpkf_overloads())
         .def("setPeakProfile", &PDFCalculator::setPeakProfile)
         .def("setPeakProfileByType", &PDFCalculator::setPeakProfileByType)
-        .def("getPeakProfile",
-                (PeakProfilePtr(PDFCalculator::*)()) NULL)
+        .def("getPeakProfileTypes",
+                getPeakProfileTypes_asset, doc_getPeakProfileTypes)
+        .staticmethod("getPeakProfileTypes")
         .def("setScatteringFactorTable",
                 (void(PDFCalculator::*)(const std::string&)) NULL,
                 setsft_overloads())
         .def("getRadiationType",
                 &PDFCalculator::getRadiationType,
                 return_value_policy<copy_const_reference>())
-        // static methods
         .def("getPeakWidthModelTypes",
                 getPeakWidthModelTypes_asset,
                 doc_getPeakWidthModelTypes)
@@ -133,12 +139,15 @@ BOOST_PYTHON_MODULE(srreal_ext)
                 getScatteringFactorTableTypes_asset,
                 doc_getScatteringFactorTableTypes)
         .staticmethod("getScatteringFactorTableTypes")
-        .def("getPeakProfileTypes",
-                getPeakProfileTypes_asset, doc_getPeakProfileTypes)
-        .staticmethod("getPeakProfileTypes")
         .def("getPDFEnvelopeTypes",
                 getPDFEnvelopeTypes_asset, doc_getPDFEnvelopeTypes)
         .staticmethod("getPDFEnvelopeTypes")
+        // PDF baseline
+        .def("getBaseline",
+                (PDFBaselinePtr(PDFCalculator::*)()) NULL,
+                getbaseline_overloads())
+        .def("setBaseline", &PDFCalculator::setBaseline)
+        .def("setBaselineByType", &PDFCalculator::setBaselineByType)
         .def("getPDFBaselineTypes",
                 getPDFBaselineTypes_asset, doc_getPDFBaselineTypes)
         .staticmethod("getPDFBaselineTypes")
