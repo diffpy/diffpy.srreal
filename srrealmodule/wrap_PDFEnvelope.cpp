@@ -42,12 +42,12 @@ class PDFEnvelopeWrap :
 
         // constructors
 
-        boost::shared_ptr<PDFEnvelope> create() const
+        PDFEnvelopePtr create() const
         {
             return this->get_override("_create")();
         }
 
-        boost::shared_ptr<PDFEnvelope> clone() const
+        PDFEnvelopePtr clone() const
         {
             return this->get_override("_clone")();
         }
@@ -75,14 +75,16 @@ void wrap_PDFEnvelope()
     using namespace nswrap_PDFEnvelope;
     using diffpy::Attributes;
 
-    class_<PDFEnvelopeWrap, noncopyable,
-        bases<Attributes> >("PDFEnvelope_ext")
+    class_<PDFEnvelopeWrap, bases<Attributes>,
+        noncopyable>("PDFEnvelope_ext")
         .def("_create", pure_virtual(&PDFEnvelope::create))
         .def("_clone", pure_virtual(&PDFEnvelope::clone))
         .def("type", pure_virtual(&PDFEnvelope::type),
                 return_value_policy<copy_const_reference>())
         .def("__call__", pure_virtual(&PDFEnvelope::operator()))
         ;
+
+    register_ptr_to_python<PDFEnvelopePtr>();
 }
 
 }   // namespace srrealmodule

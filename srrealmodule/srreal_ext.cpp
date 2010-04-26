@@ -28,6 +28,8 @@ void wrap_BaseBondGenerator();
 void wrap_PairQuantity();
 void wrap_PeakProfile();
 void wrap_BVSCalculator();
+void wrap_PDFBaseline();
+void wrap_PDFEnvelope();
 void wrap_PDFCalculators();
 }   // namespace srrealmodule
 
@@ -42,6 +44,8 @@ BOOST_PYTHON_MODULE(srreal_ext)
     wrap_PairQuantity();
     wrap_PeakProfile();
     wrap_BVSCalculator();
+    wrap_PDFBaseline();
+    wrap_PDFEnvelope();
     wrap_PDFCalculators();
 }
 

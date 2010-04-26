@@ -193,8 +193,8 @@ void wrap_PairQuantity()
         .def("eval", eval_asarray, doc_BasePairQuantity_eval)
         ;
 
-    class_<PairQuantityWrap, noncopyable,
-        bases<PairQuantity> >("PairQuantity_ext")
+    class_<PairQuantityWrap, bases<PairQuantity>,
+        noncopyable>("PairQuantity_ext")
         .def("_resizeValue",
                 &PairQuantityExposed::resizeValue,
                 &PairQuantityWrap::default_resizeValue)

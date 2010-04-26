@@ -43,12 +43,12 @@ class PeakProfileWrap :
 
         // constructors
 
-        boost::shared_ptr<PeakProfile> create() const
+        PeakProfilePtr create() const
         {
             return this->get_override("_create")();
         }
 
-        boost::shared_ptr<PeakProfile> clone() const
+        PeakProfilePtr clone() const
         {
             return this->get_override("_clone")();
         }
@@ -86,8 +86,8 @@ void wrap_PeakProfile()
     using namespace nswrap_PeakProfile;
     using diffpy::Attributes;
 
-    class_<PeakProfileWrap, noncopyable,
-        bases<Attributes> >("PeakProfile_ext")
+    class_<PeakProfileWrap, bases<Attributes>,
+        noncopyable>("PeakProfile_ext")
         .def("_create", &PeakProfile::create)
         .def("_clone", &PeakProfile::clone)
         .def("type", pure_virtual(&PeakProfile::type),
@@ -96,6 +96,8 @@ void wrap_PeakProfile()
         .def("xboundlo", pure_virtual(&PeakProfile::xboundlo))
         .def("xboundhi", pure_virtual(&PeakProfile::xboundhi))
         ;
+
+    register_ptr_to_python<PeakProfilePtr>();
 }
 
 }   // namespace srrealmodule

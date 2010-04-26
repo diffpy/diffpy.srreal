@@ -42,12 +42,12 @@ class PDFBaselineWrap :
 
         // constructors
 
-        boost::shared_ptr<PDFBaseline> create() const
+        PDFBaselinePtr create() const
         {
             return this->get_override("_create")();
         }
 
-        boost::shared_ptr<PDFBaseline> clone() const
+        PDFBaselinePtr clone() const
         {
             return this->get_override("_clone")();
         }
@@ -75,14 +75,16 @@ void wrap_PDFBaseline()
     using namespace nswrap_PDFBaseline;
     using diffpy::Attributes;
 
-    class_<PDFBaselineWrap, noncopyable,
-        bases<Attributes> >("PDFBaseline_ext")
+    class_<PDFBaselineWrap, bases<Attributes>,
+        noncopyable>("PDFBaseline_ext")
         .def("_create", pure_virtual(&PDFBaseline::create))
         .def("_clone", pure_virtual(&PDFBaseline::clone))
         .def("type", pure_virtual(&PDFBaseline::type),
                 return_value_policy<copy_const_reference>())
         .def("__call__", pure_virtual(&PDFBaseline::operator()))
         ;
+
+    register_ptr_to_python<PDFBaselinePtr>();
 }
 
 }   // namespace srrealmodule
