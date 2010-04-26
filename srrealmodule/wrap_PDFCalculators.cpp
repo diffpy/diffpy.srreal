@@ -38,6 +38,8 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(setsft_overloads,
         setScatteringFactorTable, 1, 1)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getpkf_overloads,
         getPeakProfile, 0, 0)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getenvelopebytype_overloads,
+        getEnvelopeByType, 1, 1)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getbaseline_overloads,
         getBaseline, 0, 0)
 
@@ -53,6 +55,7 @@ DECLARE_PYSET_FUNCTION_WRAPPER(getPeakWidthModelTypes,
 DECLARE_PYSET_FUNCTION_WRAPPER(getScatteringFactorTableTypes,
         getScatteringFactorTableTypes_asset)
 DECLARE_PYSET_FUNCTION_WRAPPER(getPeakProfileTypes, getPeakProfileTypes_asset)
+DECLARE_PYSET_METHOD_WRAPPER(usedPDFEnvelopeTypes, usedPDFEnvelopeTypes_asset)
 DECLARE_PYSET_FUNCTION_WRAPPER(getPDFEnvelopeTypes, getPDFEnvelopeTypes_asset)
 DECLARE_PYSET_FUNCTION_WRAPPER(getPDFBaselineTypes, getPDFBaselineTypes_asset)
 
@@ -120,9 +123,6 @@ void wrap_PDFCalculators()
                 getScatteringFactorTableTypes_asset,
                 doc_getScatteringFactorTableTypes)
         .staticmethod("getScatteringFactorTableTypes")
-        .def("getPDFEnvelopeTypes",
-                getPDFEnvelopeTypes_asset, doc_getPDFEnvelopeTypes)
-        .staticmethod("getPDFEnvelopeTypes")
         // PDF baseline
         .def("getBaseline",
                 (PDFBaselinePtr(PDFCalculator::*)()) NULL,
@@ -132,6 +132,19 @@ void wrap_PDFCalculators()
         .def("getPDFBaselineTypes",
                 getPDFBaselineTypes_asset, doc_getPDFBaselineTypes)
         .staticmethod("getPDFBaselineTypes")
+        // PDF envelopes
+        .def("addEnvelope", &PDFCalculator::addEnvelope)
+        .def("addEnvelopeByType", &PDFCalculator::addEnvelopeByType)
+        .def("popEnvelope", &PDFCalculator::popEnvelope)
+        .def("popEnvelopeByType", &PDFCalculator::popEnvelopeByType)
+        .def("getEnvelopeByType",
+                (PDFEnvelopePtr(PDFCalculator::*)(const std::string&)) NULL,
+                getenvelopebytype_overloads())
+        .def("usedPDFEnvelopeTypes", usedPDFEnvelopeTypes_asset<PDFCalculator>)
+        .def("clearEnvelopes", &PDFCalculator::clearEnvelopes)
+        .def("getPDFEnvelopeTypes",
+                getPDFEnvelopeTypes_asset, doc_getPDFEnvelopeTypes)
+        .staticmethod("getPDFEnvelopeTypes")
         ;
 }
 
