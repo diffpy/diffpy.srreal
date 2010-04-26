@@ -39,6 +39,13 @@ const char* doc_PairQuantityWrap__value = "\
 Reference to the internal vector of total contributions.\n\
 ";
 
+// PDFBaseline ---------------------------------------------------------------
+
+const char* doc_PDFBaseline_getRegisteredTypes = "\
+Set of string identifiers for registered PDFBaseline classes.\n\
+These are allowed arguments for the createByType method.\n\
+";
+
 // DebyePDFCalculator and PDFCalculator --------------------------------------
 
 const char* doc_getPeakWidthModelTypes = "\
@@ -59,11 +66,6 @@ These are allowed arguments for the setPeakProfile method.\n\
 const char* doc_getEnvelopeTypes = "\
 Set of string identifiers for registered PDFEnvelope classes.\n\
 These are allowed arguments for the setPDFEnvelope method.\n\
-";
-
-const char* doc_getBaselineTypes = "\
-Set of string identifiers for registered PDFBaseline classes.\n\
-These are allowed arguments for the setPDFBaseline method.\n\
 ";
 
 // BVSCalculator -------------------------------------------------------------

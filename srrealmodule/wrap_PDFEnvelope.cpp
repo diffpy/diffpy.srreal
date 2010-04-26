@@ -56,13 +56,19 @@ class PDFEnvelopeWrap :
 
         const std::string& type() const
         {
-            return this->get_override("type")();
+            python::object tp = this->get_override("type")();
+            mtype = python::extract<std::string>(tp);
+            return mtype;
         }
 
         double operator()(const double& x) const
         {
             return this->get_override("__call__")(x);
         }
+
+    private:
+
+        mutable std::string mtype;
 
 };  // class PDFEnvelopeWrap
 

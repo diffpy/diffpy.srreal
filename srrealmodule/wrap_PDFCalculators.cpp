@@ -57,7 +57,6 @@ DECLARE_PYSET_FUNCTION_WRAPPER(getScatteringFactorTableTypes,
 DECLARE_PYSET_FUNCTION_WRAPPER(getPeakProfileTypes, getPeakProfileTypes_asset)
 DECLARE_PYSET_METHOD_WRAPPER(usedEnvelopeTypes, usedEnvelopeTypes_asset)
 DECLARE_PYSET_FUNCTION_WRAPPER(getPDFEnvelopeTypes, getEnvelopeTypes_asset)
-DECLARE_PYSET_FUNCTION_WRAPPER(getPDFBaselineTypes, getBaselineTypes_asset)
 
 DECLARE_PYARRAY_METHOD_WRAPPER(valences, valences_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(bvdiff, bvdiff_asarray)
@@ -129,9 +128,6 @@ void wrap_PDFCalculators()
                 getbaseline_overloads())
         .def("setBaseline", &PDFCalculator::setBaseline)
         .def("setBaselineByType", &PDFCalculator::setBaselineByType)
-        .def("getBaselineTypes",
-                getBaselineTypes_asset, doc_getBaselineTypes)
-        .staticmethod("getBaselineTypes")
         // PDF envelopes
         .def("addEnvelope", &PDFCalculator::addEnvelope)
         .def("addEnvelopeByType", &PDFCalculator::addEnvelopeByType)

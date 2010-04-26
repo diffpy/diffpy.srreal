@@ -27,11 +27,12 @@ extern const char* doc_BasePairQuantity_value;
 extern const char* doc_BasePairQuantity_eval;
 extern const char* doc_PairQuantityWrap__value;
 
+extern const char* doc_PDFBaseline_getRegisteredTypes;
+
 extern const char* doc_getPeakWidthModelTypes;
 extern const char* doc_getScatteringFactorTableTypes;
 extern const char* doc_getPeakProfileTypes;
 extern const char* doc_getEnvelopeTypes;
-extern const char* doc_getBaselineTypes;
 
 extern const char* doc_BVSCalculator_valences;
 extern const char* doc_BVSCalculator_bvdiff;

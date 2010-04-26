@@ -57,7 +57,9 @@ class PeakProfileWrap :
 
         const std::string& type() const
         {
-            return this->get_override("type")();
+            python::object tp = this->get_override("type")();
+            mtype = python::extract<std::string>(tp);
+            return mtype;
         }
 
         double yvalue(double x, double fwhm) const
@@ -74,6 +76,10 @@ class PeakProfileWrap :
         {
             return this->get_override("xboundhi")(fwhm);
         }
+
+    private:
+
+        mutable std::string mtype;
 
 };  // class PeakProfileWrap
 
