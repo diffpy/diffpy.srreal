@@ -56,12 +56,12 @@ Set of string identifiers for registered PeakProfile classes.\n\
 These are allowed arguments for the setPeakProfile method.\n\
 ";
 
-const char* doc_getPDFEnvelopeTypes = "\
+const char* doc_getEnvelopeTypes = "\
 Set of string identifiers for registered PDFEnvelope classes.\n\
 These are allowed arguments for the setPDFEnvelope method.\n\
 ";
 
-const char* doc_getPDFBaselineTypes = "\
+const char* doc_getBaselineTypes = "\
 Set of string identifiers for registered PDFBaseline classes.\n\
 These are allowed arguments for the setPDFBaseline method.\n\
 ";

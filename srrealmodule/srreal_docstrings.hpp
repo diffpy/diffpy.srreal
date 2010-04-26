@@ -30,8 +30,8 @@ extern const char* doc_PairQuantityWrap__value;
 extern const char* doc_getPeakWidthModelTypes;
 extern const char* doc_getScatteringFactorTableTypes;
 extern const char* doc_getPeakProfileTypes;
-extern const char* doc_getPDFEnvelopeTypes;
-extern const char* doc_getPDFBaselineTypes;
+extern const char* doc_getEnvelopeTypes;
+extern const char* doc_getBaselineTypes;
 
 extern const char* doc_BVSCalculator_valences;
 extern const char* doc_BVSCalculator_bvdiff;

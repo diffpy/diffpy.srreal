@@ -55,9 +55,9 @@ DECLARE_PYSET_FUNCTION_WRAPPER(getPeakWidthModelTypes,
 DECLARE_PYSET_FUNCTION_WRAPPER(getScatteringFactorTableTypes,
         getScatteringFactorTableTypes_asset)
 DECLARE_PYSET_FUNCTION_WRAPPER(getPeakProfileTypes, getPeakProfileTypes_asset)
-DECLARE_PYSET_METHOD_WRAPPER(usedPDFEnvelopeTypes, usedPDFEnvelopeTypes_asset)
-DECLARE_PYSET_FUNCTION_WRAPPER(getPDFEnvelopeTypes, getPDFEnvelopeTypes_asset)
-DECLARE_PYSET_FUNCTION_WRAPPER(getPDFBaselineTypes, getPDFBaselineTypes_asset)
+DECLARE_PYSET_METHOD_WRAPPER(usedEnvelopeTypes, usedEnvelopeTypes_asset)
+DECLARE_PYSET_FUNCTION_WRAPPER(getPDFEnvelopeTypes, getEnvelopeTypes_asset)
+DECLARE_PYSET_FUNCTION_WRAPPER(getPDFBaselineTypes, getBaselineTypes_asset)
 
 DECLARE_PYARRAY_METHOD_WRAPPER(valences, valences_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(bvdiff, bvdiff_asarray)
@@ -129,9 +129,9 @@ void wrap_PDFCalculators()
                 getbaseline_overloads())
         .def("setBaseline", &PDFCalculator::setBaseline)
         .def("setBaselineByType", &PDFCalculator::setBaselineByType)
-        .def("getPDFBaselineTypes",
-                getPDFBaselineTypes_asset, doc_getPDFBaselineTypes)
-        .staticmethod("getPDFBaselineTypes")
+        .def("getBaselineTypes",
+                getBaselineTypes_asset, doc_getBaselineTypes)
+        .staticmethod("getBaselineTypes")
         // PDF envelopes
         .def("addEnvelope", &PDFCalculator::addEnvelope)
         .def("addEnvelopeByType", &PDFCalculator::addEnvelopeByType)
@@ -140,11 +140,11 @@ void wrap_PDFCalculators()
         .def("getEnvelopeByType",
                 (PDFEnvelopePtr(PDFCalculator::*)(const std::string&)) NULL,
                 getenvelopebytype_overloads())
-        .def("usedPDFEnvelopeTypes", usedPDFEnvelopeTypes_asset<PDFCalculator>)
+        .def("usedEnvelopeTypes", usedEnvelopeTypes_asset<PDFCalculator>)
         .def("clearEnvelopes", &PDFCalculator::clearEnvelopes)
-        .def("getPDFEnvelopeTypes",
-                getPDFEnvelopeTypes_asset, doc_getPDFEnvelopeTypes)
-        .staticmethod("getPDFEnvelopeTypes")
+        .def("getEnvelopeTypes",
+                getEnvelopeTypes_asset, doc_getEnvelopeTypes)
+        .staticmethod("getEnvelopeTypes")
         ;
 }
 
