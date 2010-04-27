@@ -36,6 +36,8 @@ using namespace diffpy::srreal;
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(setsft_overloads,
         setScatteringFactorTable, 1, 1)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getpwm_overloads,
+        getPeakWidthModel, 0, 0)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getpkf_overloads,
         getPeakProfile, 0, 0)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getenvelopebytype_overloads,
@@ -50,8 +52,6 @@ DECLARE_PYARRAY_METHOD_WRAPPER(getRDF, getRDF_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(getRgrid, getRgrid_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(getF, getF_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(getQgrid, getQgrid_asarray)
-DECLARE_PYSET_FUNCTION_WRAPPER(getPeakWidthModelTypes,
-        getPeakWidthModelTypes_asset)
 DECLARE_PYSET_FUNCTION_WRAPPER(getScatteringFactorTableTypes,
         getScatteringFactorTableTypes_asset)
 DECLARE_PYSET_METHOD_WRAPPER(usedEnvelopeTypes, usedEnvelopeTypes_asset)
@@ -81,15 +81,16 @@ void wrap_PDFCalculators()
         .def("getRadiationType",
                 &DebyePDFCalculator::getRadiationType,
                 return_value_policy<copy_const_reference>())
-        // static methods
-        .def("getPeakWidthModelTypes",
-                getPeakWidthModelTypes_asset,
-                doc_getPeakWidthModelTypes)
-        .staticmethod("getPeakWidthModelTypes")
         .def("getScatteringFactorTableTypes",
                 getScatteringFactorTableTypes_asset,
                 doc_getScatteringFactorTableTypes)
         .staticmethod("getScatteringFactorTableTypes")
+        // PDF peak width model
+        .def("getPeakWidthModel",
+                (PeakWidthModelPtr(PDFCalculator::*)()) NULL,
+                getpwm_overloads())
+        .def("setPeakWidthModel", &PDFCalculator::setPeakWidthModel)
+        .def("setPeakWidthModelByType", &PDFCalculator::setPeakWidthModelByType)
         ;
 
     // PDFCalculator
@@ -97,6 +98,12 @@ void wrap_PDFCalculators()
         .def("getPDF", getPDF_asarray<PDFCalculator>)
         .def("getRDF", getRDF_asarray<PDFCalculator>)
         .def("getRgrid", getRgrid_asarray<PDFCalculator>)
+        // PDF peak width model
+        .def("getPeakWidthModel",
+                (PeakWidthModelPtr(PDFCalculator::*)()) NULL,
+                getpwm_overloads())
+        .def("setPeakWidthModel", &PDFCalculator::setPeakWidthModel)
+        .def("setPeakWidthModelByType", &PDFCalculator::setPeakWidthModelByType)
         // PDF peak profile
         .def("getPeakProfile",
                 (PeakProfilePtr(PDFCalculator::*)()) NULL,
@@ -109,10 +116,6 @@ void wrap_PDFCalculators()
         .def("getRadiationType",
                 &PDFCalculator::getRadiationType,
                 return_value_policy<copy_const_reference>())
-        .def("getPeakWidthModelTypes",
-                getPeakWidthModelTypes_asset,
-                doc_getPeakWidthModelTypes)
-        .staticmethod("getPeakWidthModelTypes")
         .def("getScatteringFactorTableTypes",
                 getScatteringFactorTableTypes_asset,
                 doc_getScatteringFactorTableTypes)

@@ -27,6 +27,7 @@ extern const char* doc_BasePairQuantity_value;
 extern const char* doc_BasePairQuantity_eval;
 extern const char* doc_PairQuantityWrap__value;
 
+extern const char* doc_PeakWidthModel_getRegisteredTypes;
 extern const char* doc_PeakProfile_getRegisteredTypes;
 extern const char* doc_PDFBaseline_getRegisteredTypes;
 extern const char* doc_PDFEnvelope_getRegisteredTypes;
