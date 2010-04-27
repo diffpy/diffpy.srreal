@@ -54,7 +54,6 @@ DECLARE_PYSET_FUNCTION_WRAPPER(getPeakWidthModelTypes,
         getPeakWidthModelTypes_asset)
 DECLARE_PYSET_FUNCTION_WRAPPER(getScatteringFactorTableTypes,
         getScatteringFactorTableTypes_asset)
-DECLARE_PYSET_FUNCTION_WRAPPER(getPeakProfileTypes, getPeakProfileTypes_asset)
 DECLARE_PYSET_METHOD_WRAPPER(usedEnvelopeTypes, usedEnvelopeTypes_asset)
 
 DECLARE_PYARRAY_METHOD_WRAPPER(valences, valences_asarray)
@@ -104,9 +103,6 @@ void wrap_PDFCalculators()
                 getpkf_overloads())
         .def("setPeakProfile", &PDFCalculator::setPeakProfile)
         .def("setPeakProfileByType", &PDFCalculator::setPeakProfileByType)
-        .def("getPeakProfileTypes",
-                getPeakProfileTypes_asset, doc_getPeakProfileTypes)
-        .staticmethod("getPeakProfileTypes")
         .def("setScatteringFactorTable",
                 (void(PDFCalculator::*)(const std::string&)) NULL,
                 setsft_overloads())

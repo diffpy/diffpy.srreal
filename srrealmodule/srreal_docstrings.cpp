@@ -39,18 +39,25 @@ const char* doc_PairQuantityWrap__value = "\
 Reference to the internal vector of total contributions.\n\
 ";
 
+// PeakProfile ---------------------------------------------------------------
+
+const char* doc_PeakProfile_getRegisteredTypes = "\
+Set of string identifiers for registered PeakProfile classes.\n\
+These are allowed arguments for the createByType static method.\n\
+";
+
 // PDFBaseline ---------------------------------------------------------------
 
 const char* doc_PDFBaseline_getRegisteredTypes = "\
 Set of string identifiers for registered PDFBaseline classes.\n\
-These are allowed arguments for the createByType method.\n\
+These are allowed arguments for the createByType static method.\n\
 ";
 
 // PDFEnvelope ---------------------------------------------------------------
 
 const char* doc_PDFEnvelope_getRegisteredTypes = "\
 Set of string identifiers for registered PDFEnvelope classes.\n\
-These are allowed arguments for the setPDFEnvelope method.\n\
+These are allowed arguments for the createByType static method.\n\
 ";
 
 // DebyePDFCalculator and PDFCalculator --------------------------------------
@@ -63,11 +70,6 @@ These are allowed arguments for the setPeakWidthModel method.\n\
 const char* doc_getScatteringFactorTableTypes = "\
 Set of string identifiers for registered ScatteringFactorTable classes.\n\
 These are allowed arguments for the setScatteringFactorTable method.\n\
-";
-
-const char* doc_getPeakProfileTypes = "\
-Set of string identifiers for registered PeakProfile classes.\n\
-These are allowed arguments for the setPeakProfile method.\n\
 ";
 
 // BVSCalculator -------------------------------------------------------------

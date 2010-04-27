@@ -25,6 +25,7 @@
 #include <diffpy/srreal/PeakProfile.hpp>
 
 #include "srreal_converters.hpp"
+#include "srreal_docstrings.hpp"
 
 namespace srrealmodule {
 namespace nswrap_PeakProfile {
@@ -32,6 +33,9 @@ namespace nswrap_PeakProfile {
 using namespace boost;
 using namespace boost::python;
 using namespace diffpy::srreal;
+
+DECLARE_PYSET_FUNCTION_WRAPPER(PeakProfile::getRegisteredTypes,
+        getPeakProfileTypes_asset)
 
 // Helper class allows overload of the PeakProfile methods from Python.
 
@@ -45,12 +49,12 @@ class PeakProfileWrap :
 
         PeakProfilePtr create() const
         {
-            return this->get_override("_create")();
+            return this->get_override("create")();
         }
 
         PeakProfilePtr clone() const
         {
-            return this->get_override("_clone")();
+            return this->get_override("clone")();
         }
 
         // methods
@@ -94,13 +98,19 @@ void wrap_PeakProfile()
 
     class_<PeakProfileWrap, bases<Attributes>,
         noncopyable>("PeakProfile_ext")
-        .def("_create", &PeakProfile::create)
-        .def("_clone", &PeakProfile::clone)
+        .def("create", &PeakProfile::create)
+        .def("clone", &PeakProfile::clone)
         .def("type", pure_virtual(&PeakProfile::type),
                 return_value_policy<copy_const_reference>())
         .def("yvalue", pure_virtual(&PeakProfile::yvalue))
         .def("xboundlo", pure_virtual(&PeakProfile::xboundlo))
         .def("xboundhi", pure_virtual(&PeakProfile::xboundhi))
+        .def("_registerThisType", &PeakProfile::registerThisType)
+        .def("createByType", &PeakProfile::createByType)
+        .staticmethod("createByType")
+        .def("getRegisteredTypes", getPeakProfileTypes_asset,
+                doc_PeakProfile_getRegisteredTypes)
+        .staticmethod("getRegisteredTypes")
         ;
 
     register_ptr_to_python<PeakProfilePtr>();
