@@ -46,6 +46,13 @@ Set of string identifiers for registered PDFBaseline classes.\n\
 These are allowed arguments for the createByType method.\n\
 ";
 
+// PDFEnvelope ---------------------------------------------------------------
+
+const char* doc_PDFEnvelope_getRegisteredTypes = "\
+Set of string identifiers for registered PDFEnvelope classes.\n\
+These are allowed arguments for the setPDFEnvelope method.\n\
+";
+
 // DebyePDFCalculator and PDFCalculator --------------------------------------
 
 const char* doc_getPeakWidthModelTypes = "\
@@ -61,11 +68,6 @@ These are allowed arguments for the setScatteringFactorTable method.\n\
 const char* doc_getPeakProfileTypes = "\
 Set of string identifiers for registered PeakProfile classes.\n\
 These are allowed arguments for the setPeakProfile method.\n\
-";
-
-const char* doc_getEnvelopeTypes = "\
-Set of string identifiers for registered PDFEnvelope classes.\n\
-These are allowed arguments for the setPDFEnvelope method.\n\
 ";
 
 // BVSCalculator -------------------------------------------------------------

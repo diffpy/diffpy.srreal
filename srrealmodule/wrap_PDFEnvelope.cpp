@@ -24,6 +24,7 @@
 #include <diffpy/srreal/PDFEnvelope.hpp>
 
 #include "srreal_converters.hpp"
+#include "srreal_docstrings.hpp"
 
 namespace srrealmodule {
 namespace nswrap_PDFEnvelope {
@@ -31,6 +32,9 @@ namespace nswrap_PDFEnvelope {
 using namespace boost;
 using namespace boost::python;
 using namespace diffpy::srreal;
+
+DECLARE_PYSET_FUNCTION_WRAPPER(PDFEnvelope::getRegisteredTypes,
+        getPDFEnvelopeTypes_asset)
 
 // Helper class allows overload of the PDFEnvelope methods from Python.
 
@@ -44,12 +48,12 @@ class PDFEnvelopeWrap :
 
         PDFEnvelopePtr create() const
         {
-            return this->get_override("_create")();
+            return this->get_override("create")();
         }
 
         PDFEnvelopePtr clone() const
         {
-            return this->get_override("_clone")();
+            return this->get_override("clone")();
         }
 
         // methods
@@ -83,11 +87,17 @@ void wrap_PDFEnvelope()
 
     class_<PDFEnvelopeWrap, bases<Attributes>,
         noncopyable>("PDFEnvelope_ext")
-        .def("_create", pure_virtual(&PDFEnvelope::create))
-        .def("_clone", pure_virtual(&PDFEnvelope::clone))
+        .def("create", pure_virtual(&PDFEnvelope::create))
+        .def("clone", pure_virtual(&PDFEnvelope::clone))
         .def("type", pure_virtual(&PDFEnvelope::type),
                 return_value_policy<copy_const_reference>())
         .def("__call__", pure_virtual(&PDFEnvelope::operator()))
+        .def("_registerThisType", &PDFEnvelope::registerThisType)
+        .def("createByType", &PDFEnvelope::createByType)
+        .staticmethod("createByType")
+        .def("getRegisteredTypes", getPDFEnvelopeTypes_asset,
+                doc_PDFEnvelope_getRegisteredTypes)
+        .staticmethod("getRegisteredTypes")
         ;
 
     register_ptr_to_python<PDFEnvelopePtr>();
