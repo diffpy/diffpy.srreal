@@ -35,6 +35,9 @@ using namespace boost;
 using namespace boost::python;
 using namespace diffpy::srreal;
 
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getpwm_overloads,
+        getPeakWidthModel, 0, 0)
+
 DECLARE_PYSET_FUNCTION_WRAPPER(PeakWidthModel::getRegisteredTypes,
         getPeakWidthModelTypes_asset)
 
@@ -111,6 +114,16 @@ void wrap_PeakWidthModel()
         ;
 
     register_ptr_to_python<PeakWidthModelPtr>();
+
+    class_<PeakWidthModelOwner>("PeakWidthModelOwner_ext")
+        .def("getPeakWidthModel",
+                (PeakWidthModelPtr(PeakWidthModelOwner::*)()) NULL,
+                getpwm_overloads())
+        .def("setPeakWidthModel",
+                &PeakWidthModelOwner::setPeakWidthModel)
+        .def("setPeakWidthModelByType",
+                &PeakWidthModelOwner::setPeakWidthModelByType)
+        ;
 }
 
 }   // namespace srrealmodule

@@ -33,8 +33,6 @@ namespace nswrap_PDFCalculators {
 using namespace boost::python;
 using namespace diffpy::srreal;
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getpwm_overloads,
-        getPeakWidthModel, 0, 0)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getpkf_overloads,
         getPeakProfile, 0, 0)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getenvelopebytype_overloads,
@@ -64,7 +62,7 @@ void wrap_PDFCalculators()
 
     // DebyePDFCalculator
     class_<DebyePDFCalculator,
-        bases<PairQuantity, ScatteringFactorTableOwner>
+        bases<PairQuantity, PeakWidthModelOwner, ScatteringFactorTableOwner>
             >("DebyePDFCalculator_ext")
         .def("getPDF", getPDF_asarray<DebyePDFCalculator>)
         .def("getRgrid", getRgrid_asarray<DebyePDFCalculator>)
@@ -72,31 +70,15 @@ void wrap_PDFCalculators()
         .def("getQgrid", getQgrid_asarray<DebyePDFCalculator>)
         .def("setOptimumQstep", &DebyePDFCalculator::setOptimumQstep)
         .def("isOptimumQstep", &DebyePDFCalculator::isOptimumQstep)
-        // PDF peak width model
-        .def("getPeakWidthModel",
-                (PeakWidthModelPtr(DebyePDFCalculator::*)()) NULL,
-                getpwm_overloads())
-        .def("setPeakWidthModel",
-                &DebyePDFCalculator::setPeakWidthModel)
-        .def("setPeakWidthModelByType",
-                &DebyePDFCalculator::setPeakWidthModelByType)
         ;
 
     // PDFCalculator
     class_<PDFCalculator,
-        bases<PairQuantity, ScatteringFactorTableOwner>
+        bases<PairQuantity, PeakWidthModelOwner, ScatteringFactorTableOwner>
         >("PDFCalculator_ext")
         .def("getPDF", getPDF_asarray<PDFCalculator>)
         .def("getRDF", getRDF_asarray<PDFCalculator>)
         .def("getRgrid", getRgrid_asarray<PDFCalculator>)
-        // PDF peak width model
-        .def("getPeakWidthModel",
-                (PeakWidthModelPtr(PDFCalculator::*)()) NULL,
-                getpwm_overloads())
-        .def("setPeakWidthModel",
-                &PDFCalculator::setPeakWidthModel)
-        .def("setPeakWidthModelByType",
-                &PDFCalculator::setPeakWidthModelByType)
         // PDF peak profile
         .def("getPeakProfile",
                 (PeakProfilePtr(PDFCalculator::*)()) NULL,
