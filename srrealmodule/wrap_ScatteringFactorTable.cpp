@@ -103,21 +103,26 @@ class ScatteringFactorTableWrap :
 void wrap_ScatteringFactorTable()
 {
     using namespace nswrap_ScatteringFactorTable;
-    using diffpy::Attributes;
     typedef ScatteringFactorTableOwner SFTOwner;
 
-    class_<ScatteringFactorTableWrap, bases<Attributes>,
-        noncopyable>("ScatteringFactorTable_ext")
+    // NOTE: fetch is protected and so the _fetch wrapper raises exception for
+    // classes defined in C++.  However, _fetch can be overloaded for classes
+    // derived in Python.
+
+    class_<ScatteringFactorTableWrap, noncopyable>("ScatteringFactorTable_ext")
         .def("create", &ScatteringFactorTable::create)
         .def("clone", &ScatteringFactorTable::clone)
-        .def("type",
-                pure_virtual(&ScatteringFactorTable::type),
+        .def("type", pure_virtual(&ScatteringFactorTable::type),
                 return_value_policy<copy_const_reference>())
         .def("radiationType",
                 pure_virtual(&ScatteringFactorTable::radiationType),
                 return_value_policy<copy_const_reference>())
-        .def("_fetch",
-                pure_virtual(&ScatteringFactorTableWrap::fetch))
+        .def("lookup", &ScatteringFactorTable::lookup,
+                return_value_policy<copy_const_reference>())
+        .def("setCustom", &ScatteringFactorTable::setCustom)
+        .def("resetCustom", &ScatteringFactorTable::resetCustom)
+        .def("resetAll", &ScatteringFactorTable::resetAll)
+        .def("_fetch", pure_virtual(&ScatteringFactorTableWrap::fetch))
         .def("_registerThisType", &ScatteringFactorTable::registerThisType)
         .def("createByType", &ScatteringFactorTable::createByType)
         .staticmethod("createByType")
