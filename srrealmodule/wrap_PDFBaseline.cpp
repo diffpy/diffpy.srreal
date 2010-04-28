@@ -44,7 +44,7 @@ class PDFBaselineWrap :
 {
     public:
 
-        // constructors
+        // HasClassRegistry methods
 
         PDFBaselinePtr create() const
         {
@@ -56,7 +56,6 @@ class PDFBaselineWrap :
             return this->get_override("clone")();
         }
 
-        // methods
 
         const std::string& type() const
         {
@@ -64,6 +63,8 @@ class PDFBaselineWrap :
             mtype = python::extract<std::string>(tp);
             return mtype;
         }
+
+        // own methods
 
         double operator()(const double& x) const
         {

@@ -27,6 +27,7 @@ void wrap_Attributes();
 void wrap_BaseBondGenerator();
 void wrap_PairQuantity();
 void wrap_PeakWidthModel();
+void wrap_ScatteringFactorTable();
 void wrap_PeakProfile();
 void wrap_BVSCalculator();
 void wrap_PDFBaseline();
@@ -44,6 +45,7 @@ BOOST_PYTHON_MODULE(srreal_ext)
     wrap_BaseBondGenerator();
     wrap_PairQuantity();
     wrap_PeakWidthModel();
+    wrap_ScatteringFactorTable();
     wrap_PeakProfile();
     wrap_BVSCalculator();
     wrap_PDFBaseline();

@@ -57,7 +57,7 @@ def _makePDFCalculator(crst, cfgdict):
         setbiso = lambda sc: sc.mpScattPow.SetBiso(cfgdict['biso'])
         map(setbiso, crst.GetScatteringComponentList())
     if 'type' in cfgdict:
-        pdfc.setScatteringFactorTable(cfgdict['type'])
+        pdfc.setScatteringFactorTableByType(cfgdict['type'])
     pdfc.eval(crst)
     # avoid metadata override by PDFFitStructure
     for k, v in pdfcargs.items():

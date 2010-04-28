@@ -33,7 +33,6 @@ extern const char* doc_PDFBaseline_getRegisteredTypes;
 extern const char* doc_PDFEnvelope_getRegisteredTypes;
 
 extern const char* doc_getPeakWidthModelTypes;
-extern const char* doc_getScatteringFactorTableTypes;
 
 extern const char* doc_BVSCalculator_valences;
 extern const char* doc_BVSCalculator_bvdiff;

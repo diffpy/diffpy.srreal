@@ -45,7 +45,7 @@ class PeakProfileWrap :
 {
     public:
 
-        // constructors
+        // HasClassRegistry methods
 
         PeakProfilePtr create() const
         {
@@ -57,7 +57,6 @@ class PeakProfileWrap :
             return this->get_override("clone")();
         }
 
-        // methods
 
         const std::string& type() const
         {
@@ -65,6 +64,8 @@ class PeakProfileWrap :
             mtype = python::extract<std::string>(tp);
             return mtype;
         }
+
+        // own methods
 
         double yvalue(double x, double fwhm) const
         {

@@ -68,13 +68,6 @@ Set of string identifiers for registered PDFEnvelope classes.\n\
 These are allowed arguments for the createByType static method.\n\
 ";
 
-// DebyePDFCalculator and PDFCalculator --------------------------------------
-
-const char* doc_getScatteringFactorTableTypes = "\
-Set of string identifiers for registered ScatteringFactorTable classes.\n\
-These are allowed arguments for the setScatteringFactorTable method.\n\
-";
-
 // BVSCalculator -------------------------------------------------------------
 
 const char* doc_BVSCalculator_valences = "\
