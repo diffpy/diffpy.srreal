@@ -25,7 +25,6 @@
 #include <diffpy/srreal/PythonStructureAdapter.hpp>
 
 #include "srreal_converters.hpp"
-#include "srreal_docstrings.hpp"
 
 namespace srrealmodule {
 namespace nswrap_PDFCalculators {
@@ -48,9 +47,6 @@ DECLARE_PYARRAY_METHOD_WRAPPER(getRgrid, getRgrid_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(getF, getF_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(getQgrid, getQgrid_asarray)
 DECLARE_PYSET_METHOD_WRAPPER(usedEnvelopeTypes, usedEnvelopeTypes_asset)
-
-DECLARE_PYARRAY_METHOD_WRAPPER(valences, valences_asarray)
-DECLARE_PYARRAY_METHOD_WRAPPER(bvdiff, bvdiff_asarray)
 
 }   // namespace nswrap_PDFCalculators
 

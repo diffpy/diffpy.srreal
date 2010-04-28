@@ -25,7 +25,6 @@
 #include <diffpy/srreal/PeakProfile.hpp>
 
 #include "srreal_converters.hpp"
-#include "srreal_docstrings.hpp"
 
 namespace srrealmodule {
 namespace nswrap_PeakProfile {
@@ -33,6 +32,15 @@ namespace nswrap_PeakProfile {
 using namespace boost;
 using namespace boost::python;
 using namespace diffpy::srreal;
+
+// docstrings ----------------------------------------------------------------
+
+const char* doc_PeakProfile_getRegisteredTypes = "\
+Set of string identifiers for registered PeakProfile classes.\n\
+These are allowed arguments for the createByType static method.\n\
+";
+
+// wrappers ------------------------------------------------------------------
 
 DECLARE_PYSET_FUNCTION_WRAPPER(PeakProfile::getRegisteredTypes,
         getPeakProfileTypes_asset)

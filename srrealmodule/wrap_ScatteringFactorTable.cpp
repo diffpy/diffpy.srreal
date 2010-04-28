@@ -33,7 +33,7 @@ using namespace diffpy::srreal;
 
 // docstrings
 
-const char* doc_getRegisteredTypes = "\
+const char* doc_ScatteringFactorTable_getRegisteredTypes = "\
 Set of string identifiers for registered ScatteringFactorTable classes.\n\
 These are allowed arguments for the createByType method and\n\
 setScatteringFactorTableByType methods in PDF calculator classes.\n\
@@ -122,7 +122,7 @@ void wrap_ScatteringFactorTable()
         .def("createByType", &ScatteringFactorTable::createByType)
         .staticmethod("createByType")
         .def("getRegisteredTypes", getScatteringFactorTableTypes_asset,
-                doc_getRegisteredTypes)
+                doc_ScatteringFactorTable_getRegisteredTypes)
         .staticmethod("getRegisteredTypes")
         ;
 

@@ -24,7 +24,6 @@
 #include <diffpy/srreal/PDFEnvelope.hpp>
 
 #include "srreal_converters.hpp"
-#include "srreal_docstrings.hpp"
 
 namespace srrealmodule {
 namespace nswrap_PDFEnvelope {
@@ -32,6 +31,15 @@ namespace nswrap_PDFEnvelope {
 using namespace boost;
 using namespace boost::python;
 using namespace diffpy::srreal;
+
+// docstrings ----------------------------------------------------------------
+
+const char* doc_PDFEnvelope_getRegisteredTypes = "\
+Set of string identifiers for registered PDFEnvelope classes.\n\
+These are allowed arguments for the createByType static method.\n\
+";
+
+// wrappers ------------------------------------------------------------------
 
 DECLARE_PYSET_FUNCTION_WRAPPER(PDFEnvelope::getRegisteredTypes,
         getPDFEnvelopeTypes_asset)

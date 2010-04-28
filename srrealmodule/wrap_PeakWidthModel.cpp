@@ -26,7 +26,6 @@
 #include <diffpy/srreal/BaseBondGenerator.hpp>
 
 #include "srreal_converters.hpp"
-#include "srreal_docstrings.hpp"
 
 namespace srrealmodule {
 namespace nswrap_PeakWidthModel {
@@ -34,6 +33,15 @@ namespace nswrap_PeakWidthModel {
 using namespace boost;
 using namespace boost::python;
 using namespace diffpy::srreal;
+
+// docstrings ----------------------------------------------------------------
+
+const char* doc_PeakWidthModel_getRegisteredTypes = "\
+Set of string identifiers for registered PeakWidthModel classes.\n\
+These are allowed arguments for the setPeakWidthModel method.\n\
+";
+
+// wrappers ------------------------------------------------------------------
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getpwm_overloads,
         getPeakWidthModel, 0, 0)

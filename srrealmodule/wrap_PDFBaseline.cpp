@@ -24,7 +24,6 @@
 #include <diffpy/srreal/PDFBaseline.hpp>
 
 #include "srreal_converters.hpp"
-#include "srreal_docstrings.hpp"
 
 namespace srrealmodule {
 namespace nswrap_PDFBaseline {
@@ -32,6 +31,15 @@ namespace nswrap_PDFBaseline {
 using namespace boost;
 using namespace boost::python;
 using namespace diffpy::srreal;
+
+// docstrings ----------------------------------------------------------------
+
+const char* doc_PDFBaseline_getRegisteredTypes = "\
+Set of string identifiers for registered PDFBaseline classes.\n\
+These are allowed arguments for the createByType static method.\n\
+";
+
+// wrappers ------------------------------------------------------------------
 
 DECLARE_PYSET_FUNCTION_WRAPPER(PDFBaseline::getRegisteredTypes,
         getPDFBaselineTypes_asset)

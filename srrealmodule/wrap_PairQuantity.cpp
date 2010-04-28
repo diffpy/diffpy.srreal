@@ -39,7 +39,6 @@
 #include <diffpy/srreal/PythonStructureAdapter.hpp>
 
 #include "srreal_converters.hpp"
-#include "srreal_docstrings.hpp"
 
 namespace srrealmodule {
 namespace nswrap_PairQuantity {
@@ -47,6 +46,27 @@ namespace nswrap_PairQuantity {
 using namespace boost;
 using namespace boost::python;
 using namespace diffpy::srreal;
+
+// docstrings ----------------------------------------------------------------
+
+const char* doc_BasePairQuantity_value = "\
+Return total internal contributions as numpy array.\n\
+";
+
+const char* doc_BasePairQuantity_eval = "\
+Calculate a pair quantity for the specified structure.\n\
+\n\
+stru -- structure object that can be converted to StructureAdapter\n\
+\n\
+Return a copy of the internal total contributions.\n\
+May need to be further transformed to get the desired value.\n\
+";
+
+const char* doc_PairQuantityWrap__value = "\
+Reference to the internal vector of total contributions.\n\
+";
+
+// wrappers ------------------------------------------------------------------
 
 DECLARE_PYARRAY_METHOD_WRAPPER(value, value_asarray)
 
