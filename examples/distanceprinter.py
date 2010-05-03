@@ -51,11 +51,11 @@ def get_pyobjcryst_sphalerite():
 
 def main():
     s = raw_input('Enter rmin: ')
-    if s.strip():  distprint._setDoubleAttr('rmin', float(s))
-    print "rmin =", distprint._getDoubleAttr("rmin")
+    if s.strip():  distprint.rmin = float(s)
+    print "rmin =", distprint.rmin
     s = raw_input('Enter rmax: ')
-    if s.strip():  distprint._setDoubleAttr('rmax', float(s))
-    print "rmax =", distprint._getDoubleAttr("rmax")
+    if s.strip():  distprint.rmax = float(s)
+    print "rmax =", distprint.rmax
     print
     linesep = 78 * '-'
     # C60bucky
