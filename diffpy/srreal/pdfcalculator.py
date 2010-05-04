@@ -13,22 +13,27 @@
 ##############################################################################
 
 
-"""class PDFCalculator    -- highly configurable PDF calculator
+"""\
+class DebyePDFCalculator -- PDF calculator that uses Debye Formula
+class PDFCalculator      -- PDF calculator in real space
 """
 
 # module version
 __id__ = "$Id$"
 
 # exported items
-__all__ = ['PDFCalculator']
+__all__ = ['DebyePDFCalculator', 'PDFCalculator']
 
+from diffpy.srreal.srreal_ext import DebyePDFCalculator_ext
 from diffpy.srreal.srreal_ext import PDFCalculator_ext
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
 
+##############################################################################
 
-class PDFCalculator(PDFCalculator_ext):
+class PDFCalculatorInterface(object):
 
-    # Property wrappers to double attributes of the C++ PDFCalculator_ext
+    '''Base class for shared properties and methods.
+    '''
 
     delta1 = propertyFromExtDoubleAttr('delta1',
         '''Coefficient for (1/r) contribution to the peak sharpening.
@@ -39,6 +44,11 @@ class PDFCalculator(PDFCalculator_ext):
         '''Coefficient for (1/r**2) contribution to the peak sharpening.
         Active for JeongPeakWidth model.
         [0 A**2]''')
+
+    qbroad = propertyFromExtDoubleAttr('qbroad',
+        '''PDF peak broadening from increased intensity noise at high Q.
+        Not applied when equal zero.  Active for JeongPeakWidth model.
+        [0 1/A]''')
 
     extendedrmin = propertyFromExtDoubleAttr('extendedrmin',
         '''Low boundary of the extended r-range, read-only.
@@ -53,30 +63,6 @@ class PDFCalculator(PDFCalculator_ext):
         from the out of range peaks.
         [10 A]''')
 
-    peakprecision = propertyFromExtDoubleAttr('peakprecision',
-        '''Cutoff amplitude of the peak tail relative to the peak maximum.
-        [3.33e-6 unitless]''')
-
-    qbroad = propertyFromExtDoubleAttr('qbroad',
-        '''PDF peak broadening from increased intensity noise at high Q.
-        Not applied when equal zero.  Active for JeongPeakWidth model.
-        [0 1/A]''')
-
-    qdamp = propertyFromExtDoubleAttr('qdamp',
-        '''PDF Gaussian dampening envelope due to limited Q-resolution.
-        Not applied when equal to zero.  Active for QResolutionEnvelope.
-        [0 1/A]''')
-
-    qmin = propertyFromExtDoubleAttr('qmin',
-        '''Lower bound of the experimental Q-range used.
-        Affects the termination ripples.
-        [0 1/A]''')
-
-    qmax = propertyFromExtDoubleAttr('qmax',
-        '''Upper bound of the experimental Q-range used.
-        Affects the termination ripples.  Not used when zero.
-        [0 1/A]''')
-
     rmin = propertyFromExtDoubleAttr('rmin',
         '''Lower bound of the r-grid for PDF calculation.
         [0 A]''')
@@ -89,6 +75,91 @@ class PDFCalculator(PDFCalculator_ext):
         '''Spacing in the calculated r-grid.  r-values are at the
         multiples of rstep.
         [0.01 A]''')
+
+
+    def __call__(self, structure):
+        '''Return PDF of the given structure as an (r, G) tuple.
+        '''
+        self.eval(structure)
+        rv = (self.getRgrid(), self.getPDF())
+        return rv
+
+# class PDFCalculatorInterface
+
+##############################################################################
+
+class DebyePDFCalculator(DebyePDFCalculator_ext, PDFCalculatorInterface):
+
+    # Property wrappers to double attributes of the C++ DebyePDFCalculator_ext
+
+    debyeprecision = propertyFromExtDoubleAttr('debyeprecision',
+        '''Cutoff amplitude for the sine contributions to the F(Q).
+        [1e-6 unitless]''')
+
+    qmin = propertyFromExtDoubleAttr('qmin',
+        '''Lower bound of the Q-grid for the calculated F(Q).
+        Affects the shape envelope.
+        [0 1/A]
+        ''')
+
+    qmax = propertyFromExtDoubleAttr('qmax',
+        '''Upper bound of the Q-grid for the calculated F(Q).
+        Affects the termination ripples.
+        [25 1/A]
+        ''')
+
+    qstep = propertyFromExtDoubleAttr('qstep',
+        '''Spacing in the Q-grid.  Q-values are at the multiples of qstep.
+        [PI/extendedrmax A] unless user overridden.
+        See also setOptimumQstep, isOptimumQstep.''')
+
+    # Methods
+
+    def __init__(self, **kwargs):
+        '''Create a new instance of the DebyePDFCalculator.
+        Keyword arguments can be used to configure the calculator properties,
+        for example:
+
+        dpc = DebyePDFCalculator(qmax=20, rmin=7, rmax=15)
+
+        No return value.
+        Raise ValueError for invalid keyword argument.
+        '''
+        super(DebyePDFCalculator, self).__init__()
+        for n, v in kwargs.iteritems():
+            if not hasattr(self, n):
+                emsg = "Unknown attribute %r" % n
+                raise ValueError(emsg)
+            setattr(self, n, v)
+        return
+
+
+# class DebyePDFCalculator_ext
+
+##############################################################################
+
+class PDFCalculator(PDFCalculator_ext, PDFCalculatorInterface):
+
+    # Property wrappers to double attributes of the C++ PDFCalculator_ext
+
+    peakprecision = propertyFromExtDoubleAttr('peakprecision',
+        '''Cutoff amplitude of the peak tail relative to the peak maximum.
+        [3.33e-6 unitless]''')
+
+    qdamp = propertyFromExtDoubleAttr('qdamp',
+        '''PDF Gaussian dampening envelope due to limited Q-resolution.
+        Not applied when equal to zero.  Active for QResolutionEnvelope.
+        [0 1/A]''')
+
+    qmin = propertyFromExtDoubleAttr('qmin',
+        '''Lower bound of the experimental Q-range used.
+        Affects the shape envelope.
+        [0 1/A]''')
+
+    qmax = propertyFromExtDoubleAttr('qmax',
+        '''Upper bound of the experimental Q-range used.
+        Affects the termination ripples.  Not used when zero.
+        [0 1/A]''')
 
     scale = propertyFromExtDoubleAttr('scale',
         '''Scale factor of the calculated PDF.  Active for ScaleEnvelope.
@@ -131,14 +202,7 @@ class PDFCalculator(PDFCalculator_ext):
             setattr(self, n, v)
         return
 
-
-    def __call__(self, structure):
-        '''Return PDF of the given structure as an (r, G) tuple.
-        '''
-        self.eval(structure)
-        rv = (self.getRgrid(), self.getPDF())
-        return rv
-
 # class PDFCalculator
+
 
 # End of file
