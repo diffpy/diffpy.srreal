@@ -66,6 +66,16 @@ void wrap_PDFCalculators()
         .def("getQgrid", getQgrid_asarray<DebyePDFCalculator>)
         .def("setOptimumQstep", &DebyePDFCalculator::setOptimumQstep)
         .def("isOptimumQstep", &DebyePDFCalculator::isOptimumQstep)
+        // PDF envelopes
+        .def("addEnvelope", &DebyePDFCalculator::addEnvelope)
+        .def("addEnvelopeByType", &DebyePDFCalculator::addEnvelopeByType)
+        .def("popEnvelope", &DebyePDFCalculator::popEnvelope)
+        .def("popEnvelopeByType", &DebyePDFCalculator::popEnvelopeByType)
+        .def("getEnvelopeByType",
+                (PDFEnvelopePtr(DebyePDFCalculator::*)(const std::string&)) NULL,
+                getenvelopebytype_overloads())
+        .def("usedEnvelopeTypes", usedEnvelopeTypes_asset<DebyePDFCalculator>)
+        .def("clearEnvelopes", &DebyePDFCalculator::clearEnvelopes)
         ;
 
     // PDFCalculator
@@ -75,6 +85,8 @@ void wrap_PDFCalculators()
         .def("getPDF", getPDF_asarray<PDFCalculator>)
         .def("getRDF", getRDF_asarray<PDFCalculator>)
         .def("getRgrid", getRgrid_asarray<PDFCalculator>)
+        .def("getF", getF_asarray<PDFCalculator>)
+        .def("getQgrid", getQgrid_asarray<PDFCalculator>)
         // PDF peak profile
         .def("getPeakProfile",
                 (PeakProfilePtr(PDFCalculator::*)()) NULL,
