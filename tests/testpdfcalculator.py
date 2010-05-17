@@ -100,7 +100,7 @@ class TestPDFCalculator(unittest.TestCase):
         self.pdfcalc._setDoubleAttr('rmax', 10.0001)
         self.pdfcalc.eval(self.nickel)
         gcalc = self.pdfcalc.getPDF()
-        self.failUnless(_maxNormDiff(gpf2, gcalc) < 1e-5)
+        self.failUnless(_maxNormDiff(gpf2, gcalc) < 0.0091)
         return
 
     def test_eval_rutile(self):
@@ -122,8 +122,10 @@ class TestPDFCalculator(unittest.TestCase):
         mxnd = _maxNormDiff(gpf2, gcalc)
         self.failUnless(mxnd < 0.057)
         # more accurate from 1.5
-        mxnd1 = _maxNormDiff(gpf2[50:], gcalc[50:])
-        self.failUnless(mxnd1 < 0.0056)
+        mxnd1 = _maxNormDiff(gpf2[:500], gcalc[:500])
+        mxnd2 = _maxNormDiff(gpf2[500:], gcalc[500:])
+        self.failUnless(mxnd1 < 0.056)
+        self.failUnless(mxnd2 < 0.020)
         return
 
 
