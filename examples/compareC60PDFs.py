@@ -5,12 +5,16 @@ The C60 molecule is held in a diffpy.Structure object.
 """
 
 import sys
+import os
 from pylab import plot, show, clf, draw
 from diffpy.Structure import Structure
 from diffpy.srreal.pdfcalculator import PDFCalculator, DebyePDFCalculator
 
+mydir = os.path.dirname(os.path.abspath(sys.argv[0]))
+buckyfile = os.path.join(mydir, 'datafiles', 'C60bucky.stru')
+
 # load C60 molecule as a diffpy.Structure object
-bucky = Structure(filename='datafiles/C60bucky.stru')
+bucky = Structure(filename=buckyfile)
 cfg = { 'qmax' : 25,
         'rmin' : 0,
         'rmax' : 10.001,
