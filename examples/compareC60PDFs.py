@@ -14,7 +14,6 @@ bucky = Structure(filename='datafiles/C60bucky.stru')
 cfg = { 'qmax' : 25,
         'rmin' : 0,
         'rmax' : 10.001,
-        'rstep' : 0.05,
 }
 
 # calculate PDF by real-space summation
