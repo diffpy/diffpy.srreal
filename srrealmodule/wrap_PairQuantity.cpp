@@ -211,6 +211,9 @@ void wrap_PairQuantity()
     class_<PairQuantity, bases<Attributes> >("BasePairQuantity_ext")
         .def("value", value_asarray<PairQuantity>, doc_BasePairQuantity_value)
         .def("eval", eval_asarray, doc_BasePairQuantity_eval)
+        .def("maskAllPairs", &PairQuantity::maskAllPairs)
+        .def("maskSitePair", &PairQuantity::maskSitePair)
+        .def("getPairMask", &PairQuantity::getPairMask)
         ;
 
     class_<PairQuantityWrap, bases<PairQuantity>,
