@@ -55,6 +55,16 @@ class ScatteringFactorTableWrap :
 {
     public:
 
+        // Copy Constructor
+
+        ScatteringFactorTableWrap() { }
+
+        ScatteringFactorTableWrap(const ScatteringFactorTable& src)
+        {
+            ScatteringFactorTable& thistable = *this;
+            thistable = src;
+        }
+
         // HasClassRegistry methods
 
         ScatteringFactorTablePtr create() const
@@ -84,9 +94,9 @@ class ScatteringFactorTableWrap :
         }
 
 
-        double fetch(const std::string& smbl) const
+        double lookupatq(const std::string& smbl, double q) const
         {
-            return this->get_override("_fetch")(smbl);
+            return this->get_override("lookupatq")(smbl, q);
         }
 
     private:
@@ -105,24 +115,21 @@ void wrap_ScatteringFactorTable()
     using namespace nswrap_ScatteringFactorTable;
     typedef ScatteringFactorTableOwner SFTOwner;
 
-    // NOTE: fetch is protected and so the _fetch wrapper raises exception for
-    // classes defined in C++.  However, _fetch can be overloaded for classes
-    // derived in Python.
-
     class_<ScatteringFactorTableWrap, noncopyable>("ScatteringFactorTable_ext")
-        .def("create", &ScatteringFactorTable::create)
-        .def("clone", &ScatteringFactorTable::clone)
+        .def(init<const ScatteringFactorTable&>(boost::python::arg("src")))
+        .def("create", pure_virtual(&ScatteringFactorTable::create))
+        .def("clone", pure_virtual(&ScatteringFactorTable::clone))
         .def("type", pure_virtual(&ScatteringFactorTable::type),
                 return_value_policy<copy_const_reference>())
         .def("radiationType",
                 pure_virtual(&ScatteringFactorTable::radiationType),
                 return_value_policy<copy_const_reference>())
-        .def("lookup", &ScatteringFactorTable::lookup,
-                return_value_policy<copy_const_reference>())
+        .def("lookup", &ScatteringFactorTable::lookup)
+        .def("lookupatq",
+                pure_virtual(&ScatteringFactorTable::lookupatq))
         .def("setCustom", &ScatteringFactorTable::setCustom)
         .def("resetCustom", &ScatteringFactorTable::resetCustom)
         .def("resetAll", &ScatteringFactorTable::resetAll)
-        .def("_fetch", pure_virtual(&ScatteringFactorTableWrap::fetch))
         .def("_registerThisType", &ScatteringFactorTable::registerThisType)
         .def("createByType", &ScatteringFactorTable::createByType)
         .staticmethod("createByType")
