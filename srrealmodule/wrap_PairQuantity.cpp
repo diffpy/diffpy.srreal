@@ -75,7 +75,17 @@ DECLARE_PYARRAY_METHOD_WRAPPER(value, value_asarray)
 
 python::object eval_asarray(PairQuantity& obj, const python::object& a)
 {
-    python::object rv = convertToNumPyArray(obj.eval(a));
+    python::object rv;
+    python::extract<StructureAdapterPtr> getadapter(a);
+    if (getadapter.check())
+    {
+        StructureAdapterPtr stru = getadapter();
+        rv = convertToNumPyArray(obj.eval(stru));
+    }
+    else
+    {
+        rv = convertToNumPyArray(obj.eval(a));
+    }
     return rv;
 }
 

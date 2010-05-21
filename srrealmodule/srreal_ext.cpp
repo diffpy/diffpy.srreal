@@ -24,6 +24,7 @@
 
 namespace srrealmodule {
 void wrap_Attributes();
+void wrap_StructureAdapter();
 void wrap_BaseBondGenerator();
 void wrap_PairQuantity();
 void wrap_PeakWidthModel();
@@ -42,6 +43,7 @@ BOOST_PYTHON_MODULE(srreal_ext)
     using namespace srrealmodule;
     // execute external wrappers
     wrap_Attributes();
+    wrap_StructureAdapter();
     wrap_BaseBondGenerator();
     wrap_PairQuantity();
     wrap_PeakWidthModel();
