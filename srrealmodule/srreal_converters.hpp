@@ -43,6 +43,17 @@ namespace srrealmodule {
     } \
 
 
+/// this macro defines a wrapper function for a C++ method with one argument,
+/// that converts the result to numpy array
+#define DECLARE_PYARRAY_METHOD_WRAPPER1(method, wrapper) \
+    template <class T, class T1> \
+    ::boost::python::object wrapper(const T& obj, const T1& a1) \
+    { \
+        ::boost::python::object rv = convertToNumPyArray(obj.method(a1)); \
+        return rv; \
+    } \
+
+
 /// this macro defines a wrapper function for a C++ method,
 /// that converts the result to a python set
 #define DECLARE_PYSET_METHOD_WRAPPER(method, wrapper) \
