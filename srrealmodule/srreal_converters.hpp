@@ -101,6 +101,22 @@ convertToNumPyArray(const ::diffpy::srreal::R3::Vector& value)
 }
 
 
+/// specialization for R3::Matrix
+inline ::boost::python::object
+convertToNumPyArray(const ::diffpy::srreal::R3::Matrix& mx)
+{
+    using namespace ::boost;
+    using namespace ::diffpy::srreal;
+    initialize_numpy();
+    npy_intp sz[2] = {R3::Ndim, R3::Ndim};
+    python::object rv(
+            python::handle<>(PyArray_SimpleNew(2, sz, PyArray_DOUBLE)));
+    double* rvdata = (double*) PyArray_DATA((PyArrayObject*) rv.ptr());
+    ::std::copy(mx.data(), mx.data() + sz[0] * sz[1], rvdata);
+    return rv;
+}
+
+
 /// specialization for QuantityType
 inline ::boost::python::object
 convertToNumPyArray(const ::diffpy::srreal::QuantityType& value)

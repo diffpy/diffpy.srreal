@@ -34,6 +34,8 @@ namespace nswrap_BaseBondGenerator {
 DECLARE_PYARRAY_METHOD_WRAPPER(r0, r0_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(r1, r1_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(r01, r01_asarray)
+DECLARE_PYARRAY_METHOD_WRAPPER(Ucartesian0, Ucartesian0_asarray)
+DECLARE_PYARRAY_METHOD_WRAPPER(Ucartesian1, Ucartesian1_asarray)
 
 }   // namespace nswrap_BaseBondGenerator
 
@@ -66,8 +68,8 @@ void wrap_BaseBondGenerator()
         .def("r1", r1_asarray<BaseBondGenerator>)
         .def("distance", &BaseBondGenerator::distance)
         .def("r01", r01_asarray<BaseBondGenerator>)
-        .def("msd0", &BaseBondGenerator::msd0)
-        .def("msd1", &BaseBondGenerator::msd1)
+        .def("Ucartesian0", Ucartesian0_asarray<BaseBondGenerator>)
+        .def("Ucartesian1", Ucartesian1_asarray<BaseBondGenerator>)
         .def("msd", &BaseBondGenerator::msd)
         ;
 }
