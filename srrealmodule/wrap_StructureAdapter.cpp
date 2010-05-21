@@ -125,6 +125,7 @@ void wrap_StructureAdapter()
     register_ptr_to_python<StructureAdapterPtr>();
     
     def("nosymmetry", nosymmetry<object>);
+    def("createStructureAdapter", createStructureAdapter);
 }
 
 }   // namespace srrealmodule
