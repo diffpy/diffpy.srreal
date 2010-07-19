@@ -34,17 +34,29 @@ vars.Add(BoolVariable('profile',
 vars.Update(env)
 env.Help(vars.GenerateHelpText(env))
 
+# Use Intel C++ compiler when it is available
+icpc = env.WhereIs('icpc')
+if icpc:
+    env.Tool('intelc', topdir=icpc[:icpc.rfind('/bin')])
+
 # Declare external libraries.
 good_python_flags = lambda n : (
     n not in ('-g', '-Wstrict-prototypes'))
 env.ParseConfig("python-config --cflags")
 env.Replace(CCFLAGS=filter(good_python_flags, env['CCFLAGS']))
 env.Replace(CPPDEFINES='')
-env.AppendUnique(LIBS='libdiffpy')
-env.AppendUnique(LINKFLAGS=['-Wl,-O1', '-Wl,-Bsymbolic-functions'])
+env.AppendUnique(LIBS=['libdiffpy'])
 
-# g++ options
-fast_optimflags = ['-ffast-math']
+# Compiler specific options
+if icpc:
+    # options for Intel C++ compiler on hpc dev-intel07
+    env.AppendUnique(CCFLAGS=['-w1', '-fp-model', 'precise'])
+    env.PrependUnique(LIBS=['imf'])
+    fast_optimflags = ['-fast', '-no-ipo']
+else:
+    # g++ options
+    env.AppendUnique(CCFLAGS=['-Wall'])
+    fast_optimflags = ['-ffast-math']
 
 # Configure build variants
 if env['build'] == 'debug':
