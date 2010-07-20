@@ -54,10 +54,35 @@ class TestPDFCalculator(unittest.TestCase):
     def tearDown(self):
         return
 
-#   def test___init__(self):
-#       """check PDFCalculator.__init__()
-#       """
-#       return
+    def test___init__(self):
+        """check PDFCalculator.__init__()
+        """
+        pdfc = PDFCalculator(qmin=13, rmin=4, rmax=99)
+        self.assertEqual(13, pdfc.qmin)
+        self.assertEqual(4, pdfc.rmin)
+        self.assertEqual(99, pdfc.rmax)
+        self.assertEqual(99, pdfc._getDoubleAttr('rmax'))
+        return
+
+    def test___call__(self):
+        """Check PDFCalculator.__call__()
+        """
+        from diffpy.Structure import Structure
+        r0, g0 = self.pdfcalc(self.tio2rutile, rmin=2)
+        self.assertEqual(2.0, r0[0])
+        r1, g1 = self.pdfcalc(self.tio2rutile, scale=7)
+        self.assertAlmostEqual(7.0, g1[0] / g0[0])
+        # check application of spdiameter
+        rutile2 = Structure(self.tio2rutile)
+        # work around Structure bug of shared pdffit dictionary
+        rutile2.pdffit = dict(self.tio2rutile.pdffit)
+        rutile2.pdffit['spdiameter'] = 5.0
+        r3, g3 = self.pdfcalc(rutile2)
+        self.assertEqual(0.0, sum(g3[r3 >= 5] ** 2))
+        r4, g4 = self.pdfcalc(rutile2, scale=1, spdiameter=0)
+        self.failUnless(numpy.all(r4 == r0))
+        self.failUnless(numpy.all(g4 == g0))
+        return
 
     def test__getDoubleAttr(self):
         """check PDFCalculator._getDoubleAttr()

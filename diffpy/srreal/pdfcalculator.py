@@ -77,12 +77,42 @@ class PDFCalculatorInterface(object):
         [0.01 A]''')
 
 
-    def __call__(self, structure):
-        '''Return PDF of the given structure as an (r, G) tuple.
+    def __call__(self, structure, **kwargs):
+        '''Calculate PDF for the given structure as an (r, G) tuple.
+        Keyword arguments can be used to configure calculator attributes,
+        these override any properties that may be passed from the structure,
+        such as spdiameter.
+
+        structure    -- a structure object to be evaluated
+        kwargs       -- optional parameter settings for this calculator.
+
+        Example:    pdfcalc(structure, qmax=20, spdiameter=15)
         '''
+        self._setattrFromKeywordArguments(**kwargs)
         self.eval(structure)
+        # apply kwargs again if structure changed any attributes
+        # that may affect the getPDF result.
+        self._setattrFromKeywordArguments(**kwargs)
         rv = (self.getRgrid(), self.getPDF())
         return rv
+
+
+    def _setattrFromKeywordArguments(self, **kwargs):
+        '''Set attributes of this instance according to keywork arguments.
+        For example:    _setattrFromKeywordArguments(qmax=24, scale=2)
+        This is a shared helper function used by __init__ and __call__.
+
+        kwargs   -- one or more keyword arguments
+
+        No return value.
+        Raise ValueError for invalid keyword argument.
+        '''
+        for n, v in kwargs.iteritems():
+            if not hasattr(self, n):
+                emsg = "Unknown attribute %r" % n
+                raise ValueError(emsg)
+            setattr(self, n, v)
+        return
 
 # class PDFCalculatorInterface
 
@@ -126,11 +156,7 @@ class DebyePDFCalculator(DebyePDFCalculator_ext, PDFCalculatorInterface):
         Raise ValueError for invalid keyword argument.
         '''
         super(DebyePDFCalculator, self).__init__()
-        for n, v in kwargs.iteritems():
-            if not hasattr(self, n):
-                emsg = "Unknown attribute %r" % n
-                raise ValueError(emsg)
-            setattr(self, n, v)
+        self._setattrFromKeywordArguments(**kwargs)
         return
 
 
@@ -195,11 +221,7 @@ class PDFCalculator(PDFCalculator_ext, PDFCalculatorInterface):
         Raise ValueError for invalid keyword argument.
         '''
         super(PDFCalculator, self).__init__()
-        for n, v in kwargs.iteritems():
-            if not hasattr(self, n):
-                emsg = "Unknown attribute %r" % n
-                raise ValueError(emsg)
-            setattr(self, n, v)
+        self._setattrFromKeywordArguments(**kwargs)
         return
 
 # class PDFCalculator
