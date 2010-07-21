@@ -24,6 +24,7 @@ __all__ = ['BVSCalculator']
 
 from diffpy.srreal.srreal_ext import BVSCalculator_ext
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
+from diffpy.srreal.wraputils import setattrFromKeywordArguments
 
 
 class BVSCalculator(BVSCalculator_ext):
@@ -57,26 +58,27 @@ class BVSCalculator(BVSCalculator_ext):
         Keyword arguments can be used to configure the calculator properties,
         for example:
 
-        pc = PDFCalculator(valenceprecision=0.001)
+        bvscalc = BVSCalculator(valenceprecision=0.001)
 
         No return value.
         Raise ValueError for invalid keyword argument.
         '''
         super(BVSCalculator, self).__init__()
-        for n, v in kwargs.iteritems():
-            setattr(self, n, v)
+        setattrFromKeywordArguments(self, **kwargs)
         return
 
 
-    def __call__(self, structure):
+    def __call__(self, structure, **kwargs):
         '''Return bond valence sums at each atom site in the structure.
 
         structure    -- structure to be evaluated, an instance of diffpy Structure
                         or pyobjcryst Crystal
+        kwargs       -- optional parameter settings for this calculator
 
         Return an array of calculated valence sums.
         See valences() for the expected values.
         '''
+        setattrFromKeywordArguments(self, **kwargs)
         rv = self.eval(structure)
         return rv
 

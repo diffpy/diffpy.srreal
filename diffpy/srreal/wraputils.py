@@ -39,4 +39,21 @@ def propertyFromExtDoubleAttr(attrname, doc):
     return rv
 
 
+def setattrFromKeywordArguments(obj, **kwargs):
+    '''Set attributes of the obj according to keywork arguments.
+    For example:    setattrFromKeywordArguments(obj, qmax=24, scale=2)
+    This is a shared helper function used by __init__ and __call__.
+
+    kwargs   -- one or more keyword arguments
+
+    No return value.
+    Raise ValueError for invalid keyword argument.
+    '''
+    for n, v in kwargs.iteritems():
+        if not hasattr(obj, n):
+            emsg = "Unknown attribute %r" % n
+            raise ValueError(emsg)
+        setattr(obj, n, v)
+    return
+
 # End of file
