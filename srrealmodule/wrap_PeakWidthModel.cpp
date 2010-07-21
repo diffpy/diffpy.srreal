@@ -23,7 +23,6 @@
 #include <boost/python.hpp>
 
 #include <diffpy/srreal/PeakWidthModel.hpp>
-#include <diffpy/srreal/BaseBondGenerator.hpp>
 
 #include "srreal_converters.hpp"
 

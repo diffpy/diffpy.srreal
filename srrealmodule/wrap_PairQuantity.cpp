@@ -35,7 +35,6 @@
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 
 #include <diffpy/srreal/PairQuantity.hpp>
-#include <diffpy/srreal/BaseBondGenerator.hpp>
 #include <diffpy/srreal/PythonStructureAdapter.hpp>
 
 #include "srreal_converters.hpp"
