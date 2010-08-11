@@ -60,8 +60,9 @@ This method must be overloaded in a derived class.\n\
 ";
 
 const char* doc_ScatteringFactorTable_radiationType = "\
-Return a string identifying the radiation type, 'X' for x-rays,\n\
-'N' for neutrons.  This method must be overloaded in a derived class.\n\
+Return a string identifying the radiation type.\n\
+'X' for x-rays, 'N' for neutrons.\n\
+This method must be overloaded in a derived class.\n\
 ";
 
 const char* doc_ScatteringFactorTable_lookup = "\
@@ -120,11 +121,40 @@ tp   -- string identifier for a registered ScatteringFactorTable\n\
 Return a ScatteringFactorTable instance\n\
 ";
 
-
 const char* doc_ScatteringFactorTable_getRegisteredTypes = "\
 Return a set of string names for the registered ScatteringFactorTable\n\
 types.  These are allowed arguments for the createByType method and\n\
 setScatteringFactorTableByType methods in PDF calculator classes.\n\
+";
+
+const char* doc_ScatteringFactorTableOwner = "\
+Base class for classes that own ScatteringFactorTable instance.\n\
+";
+
+const char* doc_ScatteringFactorTableOwner_getScatteringFactorTable = "\
+Return a reference to the internal ScatteringFactorTable.\n\
+";
+
+const char* doc_ScatteringFactorTableOwner_setScatteringFactorTable = "\
+Set internal ScatteringFactorTable to the specified instance.\n\
+\n\
+sftable  -- an instance of ScatteringFactorTable type\n\
+\n\
+No return value.\n\
+";
+
+const char* doc_ScatteringFactorTableOwner_setScatteringFactorTableByType = "\
+Set internal ScatteringFactorTable according to specified string type.\n\
+\n\
+tp   -- string identifier of a registered ScatteringFactorTable type\n\
+        Use ScatteringFactorTable.getRegisteredTypes for allowed values.\n\
+\n\
+No return value.\n\
+";
+
+const char* doc_ScatteringFactorTableOwner_getRadiationType = "\
+Return string identifying the radiation type.\n\
+'X' for x-rays, 'N' for neutrons.\n\
 ";
 
 // wrappers
@@ -245,17 +275,24 @@ void wrap_ScatteringFactorTable()
 
     register_ptr_to_python<ScatteringFactorTablePtr>();
 
-    class_<ScatteringFactorTableOwner>("ScatteringFactorTableOwner_ext")
+    class_<ScatteringFactorTableOwner>("ScatteringFactorTableOwner",
+            doc_ScatteringFactorTableOwner)
         .def("getScatteringFactorTable",
                 (ScatteringFactorTablePtr(SFTOwner::*)()) NULL,
-                getsft_overloads())
+                getsft_overloads(
+                    doc_ScatteringFactorTableOwner_getScatteringFactorTable))
         .def("setScatteringFactorTable",
-                &SFTOwner::setScatteringFactorTable)
+                &SFTOwner::setScatteringFactorTable,
+                bp::arg("sftable"),
+                doc_ScatteringFactorTableOwner_setScatteringFactorTable)
         .def("setScatteringFactorTableByType",
-                &SFTOwner::setScatteringFactorTableByType)
+                &SFTOwner::setScatteringFactorTableByType,
+                bp::arg("tp"),
+                doc_ScatteringFactorTableOwner_setScatteringFactorTableByType)
         .def("getRadiationType",
                 &SFTOwner::getRadiationType,
-                return_value_policy<copy_const_reference>())
+                return_value_policy<copy_const_reference>(),
+                doc_ScatteringFactorTableOwner_getRadiationType)
         ;
 }
 
