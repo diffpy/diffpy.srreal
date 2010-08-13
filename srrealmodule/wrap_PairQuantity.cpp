@@ -48,10 +48,6 @@ using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
 
-const char* doc_BasePairQuantity_value = "\
-Return total internal contributions as numpy array.\n\
-";
-
 const char* doc_BasePairQuantity_eval = "\
 Calculate a pair quantity for the specified structure.\n\
 \n\
@@ -61,6 +57,18 @@ Return a copy of the internal total contributions.\n\
 May need to be further transformed to get the desired value.\n\
 ";
 
+const char* doc_BasePairQuantity_value = "\
+Return total internal contributions as numpy array.\n\
+";
+
+const char* doc_BasePairQuantity__mergeParallelValue = "\
+Add internal value from a parallel run to this instance.\n\
+\n\
+v    -- iterable of floats.  Must have the same length as value().\n\
+\n\
+No return value.\n\
+";
+
 const char* doc_PairQuantityWrap__value = "\
 Reference to the internal vector of total contributions.\n\
 ";
@@ -68,6 +76,15 @@ Reference to the internal vector of total contributions.\n\
 // wrappers ------------------------------------------------------------------
 
 DECLARE_PYARRAY_METHOD_WRAPPER(value, value_asarray)
+
+// representation of QuantityType objects
+python::object repr_QuantityType(const QuantityType& v)
+{
+    python::object rv = python::str("QuantityType%r") %
+        python::make_tuple(python::tuple(v));
+    return rv;
+}
+
 
 // PairQuantity::eval is a template non-constant method and
 // needs an explicit wrapper function.
@@ -79,12 +96,20 @@ python::object eval_asarray(PairQuantity& obj, const python::object& a)
 }
 
 
-// representation of QuantityType objects
-python::object repr_QuantityType(const QuantityType& v)
+// This wrapper is to support all Python iterables in mergeParallelValue.
+
+void merge_parallel_value(PairQuantity& obj, const python::object& a)
 {
-    python::object rv = python::str("QuantityType%r") %
-        python::make_tuple(python::tuple(v));
-    return rv;
+    python::extract<const QuantityType&> getquantitytype(a);
+    stl_input_iterator<double> begin(a), end;
+    QuantityType a1(begin, end);
+    const QuantityType& a2 = getquantitytype.check() ? getquantitytype() : a1;
+    if (&a2 == &a1)
+    {
+        stl_input_iterator<double> begin(a), end;
+        a1.assign(begin, end);
+    }
+    obj.mergeParallelValue(a2);
 }
 
 
@@ -208,8 +233,12 @@ void wrap_PairQuantity()
         ;
 
     class_<PairQuantity, bases<Attributes> >("BasePairQuantity_ext")
-        .def("value", value_asarray<PairQuantity>, doc_BasePairQuantity_value)
         .def("eval", eval_asarray, doc_BasePairQuantity_eval)
+        .def("value", value_asarray<PairQuantity>, doc_BasePairQuantity_value)
+        .def("_mergeParallelValue", merge_parallel_value,
+                doc_BasePairQuantity__mergeParallelValue)
+        .def("setStructure", &PairQuantity::setStructure<object>)
+        .def("_setupParallelRun", &PairQuantity::setupParallelRun)
         .def("maskAllPairs", &PairQuantity::maskAllPairs)
         .def("maskSitePair", &PairQuantity::maskSitePair)
         .def("getPairMask", &PairQuantity::getPairMask)
