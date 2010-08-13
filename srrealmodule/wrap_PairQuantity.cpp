@@ -138,7 +138,7 @@ class PairQuantityExposed : public PairQuantity
         }
 
 
-        void configureBondGenerator(BaseBondGenerator& bnds)
+        void configureBondGenerator(BaseBondGenerator& bnds) const
         {
             this->PairQuantity::configureBondGenerator(bnds);
         }
@@ -189,14 +189,14 @@ class PairQuantityWrap :
         }
 
 
-        void configureBondGenerator(BaseBondGenerator& bnds)
+        void configureBondGenerator(BaseBondGenerator& bnds) const
         {
             override f = this->get_override("_configureBondGenerator");
             if (f)  f(ptr(&bnds));
             else    this->default_configureBondGenerator(bnds);
         }
 
-        void default_configureBondGenerator(BaseBondGenerator& bnds)
+        void default_configureBondGenerator(BaseBondGenerator& bnds) const
         {
             this->PairQuantityExposed::configureBondGenerator(bnds);
         }
