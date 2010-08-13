@@ -26,7 +26,7 @@ for a in menthol:
 # configuration of a PDF calculator
 cfg = { 'qmax' : 25,
         'rmin' : 0,
-        'rmax' : 40,
+        'rmax' : 30,
 }
 
 # number of CPUs for parallel calculation
@@ -43,8 +43,7 @@ print "Calculation time on 1 CPU: %g" % t0
 pslave = PDFCalculator(**cfg)
 def partialPDFvalue(cpuindex):
     pslave._setupParallelRun(cpuindex, ncpu)
-    pslave.eval(menthol)
-    return pslave.value()
+    return pslave.eval(menthol)
 
 # create a pool of workers
 pool = multiprocessing.Pool(processes=ncpu)
