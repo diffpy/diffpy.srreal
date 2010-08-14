@@ -34,14 +34,28 @@ using namespace diffpy::srreal;
 // docstrings
 
 const char* doc_ScatteringFactorTable = "\
-Base class for looking up scattering factors of atoms,\n\
-ions and isotopes.\n\
+Base class for looking up scattering factors by atom symbols.\n\
+This class has virtual methods and cannot be used as is.\n\
+\n\
+A derived class has to overload the following methods:\n\
+\n\
+    create(self)\n\
+    clone(self)\n\
+    type(self)\n\
+    radiationType(self)\n\
+    lookupatq(self, smbl, q)\n\
+\n\
+Derived class can be added to the global registry of ScatteringFactorTable\n\
+types by calling the _registerThisType method with any instance.\n\
 ";
 
 const char* doc_ScatteringFactorTable___init__ = "\
-Initialize a new ScatteringFactorTable.  This method needs to\n\
-be called from a derived class.  This class has virtual\n\
-methods and cannot be used as is.\n\
+Initialize ScatteringFactorTable and create the internal C++ object.\n\
+\n\
+src  -- copy custom scattering factors from this instance if specified.\n\
+        src is necessary for proper overloading of the clone method.\n\
+\n\
+No return value.\n\
 ";
 
 const char* doc_ScatteringFactorTable_create = "\
@@ -72,8 +86,8 @@ lookupatq(smbl, 0)\n\
 \n\
 smbl -- string symbol for atom, ion or isotope\n\
 \n\
-Return float.\n\
-Note: used by PDFCalculator class.\n\
+Return float.  Cannot be overloaded in Python.\n\
+Note: Used by PDFCalculator.\n\
 ";
 
 const char* doc_ScatteringFactorTable_lookupatq = "\
@@ -84,7 +98,7 @@ q    -- scattering vector amplitude in 1/A\n\
 \n\
 Return float.\n\
 This method must be overloaded in a derived class.\n\
-Note: used by DebyePDFCalculator class.\n\
+Note: Used by DebyePDFCalculator.\n\
 ";
 
 const char* doc_ScatteringFactorTable_setCustom = "\
@@ -93,7 +107,7 @@ Define custom scattering factor for the specified symbol.\n\
 smbl -- string symbol for atom, ion or isotope\n\
 sf   -- new scattering factor value\n\
 \n\
-No return value.\n\
+No return value.  Cannot be overloaded in Python.\n\
 ";
 
 const char* doc_ScatteringFactorTable_resetCustom = "\
@@ -101,15 +115,19 @@ Revert scattering factor for the specified symbol to a standard value.\n\
 \n\
 smbl -- string symbol for atom, ion or isotope\n\
 \n\
-No return value.\n\
+No return value.  Cannot be overloaded in Python.\n\
 ";
 
 const char* doc_ScatteringFactorTable_resetAll = "\
 Reset all custom scattering factor values.\n\
+\n\
+No return value.  Cannot be overloaded in Python.\n\
 ";
 
 const char* doc_ScatteringFactorTable__registerThisType = "\
-Add this instance to a global registry of ScatteringFactorTable types.\n\
+Add this instance to the global registry of ScatteringFactorTable types.\n\
+\n\
+No return value.  Cannot be overloaded in Python.\n\
 ";
 
 const char* doc_ScatteringFactorTable_createByType = "\
@@ -118,13 +136,14 @@ Create a new ScatteringFactorTable instance of the specified type.\n\
 tp   -- string identifier for a registered ScatteringFactorTable\n\
         Use getRegisteredTypes for a set of allowed values.\n\
 \n\
-Return a ScatteringFactorTable instance\n\
+Return new ScatteringFactorTable instance.  Static method.\n\
 ";
 
 const char* doc_ScatteringFactorTable_getRegisteredTypes = "\
 Return a set of string names for the registered ScatteringFactorTable\n\
 types.  These are allowed arguments for the createByType method and\n\
 setScatteringFactorTableByType methods in PDF calculator classes.\n\
+Static method.\n\
 ";
 
 const char* doc_ScatteringFactorTableOwner = "\
@@ -132,13 +151,13 @@ Base class for classes that own ScatteringFactorTable instance.\n\
 ";
 
 const char* doc_ScatteringFactorTableOwner_getScatteringFactorTable = "\
-Return a reference to the internal ScatteringFactorTable.\n\
+Return the internal ScatteringFactorTable.\n\
 ";
 
 const char* doc_ScatteringFactorTableOwner_setScatteringFactorTable = "\
 Set internal ScatteringFactorTable to the specified instance.\n\
 \n\
-sftable  -- an instance of ScatteringFactorTable type\n\
+sftable  -- an instance of ScatteringFactorTable\n\
 \n\
 No return value.\n\
 ";
@@ -236,7 +255,7 @@ void wrap_ScatteringFactorTable()
 
     class_<ScatteringFactorTableWrap, noncopyable>(
             "ScatteringFactorTable", doc_ScatteringFactorTable)
-        .def(init<const ScatteringFactorTable&>(bp::arg("self"),
+        .def(init<const ScatteringFactorTable&>(bp::arg("src"),
                     doc_ScatteringFactorTable___init__))
         .def("create", pure_virtual(&ScatteringFactorTable::create),
                 doc_ScatteringFactorTable_create)
@@ -255,7 +274,7 @@ void wrap_ScatteringFactorTable()
         .def("lookupatq",
                 pure_virtual(&ScatteringFactorTable::lookupatq),
                 (bp::arg("smbl"), bp::arg("q")),
-                doc_ScatteringFactorTable_lookup)
+                doc_ScatteringFactorTable_lookupatq)
         .def("setCustom", &ScatteringFactorTable::setCustom,
                 (bp::arg("smbl"), bp::arg("sf")),
                 doc_ScatteringFactorTable_setCustom)
