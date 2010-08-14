@@ -136,14 +136,13 @@ Create a new ScatteringFactorTable instance of the specified type.\n\
 tp   -- string identifier for a registered ScatteringFactorTable\n\
         Use getRegisteredTypes for a set of allowed values.\n\
 \n\
-Return new ScatteringFactorTable instance.  Static method.\n\
+Return new ScatteringFactorTable instance.\n\
 ";
 
 const char* doc_ScatteringFactorTable_getRegisteredTypes = "\
 Return a set of string names for the registered ScatteringFactorTable\n\
 types.  These are allowed arguments for the createByType method and\n\
 setScatteringFactorTableByType methods in PDF calculator classes.\n\
-Static method.\n\
 ";
 
 const char* doc_ScatteringFactorTableOwner = "\
