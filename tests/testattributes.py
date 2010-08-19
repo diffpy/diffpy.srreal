@@ -116,6 +116,24 @@ class TestAttributes(unittest.TestCase):
         return
 
 
+    def test__namesOfWritableDoubleAttributes(self):
+        """check Attributes._namesOfDoubleAttributes()
+        """
+        a = Attributes()
+        self.assertEqual(0, len(a._namesOfDoubleAttributes()))
+        a._registerDoubleAttribute('bar', lambda obj: 13)
+        self.assertEqual(13, a._getDoubleAttr('bar'))
+        self.assertEqual(13, a.bar)
+        self.assertEqual(1, len(a._namesOfDoubleAttributes()))
+        self.assertEqual(0, len(a._namesOfWritableDoubleAttributes()))
+        pdfc = PDFCalculator()
+        self.failUnless('extendedrmin' in pdfc._namesOfDoubleAttributes())
+        self.failUnless('extendedrmax' in pdfc._namesOfDoubleAttributes())
+        self.failIf('extendedrmin' in pdfc._namesOfWritableDoubleAttributes())
+        self.failIf('extendedrmax' in pdfc._namesOfWritableDoubleAttributes())
+        return
+
+
     def test__registerDoubleAttribute(self):
         """check Attributes._registerDoubleAttribute()
         """

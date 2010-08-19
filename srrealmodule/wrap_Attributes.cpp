@@ -35,6 +35,8 @@ using namespace diffpy::attributes;
 
 DECLARE_PYSET_METHOD_WRAPPER(namesOfDoubleAttributes,
         namesOfDoubleAttributes_asset)
+DECLARE_PYSET_METHOD_WRAPPER(namesOfWritableDoubleAttributes,
+        namesOfWritableDoubleAttributes_asset)
 
 
 const char* getattr_setattr_code = "\
@@ -87,11 +89,17 @@ class PythonDoubleAttribute : public BaseDoubleAttribute
 
         void setValue(Attributes* obj, double value)
         {
-            if (msetter.ptr() == Py_None)  throwDoubleAttributeReadOnly();
+            if (this->isreadonly())  throwDoubleAttributeReadOnly();
             // verify that mowner is indeed the obj wrapper
             python::object owner(python::borrowed(mowner));
             assert(obj == python::extract<Attributes*>(owner));
             msetter(owner, value);
+        }
+
+
+        bool isreadonly() const
+        {
+            return (msetter.ptr() == Py_None);
         }
 
     private:
@@ -145,6 +153,8 @@ void wrap_Attributes()
         .def("_hasDoubleAttr", &Attributes::hasDoubleAttr)
         .def("_namesOfDoubleAttributes",
                 namesOfDoubleAttributes_asset<Attributes>)
+        .def("_namesOfWritableDoubleAttributes",
+                namesOfWritableDoubleAttributes_asset<Attributes>)
         .def("_registerDoubleAttribute",
                 registerPythonDoubleAttribute,
                 (python::arg("getter")=None, python::arg("setter")=None))
