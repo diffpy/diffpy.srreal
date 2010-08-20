@@ -8,6 +8,7 @@ __id__ = '$Id$'
 
 import os
 import unittest
+import cPickle
 
 import numpy
 from diffpy.srreal.pdfcalculator import PDFCalculator
@@ -151,6 +152,36 @@ class TestPDFCalculator(unittest.TestCase):
         mxnd2 = _maxNormDiff(gpf2[500:], gcalc[500:])
         self.failUnless(mxnd1 < 0.056)
         self.failUnless(mxnd2 < 0.020)
+        return
+
+    #FIXME enable this.
+    def x_test_pickling(self):
+        '''check pickling and unpickling of PDFCalculator.
+        '''
+        pdfc = PDFCalculator()
+        pdfc.setScatteringFactorTableByType('N')
+        pdfc.getScatteringFactorTable().setCustom('Na', 7)
+        pdfc.slope = 0.1
+        pdfc.delta1 = 0.2
+        pdfc.delta2 = 0.3
+        pdfc.maxextension = 10.1
+        pdfc.rmin = 0.02
+        pdfc.rmax = 10.0
+        pdfc.rstep = 0.02
+        pdfc.peakprecision = 5e-06
+        pdfc.qbroad = 0.01
+        pdfc.qdamp = 0.05
+        pdfc.qmin = 0.5
+        pdfc.qmax = 10
+        pdfc.scale = 1.1
+        spkl = cPickle.dumps(pdfc)
+        pdfc2 = cPickle.loads(spkl)
+        sft = pdfc.getScatteringFactorTable()
+        sft2 = pdfc2.getScatteringFactorTable()
+        self.assertEqual(sft.type(), sft2.type())
+        self.assertEqual(7.0, sft2.lookupa('Na'))
+        for a in pdfc._namesOfDoubleAttributes():
+            self.assertEqual(getattr(pdfc, a), getattr(pdfc2, a))
         return
 
 
