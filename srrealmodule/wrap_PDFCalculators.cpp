@@ -76,6 +76,7 @@ void wrap_PDFCalculators()
                 getenvelopebytype_overloads())
         .def("usedEnvelopeTypes", usedEnvelopeTypes_asset<DebyePDFCalculator>)
         .def("clearEnvelopes", &DebyePDFCalculator::clearEnvelopes)
+        .enable_pickling();
         ;
 
     // PDFCalculator
@@ -109,7 +110,11 @@ void wrap_PDFCalculators()
                 getenvelopebytype_overloads())
         .def("usedEnvelopeTypes", usedEnvelopeTypes_asset<PDFCalculator>)
         .def("clearEnvelopes", &PDFCalculator::clearEnvelopes)
+        .enable_pickling();
         ;
+
+    // inject pickling methods
+    import("diffpy.srreal.pdfcalculator");
 }
 
 }   // namespace srrealmodule

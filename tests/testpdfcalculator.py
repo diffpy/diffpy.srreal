@@ -154,34 +154,42 @@ class TestPDFCalculator(unittest.TestCase):
         self.failUnless(mxnd2 < 0.020)
         return
 
-    #FIXME enable this.
-    def x_test_pickling(self):
+    def test_pickling(self):
         '''check pickling and unpickling of PDFCalculator.
         '''
         pdfc = PDFCalculator()
         pdfc.setScatteringFactorTableByType('N')
         pdfc.getScatteringFactorTable().setCustom('Na', 7)
-        pdfc.slope = 0.1
+        pdfc.addEnvelopeByType('sphericalshape')
         pdfc.delta1 = 0.2
         pdfc.delta2 = 0.3
         pdfc.maxextension = 10.1
-        pdfc.rmin = 0.02
-        pdfc.rmax = 10.0
-        pdfc.rstep = 0.02
         pdfc.peakprecision = 5e-06
         pdfc.qbroad = 0.01
         pdfc.qdamp = 0.05
-        pdfc.qmin = 0.5
         pdfc.qmax = 10
+        pdfc.qmin = 0.5
+        pdfc.rmax = 10.0
+        pdfc.rmin = 0.02
+        pdfc.rstep = 0.02
         pdfc.scale = 1.1
+        pdfc.slope = 0.1
+        pdfc.spdiameter = 13.3
+        pdfc.foobar = 'asdf'
         spkl = cPickle.dumps(pdfc)
-        pdfc2 = cPickle.loads(spkl)
+        pdfc1 = cPickle.loads(spkl)
         sft = pdfc.getScatteringFactorTable()
-        sft2 = pdfc2.getScatteringFactorTable()
-        self.assertEqual(sft.type(), sft2.type())
-        self.assertEqual(7.0, sft2.lookupa('Na'))
+        sft1 = pdfc1.getScatteringFactorTable()
+        self.assertEqual(sft.type(), sft1.type())
+        self.assertEqual(7.0, sft1.lookup('Na'))
         for a in pdfc._namesOfDoubleAttributes():
-            self.assertEqual(getattr(pdfc, a), getattr(pdfc2, a))
+            self.assertEqual(getattr(pdfc, a), getattr(pdfc1, a))
+        self.assertEqual(13.3,
+                pdfc1.getEnvelopeByType('sphericalshape').spdiameter)
+        self.assertEqual(pdfc._namesOfDoubleAttributes(),
+                pdfc1._namesOfDoubleAttributes())
+        self.assertEqual(pdfc.usedEnvelopeTypes(), pdfc1.usedEnvelopeTypes())
+        self.assertEqual('asdf', pdfc1.foobar)
         return
 
 

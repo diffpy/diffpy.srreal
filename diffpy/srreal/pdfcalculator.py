@@ -211,5 +211,78 @@ class PDFCalculator(PDFCalculator_ext, PDFCalculatorInterface):
 
 # class PDFCalculator
 
+# DebyePDFCalculator_ext pickling support ------------------------------------
+
+def _dbpdfc_getstate(self):
+    dbattrs = [(n, self._getDoubleAttr(n))
+        for n in self._namesOfWritableDoubleAttributes()]
+    # NOTE: convert names below to objects as they get pickle support
+    state = (self.__dict__,
+            self.getPeakWidthModel().type(),
+            self.getScatteringFactorTable(),
+            self.usedEnvelopeTypes(),
+            dbattrs)
+    return state
+
+def _dbpdfc_setstate(self, state):
+    if len(state) != 5:
+        emsg = ("expected 5-item tuple in call to __setstate__, got %r" +
+                repr(state))
+        raise ValueError(emsg)
+    st = iter(state)
+    self.__dict__.update(st.next())
+    self.setPeakWidthModelByType(st.next())
+    self.setScatteringFactorTable(st.next())
+    self.clearEnvelopes()
+    for tp in st.next():
+        self.addEnvelopeByType(tp)
+    for n, v in st.next():
+        self._setDoubleAttr(n, v)
+    return
+
+# inject pickle methods to PDFCalculator_ext
+
+DebyePDFCalculator_ext.__getstate_manages_dict__ = True
+DebyePDFCalculator_ext.__getstate__ = _dbpdfc_getstate
+DebyePDFCalculator_ext.__setstate__ = _dbpdfc_setstate
+
+# PDFCalculator_ext pickling support -----------------------------------------
+
+def _pdfc_getstate(self):
+    dbattrs = [(n, self._getDoubleAttr(n))
+        for n in self._namesOfWritableDoubleAttributes()]
+    # NOTE: convert names below to objects as they get pickle support
+    state = (self.__dict__,
+            self.getPeakWidthModel().type(),
+            self.getPeakProfile().type(),
+            self.getScatteringFactorTable(),
+            self.usedEnvelopeTypes(),
+            self.getBaseline().type(),
+            dbattrs)
+    return state
+
+def _pdfc_setstate(self, state):
+    if len(state) != 7:
+        emsg = ("expected 7-item tuple in call to __setstate__, got %r" +
+                repr(state))
+        raise ValueError(emsg)
+    st = iter(state)
+    self.__dict__.update(st.next())
+    self.setPeakWidthModelByType(st.next())
+    self.setPeakProfileByType(st.next())
+    self.setScatteringFactorTable(st.next())
+    self.clearEnvelopes()
+    for tp in st.next():
+        self.addEnvelopeByType(tp)
+    self.setBaselineByType(st.next())
+    for n, v in st.next():
+        self._setDoubleAttr(n, v)
+    return
+
+# inject pickle methods to PDFCalculator_ext
+
+PDFCalculator_ext.__getstate_manages_dict__ = True
+PDFCalculator_ext.__getstate__ = _pdfc_getstate
+PDFCalculator_ext.__setstate__ = _pdfc_setstate
 
 # End of file

@@ -8,6 +8,7 @@ __id__ = '$Id$'
 
 import os
 import unittest
+import cPickle
 
 # useful variables
 thisfile = locals().get('__file__', 'file.py')
@@ -114,6 +115,43 @@ class TestDebyePDFCalculator(unittest.TestCase):
         r1, g1 = self.dpdfc(self.bucky)
         mxnd = _maxNormDiff(g0, g1)
         self.failUnless(mxnd < 0.0006)
+        return
+
+    def test_pickling(self):
+        '''check pickling and unpickling of PDFCalculator.
+        '''
+        dbpdfc = DebyePDFCalculator()
+        dbpdfc.setScatteringFactorTableByType('N')
+        dbpdfc.getScatteringFactorTable().setCustom('Na', 7)
+        dbpdfc.addEnvelopeByType('sphericalshape')
+        dbpdfc.debyeprecision = 0.001
+        dbpdfc.delta1 = 0.2
+        dbpdfc.delta2 = 0.3
+        dbpdfc.maxextension = 10.1
+        dbpdfc.qbroad = 0.01
+        dbpdfc.qdamp = 0.05
+        dbpdfc.qmax = 10
+        dbpdfc.qmin = 0.5
+        dbpdfc.rmax = 10.0
+        dbpdfc.rmin = 0.02
+        dbpdfc.rstep = 0.02
+        dbpdfc.scale = 1.1
+        dbpdfc.spdiameter = 13.3
+        dbpdfc.foobar = 'asdf'
+        spkl = cPickle.dumps(dbpdfc)
+        dbpdfc1 = cPickle.loads(spkl)
+        sft = dbpdfc.getScatteringFactorTable()
+        sft1 = dbpdfc1.getScatteringFactorTable()
+        self.assertEqual(sft.type(), sft1.type())
+        self.assertEqual(7.0, sft1.lookup('Na'))
+        for a in dbpdfc._namesOfDoubleAttributes():
+            self.assertEqual(getattr(dbpdfc, a), getattr(dbpdfc1, a))
+        self.assertEqual(13.3,
+                dbpdfc1.getEnvelopeByType('sphericalshape').spdiameter)
+        self.assertEqual(dbpdfc._namesOfDoubleAttributes(),
+                dbpdfc1._namesOfDoubleAttributes())
+        self.assertEqual(dbpdfc.usedEnvelopeTypes(), dbpdfc1.usedEnvelopeTypes())
+        self.assertEqual('asdf', dbpdfc1.foobar)
         return
 
 #   def test_getPeakWidthModel(self):
