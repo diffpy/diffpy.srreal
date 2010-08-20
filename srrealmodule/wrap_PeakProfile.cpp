@@ -49,7 +49,7 @@ DECLARE_PYSET_FUNCTION_WRAPPER(PeakProfile::getRegisteredTypes,
 
 class PeakProfileWrap :
     public PeakProfile,
-    public wrapper<PeakProfile>
+    public wrapper_srreal<PeakProfile>
 {
     public:
 
@@ -57,18 +57,18 @@ class PeakProfileWrap :
 
         PeakProfilePtr create() const
         {
-            return this->get_override("create")();
+            return this->get_pure_virtual_override("create")();
         }
 
         PeakProfilePtr clone() const
         {
-            return this->get_override("clone")();
+            return this->get_pure_virtual_override("clone")();
         }
 
 
         const std::string& type() const
         {
-            python::object tp = this->get_override("type")();
+            python::object tp = this->get_pure_virtual_override("type")();
             mtype = python::extract<std::string>(tp);
             return mtype;
         }
@@ -77,17 +77,17 @@ class PeakProfileWrap :
 
         double yvalue(double x, double fwhm) const
         {
-            return this->get_override("yvalue")(x, fwhm);
+            return this->get_pure_virtual_override("yvalue")(x, fwhm);
         }
 
         double xboundlo(double fwhm) const
         {
-            return this->get_override("xboundlo")(fwhm);
+            return this->get_pure_virtual_override("xboundlo")(fwhm);
         }
 
         double xboundhi(double fwhm) const
         {
-            return this->get_override("xboundhi")(fwhm);
+            return this->get_pure_virtual_override("xboundhi")(fwhm);
         }
 
     private:
@@ -109,11 +109,11 @@ void wrap_PeakProfile()
         noncopyable>("PeakProfile_ext")
         .def("create", &PeakProfile::create)
         .def("clone", &PeakProfile::clone)
-        .def("type", pure_virtual(&PeakProfile::type),
+        .def("type", &PeakProfile::type,
                 return_value_policy<copy_const_reference>())
-        .def("yvalue", pure_virtual(&PeakProfile::yvalue))
-        .def("xboundlo", pure_virtual(&PeakProfile::xboundlo))
-        .def("xboundhi", pure_virtual(&PeakProfile::xboundhi))
+        .def("yvalue", &PeakProfile::yvalue)
+        .def("xboundlo", &PeakProfile::xboundlo)
+        .def("xboundhi", &PeakProfile::xboundhi)
         .def("_registerThisType", &PeakProfile::registerThisType)
         .def("createByType", &PeakProfile::createByType)
         .staticmethod("createByType")

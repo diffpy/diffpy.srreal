@@ -203,7 +203,7 @@ object getAllCustom_asdict(const ScatteringFactorTable& sft)
 
 class ScatteringFactorTableWrap :
     public ScatteringFactorTable,
-    public wrapper<ScatteringFactorTable>
+    public wrapper_srreal<ScatteringFactorTable>
 {
     public:
 
@@ -221,23 +221,17 @@ class ScatteringFactorTableWrap :
 
         ScatteringFactorTablePtr create() const
         {
-            override f = this->get_override("create");
-            if (!f)  throwPureVirtualCalled("create");
-            return f();
+            return this->get_pure_virtual_override("create")();
         }
 
         ScatteringFactorTablePtr clone() const
         {
-            override f = this->get_override("clone");
-            if (!f)  throwPureVirtualCalled("clone");
-            return f();
+            return this->get_pure_virtual_override("clone")();
         }
 
         const std::string& type() const
         {
-            override f = this->get_override("type");
-            if (!f)  throwPureVirtualCalled("type");
-            object tp = f();
+            object tp = this->get_pure_virtual_override("type")();
             mtype = extract<std::string>(tp);
             return mtype;
         }
@@ -246,18 +240,14 @@ class ScatteringFactorTableWrap :
 
         const std::string& radiationType() const
         {
-            override f = this->get_override("radiationType");
-            if (!f)  throwPureVirtualCalled("radiationType");
-            object tp = f();
+            object tp = this->get_pure_virtual_override("radiationType")();
             mradiationtype = extract<std::string>(tp);
             return mradiationtype;
         }
 
         double lookupatq(const std::string& smbl, double q) const
         {
-            override f = this->get_override("lookupatq");
-            if (!f)  throwPureVirtualCalled("lookupatq");
-            return f(smbl, q);
+            return this->get_pure_virtual_override("lookupatq")(smbl, q);
         }
 
     private:

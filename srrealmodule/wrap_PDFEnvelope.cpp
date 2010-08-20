@@ -48,7 +48,7 @@ DECLARE_PYSET_FUNCTION_WRAPPER(PDFEnvelope::getRegisteredTypes,
 
 class PDFEnvelopeWrap :
     public PDFEnvelope,
-    public wrapper<PDFEnvelope>
+    public wrapper_srreal<PDFEnvelope>
 {
     public:
 
@@ -56,18 +56,21 @@ class PDFEnvelopeWrap :
 
         PDFEnvelopePtr create() const
         {
-            return this->get_override("create")();
+            override f = this->get_pure_virtual_override("create");
+            return f();
         }
 
         PDFEnvelopePtr clone() const
         {
-            return this->get_override("clone")();
+            override f = this->get_pure_virtual_override("clone");
+            return f();
         }
 
 
         const std::string& type() const
         {
-            python::object tp = this->get_override("type")();
+            override f = this->get_pure_virtual_override("type");
+            object tp = f();
             mtype = python::extract<std::string>(tp);
             return mtype;
         }
@@ -76,7 +79,8 @@ class PDFEnvelopeWrap :
 
         double operator()(const double& x) const
         {
-            return this->get_override("__call__")(x);
+            override f = this->get_pure_virtual_override("__call__");
+            return f(x);
         }
 
     private:
@@ -96,11 +100,11 @@ void wrap_PDFEnvelope()
 
     class_<PDFEnvelopeWrap, bases<Attributes>,
         noncopyable>("PDFEnvelope_ext")
-        .def("create", pure_virtual(&PDFEnvelope::create))
-        .def("clone", pure_virtual(&PDFEnvelope::clone))
-        .def("type", pure_virtual(&PDFEnvelope::type),
+        .def("create", &PDFEnvelope::create)
+        .def("clone", &PDFEnvelope::clone)
+        .def("type", &PDFEnvelope::type,
                 return_value_policy<copy_const_reference>())
-        .def("__call__", pure_virtual(&PDFEnvelope::operator()))
+        .def("__call__", &PDFEnvelope::operator())
         .def("_registerThisType", &PDFEnvelope::registerThisType)
         .def("createByType", &PDFEnvelope::createByType)
         .staticmethod("createByType")

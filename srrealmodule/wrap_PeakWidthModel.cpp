@@ -52,7 +52,7 @@ DECLARE_PYSET_FUNCTION_WRAPPER(PeakWidthModel::getRegisteredTypes,
 
 class PeakWidthModelWrap :
     public PeakWidthModel,
-    public wrapper<PeakWidthModel>
+    public wrapper_srreal<PeakWidthModel>
 {
     public:
 
@@ -60,17 +60,17 @@ class PeakWidthModelWrap :
 
         PeakWidthModelPtr create() const
         {
-            return this->get_override("create")();
+            return this->get_pure_virtual_override("create")();
         }
 
         PeakWidthModelPtr clone() const
         {
-            return this->get_override("clone")();
+            return this->get_pure_virtual_override("clone")();
         }
 
         const std::string& type() const
         {
-            python::object tp = this->get_override("type")();
+            python::object tp = this->get_pure_virtual_override("type")();
             mtype = python::extract<std::string>(tp);
             return mtype;
         }
@@ -79,12 +79,12 @@ class PeakWidthModelWrap :
 
         double calculate(const BaseBondGenerator& bnds) const
         {
-            return this->get_override("calculate")(bnds);
+            return this->get_pure_virtual_override("calculate")(bnds);
         }
 
         double calculateFromMSD(double msdval) const
         {
-            return this->get_override("calculateFromMSD")(msdval);
+            return this->get_pure_virtual_override("calculateFromMSD")(msdval);
         }
 
     private:
@@ -106,12 +106,12 @@ void wrap_PeakWidthModel()
         noncopyable>("PeakWidthModel_ext")
         .def("create", &PeakWidthModel::create)
         .def("clone", &PeakWidthModel::clone)
-        .def("type", pure_virtual(&PeakWidthModel::type),
+        .def("type", &PeakWidthModel::type,
                 return_value_policy<copy_const_reference>())
         .def("calculate",
-                pure_virtual(&PeakWidthModel::calculate))
+                &PeakWidthModel::calculate)
         .def("calculateFromMSD",
-                pure_virtual(&PeakWidthModel::calculateFromMSD))
+                &PeakWidthModel::calculateFromMSD)
         .def("_registerThisType", &PeakWidthModel::registerThisType)
         .def("createByType", &PeakWidthModel::createByType)
         .staticmethod("createByType")

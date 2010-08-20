@@ -93,6 +93,21 @@ void initialize_numpy()
 void throwPureVirtualCalled(const char* fncname);
 
 
+/// template class for getting overrides to pure virtual method
+template <class T>
+class wrapper_srreal : public ::boost::python::wrapper<T>
+{
+    protected:
+        ::boost::python::override
+        get_pure_virtual_override(const char* name) const
+        {
+            ::boost::python::override f = this->get_override(name);
+            if (!f)  throwPureVirtualCalled(name);
+            return f;
+        }
+};
+
+
 /// template function for converting iterables to numpy array of doubles
 template <class Iter>
 ::boost::python::object

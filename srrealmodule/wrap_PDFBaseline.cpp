@@ -48,7 +48,7 @@ DECLARE_PYSET_FUNCTION_WRAPPER(PDFBaseline::getRegisteredTypes,
 
 class PDFBaselineWrap :
     public PDFBaseline,
-    public wrapper<PDFBaseline>
+    public wrapper_srreal<PDFBaseline>
 {
     public:
 
@@ -56,18 +56,17 @@ class PDFBaselineWrap :
 
         PDFBaselinePtr create() const
         {
-            return this->get_override("create")();
+            return this->get_pure_virtual_override("create")();
         }
 
         PDFBaselinePtr clone() const
         {
-            return this->get_override("clone")();
+            return this->get_pure_virtual_override("clone")();
         }
-
 
         const std::string& type() const
         {
-            python::object tp = this->get_override("type")();
+            python::object tp = this->get_pure_virtual_override("type")();
             mtype = python::extract<std::string>(tp);
             return mtype;
         }
@@ -76,7 +75,7 @@ class PDFBaselineWrap :
 
         double operator()(const double& x) const
         {
-            return this->get_override("__call__")(x);
+            return this->get_pure_virtual_override("__call__")(x);
         }
 
     private:
@@ -96,11 +95,11 @@ void wrap_PDFBaseline()
 
     class_<PDFBaselineWrap, bases<Attributes>,
         noncopyable>("PDFBaseline_ext")
-        .def("create", pure_virtual(&PDFBaseline::create))
-        .def("clone", pure_virtual(&PDFBaseline::clone))
-        .def("type", pure_virtual(&PDFBaseline::type),
+        .def("create", &PDFBaseline::create)
+        .def("clone", &PDFBaseline::clone)
+        .def("type", &PDFBaseline::type,
                 return_value_policy<copy_const_reference>())
-        .def("__call__", pure_virtual(&PDFBaseline::operator()))
+        .def("__call__", &PDFBaseline::operator())
         .def("_registerThisType", &PDFBaseline::registerThisType)
         .def("createByType", &PDFBaseline::createByType)
         .staticmethod("createByType")

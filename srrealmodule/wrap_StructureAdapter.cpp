@@ -45,19 +45,19 @@ DECLARE_PYARRAY_METHOD_WRAPPER1(siteCartesianUij,
 
 class StructureAdapterWrap :
     public StructureAdapter,
-    public wrapper<StructureAdapter>
+    public wrapper_srreal<StructureAdapter>
 {
     public:
 
         BaseBondGenerator* createBondGenerator() const
         {
-            return this->get_override("createBondGenerator")();
+            return this->get_pure_virtual_override("createBondGenerator")();
         }
 
 
         int countSites() const
         {
-            return this->get_override("countSites")();
+            return this->get_pure_virtual_override("countSites")();
         }
 
 
@@ -110,7 +110,7 @@ class StructureAdapterWrap :
         {
             static R3::Vector rv;
             python::object pos =
-                this->get_override("siteCartesianPosition")(idx);
+                this->get_pure_virtual_override("siteCartesianPosition")(idx);
             for (int i = 0; i < R3::Ndim; ++i)
             {
                 rv[i] = python::extract<double>(pos[i]);
@@ -147,7 +147,7 @@ class StructureAdapterWrap :
 
         bool siteAnisotropy(int idx) const
         {
-            return this->get_override("siteAnisotropy")(idx);
+            return this->get_pure_virtual_override("siteAnisotropy")(idx);
         }
 
 
@@ -155,7 +155,7 @@ class StructureAdapterWrap :
         {
             static R3::Matrix rv;
             python::object uij =
-                this->get_override("siteCartesianUij")(idx);
+                this->get_pure_virtual_override("siteCartesianUij")(idx);
             double* pdata = rv.data();
             int mxlen = R3::Ndim * R3::Ndim;
             for (int i = 0; i < mxlen; ++i, ++pdata)
@@ -191,9 +191,9 @@ void wrap_StructureAdapter()
 
     class_<StructureAdapterWrap, noncopyable>("StructureAdapter")
         .def("createBondGenerator",
-                pure_virtual(&StructureAdapter::createBondGenerator),
+                &StructureAdapter::createBondGenerator,
                 return_internal_reference<>())
-        .def("countSites", pure_virtual(&StructureAdapter::countSites))
+        .def("countSites", &StructureAdapter::countSites)
         .def("totalOccupancy",
                 &StructureAdapter::totalOccupancy,
                 &StructureAdapterWrap::default_totalOccupancy)
@@ -202,8 +202,8 @@ void wrap_StructureAdapter()
         .def("siteAtomType", &StructureAdapter::siteAtomType,
                 &StructureAdapterWrap::default_siteAtomType,
                 return_value_policy<copy_const_reference>())
-        .def("siteCartesianPosition", pure_virtual(
-                    siteCartesianPosition_asarray<StructureAdapter,int>))
+        .def("siteCartesianPosition", 
+                    siteCartesianPosition_asarray<StructureAdapter,int>)
         .def("siteMultiplicity",
                 &StructureAdapter::siteMultiplicity,
                 &StructureAdapterWrap::default_siteMultiplicity)
@@ -211,9 +211,9 @@ void wrap_StructureAdapter()
                 &StructureAdapter::siteOccupancy,
                 &StructureAdapterWrap::default_siteOccupancy)
         .def("siteAnisotropy",
-                pure_virtual(&StructureAdapter::siteAnisotropy))
+                &StructureAdapter::siteAnisotropy)
         .def("siteCartesianUij",
-                pure_virtual(siteCartesianUij_asarray<StructureAdapter,int>))
+                siteCartesianUij_asarray<StructureAdapter,int>)
         .def("_customPQConfig",
                 &StructureAdapter::customPQConfig,
                 &StructureAdapterWrap::default_customPQConfig)
