@@ -19,10 +19,28 @@
 *
 *****************************************************************************/
 
+#include <string>
+#include "srreal_converters.hpp"
+
 namespace srrealmodule {
 
-// definition of the flag for accomplished numpy import
-bool did_import_array = false;
+/// helper function that holds the flag for accomplished numpy import
+bool& did_import_array()
+{
+    static bool flag = false;
+    return flag;
+}
+
+
+/// helper for raising RuntimeError on a call of pure virtual function
+void throwPureVirtualCalled(const char* fncname)
+{
+    std::string emsg = "Pure virtual function '";
+    emsg += fncname;
+    emsg += "' called.";
+    PyErr_SetString(PyExc_RuntimeError, emsg.c_str());
+    boost::python::throw_error_already_set();
+}
 
 }   // namespace srrealmodule
 

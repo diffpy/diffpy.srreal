@@ -27,7 +27,6 @@
 namespace srrealmodule {
 namespace nswrap_ScatteringFactorTable {
 
-using namespace boost;
 using namespace boost::python;
 using namespace diffpy::srreal;
 
@@ -124,6 +123,10 @@ Reset all custom scattering factor values.\n\
 No return value.  Cannot be overloaded in Python.\n\
 ";
 
+const char* doc_ScatteringFactorTable_getAllCustom = "\
+Return a dictionary of all custom scattering factors.\n\
+";
+
 const char* doc_ScatteringFactorTable__registerThisType = "\
 Add this instance to the global registry of ScatteringFactorTable types.\n\
 \n\
@@ -183,6 +186,19 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getsft_overloads,
 DECLARE_PYSET_FUNCTION_WRAPPER(ScatteringFactorTable::getRegisteredTypes,
         getScatteringFactorTableTypes_asset)
 
+
+// explicit wrapper that returns a dictionary of custom scattering factors
+
+object getAllCustom_asdict(const ScatteringFactorTable& sft)
+{
+    dict rv;
+    std::map<std::string,double> csf = sft.getAllCustom();
+    std::map<std::string,double>::const_iterator kv;
+    for (kv = csf.begin(); kv != csf.end(); ++kv)  rv[kv->first] = kv->second;
+    return rv;
+}
+
+
 // Helper class for overloads of ScatteringFactorTable methods from Python
 
 class ScatteringFactorTableWrap :
@@ -205,18 +221,24 @@ class ScatteringFactorTableWrap :
 
         ScatteringFactorTablePtr create() const
         {
-            return this->get_override("create")();
+            override f = this->get_override("create");
+            if (!f)  throwPureVirtualCalled("create");
+            return f();
         }
 
         ScatteringFactorTablePtr clone() const
         {
-            return this->get_override("clone")();
+            override f = this->get_override("clone");
+            if (!f)  throwPureVirtualCalled("clone");
+            return f();
         }
 
         const std::string& type() const
         {
-            python::object tp = this->get_override("type")();
-            mtype = python::extract<std::string>(tp);
+            override f = this->get_override("type");
+            if (!f)  throwPureVirtualCalled("type");
+            object tp = f();
+            mtype = extract<std::string>(tp);
             return mtype;
         }
 
@@ -224,15 +246,18 @@ class ScatteringFactorTableWrap :
 
         const std::string& radiationType() const
         {
-            python::object tp = this->get_override("radiationType")();
-            mradiationtype = python::extract<std::string>(tp);
+            override f = this->get_override("radiationType");
+            if (!f)  throwPureVirtualCalled("radiationType");
+            object tp = f();
+            mradiationtype = extract<std::string>(tp);
             return mradiationtype;
         }
 
-
         double lookupatq(const std::string& smbl, double q) const
         {
-            return this->get_override("lookupatq")(smbl, q);
+            override f = this->get_override("lookupatq");
+            if (!f)  throwPureVirtualCalled("lookupatq");
+            return f(smbl, q);
         }
 
     private:
@@ -249,6 +274,7 @@ class ScatteringFactorTableWrap :
 void wrap_ScatteringFactorTable()
 {
     namespace bp = boost::python;
+    using boost::noncopyable;
     using namespace nswrap_ScatteringFactorTable;
     typedef ScatteringFactorTableOwner SFTOwner;
 
@@ -256,22 +282,22 @@ void wrap_ScatteringFactorTable()
             "ScatteringFactorTable", doc_ScatteringFactorTable)
         .def(init<const ScatteringFactorTable&>(bp::arg("src"),
                     doc_ScatteringFactorTable___init__))
-        .def("create", pure_virtual(&ScatteringFactorTable::create),
+        .def("create", &ScatteringFactorTable::create,
                 doc_ScatteringFactorTable_create)
-        .def("clone", pure_virtual(&ScatteringFactorTable::clone),
+        .def("clone", &ScatteringFactorTable::clone,
                 doc_ScatteringFactorTable_clone)
-        .def("type", pure_virtual(&ScatteringFactorTable::type),
+        .def("type", &ScatteringFactorTable::type,
                 return_value_policy<copy_const_reference>(),
                 doc_ScatteringFactorTable_type)
         .def("radiationType",
-                pure_virtual(&ScatteringFactorTable::radiationType),
+                &ScatteringFactorTable::radiationType,
                 return_value_policy<copy_const_reference>(),
                 doc_ScatteringFactorTable_radiationType)
         .def("lookup",
                 &ScatteringFactorTable::lookup,
                 bp::arg("smbl"), doc_ScatteringFactorTable_lookup)
         .def("lookupatq",
-                pure_virtual(&ScatteringFactorTable::lookupatq),
+                &ScatteringFactorTable::lookupatq,
                 (bp::arg("smbl"), bp::arg("q")),
                 doc_ScatteringFactorTable_lookupatq)
         .def("setCustom", &ScatteringFactorTable::setCustom,
@@ -281,6 +307,8 @@ void wrap_ScatteringFactorTable()
                 bp::arg("smbl"), doc_ScatteringFactorTable_setCustom)
         .def("resetAll", &ScatteringFactorTable::resetAll,
                 doc_ScatteringFactorTable_resetAll)
+        .def("getAllCustom", getAllCustom_asdict,
+                doc_ScatteringFactorTable_getAllCustom)
         .def("_registerThisType", &ScatteringFactorTable::registerThisType,
                 doc_ScatteringFactorTable__registerThisType)
         .def("createByType", &ScatteringFactorTable::createByType,
@@ -289,9 +317,13 @@ void wrap_ScatteringFactorTable()
         .def("getRegisteredTypes", getScatteringFactorTableTypes_asset,
                 doc_ScatteringFactorTable_getRegisteredTypes)
         .staticmethod("getRegisteredTypes")
+        .enable_pickling()
         ;
 
     register_ptr_to_python<ScatteringFactorTablePtr>();
+
+    // inject pickling methods
+    import("diffpy.srreal.scatteringfactortable");
 
     class_<ScatteringFactorTableOwner>("ScatteringFactorTableOwner",
             doc_ScatteringFactorTableOwner)

@@ -75,17 +75,22 @@ namespace srrealmodule {
     } \
 
 
-/// flag for imported numpy array
-static bool did_import_array;
+/// static flag for imported numpy array
+bool& did_import_array();
+
 
 /// helper function for importing numpy array - once and only once.
 inline
 void initialize_numpy()
 {
-    if (did_import_array)  return;
+    if (did_import_array())  return;
     import_array();
-    did_import_array = true;
+    did_import_array() = true;
 }
+
+
+/// helper for raising RuntimeError on a call of pure virtual function
+void throwPureVirtualCalled(const char* fncname);
 
 
 /// template function for converting iterables to numpy array of doubles
