@@ -14,6 +14,7 @@ import time
 import multiprocessing
 from diffpy.Structure import Structure
 from diffpy.srreal.pdfcalculator import PDFCalculator
+from diffpy.srreal.parallel import createParallelCalculator
 
 mydir = os.path.dirname(os.path.abspath(__file__))
 mentholcif = os.path.join(mydir, 'datafiles', 'menthol.cif')
@@ -39,25 +40,14 @@ r0, g0 = pc0(menthol)
 t0 = time.time() - t0
 print "Calculation time on 1 CPU: %g" % t0
 
-# this function describes job of one worker
-pslave = PDFCalculator(**cfg)
-def partialPDFvalue(cpuindex):
-    pslave._setupParallelRun(cpuindex, ncpu)
-    return pslave.eval(menthol)
-
 # create a pool of workers
 pool = multiprocessing.Pool(processes=ncpu)
-t1 = time.time()
-# create a master PDFCalculator that will hold the results
-# setStructure is the same as eval, but does not do any calculation.
-pc1 = PDFCalculator(**cfg)
-pc1.setStructure(menthol)
-# make workers work and collect their results
-for y in pool.imap_unordered(partialPDFvalue, range(ncpu)):
-    pc1._mergeParallelValue(y)
 
-r1 = pc1.getRgrid()
-g1 = pc1.getPDF()
+t1 = time.time()
+# create a proxy parrallel calculator to PDFCalculator pc0,
+# that uses ncpu parallel jobs submitted via pool.imap_unordered
+pc1 = createParallelCalculator(pc0, ncpu, pool.imap_unordered)
+r1, g1 = pc1(menthol)
 t1 = time.time() - t1
 print "Calculation time on %i CPUs: %g" % (ncpu, t1)
 print "Time ratio: %g" % (t0 / t1)
