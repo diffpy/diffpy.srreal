@@ -20,15 +20,33 @@
 *****************************************************************************/
 
 #include <string>
+#include <valarray>
 #include "srreal_converters.hpp"
+
+// numpy/arrayobject.h needs to be included after srreal_converters.hpp,
+// which defines PY_ARRAY_UNIQUE_SYMBOL.  NO_IMPORT_ARRAY indicates
+// import_array will be called in the extension module initializer.
+#define NO_IMPORT_ARRAY
+#include <numpy/arrayobject.h>
 
 namespace srrealmodule {
 
-/// helper function that holds the flag for accomplished numpy import
-bool& did_import_array()
+/// helper for creating numpy array of doubles
+NumPyArray_DoublePtr createNumPyDoubleArray(int dim, const int* sz)
 {
-    static bool flag = false;
-    return flag;
+    using namespace std;
+    using namespace boost;
+    // import numpy array once
+    // copy the size information to an array of npy_intp
+    valarray<npy_intp> npsza(dim);
+    npy_intp& npsz = npsza[0];
+    copy(sz, sz + dim, &npsz);
+    // create numpy array
+    python::object rvobj(
+            python::handle<>(PyArray_SimpleNew(dim, &npsz, PyArray_DOUBLE)));
+    double* rvdata = (double*) PyArray_DATA((PyArrayObject*) rvobj.ptr());
+    NumPyArray_DoublePtr rv(rvobj, rvdata);
+    return rv;
 }
 
 

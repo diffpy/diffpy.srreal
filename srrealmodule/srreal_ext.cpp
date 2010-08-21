@@ -18,7 +18,8 @@
 *
 *****************************************************************************/
 
-#include <boost/python.hpp>
+#include "srreal_converters.hpp"
+#include <numpy/arrayobject.h>
 
 // Declaration of the external wrappers --------------------------------------
 
@@ -41,6 +42,8 @@ void wrap_PDFCalculators();
 BOOST_PYTHON_MODULE(srreal_ext)
 {
     using namespace srrealmodule;
+    // initialize numpy module
+    import_array();
     // execute external wrappers
     wrap_Attributes();
     wrap_StructureAdapter();

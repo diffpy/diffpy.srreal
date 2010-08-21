@@ -23,12 +23,13 @@
 #define SRREAL_CONVERTERS_HPP_INCLUDED
 
 #include <algorithm>
-
 #include <boost/python.hpp>
-#include <numpy/arrayobject.h>
-
 #include <diffpy/srreal/R3linalg.hpp>
 #include <diffpy/srreal/PairQuantity.hpp>
+
+// This macro is required for extension modules that are in several files.
+// It must be defined before includsion of numpy/arrayobject.h
+#define PY_ARRAY_UNIQUE_SYMBOL DIFFPY_SRREAL_NUMPY_ARRAY_SYMBOL
 
 namespace srrealmodule {
 
@@ -75,37 +76,11 @@ namespace srrealmodule {
     } \
 
 
-/// static flag for imported numpy array
-bool& did_import_array();
+/// Type for numpy array object and a raw pointer to its double data
+typedef std::pair<boost::python::object, double*> NumPyArray_DoublePtr;
 
-
-/// helper function for importing numpy array - once and only once.
-inline
-void initialize_numpy()
-{
-    if (did_import_array())  return;
-    import_array();
-    did_import_array() = true;
-}
-
-
-/// helper for raising RuntimeError on a call of pure virtual function
-void throwPureVirtualCalled(const char* fncname);
-
-
-/// template class for getting overrides to pure virtual method
-template <class T>
-class wrapper_srreal : public ::boost::python::wrapper<T>
-{
-    protected:
-        ::boost::python::override
-        get_pure_virtual_override(const char* name) const
-        {
-            ::boost::python::override f = this->get_override(name);
-            if (!f)  throwPureVirtualCalled(name);
-            return f;
-        }
-};
+/// helper for creating numpy array of doubles
+NumPyArray_DoublePtr createNumPyDoubleArray(int dim, const int* sz);
 
 
 /// template function for converting iterables to numpy array of doubles
@@ -113,14 +88,10 @@ template <class Iter>
 ::boost::python::object
 convertToNumPyArray(Iter first, Iter last)
 {
-    using namespace ::boost;
-    initialize_numpy();
-    npy_intp sz = last - first;
-    python::object rv(
-            python::handle<>(PyArray_SimpleNew(1, &sz, PyArray_DOUBLE)));
-    double* rvdata = (double*) PyArray_DATA((PyArrayObject*) rv.ptr());
-    ::std::copy(first, last, rvdata);
-    return rv;
+    int sz = last - first;
+    NumPyArray_DoublePtr ap = createNumPyDoubleArray(1, &sz);
+    ::std::copy(first, last, ap.second);
+    return ap.first;
 }
 
 
@@ -136,15 +107,11 @@ convertToNumPyArray(const ::diffpy::srreal::R3::Vector& value)
 inline ::boost::python::object
 convertToNumPyArray(const ::diffpy::srreal::R3::Matrix& mx)
 {
-    using namespace ::boost;
-    using namespace ::diffpy::srreal;
-    initialize_numpy();
-    npy_intp sz[2] = {R3::Ndim, R3::Ndim};
-    python::object rv(
-            python::handle<>(PyArray_SimpleNew(2, sz, PyArray_DOUBLE)));
-    double* rvdata = (double*) PyArray_DATA((PyArrayObject*) rv.ptr());
-    ::std::copy(mx.data(), mx.data() + sz[0] * sz[1], rvdata);
-    return rv;
+    using namespace diffpy::srreal;
+    int sz[2] = {R3::Ndim, R3::Ndim};
+    NumPyArray_DoublePtr ap = createNumPyDoubleArray(2, sz);
+    ::std::copy(mx.data(), mx.data() + sz[0] * sz[1], ap.second);
+    return ap.first;
 }
 
 
@@ -168,6 +135,26 @@ convertToPythonSet(const T& value)
     for (ii = value.begin(); ii != value.end(); ++ii)  rvset_add(*ii);
     return rvset;
 }
+
+
+/// helper for raising RuntimeError on a call of pure virtual function
+void throwPureVirtualCalled(const char* fncname);
+
+
+/// template class for getting overrides to pure virtual method
+template <class T>
+class wrapper_srreal : public ::boost::python::wrapper<T>
+{
+    protected:
+        ::boost::python::override
+        get_pure_virtual_override(const char* name) const
+        {
+            ::boost::python::override f = this->get_override(name);
+            if (!f)  throwPureVirtualCalled(name);
+            return f;
+        }
+};
+
 
 }   // namespace srrealmodule
 
