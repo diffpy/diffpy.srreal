@@ -29,14 +29,14 @@ import inspect
 # ----------------------------------------------------------------------------
 
 def createParallelCalculator(pqobj, ncpu, pmap):
-    '''Create a proxy parallel calculato to a normal PairQuantity instance.
+    '''Create a proxy parallel calculator to a PairQuantity instance.
 
     pqobj    -- instance of PairQuantity calculator to be run in parallel
     ncpu     -- number of parallel jobs
     pmap     -- a parallel map function used to submit job to workers
 
     Return a proxy calculator instance that has the same interface,
-    but executes the calculation in parallel split into ncpu jobs.
+    but executes the calculation in parallel split among ncpu jobs.
     '''
 
     class ParallelPairQuantity(object):
