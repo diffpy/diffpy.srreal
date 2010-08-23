@@ -28,7 +28,7 @@
 #include <diffpy/srreal/PairQuantity.hpp>
 
 // This macro is required for extension modules that are in several files.
-// It must be defined before includsion of numpy/arrayobject.h
+// It must be defined before inclusion of numpy/arrayobject.h
 #define PY_ARRAY_UNIQUE_SYMBOL DIFFPY_SRREAL_NUMPY_ARRAY_SYMBOL
 
 namespace srrealmodule {

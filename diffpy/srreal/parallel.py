@@ -36,7 +36,7 @@ def createParallelCalculator(pqobj, ncpu, pmap):
     pmap     -- a parallel map function used to submit job to workers
 
     Return a proxy calculator instance that has the same interface,
-    but runs calculation in parallel, split into ncpu jobs.
+    but executes the calculation in parallel split into ncpu jobs.
     '''
 
     class ParallelPairQuantity(object):
@@ -54,7 +54,8 @@ def createParallelCalculator(pqobj, ncpu, pmap):
         def __init__(self, pqobj, ncpu, pmap):
             '''Initialize a parallel proxy to the PairQuantity instance.
 
-            pqobj    -- instance of PairQuantity calculator to be run in parallel
+            pqobj    -- instance of PairQuantity calculator to be run
+                        in parallel
             ncpu     -- number of parallel jobs
             pmap     -- a parallel map function used to submit job to workers
 
@@ -85,8 +86,10 @@ def createParallelCalculator(pqobj, ncpu, pmap):
 
 
         def __call__(self, *args, **kwargs):
-            '''Call the wrapped instance as a function, but with parallel evaluation.
-            Uses the same arguments and return values as the wrapped PairQuantity.
+            '''Call the wrapped calculator using parallel evaluation.
+
+            The arguments and return value are the same as for the wrapped
+            PairQuantity calculator.
             '''
             savedeval = self.pqobj.__dict__.get('eval')
             def restore_eval():
