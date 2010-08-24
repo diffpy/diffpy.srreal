@@ -36,6 +36,10 @@ class PDFCalculatorInterface(object):
     '''Base class for shared properties and methods.
     '''
 
+    scale = propertyFromExtDoubleAttr('scale',
+        '''Scale factor of the calculated PDF.  Active for ScaleEnvelope.
+        [1.0 unitless]''')
+
     delta1 = propertyFromExtDoubleAttr('delta1',
         '''Coefficient for (1/r) contribution to the peak sharpening.
         Active for JeongPeakWidth model.
@@ -45,6 +49,11 @@ class PDFCalculatorInterface(object):
         '''Coefficient for (1/r**2) contribution to the peak sharpening.
         Active for JeongPeakWidth model.
         [0 A**2]''')
+
+    qdamp = propertyFromExtDoubleAttr('qdamp',
+        '''PDF Gaussian dampening envelope due to limited Q-resolution.
+        Not applied when equal to zero.  Active for QResolutionEnvelope.
+        [0 1/A]''')
 
     qbroad = propertyFromExtDoubleAttr('qbroad',
         '''PDF peak broadening from increased intensity noise at high Q.
@@ -157,11 +166,6 @@ class PDFCalculator(PDFCalculator_ext, PDFCalculatorInterface):
         '''Cutoff amplitude of the peak tail relative to the peak maximum.
         [3.33e-6 unitless]''')
 
-    qdamp = propertyFromExtDoubleAttr('qdamp',
-        '''PDF Gaussian dampening envelope due to limited Q-resolution.
-        Not applied when equal to zero.  Active for QResolutionEnvelope.
-        [0 1/A]''')
-
     qmin = propertyFromExtDoubleAttr('qmin',
         '''Lower bound of the experimental Q-range used.
         Affects the shape envelope.
@@ -171,10 +175,6 @@ class PDFCalculator(PDFCalculator_ext, PDFCalculatorInterface):
         '''Upper bound of the experimental Q-range used.
         Affects the termination ripples.  Not used when zero.
         [0 1/A]''')
-
-    scale = propertyFromExtDoubleAttr('scale',
-        '''Scale factor of the calculated PDF.  Active for ScaleEnvelope.
-        [1.0 unitless]''')
 
     slope = propertyFromExtDoubleAttr('slope',
         '''Slope of the linear PDF background.  Assigned according to
