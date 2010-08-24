@@ -20,9 +20,17 @@ mydir = os.path.dirname(os.path.abspath(__file__))
 mentholcif = os.path.join(mydir, 'datafiles', 'menthol.cif')
 
 # load menthol structure and make sure Uiso values are non-zero
-menthol = Structure(filename=mentholcif)
-for a in menthol:
-    a.Uisoequiv = a.Uisoequiv or 0.005
+if 0:
+    menthol = Structure(filename=mentholcif)
+    for a in menthol:
+        a.Uisoequiv = a.Uisoequiv or 0.005
+else:
+    from pyobjcryst.crystal import CreateCrystalFromCIF
+    from numpy import pi
+    menthol = CreateCrystalFromCIF(file(mentholcif))
+    for sc in menthol.GetScatteringComponentList():
+        sp = sc.mpScattPow
+        sp.Biso == sp.Biso or 0.005 * 8 * pi**2
 
 # configuration of a PDF calculator
 cfg = { 'qmax' : 25,
