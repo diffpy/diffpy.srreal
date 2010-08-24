@@ -30,7 +30,7 @@ else:
     menthol = CreateCrystalFromCIF(file(mentholcif))
     for sc in menthol.GetScatteringComponentList():
         sp = sc.mpScattPow
-        sp.Biso == sp.Biso or 0.005 * 8 * pi**2
+        sp.Biso = sp.Biso or 0.005 * 8 * pi**2
 
 # configuration of a PDF calculator
 cfg = { 'qmax' : 25,
