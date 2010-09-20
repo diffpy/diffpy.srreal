@@ -89,6 +89,32 @@ class BVSCalculator(BVSCalculator_ext):
         rv = super(BVSCalculator, self).value()
         return rv
 
-# class PDFCalculator
+# class BVSCalculator
+
+# BVSCalculator_ext pickling support -----------------------------------------
+
+def _bvsc_getstate(self):
+    dbattrs = [(n, self._getDoubleAttr(n))
+        for n in self._namesOfWritableDoubleAttributes()]
+    state = (self.__dict__, dbattrs)
+    return state
+
+
+def _bvsc_setstate(self, state):
+    if len(state) != 2:
+        emsg = ("expected 2-item tuple in call to __setstate__, got %r" +
+                repr(state))
+        raise ValueError(emsg)
+    st = iter(state)
+    self.__dict__.update(st.next())
+    for n, v in st.next():
+        self._setDoubleAttr(n, v)
+    return
+
+# inject pickle methods to BVSCalculator_ext
+
+BVSCalculator_ext.__getstate_manages_dict__ = True
+BVSCalculator_ext.__getstate__ = _bvsc_getstate
+BVSCalculator_ext.__setstate__ = _bvsc_setstate
 
 # End of file

@@ -8,6 +8,7 @@ __id__ = '$Id$'
 
 import os
 import unittest
+import cPickle
 
 # useful variables
 thisfile = locals().get('__file__', 'file.py')
@@ -117,11 +118,29 @@ class TestBVSCalculator(unittest.TestCase):
                 tuple(self.bvc.valences()))
         return
 
+
     def test_value(self):
         """check BVSCalculator.value()
         """
         self.assertEqual(0, len(self.bvc.value()))
         return
+
+
+    def test_pickling(self):
+        '''check pickling and unpickling of BVSCalculator.
+        '''
+        bvsc = BVSCalculator()
+        bvsc.rmin = 0.1
+        bvsc.rmax = 12.3
+        bvsc.valenceprecision = 0.3e-4
+        bvsc.foobar = 'asdf'
+        spkl = cPickle.dumps(bvsc)
+        bvsc1 = cPickle.loads(spkl)
+        for a in bvsc._namesOfDoubleAttributes():
+            self.assertEqual(getattr(bvsc, a), getattr(bvsc1, a))
+        self.assertEqual('asdf', bvsc1.foobar)
+        return
+
 
 # End of class TestBVSCalculator
 

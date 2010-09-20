@@ -72,7 +72,11 @@ void wrap_BVSCalculator()
                 doc_BVSCalculator_bvmsdiff)
         .def("bvrmsdiff", &BVSCalculator::bvrmsdiff,
                 doc_BVSCalculator_bvrmsdiff)
+        .enable_pickling();
         ;
+
+    // inject pickling methods
+    import("diffpy.srreal.bvscalculator");
 }
 
 }   // namespace srrealmodule
