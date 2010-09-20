@@ -6,10 +6,9 @@ and then on all computer CPUs.  The script then compares both results
 and prints elapsed time per each calculation.
 """
 
-# NOTE: This example uses low-level interface to parallel evaluation.
-# There should be something more user friendly soon.
-
 import os
+import sys
+import optparse
 import time
 import multiprocessing
 from diffpy.Structure import Structure
@@ -18,19 +17,30 @@ from diffpy.srreal.parallel import createParallelCalculator
 
 mydir = os.path.dirname(os.path.abspath(__file__))
 mentholcif = os.path.join(mydir, 'datafiles', 'menthol.cif')
+Uisodefault = 0.005
+
+# configure options parsing
+parser = optparse.OptionParser("%prog [options]\n" +
+    __doc__)
+parser.add_option("--pyobjcryst", action="store_true",
+        help="Use pyobjcryst to load the CIF file.")
+parser.allow_interspersed_args = True
+opts, args = parser.parse_args(sys.argv[1:])
 
 # load menthol structure and make sure Uiso values are non-zero
-if 0:
-    menthol = Structure(filename=mentholcif)
-    for a in menthol:
-        a.Uisoequiv = a.Uisoequiv or 0.005
-else:
+if opts.pyobjcryst:
+    # use pyobjcryst if requested by the user
     from pyobjcryst.crystal import CreateCrystalFromCIF
     from numpy import pi
-    menthol = CreateCrystalFromCIF(file(mentholcif))
+    menthol = CreateCrystalFromCIF(open(mentholcif))
     for sc in menthol.GetScatteringComponentList():
         sp = sc.mpScattPow
-        sp.Biso = sp.Biso or 0.005 * 8 * pi**2
+        sp.Biso = sp.Biso or 8 * pi**2 * Uisodefault
+else:
+    # or use diffpy.Structure by default
+    menthol = Structure(filename=mentholcif)
+    for a in menthol:
+        a.Uisoequiv = a.Uisoequiv or Uisodefault
 
 # configuration of a PDF calculator
 cfg = { 'qmax' : 25,
