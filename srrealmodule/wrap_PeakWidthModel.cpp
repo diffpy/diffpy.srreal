@@ -79,7 +79,7 @@ class PeakWidthModelWrap :
 
         double calculate(const BaseBondGenerator& bnds) const
         {
-            return this->get_pure_virtual_override("calculate")(bnds);
+            return this->get_pure_virtual_override("calculate")(ptr(&bnds));
         }
 
         double calculateFromMSD(double msdval) const
