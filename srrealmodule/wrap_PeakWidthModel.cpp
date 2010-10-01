@@ -84,7 +84,14 @@ class PeakWidthModelWrap :
 
         double calculateFromMSD(double msdval) const
         {
-            return this->get_pure_virtual_override("calculateFromMSD")(msdval);
+            override f = this->get_override("calculateFromMSD");
+            if (f)  return f(msdval);
+            return this->default_calculateFromMSD(msdval);
+        }
+
+        double default_calculateFromMSD(double msdval) const
+        {
+            return this->PeakWidthModel::calculateFromMSD(msdval);
         }
 
     private:
@@ -111,7 +118,8 @@ void wrap_PeakWidthModel()
         .def("calculate",
                 &PeakWidthModel::calculate)
         .def("calculateFromMSD",
-                &PeakWidthModel::calculateFromMSD)
+                &PeakWidthModel::calculateFromMSD,
+                &PeakWidthModelWrap::default_calculateFromMSD)
         .def("_registerThisType", &PeakWidthModel::registerThisType)
         .def("createByType", &PeakWidthModel::createByType)
         .staticmethod("createByType")
