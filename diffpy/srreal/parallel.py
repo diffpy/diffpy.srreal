@@ -117,7 +117,9 @@ def createParallelCalculator(pqobj, ncpu, pmap):
     # create proxy methods to all public methods and some protected methods
 
     proxy_protected = set('''_getDoubleAttr _setDoubleAttr _hasDoubleAttr
-        _namesOfDoubleAttributes _namesOfWritableDoubleAttributes'''.split())
+        _namesOfDoubleAttributes _namesOfWritableDoubleAttributes
+        __getattr__ __setattr__
+        '''.split())
 
     def _make_proxymethod(name):
         f = getattr(pqtype, name)
