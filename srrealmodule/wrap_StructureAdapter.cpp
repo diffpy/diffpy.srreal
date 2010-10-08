@@ -119,14 +119,14 @@ class StructureAdapterWrap :
         }
 
 
-        double siteMultiplicity(int idx) const
+        int siteMultiplicity(int idx) const
         {
             override f = this->get_override("siteMultiplicity");
             if (f)  return f(idx);
             return this->default_siteMultiplicity(idx);
         }
 
-        double default_siteMultiplicity(int idx) const
+        int default_siteMultiplicity(int idx) const
         {
             return this->StructureAdapter::siteMultiplicity(idx);
         }
