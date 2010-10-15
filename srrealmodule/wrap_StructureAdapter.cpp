@@ -23,6 +23,7 @@
 #include <boost/python.hpp>
 
 #include <diffpy/srreal/PythonStructureAdapter.hpp>
+#include <diffpy/srreal/NoMetaStructureAdapter.hpp>
 #include <diffpy/srreal/NoSymmetryStructureAdapter.hpp>
 
 #include "srreal_converters.hpp"
@@ -221,6 +222,7 @@ void wrap_StructureAdapter()
 
     register_ptr_to_python<StructureAdapterPtr>();
     
+    def("nometa", nometa<object>);
     def("nosymmetry", nosymmetry<object>);
     def("createStructureAdapter", createStructureAdapter);
 }
