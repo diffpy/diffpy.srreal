@@ -19,7 +19,9 @@ tests_dir = os.path.dirname(os.path.abspath(thisfile))
 testdata_dir = os.path.join(tests_dir, 'testdata')
 nickel_stru = os.path.join(testdata_dir, 'Ni.stru')
 nickel = Structure(filename=nickel_stru)
+rutile_cif = os.path.join(testdata_dir, 'TiO2_rutile-fit.cif')
 
+from srrealtestutils import TestCaseObjCrystOptional
 from diffpy.srreal.structureadapter import *
 
 ##############################################################################
@@ -145,6 +147,45 @@ class TestNoSymmetry(unittest.TestCase):
 
 # End of class TestNoSymmetry
 
+
+##############################################################################
+class TestPyObjCrystAdapter(TestCaseObjCrystOptional):
+
+    def setUp(self):
+        from pyobjcryst.crystal import CreateCrystalFromCIF
+        rutile_crystal = CreateCrystalFromCIF(open(rutile_cif))
+        self.rutile = createStructureAdapter(rutile_crystal)
+        return
+
+    def test_objcryst_adapter(self):
+        '''check ObjCrystStructureAdapter for rutile.
+        '''
+        self.assertEqual(2, self.rutile.countSites())
+        self.assertEqual(6, self.rutile.totalOccupancy())
+        self.assertEqual("Ti", self.rutile.siteAtomType(0))
+        self.assertEqual("O", self.rutile.siteAtomType(1))
+        self.failUnless(True is self.rutile.siteAnisotropy(0))
+        self.failUnless(True is self.rutile.siteAnisotropy(1))
+        self.failUnless(numpy.allclose(
+            numpy.diag([0.008698, 0.008698, 0.005492]),
+            self.rutile.siteCartesianUij(0)))
+        self.failUnless(numpy.allclose(
+            numpy.diag([0.021733, 0.021733, 0.007707]),
+            self.rutile.siteCartesianUij(1)))
+        return
+ 
+    def test_objcryst_pickling(self):
+        '''check pickling of the NoSymmetryStructureAdapter wrapper.
+        '''
+        r0, g0 = PDFCalculator()(self.rutile)
+        rutile1 = cPickle.loads(cPickle.dumps(self.rutile))
+        self.failIf(self.rutile is rutile1)
+        r1, g1 = PDFCalculator()(rutile1)
+        self.failUnless(numpy.array_equal(r0, r1))
+        self.failUnless(numpy.array_equal(g0, g1))
+        return
+
+# End of class TestNoSymmetry
 
 ##############################################################################
 # class TestStructureAdapter(unittest.TestCase):

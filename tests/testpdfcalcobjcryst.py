@@ -13,6 +13,7 @@ import unittest
 import numpy
 from diffpy.srreal.pdfcalculator import PDFCalculator
 
+from srrealtestutils import TestCaseObjCrystOptional
 from testpdfcalculator import _maxNormDiff
 
 # useful variables
@@ -66,7 +67,7 @@ def _makePDFCalculator(crst, cfgdict):
 
 
 ##############################################################################
-class TestPDFCalcObjcryst(unittest.TestCase):
+class TestPDFCalcObjcryst(TestCaseObjCrystOptional):
 
     def _comparePDFs(self, nickname, pdfbasename, cifbasename):
         def setself(**kwtoset):
