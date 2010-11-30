@@ -20,8 +20,10 @@
 *
 *****************************************************************************/
 
+#include <sstream>
 #include <boost/python.hpp>
 
+#include <diffpy/serialization.hpp>
 #include <diffpy/srreal/PythonStructureAdapter.hpp>
 #include <diffpy/srreal/NoMetaStructureAdapter.hpp>
 #include <diffpy/srreal/NoSymmetryStructureAdapter.hpp>
@@ -182,6 +184,35 @@ class StructureAdapterWrap :
 
 };  // class StructureAdapterWrap
 
+// pickle support
+
+StructureAdapterPtr
+createStructureAdapterFromString(const std::string& content)
+{
+    using namespace std;
+    istringstream storage(content, ios::binary);
+    diffpy::serialization::iarchive ia(storage, ios::binary);
+    StructureAdapterPtr adpt;
+    ia >> adpt;
+    return adpt;
+}
+
+
+class StructureAdapterPickleSuite : public pickle_suite
+{
+    public:
+
+        static python::tuple getinitargs(StructureAdapterPtr adpt)
+        {
+            using namespace std;
+            ostringstream storage(ios::binary);
+            diffpy::serialization::oarchive oa(storage, ios::binary);
+            oa << adpt;
+            return python::make_tuple(storage.str());
+        }
+
+};  // class StructureAdapterPickleSuite
+
 }   // namespace nswrap_StructureAdapter
 
 // Wrapper definition --------------------------------------------------------
@@ -191,6 +222,7 @@ void wrap_StructureAdapter()
     using namespace nswrap_StructureAdapter;
 
     class_<StructureAdapterWrap, noncopyable>("StructureAdapter")
+        .def("__init__", make_constructor(createStructureAdapterFromString))
         .def("createBondGenerator",
                 &StructureAdapter::createBondGenerator,
                 return_internal_reference<>())
@@ -218,6 +250,7 @@ void wrap_StructureAdapter()
         .def("_customPQConfig",
                 &StructureAdapter::customPQConfig,
                 &StructureAdapterWrap::default_customPQConfig)
+        .def_pickle(StructureAdapterPickleSuite())
         ;
 
     register_ptr_to_python<StructureAdapterPtr>();
