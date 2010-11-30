@@ -8,6 +8,7 @@ __id__ = '$Id$'
 
 import os
 import unittest
+import cPickle
 import numpy
 from diffpy.Structure import Structure
 from diffpy.srreal.pdfcalculator import PDFCalculator
@@ -33,6 +34,24 @@ class TestRoutines(unittest.TestCase):
         self.failUnless(StructureAdapter is type(adpt))
         adpt1 = createStructureAdapter(adpt)
         self.failUnless(adpt is adpt1)
+        return
+
+    def test_pickling(self):
+        '''check pickling of StructureAdapter instances.
+        '''
+        adpt = createStructureAdapter(nickel)
+        adpt1 = cPickle.loads(cPickle.dumps(adpt))
+        self.failIf(adpt is adpt1)
+        self.assertEqual(adpt.countSites(), adpt1.countSites())
+        self.assertEqual(adpt.totalOccupancy(), adpt1.totalOccupancy())
+        self.assertEqual(adpt.siteAtomType(1), adpt1.siteAtomType(1))
+        self.failUnless(numpy.array_equal(
+            adpt.siteCartesianPosition(1), adpt1.siteCartesianPosition(1)))
+        self.assertEqual(adpt.siteMultiplicity(1), adpt1.siteMultiplicity(1))
+        self.assertEqual(adpt.siteOccupancy(1), adpt1.siteOccupancy(1))
+        self.failUnless(adpt.siteAnisotropy(1) is adpt1.siteAnisotropy(1))
+        self.failUnless(numpy.array_equal(
+            adpt.siteCartesianUij(1), adpt1.siteCartesianUij(1)))
         return
 
 # End of class TestStructureAdapter
@@ -67,7 +86,20 @@ class TestNoMeta(unittest.TestCase):
         self.failUnless(numpy.allclose(g2, ga2))
         self.failUnless(numpy.allclose(g0, ga2nm))
         return
- 
+
+    def test_nometa_pickling(self):
+        '''check pickling of the NoMetaStructureAdapter wrapper.
+        '''
+        r0, g0 = PDFCalculator()(nickel)
+        ni1 = Structure(nickel)
+        ni1.pdffit['scale'] = 2.0
+        ni1nm = cPickle.loads(cPickle.dumps(nometa(ni1)))
+        self.failIf(ni1nm is ni1)
+        r1nm, g1nm = PDFCalculator()(ni1nm)
+        self.failUnless(numpy.array_equal(r0, r1nm))
+        self.failUnless(numpy.array_equal(g0, g1nm))
+        return
+
 # End of class TestNoMeta
 
 
@@ -99,6 +131,18 @@ class TestNoSymmetry(unittest.TestCase):
         self.failUnless(numpy.allclose(g1, ga2))
         return
  
+    def test_nosymmetry_pickling(self):
+        '''check pickling of the NoSymmetryStructureAdapter wrapper.
+        '''
+        ni1ns = nosymmetry(nickel)
+        r1, g1 = PDFCalculator()(ni1ns)
+        ni2ns = cPickle.loads(cPickle.dumps(ni1ns))
+        self.failIf(ni1ns is ni2ns)
+        r2, g2 = PDFCalculator()(ni2ns)
+        self.failUnless(numpy.array_equal(r1, r2))
+        self.failUnless(numpy.array_equal(g1, g2))
+        return
+
 # End of class TestNoSymmetry
 
 

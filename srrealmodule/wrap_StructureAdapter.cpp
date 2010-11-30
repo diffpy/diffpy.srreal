@@ -159,11 +159,12 @@ class StructureAdapterWrap :
             static R3::Matrix rv;
             python::object uij =
                 this->get_pure_virtual_override("siteCartesianUij")(idx);
-            double* pdata = rv.data();
-            int mxlen = R3::Ndim * R3::Ndim;
-            for (int i = 0; i < mxlen; ++i, ++pdata)
+            for (int i = 0; i < R3::Ndim; ++i)
             {
-                *pdata = python::extract<double>(uij[i]);
+                for (int j = 0; j < R3::Ndim; ++j)
+                {
+                    rv(i, j) = python::extract<double>(uij[i][j]);
+                }
             }
             return rv;
         }
@@ -235,7 +236,7 @@ void wrap_StructureAdapter()
         .def("siteAtomType", &StructureAdapter::siteAtomType,
                 &StructureAdapterWrap::default_siteAtomType,
                 return_value_policy<copy_const_reference>())
-        .def("siteCartesianPosition", 
+        .def("siteCartesianPosition",
                     siteCartesianPosition_asarray<StructureAdapter,int>)
         .def("siteMultiplicity",
                 &StructureAdapter::siteMultiplicity,
@@ -254,7 +255,7 @@ void wrap_StructureAdapter()
         ;
 
     register_ptr_to_python<StructureAdapterPtr>();
-    
+
     def("nometa", nometa<object>);
     def("nosymmetry", nosymmetry<object>);
     def("createStructureAdapter", createStructureAdapter);
