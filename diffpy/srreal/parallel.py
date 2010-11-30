@@ -75,10 +75,14 @@ def createParallelCalculator(pqobj, ncpu, pmap):
 
             Return numpy array.
             '''
+            # use StructureAdapter for faster pickles
+            from diffpy.srreal.structureadapter import createStructureAdapter
+            struadpt = createStructureAdapter(structure)
             self.pqobj.setStructure(structure)
             kwd = { 'ncpu' : self.ncpu,
                     'pqobj' : copy.copy(self.pqobj),
-                    'structure' : structure }
+                    'structure' : struadpt }
+            # shallow copies of kwd dictionary each with a unique cpuindex
             arglist = [kwd.copy() for kwd['cpuindex'] in range(self.ncpu)]
             for y in self.pmap(_partialValue, arglist):
                 self.pqobj._mergeParallelValue(y)
