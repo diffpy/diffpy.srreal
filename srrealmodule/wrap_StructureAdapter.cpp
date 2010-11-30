@@ -37,6 +37,23 @@ using namespace boost;
 using namespace boost::python;
 using namespace diffpy::srreal;
 
+// docstrings ----------------------------------------------------------------
+
+// FIXME:
+const char* doc_StructureAdapter = "";
+const char* doc_StructureAdapter___init__ = "";
+const char* doc_StructureAdapter_createBondGenerator = "";
+const char* doc_StructureAdapter_countSites = "";
+const char* doc_StructureAdapter_totalOccupancy = "";
+const char* doc_StructureAdapter_numberDensity = "";
+const char* doc_StructureAdapter_siteAtomType = "";
+const char* doc_StructureAdapter_siteCartesianPosition = "";
+const char* doc_StructureAdapter_siteMultiplicity = "";
+const char* doc_StructureAdapter_siteOccupancy = "";
+const char* doc_StructureAdapter_siteAnisotropy = "";
+const char* doc_StructureAdapter_siteCartesianUij = "";
+const char* doc_StructureAdapter__customPQConfig = "";
+
 // wrappers ------------------------------------------------------------------
 
 DECLARE_PYARRAY_METHOD_WRAPPER1(siteCartesianPosition,
@@ -222,35 +239,48 @@ void wrap_StructureAdapter()
 {
     using namespace nswrap_StructureAdapter;
 
-    class_<StructureAdapterWrap, noncopyable>("StructureAdapter")
-        .def("__init__", make_constructor(createStructureAdapterFromString))
+    class_<StructureAdapterWrap, noncopyable>(
+            "StructureAdapter", doc_StructureAdapter)
+        .def("__init__", make_constructor(createStructureAdapterFromString),
+                doc_StructureAdapter___init__)
         .def("createBondGenerator",
                 &StructureAdapter::createBondGenerator,
-                return_internal_reference<>())
-        .def("countSites", &StructureAdapter::countSites)
+                return_internal_reference<>(),
+                doc_StructureAdapter_createBondGenerator)
+        .def("countSites", &StructureAdapter::countSites,
+                doc_StructureAdapter_countSites)
         .def("totalOccupancy",
                 &StructureAdapter::totalOccupancy,
-                &StructureAdapterWrap::default_totalOccupancy)
+                &StructureAdapterWrap::default_totalOccupancy,
+                doc_StructureAdapter_totalOccupancy)
         .def("numberDensity", &StructureAdapter::numberDensity,
-                &StructureAdapterWrap::default_numberDensity)
+                &StructureAdapterWrap::default_numberDensity,
+                doc_StructureAdapter_numberDensity)
         .def("siteAtomType", &StructureAdapter::siteAtomType,
                 &StructureAdapterWrap::default_siteAtomType,
-                return_value_policy<copy_const_reference>())
+                return_value_policy<copy_const_reference>(),
+                doc_StructureAdapter_siteAtomType)
         .def("siteCartesianPosition",
-                    siteCartesianPosition_asarray<StructureAdapter,int>)
+                    siteCartesianPosition_asarray<StructureAdapter,int>,
+                    doc_StructureAdapter_siteCartesianPosition)
         .def("siteMultiplicity",
                 &StructureAdapter::siteMultiplicity,
-                &StructureAdapterWrap::default_siteMultiplicity)
+                &StructureAdapterWrap::default_siteMultiplicity,
+                doc_StructureAdapter_siteMultiplicity)
         .def("siteOccupancy",
                 &StructureAdapter::siteOccupancy,
-                &StructureAdapterWrap::default_siteOccupancy)
+                &StructureAdapterWrap::default_siteOccupancy,
+                doc_StructureAdapter_siteOccupancy)
         .def("siteAnisotropy",
-                &StructureAdapter::siteAnisotropy)
+                &StructureAdapter::siteAnisotropy,
+                doc_StructureAdapter_siteAnisotropy)
         .def("siteCartesianUij",
-                siteCartesianUij_asarray<StructureAdapter,int>)
+                siteCartesianUij_asarray<StructureAdapter,int>,
+                doc_StructureAdapter_siteCartesianUij)
         .def("_customPQConfig",
                 &StructureAdapter::customPQConfig,
-                &StructureAdapterWrap::default_customPQConfig)
+                &StructureAdapterWrap::default_customPQConfig,
+                doc_StructureAdapter__customPQConfig)
         .def_pickle(StructureAdapterPickleSuite())
         ;
 
