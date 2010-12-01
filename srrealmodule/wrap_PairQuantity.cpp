@@ -259,6 +259,7 @@ void wrap_PairQuantity()
         .def("setStructure", &PairQuantity::setStructure<object>)
         .def("_setupParallelRun", &PairQuantity::setupParallelRun)
         .def("maskAllPairs", &PairQuantity::maskAllPairs)
+        .def("invertMask", &PairQuantity::invertMask)
         .def("setPairMask", &PairQuantity::setPairMask)
         .def("getPairMask", &PairQuantity::getPairMask)
         // FIXME: to be removed after PairQuantity serialization
