@@ -147,7 +147,7 @@ class TestBVSCalculator(unittest.TestCase):
         '''Check if mask gets properly pickled and restored.
         '''
         self.bvc.maskAllPairs(False)
-        self.bvc.maskSitePair(0, 1, True)
+        self.bvc.setPairMask(0, 1, True)
         self.failUnless(False is self.bvc.getPairMask(0, 0))
         self.failUnless(True is self.bvc.getPairMask(0, 1))
         bvc1 = cPickle.loads(cPickle.dumps(self.bvc))

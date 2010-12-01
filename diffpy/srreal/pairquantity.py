@@ -107,7 +107,7 @@ def _bpqe_setstate(self, state):
     self.maskAllPairs(defaultmask)
     invdefaultmask = not defaultmask
     for i, j in st.next():
-        self.maskSitePair(i, j, invdefaultmask)
+        self.setPairMask(i, j, invdefaultmask)
     return
 
 # inject pickle methods to PDFCalculator_ext

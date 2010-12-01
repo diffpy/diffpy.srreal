@@ -160,7 +160,7 @@ class TestDebyePDFCalculator(unittest.TestCase):
         '''Check if mask gets properly pickled and restored.
         '''
         self.dpdfc.maskAllPairs(False)
-        self.dpdfc.maskSitePair(0, 1, True)
+        self.dpdfc.setPairMask(0, 1, True)
         self.failUnless(False is self.dpdfc.getPairMask(0, 0))
         self.failUnless(True is self.dpdfc.getPairMask(0, 1))
         dpdfc1 = cPickle.loads(cPickle.dumps(self.dpdfc))

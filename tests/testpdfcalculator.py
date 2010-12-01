@@ -196,7 +196,7 @@ class TestPDFCalculator(unittest.TestCase):
         '''Check if mask gets properly pickled and restored.
         '''
         self.pdfcalc.maskAllPairs(False)
-        self.pdfcalc.maskSitePair(0, 1, True)
+        self.pdfcalc.setPairMask(0, 1, True)
         self.failUnless(False is self.pdfcalc.getPairMask(0, 0))
         self.failUnless(True is self.pdfcalc.getPairMask(0, 1))
         pdfcalc1 = cPickle.loads(cPickle.dumps(self.pdfcalc))
