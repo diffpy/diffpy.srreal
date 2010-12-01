@@ -158,8 +158,10 @@ class TestPDFCalculator(unittest.TestCase):
         """Check calculation of partial PDFs.
         """
         pdfc = self.pdfcalc
+        pdfc.rstep = 0.1
         rutile = self.tio2rutile
         r0, g0 = pdfc(rutile)
+        rdf0 = pdfc.getRDF()
         # Ti-Ti
         pdfc.maskAllPairs(False)
         atomtypes = [a.element for a in rutile]
@@ -168,11 +170,14 @@ class TestPDFCalculator(unittest.TestCase):
                 if smbli == smblj == "Ti":
                     pdfc.setPairMask(i, j, True)
         r1, g1 = pdfc(rutile)
+        rdf1 = pdfc.getRDF()
         self.failUnless(numpy.array_equal(r0, r1))
         pdfc.invertMask()
         r1i, g1i = pdfc(rutile)
+        rdf1i = pdfc.getRDF()
         self.failUnless(numpy.array_equal(r0, r1i))
         self.failUnless(numpy.allclose(g0, g1 + g1i))
+        self.failUnless(numpy.allclose(rdf0, rdf1 + rdf1i))
         # Ti-O
         pdfc.maskAllPairs(True)
         for i, smbli in enumerate(atomtypes):
@@ -180,10 +185,13 @@ class TestPDFCalculator(unittest.TestCase):
                 if smbli == smblj:
                     pdfc.setPairMask(i, j, False)
         r2, g2 = pdfc(rutile)
+        rdf2 = pdfc.getRDF()
         self.failUnless(numpy.array_equal(r0, r2))
         pdfc.invertMask()
         r2i, g2i = pdfc(rutile)
+        rdf2i = pdfc.getRDF()
         self.failUnless(numpy.allclose(g0, g2 + g2i))
+        self.failUnless(numpy.allclose(rdf0, rdf2 + rdf2i))
         # O-O
         pdfc.maskAllPairs(False)
         atomtypes = [a.element for a in rutile]
@@ -192,12 +200,50 @@ class TestPDFCalculator(unittest.TestCase):
                 if smbli == smblj == "O":
                     pdfc.setPairMask(i, j, True)
         r3, g3 = pdfc(rutile)
+        rdf3 = pdfc.getRDF()
         pdfc.invertMask()
         r3i, g3i = pdfc(rutile)
+        rdf3i = pdfc.getRDF()
         self.failUnless(numpy.allclose(g0, g3 + g3i))
+        self.failUnless(numpy.allclose(rdf0, rdf3 + rdf3i))
         # check the sum of all partials
         self.failUnless(numpy.allclose(g0, g1 + g2 + g3))
-        self.failUnless(numpy.allclose(g0, g1i + g2i + g3i))
+        self.failUnless(numpy.allclose(rdf0, rdf1 + rdf2 + rdf3))
+        return
+
+    def test_full_mask(self):
+        '''Test PDFCalculator for a fully masked structure.
+        '''
+        pdfc = self.pdfcalc
+        pdfc.rstep = 0.1
+        rutile = self.tio2rutile
+        pdfc.maskAllPairs(True)
+        r0, g0 = pdfc(rutile)
+        pdfc.maskAllPairs(False)
+        r1, g1 = pdfc(rutile)
+        self.assertEqual(0.0, numpy.dot(g1, g1))
+        indices = range(len(rutile))
+        for i in indices:
+            for j in indices:
+                pdfc.setPairMask(i, j, True)
+        r2, g2 = pdfc(rutile)
+        self.failUnless(numpy.array_equal(g0, g2))
+        return
+
+    def test_zero_mask(self):
+        '''Test PDFCalculator with a totally masked out structure.
+        '''
+        pdfc = self.pdfcalc
+        pdfc.rstep = 0.1
+        rutile = self.tio2rutile
+        indices = range(len(rutile))
+        for i in indices:
+            for j in indices:
+                pdfc.setPairMask(i, j, False)
+        r, g = pdfc(rutile)
+        self.assertEqual(0.0, numpy.dot(g, g))
+        rdf = pdfc.getRDF()
+        self.assertEqual(0.0, numpy.dot(rdf, rdf))
         return
 
     def test_pickling(self):
