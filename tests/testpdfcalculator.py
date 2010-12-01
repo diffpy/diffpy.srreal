@@ -157,7 +157,7 @@ class TestPDFCalculator(unittest.TestCase):
     def test_pickling(self):
         '''check pickling and unpickling of PDFCalculator.
         '''
-        pdfc = PDFCalculator()
+        pdfc = self.pdfcalc
         pdfc.setScatteringFactorTableByType('N')
         pdfc.getScatteringFactorTable().setCustom('Na', 7)
         pdfc.addEnvelopeByType('sphericalshape')
@@ -190,6 +190,20 @@ class TestPDFCalculator(unittest.TestCase):
                 pdfc1._namesOfDoubleAttributes())
         self.assertEqual(pdfc.usedEnvelopeTypes(), pdfc1.usedEnvelopeTypes())
         self.assertEqual('asdf', pdfc1.foobar)
+        return
+
+    def test_maskpickling(self):
+        '''Check if mask gets properly pickled and restored.
+        '''
+        self.pdfcalc.maskAllPairs(False)
+        self.pdfcalc.maskSitePair(0, 1, True)
+        self.failUnless(False is self.pdfcalc.getPairMask(0, 0))
+        self.failUnless(True is self.pdfcalc.getPairMask(0, 1))
+        pdfcalc1 = cPickle.loads(cPickle.dumps(self.pdfcalc))
+        self.failUnless(False is pdfcalc1.getPairMask(0, 0))
+        self.failUnless(True is pdfcalc1.getPairMask(0, 1))
+        self.assertEqual(1, len(self.pdfcalc._getMaskData()))
+        self.assertEqual(self.pdfcalc._getMaskData(), pdfcalc1._getMaskData())
         return
 
 

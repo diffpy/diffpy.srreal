@@ -136,9 +136,25 @@ class TestBVSCalculator(unittest.TestCase):
         bvsc.foobar = 'asdf'
         spkl = cPickle.dumps(bvsc)
         bvsc1 = cPickle.loads(spkl)
+        self.failIf(bvsc is bvsc1)
         for a in bvsc._namesOfDoubleAttributes():
             self.assertEqual(getattr(bvsc, a), getattr(bvsc1, a))
         self.assertEqual('asdf', bvsc1.foobar)
+        return
+
+
+    def test_maskpickling(self):
+        '''Check if mask gets properly pickled and restored.
+        '''
+        self.bvc.maskAllPairs(False)
+        self.bvc.maskSitePair(0, 1, True)
+        self.failUnless(False is self.bvc.getPairMask(0, 0))
+        self.failUnless(True is self.bvc.getPairMask(0, 1))
+        bvc1 = cPickle.loads(cPickle.dumps(self.bvc))
+        self.failUnless(False is bvc1.getPairMask(0, 0))
+        self.failUnless(True is bvc1.getPairMask(0, 1))
+        self.assertEqual(1, len(self.bvc._getMaskData()))
+        self.assertEqual(self.bvc._getMaskData(), bvc1._getMaskData())
         return
 
 

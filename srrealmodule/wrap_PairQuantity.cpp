@@ -101,15 +101,34 @@ python::object eval_asarray(PairQuantity& obj, const python::object& a)
 void merge_parallel_value(PairQuantity& obj, const python::object& a)
 {
     python::extract<const QuantityType&> getquantitytype(a);
-    stl_input_iterator<double> begin(a), end;
-    QuantityType a1(begin, end);
+    QuantityType a1;
+    // use QuantityType reference if it can be extracted from object a
     const QuantityType& a2 = getquantitytype.check() ? getquantitytype() : a1;
+    // otherwise copy the a-data to a local QuantityType a1.
     if (&a2 == &a1)
     {
         stl_input_iterator<double> begin(a), end;
         a1.assign(begin, end);
     }
     obj.mergeParallelValue(a2);
+}
+
+
+// Convert the result of getMaskData to a set
+
+python::object getMaskData_asset(PairQuantity& obj)
+{
+    typedef boost::unordered_set< std::pair<int,int> > MaskDataType;
+    using namespace ::boost;
+    python::object rvset(python::handle<>(PySet_New(NULL)));
+    python::object rvset_add = rvset.attr("add");
+    const MaskDataType& value = obj.getMaskData();
+    MaskDataType::const_iterator ii;
+    for (ii = value.begin(); ii != value.end(); ++ii)
+    {
+        rvset_add(python::make_tuple(ii->first, ii->second));
+    }
+    return rvset;
 }
 
 
@@ -242,6 +261,9 @@ void wrap_PairQuantity()
         .def("maskAllPairs", &PairQuantity::maskAllPairs)
         .def("maskSitePair", &PairQuantity::maskSitePair)
         .def("getPairMask", &PairQuantity::getPairMask)
+        // FIXME: to be removed after PairQuantity serialization
+        .def("_getMaskData", getMaskData_asset)
+        .enable_pickling();
         ;
 
     class_<PairQuantityWrap, bases<PairQuantity>,
@@ -262,6 +284,10 @@ void wrap_PairQuantity()
                     return_internal_reference<>()),
                 doc_PairQuantityWrap__value)
         ;
+
+    // inject pickling methods
+    import("diffpy.srreal.pairquantity");
+
 }
 
 }   //  namespace srrealmodule

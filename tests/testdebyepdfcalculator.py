@@ -120,39 +120,57 @@ class TestDebyePDFCalculator(unittest.TestCase):
     def test_pickling(self):
         '''check pickling and unpickling of PDFCalculator.
         '''
-        dbpdfc = DebyePDFCalculator()
-        dbpdfc.setScatteringFactorTableByType('N')
-        dbpdfc.getScatteringFactorTable().setCustom('Na', 7)
-        dbpdfc.addEnvelopeByType('sphericalshape')
-        dbpdfc.debyeprecision = 0.001
-        dbpdfc.delta1 = 0.2
-        dbpdfc.delta2 = 0.3
-        dbpdfc.maxextension = 10.1
-        dbpdfc.qbroad = 0.01
-        dbpdfc.qdamp = 0.05
-        dbpdfc.qmax = 10
-        dbpdfc.qmin = 0.5
-        dbpdfc.rmax = 10.0
-        dbpdfc.rmin = 0.02
-        dbpdfc.rstep = 0.02
-        dbpdfc.scale = 1.1
-        dbpdfc.spdiameter = 13.3
-        dbpdfc.foobar = 'asdf'
-        spkl = cPickle.dumps(dbpdfc)
-        dbpdfc1 = cPickle.loads(spkl)
-        sft = dbpdfc.getScatteringFactorTable()
-        sft1 = dbpdfc1.getScatteringFactorTable()
+        dpdfc = self.dpdfc
+        dpdfc.setScatteringFactorTableByType('N')
+        dpdfc.getScatteringFactorTable().setCustom('Na', 7)
+        dpdfc.addEnvelopeByType('sphericalshape')
+        dpdfc.debyeprecision = 0.001
+        dpdfc.delta1 = 0.2
+        dpdfc.delta2 = 0.3
+        dpdfc.maxextension = 10.1
+        dpdfc.qbroad = 0.01
+        dpdfc.qdamp = 0.05
+        dpdfc.qmax = 10
+        dpdfc.qmin = 0.5
+        dpdfc.rmax = 10.0
+        dpdfc.rmin = 0.02
+        dpdfc.rstep = 0.02
+        dpdfc.scale = 1.1
+        dpdfc.spdiameter = 13.3
+        dpdfc.foobar = 'asdf'
+        spkl = cPickle.dumps(dpdfc)
+        dpdfc1 = cPickle.loads(spkl)
+        self.failIf(dpdfc is dpdfc1)
+        sft = dpdfc.getScatteringFactorTable()
+        sft1 = dpdfc1.getScatteringFactorTable()
         self.assertEqual(sft.type(), sft1.type())
         self.assertEqual(7.0, sft1.lookup('Na'))
-        for a in dbpdfc._namesOfDoubleAttributes():
-            self.assertEqual(getattr(dbpdfc, a), getattr(dbpdfc1, a))
+        for a in dpdfc._namesOfDoubleAttributes():
+            self.assertEqual(getattr(dpdfc, a), getattr(dpdfc1, a))
         self.assertEqual(13.3,
-                dbpdfc1.getEnvelopeByType('sphericalshape').spdiameter)
-        self.assertEqual(dbpdfc._namesOfDoubleAttributes(),
-                dbpdfc1._namesOfDoubleAttributes())
-        self.assertEqual(dbpdfc.usedEnvelopeTypes(), dbpdfc1.usedEnvelopeTypes())
-        self.assertEqual('asdf', dbpdfc1.foobar)
+                dpdfc1.getEnvelopeByType('sphericalshape').spdiameter)
+        self.assertEqual(dpdfc._namesOfDoubleAttributes(),
+                dpdfc1._namesOfDoubleAttributes())
+        self.assertEqual(dpdfc.usedEnvelopeTypes(), dpdfc1.usedEnvelopeTypes())
+        self.assertEqual('asdf', dpdfc1.foobar)
         return
+
+
+    def test_maskpickling(self):
+        '''Check if mask gets properly pickled and restored.
+        '''
+        self.dpdfc.maskAllPairs(False)
+        self.dpdfc.maskSitePair(0, 1, True)
+        self.failUnless(False is self.dpdfc.getPairMask(0, 0))
+        self.failUnless(True is self.dpdfc.getPairMask(0, 1))
+        dpdfc1 = cPickle.loads(cPickle.dumps(self.dpdfc))
+        self.failUnless(False is dpdfc1.getPairMask(0, 0))
+        self.failUnless(True is dpdfc1.getPairMask(0, 1))
+        self.assertEqual(1, len(self.dpdfc._getMaskData()))
+        self.assertEqual(self.dpdfc._getMaskData(), dpdfc1._getMaskData())
+        return
+
+
 
 #   def test_getPeakWidthModel(self):
 #       """check DebyePDFCalculator.getPeakWidthModel()

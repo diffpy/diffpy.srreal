@@ -36,9 +36,10 @@ def _sft_setstate(self, state):
         emsg = ("expected 2-item tuple in call to __setstate__, got %r" +
                 repr(state))
         raise ValueError(emsg)
-    self.__dict__.update(state[0])
+    st = iter(state)
+    self.__dict__.update(st.next())
     self.resetAll()
-    for k, v in state[1].iteritems():
+    for k, v in st.next().iteritems():
         self.setCustom(k, v)
     return
 

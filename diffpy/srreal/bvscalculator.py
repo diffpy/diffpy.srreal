@@ -93,19 +93,24 @@ class BVSCalculator(BVSCalculator_ext):
 
 # BVSCalculator_ext pickling support -----------------------------------------
 
-def _bvsc_getstate(self):
+def _bvsce_getstate(self):
     dbattrs = [(n, self._getDoubleAttr(n))
         for n in self._namesOfWritableDoubleAttributes()]
-    state = (self.__dict__, dbattrs)
+    state = (
+            super(BVSCalculator_ext, self).__getstate__(),
+            self.__dict__,
+            dbattrs,
+            )
     return state
 
 
-def _bvsc_setstate(self, state):
-    if len(state) != 2:
-        emsg = ("expected 2-item tuple in call to __setstate__, got %r" +
+def _bvsce_setstate(self, state):
+    if len(state) != 3:
+        emsg = ("expected 3-item tuple in call to __setstate__, got %r" +
                 repr(state))
         raise ValueError(emsg)
     st = iter(state)
+    super(BVSCalculator_ext, self).__setstate__(st.next()),
     self.__dict__.update(st.next())
     for n, v in st.next():
         self._setDoubleAttr(n, v)
@@ -114,7 +119,7 @@ def _bvsc_setstate(self, state):
 # inject pickle methods to BVSCalculator_ext
 
 BVSCalculator_ext.__getstate_manages_dict__ = True
-BVSCalculator_ext.__getstate__ = _bvsc_getstate
-BVSCalculator_ext.__setstate__ = _bvsc_setstate
+BVSCalculator_ext.__getstate__ = _bvsce_getstate
+BVSCalculator_ext.__setstate__ = _bvsce_setstate
 
 # End of file

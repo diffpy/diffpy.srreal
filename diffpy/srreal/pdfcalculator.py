@@ -217,7 +217,9 @@ def _dbpdfc_getstate(self):
     dbattrs = [(n, self._getDoubleAttr(n))
         for n in self._namesOfWritableDoubleAttributes()]
     # NOTE: convert names below to objects as they get pickle support
-    state = (self.__dict__,
+    state = (
+            super(DebyePDFCalculator_ext, self).__getstate__(),
+            self.__dict__,
             self.getPeakWidthModel().type(),
             self.getScatteringFactorTable(),
             self.usedEnvelopeTypes(),
@@ -225,11 +227,12 @@ def _dbpdfc_getstate(self):
     return state
 
 def _dbpdfc_setstate(self, state):
-    if len(state) != 5:
-        emsg = ("expected 5-item tuple in call to __setstate__, got %r" +
+    if len(state) != 6:
+        emsg = ("expected 6-item tuple in call to __setstate__, got %r" +
                 repr(state))
         raise ValueError(emsg)
     st = iter(state)
+    super(DebyePDFCalculator_ext, self).__setstate__(st.next()),
     self.__dict__.update(st.next())
     self.setPeakWidthModelByType(st.next())
     self.setScatteringFactorTable(st.next())
@@ -248,25 +251,29 @@ DebyePDFCalculator_ext.__setstate__ = _dbpdfc_setstate
 
 # PDFCalculator_ext pickling support -----------------------------------------
 
-def _pdfc_getstate(self):
+def _pdfce_getstate(self):
     dbattrs = [(n, self._getDoubleAttr(n))
         for n in self._namesOfWritableDoubleAttributes()]
     # NOTE: convert names below to objects as they get pickle support
-    state = (self.__dict__,
+    state = (
+            super(PDFCalculator_ext, self).__getstate__(),
+            self.__dict__,
             self.getPeakWidthModel().type(),
             self.getPeakProfile().type(),
             self.getScatteringFactorTable(),
             self.usedEnvelopeTypes(),
             self.getBaseline().type(),
-            dbattrs)
+            dbattrs,
+            )
     return state
 
-def _pdfc_setstate(self, state):
-    if len(state) != 7:
-        emsg = ("expected 7-item tuple in call to __setstate__, got %r" +
+def _pdfce_setstate(self, state):
+    if len(state) != 8:
+        emsg = ("expected 8-item tuple in call to __setstate__, got %r" +
                 repr(state))
         raise ValueError(emsg)
     st = iter(state)
+    super(PDFCalculator_ext, self).__setstate__(st.next())
     self.__dict__.update(st.next())
     self.setPeakWidthModelByType(st.next())
     self.setPeakProfileByType(st.next())
@@ -282,7 +289,7 @@ def _pdfc_setstate(self, state):
 # inject pickle methods to PDFCalculator_ext
 
 PDFCalculator_ext.__getstate_manages_dict__ = True
-PDFCalculator_ext.__getstate__ = _pdfc_getstate
-PDFCalculator_ext.__setstate__ = _pdfc_setstate
+PDFCalculator_ext.__getstate__ = _pdfce_getstate
+PDFCalculator_ext.__setstate__ = _pdfce_setstate
 
 # End of file

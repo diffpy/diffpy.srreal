@@ -87,4 +87,32 @@ class PairQuantity(PairQuantity_ext):
 
 # class PairQuantity
 
+# BasePairQuantity_ext pickling support --------------------------------------
+
+from diffpy.srreal.srreal_ext import BasePairQuantity_ext
+
+def _bpqe_getstate(self):
+    maskdata = self._getMaskData()
+    defaultmask = self.getPairMask(0, 0) ^ ((0, 0) in maskdata)
+    state = (defaultmask, maskdata)
+    return state
+
+def _bpqe_setstate(self, state):
+    if len(state) != 2:
+        emsg = ("expected 2-item tuple in call to __setstate__, got %r" +
+                repr(state))
+        raise ValueError(emsg)
+    st = iter(state)
+    defaultmask = st.next()
+    self.maskAllPairs(defaultmask)
+    invdefaultmask = not defaultmask
+    for i, j in st.next():
+        self.maskSitePair(i, j, invdefaultmask)
+    return
+
+# inject pickle methods to PDFCalculator_ext
+
+BasePairQuantity_ext.__getstate__ = _bpqe_getstate
+BasePairQuantity_ext.__setstate__ = _bpqe_setstate
+
 # End of file
