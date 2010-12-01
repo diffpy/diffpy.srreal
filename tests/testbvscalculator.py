@@ -143,7 +143,7 @@ class TestBVSCalculator(unittest.TestCase):
         return
 
 
-    def test_maskpickling(self):
+    def test_mask_pickling(self):
         '''Check if mask gets properly pickled and restored.
         '''
         self.bvc.maskAllPairs(False)

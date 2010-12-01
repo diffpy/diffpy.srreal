@@ -154,6 +154,52 @@ class TestPDFCalculator(unittest.TestCase):
         self.failUnless(mxnd2 < 0.020)
         return
 
+    def test_partial_pdfs(self):
+        """Check calculation of partial PDFs.
+        """
+        pdfc = self.pdfcalc
+        rutile = self.tio2rutile
+        r0, g0 = pdfc(rutile)
+        # Ti-Ti
+        pdfc.maskAllPairs(False)
+        atomtypes = [a.element for a in rutile]
+        for i, smbli in enumerate(atomtypes):
+            for j, smblj in enumerate(atomtypes):
+                if smbli == smblj == "Ti":
+                    pdfc.setPairMask(i, j, True)
+        r1, g1 = pdfc(rutile)
+        self.failUnless(numpy.array_equal(r0, r1))
+        pdfc.invertMask()
+        r1i, g1i = pdfc(rutile)
+        self.failUnless(numpy.array_equal(r0, r1i))
+        self.failUnless(numpy.allclose(g0, g1 + g1i))
+        # Ti-O
+        pdfc.maskAllPairs(True)
+        for i, smbli in enumerate(atomtypes):
+            for j, smblj in enumerate(atomtypes):
+                if smbli == smblj:
+                    pdfc.setPairMask(i, j, False)
+        r2, g2 = pdfc(rutile)
+        self.failUnless(numpy.array_equal(r0, r2))
+        pdfc.invertMask()
+        r2i, g2i = pdfc(rutile)
+        self.failUnless(numpy.allclose(g0, g2 + g2i))
+        # O-O
+        pdfc.maskAllPairs(False)
+        atomtypes = [a.element for a in rutile]
+        for i, smbli in enumerate(atomtypes):
+            for j, smblj in enumerate(atomtypes):
+                if smbli == smblj == "O":
+                    pdfc.setPairMask(i, j, True)
+        r3, g3 = pdfc(rutile)
+        pdfc.invertMask()
+        r3i, g3i = pdfc(rutile)
+        self.failUnless(numpy.allclose(g0, g3 + g3i))
+        # check the sum of all partials
+        self.failUnless(numpy.allclose(g0, g1 + g2 + g3))
+        self.failUnless(numpy.allclose(g0, g1i + g2i + g3i))
+        return
+
     def test_pickling(self):
         '''check pickling and unpickling of PDFCalculator.
         '''
@@ -192,7 +238,7 @@ class TestPDFCalculator(unittest.TestCase):
         self.assertEqual('asdf', pdfc1.foobar)
         return
 
-    def test_maskpickling(self):
+    def test_mask_pickling(self):
         '''Check if mask gets properly pickled and restored.
         '''
         self.pdfcalc.maskAllPairs(False)
