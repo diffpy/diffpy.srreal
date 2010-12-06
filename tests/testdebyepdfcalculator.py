@@ -9,6 +9,7 @@ __id__ = '$Id$'
 import os
 import unittest
 import cPickle
+import numpy
 
 # useful variables
 thisfile = locals().get('__file__', 'file.py')
@@ -22,26 +23,30 @@ from testpdfcalculator import _loadTestStructure, _maxNormDiff
 class TestDebyePDFCalculator(unittest.TestCase):
 
     bucky = None
+    tio2rutile = None
 
     def setUp(self):
         from diffpy.Structure import Structure
         self.dpdfc = DebyePDFCalculator()
         if not TestDebyePDFCalculator.bucky:
             TestDebyePDFCalculator.bucky = _loadTestStructure('C60bucky.stru')
+        if not TestDebyePDFCalculator.tio2rutile:
+            TestDebyePDFCalculator.tio2rutile = (
+                    _loadTestStructure('TiO2_rutile-fit.stru'))
         return
 
-    def tearDown(self):
-        return
-
-    def test___call__(self):
-        """check DebyePDFCalculator.__call__()
-        """
-        return
-
-    def test___init__(self):
-        """check DebyePDFCalculator.__init__()
-        """
-        return
+#   def tearDown(self):
+#       return
+#
+#   def test___call__(self):
+#       """check DebyePDFCalculator.__call__()
+#       """
+#       return
+#
+#   def test___init__(self):
+#       """check DebyePDFCalculator.__init__()
+#       """
+#       return
 
     def test___getattr__(self):
         """check DebyePDFCalculator.__getattr__()
@@ -82,11 +87,6 @@ class TestDebyePDFCalculator(unittest.TestCase):
         self.failUnless('qmax' in self.dpdfc._namesOfDoubleAttributes())
         return
 
-#   def test__registerDoubleAttribute(self):
-#       """check DebyePDFCalculator._registerDoubleAttribute()
-#       """
-#       return
-
     def test__setDoubleAttr(self):
         """check DebyePDFCalculator._setDoubleAttr()
         """
@@ -97,16 +97,6 @@ class TestDebyePDFCalculator(unittest.TestCase):
         self.assertEqual(3.0, gdba('rmin'))
         return
 
-#   def test_eval(self):
-#       """check DebyePDFCalculator.eval()
-#       """
-#       return
-#
-#   def test_getF(self):
-#       """check DebyePDFCalculator.getF()
-#       """
-#       return
-
     def test_getPDF_C60bucky(self):
         """check DebyePDFCalculator.getPDF()
         """
@@ -115,6 +105,52 @@ class TestDebyePDFCalculator(unittest.TestCase):
         r1, g1 = self.dpdfc(self.bucky)
         mxnd = _maxNormDiff(g0, g1)
         self.failUnless(mxnd < 0.0006)
+        return
+
+    def test_partial_pdfs(self):
+        """Check calculation of partial PDFs.
+        """
+        dpdfc = self.dpdfc
+        dpdfc.qmin = 1.0
+        rutile = self.tio2rutile
+        r0, g0 = dpdfc(rutile)
+        # Ti-Ti
+        dpdfc.maskAllPairs(False)
+        atomtypes = [a.element for a in rutile]
+        for i, smbli in enumerate(atomtypes):
+            for j, smblj in enumerate(atomtypes):
+                if smbli == smblj == "Ti":
+                    dpdfc.setPairMask(i, j, True)
+        r1, g1 = dpdfc(rutile)
+        self.failUnless(numpy.array_equal(r0, r1))
+        dpdfc.invertMask()
+        r1i, g1i = dpdfc(rutile)
+        self.failUnless(numpy.array_equal(r0, r1i))
+        self.failUnless(numpy.allclose(g0, g1 + g1i))
+        # Ti-O
+        dpdfc.maskAllPairs(True)
+        for i, smbli in enumerate(atomtypes):
+            for j, smblj in enumerate(atomtypes):
+                if smbli == smblj:
+                    dpdfc.setPairMask(i, j, False)
+        r2, g2 = dpdfc(rutile)
+        self.failUnless(numpy.array_equal(r0, r2))
+        dpdfc.invertMask()
+        r2i, g2i = dpdfc(rutile)
+        self.failUnless(numpy.allclose(g0, g2 + g2i))
+        # O-O
+        dpdfc.maskAllPairs(False)
+        atomtypes = [a.element for a in rutile]
+        for i, smbli in enumerate(atomtypes):
+            for j, smblj in enumerate(atomtypes):
+                if smbli == smblj == "O":
+                    dpdfc.setPairMask(i, j, True)
+        r3, g3 = dpdfc(rutile)
+        dpdfc.invertMask()
+        r3i, g3i = dpdfc(rutile)
+        self.failUnless(numpy.allclose(g0, g3 + g3i))
+        # check the sum of all partials
+        self.failUnless(numpy.allclose(g0, g1 + g2 + g3))
         return
 
     def test_pickling(self):
