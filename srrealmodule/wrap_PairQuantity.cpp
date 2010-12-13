@@ -38,6 +38,7 @@
 #include <diffpy/srreal/PythonStructureAdapter.hpp>
 
 #include "srreal_converters.hpp"
+#include "srreal_pickling.hpp"
 
 namespace srrealmodule {
 namespace nswrap_PairQuantity {
@@ -264,7 +265,7 @@ void wrap_PairQuantity()
         .def("getPairMask", &PairQuantity::getPairMask)
         // FIXME: to be removed after PairQuantity serialization
         .def("_getMaskData", getMaskData_asset)
-        .enable_pickling();
+        .def_pickle(SerializationPickleSuite<PairQuantity>())
         ;
 
     class_<PairQuantityWrap, bases<PairQuantity>,
@@ -285,9 +286,6 @@ void wrap_PairQuantity()
                     return_internal_reference<>()),
                 doc_PairQuantityWrap__value)
         ;
-
-    // inject pickling methods
-    import("diffpy.srreal.pairquantity");
 
 }
 

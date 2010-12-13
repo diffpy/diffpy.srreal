@@ -22,6 +22,7 @@
 #include <diffpy/srreal/BVSCalculator.hpp>
 
 #include "srreal_converters.hpp"
+#include "srreal_pickling.hpp"
 
 namespace srrealmodule {
 namespace nswrap_BVSCalculator {
@@ -72,11 +73,9 @@ void wrap_BVSCalculator()
                 doc_BVSCalculator_bvmsdiff)
         .def("bvrmsdiff", &BVSCalculator::bvrmsdiff,
                 doc_BVSCalculator_bvrmsdiff)
-        .enable_pickling();
+        .def_pickle(SerializationPickleSuite<BVSCalculator>())
         ;
 
-    // inject pickling methods
-    import("diffpy.srreal.bvscalculator");
 }
 
 }   // namespace srrealmodule
