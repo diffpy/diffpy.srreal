@@ -28,33 +28,27 @@ from diffpy.srreal.srreal_ext import ScatteringFactorTable
 # Pickling Support -----------------------------------------------------------
 
 def _sft_getstate(self):
-    state = (self.__dict__, self.getAllCustom())
+    state = (self.__dict__, )
     return state
 
 def _sft_setstate(self, state):
-    if len(state) != 2:
-        emsg = ("expected 2-item tuple in call to __setstate__, got %r" +
+    if len(state) != 1:
+        emsg = ("expected 1-item tuple in call to __setstate__, got " +
                 repr(state))
         raise ValueError(emsg)
-    st = iter(state)
-    self.__dict__.update(st.next())
-    self.resetAll()
-    for k, v in st.next().iteritems():
-        self.setCustom(k, v)
+    self.__dict__.update(state[0])
     return
 
 def _sft_reduce(self):
-    if type(self) is ScatteringFactorTable:
-        factory = _sft_create
-        factory_args = (self.type(),)
-    else:
-        factory = type(self)
-        factory_args = ()
-    rv = (factory, factory_args, self.__getstate__())
+    from diffpy.srreal.srreal_ext import ScatteringFactorTableOwner
+    owner = ScatteringFactorTableOwner()
+    owner.setScatteringFactorTable(self)
+    args = (owner,)
+    rv = (_sft_create, args, self.__getstate__())
     return rv
 
-def _sft_create(tp):
-    return ScatteringFactorTable.createByType(tp)
+def _sft_create(owner):
+    return owner.getScatteringFactorTable()
 
 # inject pickle methods to ScatteringFactorTable
 

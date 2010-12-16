@@ -29,29 +29,51 @@
 namespace srrealmodule {
 
 template <class T>
+std::string serialization_tostring(const T& tobj)
+{
+    using namespace std;
+    ostringstream storage(ios::binary);
+    diffpy::serialization::oarchive oa(storage, ios::binary);
+    oa << tobj;
+    return storage.str();
+}
+
+
+template <class T>
+void serialization_fromstring(T& tobj, const std::string& s)
+{
+    using namespace std;
+    istringstream storage(s, ios::binary);
+    diffpy::serialization::iarchive ia(storage, ios::binary);
+    ia >> tobj;
+}
+
+
+enum {DICT_IGNORE=false, DICT_PICKLE=true};
+
+template <class T, bool pickledict=DICT_PICKLE>
 class SerializationPickleSuite : public boost::python::pickle_suite
 {
     public:
 
-        static boost::python::tuple getstate(boost::python::object pqobj)
+        static boost::python::tuple getstate(boost::python::object obj)
         {
             using namespace std;
-            const T& pq = boost::python::extract<const T&>(pqobj);
-            ostringstream storage(ios::binary);
-            diffpy::serialization::oarchive oa(storage, ios::binary);
-            oa << pq;
+            const T& tobj = boost::python::extract<const T&>(obj);
+            boost::python::object none;
             boost::python::tuple rv = boost::python::make_tuple(
-                    storage.str(), pqobj.attr("__dict__"));
+                    serialization_tostring(tobj),
+                    pickledict ? obj.attr("__dict__") : none);
             return rv;
         }
 
 
         static void setstate(
-                boost::python::object pqobj, boost::python::tuple state)
+                boost::python::object obj, boost::python::tuple state)
         {
             using namespace std;
             using namespace boost::python;
-            T& pq = extract<T&>(pqobj);
+            T& tobj = extract<T&>(obj);
             if (len(state) != 2)
             {
                 object emsg = ("expected 2-item tuple in call "
@@ -61,15 +83,16 @@ class SerializationPickleSuite : public boost::python::pickle_suite
             }
             // load the C++ object
             string content = extract<string>(state[0]);
-            istringstream storage(content, ios::binary);
-            diffpy::serialization::iarchive ia(storage, ios::binary);
-            ia >> pq;
+            serialization_fromstring(tobj, content);
             // restore the object's __dict__
-            dict d = extract<dict>(pqobj.attr("__dict__"));
-            d.update(state[1]);
+            if (pickledict)
+            {
+                dict d = extract<dict>(obj.attr("__dict__"));
+                d.update(state[1]);
+            }
         }
 
-        static bool getstate_manages_dict()  { return true; }
+        static bool getstate_manages_dict()  { return pickledict; }
 
 };  // class SerializationPickleSuite
 

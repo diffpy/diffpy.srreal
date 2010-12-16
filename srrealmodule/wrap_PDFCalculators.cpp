@@ -25,6 +25,7 @@
 #include <diffpy/srreal/PythonStructureAdapter.hpp>
 
 #include "srreal_converters.hpp"
+#include "srreal_pickling.hpp"
 
 namespace srrealmodule {
 namespace nswrap_PDFCalculators {
@@ -76,7 +77,7 @@ void wrap_PDFCalculators()
                 getenvelopebytype_overloads())
         .def("usedEnvelopeTypes", usedEnvelopeTypes_asset<DebyePDFCalculator>)
         .def("clearEnvelopes", &DebyePDFCalculator::clearEnvelopes)
-        .enable_pickling();
+        .def_pickle(SerializationPickleSuite<DebyePDFCalculator>())
         ;
 
     // PDFCalculator
@@ -110,11 +111,8 @@ void wrap_PDFCalculators()
                 getenvelopebytype_overloads())
         .def("usedEnvelopeTypes", usedEnvelopeTypes_asset<PDFCalculator>)
         .def("clearEnvelopes", &PDFCalculator::clearEnvelopes)
-        .enable_pickling();
+        .def_pickle(SerializationPickleSuite<PDFCalculator>())
         ;
-
-    // inject pickling methods
-    import("diffpy.srreal.pdfcalculator");
 }
 
 }   // namespace srrealmodule

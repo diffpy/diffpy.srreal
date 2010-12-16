@@ -23,6 +23,7 @@
 
 #include <diffpy/srreal/ScatteringFactorTable.hpp>
 #include "srreal_converters.hpp"
+#include "srreal_pickling.hpp"
 
 namespace srrealmodule {
 namespace nswrap_ScatteringFactorTable {
@@ -333,6 +334,8 @@ void wrap_ScatteringFactorTable()
                 &SFTOwner::getRadiationType,
                 return_value_policy<copy_const_reference>(),
                 doc_ScatteringFactorTableOwner_getRadiationType)
+        .def_pickle(SerializationPickleSuite<ScatteringFactorTableOwner,
+                DICT_IGNORE>())
         ;
 }
 
