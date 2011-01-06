@@ -294,8 +294,6 @@ class TestPDFCalculator(unittest.TestCase):
         pdfcalc1 = cPickle.loads(cPickle.dumps(self.pdfcalc))
         self.failUnless(False is pdfcalc1.getPairMask(0, 0))
         self.failUnless(True is pdfcalc1.getPairMask(0, 1))
-        self.assertEqual(1, len(self.pdfcalc._getMaskData()))
-        self.assertEqual(self.pdfcalc._getMaskData(), pdfcalc1._getMaskData())
         return
 
 

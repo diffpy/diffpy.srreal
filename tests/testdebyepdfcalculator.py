@@ -202,8 +202,6 @@ class TestDebyePDFCalculator(unittest.TestCase):
         dpdfc1 = cPickle.loads(cPickle.dumps(self.dpdfc))
         self.failUnless(False is dpdfc1.getPairMask(0, 0))
         self.failUnless(True is dpdfc1.getPairMask(0, 1))
-        self.assertEqual(1, len(self.dpdfc._getMaskData()))
-        self.assertEqual(self.dpdfc._getMaskData(), dpdfc1._getMaskData())
         return
 
 

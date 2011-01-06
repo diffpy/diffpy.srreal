@@ -114,25 +114,6 @@ void merge_parallel_value(PairQuantity& obj, const python::object& a)
     obj.mergeParallelValue(a2);
 }
 
-
-// Convert the result of getMaskData to a set
-
-python::object getMaskData_asset(PairQuantity& obj)
-{
-    typedef boost::unordered_set< std::pair<int,int> > MaskDataType;
-    using namespace ::boost;
-    python::object rvset(python::handle<>(PySet_New(NULL)));
-    python::object rvset_add = rvset.attr("add");
-    const MaskDataType& value = obj.getMaskData();
-    MaskDataType::const_iterator ii;
-    for (ii = value.begin(); ii != value.end(); ++ii)
-    {
-        rvset_add(python::make_tuple(ii->first, ii->second));
-    }
-    return rvset;
-}
-
-
 // Helper C++ class for publicizing the protected methods.
 
 class PairQuantityExposed : public PairQuantity
@@ -263,8 +244,6 @@ void wrap_PairQuantity()
         .def("invertMask", &PairQuantity::invertMask)
         .def("setPairMask", &PairQuantity::setPairMask)
         .def("getPairMask", &PairQuantity::getPairMask)
-        // FIXME: to be removed after PairQuantity serialization
-        .def("_getMaskData", getMaskData_asset)
         .def_pickle(SerializationPickleSuite<PairQuantity>())
         ;
 

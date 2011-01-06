@@ -153,8 +153,6 @@ class TestBVSCalculator(unittest.TestCase):
         bvc1 = cPickle.loads(cPickle.dumps(self.bvc))
         self.failUnless(False is bvc1.getPairMask(0, 0))
         self.failUnless(True is bvc1.getPairMask(0, 1))
-        self.assertEqual(1, len(self.bvc._getMaskData()))
-        self.assertEqual(self.bvc._getMaskData(), bvc1._getMaskData())
         return
 
 
