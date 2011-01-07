@@ -160,15 +160,12 @@ class TestPDFCalculator(unittest.TestCase):
         pdfc = self.pdfcalc
         pdfc.rstep = 0.1
         rutile = self.tio2rutile
+        atomtypes = [a.element for a in rutile]
         r0, g0 = pdfc(rutile)
         rdf0 = pdfc.getRDF()
         # Ti-Ti
         pdfc.maskAllPairs(False)
-        atomtypes = [a.element for a in rutile]
-        for i, smbli in enumerate(atomtypes):
-            for j, smblj in enumerate(atomtypes):
-                if smbli == smblj == "Ti":
-                    pdfc.setPairMask(i, j, True)
+        pdfc.setTypeMask("Ti", "Ti", True)
         r1, g1 = pdfc(rutile)
         rdf1 = pdfc.getRDF()
         self.failUnless(numpy.array_equal(r0, r1))
@@ -192,9 +189,22 @@ class TestPDFCalculator(unittest.TestCase):
         rdf2i = pdfc.getRDF()
         self.failUnless(numpy.allclose(g0, g2 + g2i))
         self.failUnless(numpy.allclose(rdf0, rdf2 + rdf2i))
+        # Ti-O using type mask
+        pdfc.maskAllPairs(True)
+        pdfc.setTypeMask("Ti", "Ti", False)
+        pdfc.setTypeMask("O", "O", False)
+        r2t, g2t = pdfc(rutile)
+        rdf2t = pdfc.getRDF()
+        self.failUnless(numpy.array_equal(r0, r2t))
+        self.failUnless(numpy.array_equal(g2, g2t))
+        self.failUnless(numpy.array_equal(rdf2, rdf2t))
+        pdfc.invertMask()
+        r2ti, g2ti = pdfc(rutile)
+        rdf2ti = pdfc.getRDF()
+        self.failUnless(numpy.array_equal(g2i, g2ti))
+        self.failUnless(numpy.array_equal(rdf2i, rdf2ti))
         # O-O
         pdfc.maskAllPairs(False)
-        atomtypes = [a.element for a in rutile]
         for i, smbli in enumerate(atomtypes):
             for j, smblj in enumerate(atomtypes):
                 if smbli == smblj == "O":

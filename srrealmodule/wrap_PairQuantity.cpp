@@ -244,6 +244,8 @@ void wrap_PairQuantity()
         .def("invertMask", &PairQuantity::invertMask)
         .def("setPairMask", &PairQuantity::setPairMask)
         .def("getPairMask", &PairQuantity::getPairMask)
+        .def("setTypeMask", &PairQuantity::setTypeMask)
+        .def("getTypeMask", &PairQuantity::getTypeMask)
         .def_pickle(SerializationPickleSuite<PairQuantity>())
         ;
 

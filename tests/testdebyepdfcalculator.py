@@ -113,14 +113,11 @@ class TestDebyePDFCalculator(unittest.TestCase):
         dpdfc = self.dpdfc
         dpdfc.qmin = 1.0
         rutile = self.tio2rutile
+        atomtypes = [a.element for a in rutile]
         r0, g0 = dpdfc(rutile)
         # Ti-Ti
         dpdfc.maskAllPairs(False)
-        atomtypes = [a.element for a in rutile]
-        for i, smbli in enumerate(atomtypes):
-            for j, smblj in enumerate(atomtypes):
-                if smbli == smblj == "Ti":
-                    dpdfc.setPairMask(i, j, True)
+        dpdfc.setTypeMask("Ti", "Ti", True)
         r1, g1 = dpdfc(rutile)
         self.failUnless(numpy.array_equal(r0, r1))
         dpdfc.invertMask()
@@ -138,9 +135,18 @@ class TestDebyePDFCalculator(unittest.TestCase):
         dpdfc.invertMask()
         r2i, g2i = dpdfc(rutile)
         self.failUnless(numpy.allclose(g0, g2 + g2i))
+        # Ti-O from type mask
+        dpdfc.maskAllPairs(True)
+        dpdfc.setTypeMask("Ti", "Ti", False)
+        dpdfc.setTypeMask("O", "O", False)
+        r2t, g2t = dpdfc(rutile)
+        self.failUnless(numpy.array_equal(r0, r2t))
+        self.failUnless(numpy.array_equal(g2, g2t))
+        dpdfc.invertMask()
+        r2ti, g2ti = dpdfc(rutile)
+        self.failUnless(numpy.array_equal(g2i, g2ti))
         # O-O
         dpdfc.maskAllPairs(False)
-        atomtypes = [a.element for a in rutile]
         for i, smbli in enumerate(atomtypes):
             for j, smblj in enumerate(atomtypes):
                 if smbli == smblj == "O":
@@ -197,11 +203,14 @@ class TestDebyePDFCalculator(unittest.TestCase):
         '''
         self.dpdfc.maskAllPairs(False)
         self.dpdfc.setPairMask(0, 1, True)
+        self.dpdfc.setTypeMask("Na", "Cl", True)
         self.failUnless(False is self.dpdfc.getPairMask(0, 0))
         self.failUnless(True is self.dpdfc.getPairMask(0, 1))
+        self.failUnless(True is self.dpdfc.getTypeMask("Cl", "Na"))
         dpdfc1 = cPickle.loads(cPickle.dumps(self.dpdfc))
         self.failUnless(False is dpdfc1.getPairMask(0, 0))
         self.failUnless(True is dpdfc1.getPairMask(0, 1))
+        self.failUnless(True is self.dpdfc.getTypeMask("Cl", "Na"))
         return
 
 
