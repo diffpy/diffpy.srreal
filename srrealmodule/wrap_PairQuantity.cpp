@@ -149,6 +149,13 @@ class PairQuantityExposed : public PairQuantity
         {
             this->PairQuantity::addPairContribution(bnds, sumscale);
         }
+
+
+        void finishValue()
+        {
+            this->PairQuantity::finishValue();
+        }
+
 };
 
 
@@ -217,6 +224,19 @@ class PairQuantityWrap :
             this->PairQuantityExposed::addPairContribution(bnds, summationscale);
         }
 
+
+        void finishValue()
+        {
+            override f = this->get_override("_finishValue");
+            if (f)  f();
+            else    this->default_finishValue();
+        }
+
+        void default_finishValue()
+        {
+            this->PairQuantityExposed::finishValue();
+        }
+
 };  // class PairQuantityWrap
 
 }   // namespace nswrap_PairQuantity
@@ -263,6 +283,9 @@ void wrap_PairQuantity()
         .def("_addPairContribution",
                 &PairQuantityExposed::addPairContribution,
                 &PairQuantityWrap::default_addPairContribution)
+        .def("_finishValue",
+                &PairQuantityExposed::finishValue,
+                &PairQuantityWrap::default_finishValue)
         .add_property("_value", make_function(&PairQuantityWrap::value,
                     return_internal_reference<>()),
                 doc_PairQuantityWrap__value)
