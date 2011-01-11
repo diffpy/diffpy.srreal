@@ -76,6 +76,17 @@ namespace srrealmodule {
     } \
 
 
+/// this macro defines a wrapper function for a C++ method,
+/// that converts the result to a python list
+#define DECLARE_PYLIST_METHOD_WRAPPER(method, wrapper) \
+    template <class T> \
+    ::boost::python::object wrapper(const T& obj) \
+    { \
+        ::boost::python::object rv = convertToPythonList(obj.method()); \
+        return rv; \
+    } \
+
+
 /// Type for numpy array object and a raw pointer to its double data
 typedef std::pair<boost::python::object, double*> NumPyArray_DoublePtr;
 
@@ -134,6 +145,19 @@ convertToPythonSet(const T& value)
     typename T::const_iterator ii;
     for (ii = value.begin(); ii != value.end(); ++ii)  rvset_add(*ii);
     return rvset;
+}
+
+
+/// template function for converting C++ STL container to a python list
+template <class T>
+::boost::python::list
+convertToPythonList(const T& value)
+{
+    using namespace ::boost;
+    python::list rvlist;
+    typename T::const_iterator ii;
+    for (ii = value.begin(); ii != value.end(); ++ii)  rvlist.append(*ii);
+    return rvlist;
 }
 
 
