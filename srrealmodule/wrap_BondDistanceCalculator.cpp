@@ -57,6 +57,22 @@ bp::list directions_aslist(const BondDistanceCalculator& obj)
 }
 
 
+void filter_cone(BondDistanceCalculator& obj,
+        bp::object cartesiandir, double degrees)
+{
+    if (len(cartesiandir) != 3)
+    {
+        const char* emsg = "cartesiandir must be a 3-element array.";
+        PyErr_SetString(PyExc_ValueError, emsg);
+        bp::throw_error_already_set();
+    }
+    R3::Vector cdir;
+    cdir[0] = extract<double>(cartesiandir[0]);
+    cdir[1] = extract<double>(cartesiandir[1]);
+    cdir[2] = extract<double>(cartesiandir[2]);
+    obj.filterCone(cdir, degrees);
+}
+
 DECLARE_PYLIST_METHOD_WRAPPER(distances, distances_aslist)
 DECLARE_PYLIST_METHOD_WRAPPER(sites0, sites0_aslist)
 DECLARE_PYLIST_METHOD_WRAPPER(sites1, sites1_aslist)
@@ -76,6 +92,8 @@ void wrap_BondDistanceCalculator()
         .def("directions", directions_aslist)
         .def("sites0", sites0_aslist<BondDistanceCalculator>)
         .def("sites1", sites1_aslist<BondDistanceCalculator>)
+        .def("filterCone", filter_cone)
+        .def("filterOff", &BondDistanceCalculator::filterOff)
         .def_pickle(SerializationPickleSuite<BondDistanceCalculator>())
         ;
 
