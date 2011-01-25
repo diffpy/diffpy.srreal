@@ -17,7 +17,8 @@ tests_dir = os.path.dirname(os.path.abspath(thisfile))
 testdata_dir = os.path.join(tests_dir, 'testdata')
 
 from diffpy.srreal.pdfcalculator import DebyePDFCalculator, PDFCalculator
-from testpdfcalculator import _loadTestStructure, _maxNormDiff
+from srrealtestutils import loadDiffPyStructure
+from testpdfcalculator import _maxNormDiff
 
 ##############################################################################
 class TestDebyePDFCalculator(unittest.TestCase):
@@ -26,13 +27,13 @@ class TestDebyePDFCalculator(unittest.TestCase):
     tio2rutile = None
 
     def setUp(self):
-        from diffpy.Structure import Structure
         self.dpdfc = DebyePDFCalculator()
         if not TestDebyePDFCalculator.bucky:
-            TestDebyePDFCalculator.bucky = _loadTestStructure('C60bucky.stru')
+            TestDebyePDFCalculator.bucky = (
+                    loadDiffPyStructure('C60bucky.stru'))
         if not TestDebyePDFCalculator.tio2rutile:
             TestDebyePDFCalculator.tio2rutile = (
-                    _loadTestStructure('TiO2_rutile-fit.stru'))
+                    loadDiffPyStructure('TiO2_rutile-fit.stru'))
         return
 
 #   def tearDown(self):

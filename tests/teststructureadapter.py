@@ -12,17 +12,14 @@ import cPickle
 import numpy
 from diffpy.Structure import Structure
 from diffpy.srreal.pdfcalculator import PDFCalculator
+from srrealtestutils import TestCaseObjCrystOptional, loadObjCrystCrystal
+from srrealtestutils import loadDiffPyStructure, resolveDataFile
+from diffpy.srreal.structureadapter import *
+
 
 # useful variables
-thisfile = locals().get('__file__', 'file.py')
-tests_dir = os.path.dirname(os.path.abspath(thisfile))
-testdata_dir = os.path.join(tests_dir, 'testdata')
-nickel_stru = os.path.join(testdata_dir, 'Ni.stru')
-nickel = Structure(filename=nickel_stru)
-rutile_cif = os.path.join(testdata_dir, 'TiO2_rutile-fit.cif')
-
-from srrealtestutils import TestCaseObjCrystOptional
-from diffpy.srreal.structureadapter import *
+nickel = loadDiffPyStructure('Ni.stru')
+rutile_cif = resolveDataFile('TiO2_rutile-fit.cif')
 
 ##############################################################################
 class TestRoutines(unittest.TestCase):
@@ -152,8 +149,7 @@ class TestNoSymmetry(unittest.TestCase):
 class TestPyObjCrystAdapter(TestCaseObjCrystOptional):
 
     def setUp(self):
-        from pyobjcryst.crystal import CreateCrystalFromCIF
-        rutile_crystal = CreateCrystalFromCIF(open(rutile_cif))
+        rutile_crystal = loadObjCrystCrystal(rutile_cif)
         self.rutile = createStructureAdapter(rutile_crystal)
         return
 

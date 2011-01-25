@@ -11,6 +11,7 @@ import unittest
 import cPickle
 
 import numpy
+from srrealtestutils import loadDiffPyStructure
 from diffpy.srreal.pdfcalculator import PDFCalculator
 
 # useful variables
@@ -19,13 +20,6 @@ tests_dir = os.path.dirname(os.path.abspath(thisfile))
 testdata_dir = os.path.join(tests_dir, 'testdata')
 
 # helper functions
-
-def _loadTestStructure(basefilename):
-    from diffpy.Structure import Structure
-    fullpath = os.path.join(testdata_dir, basefilename)
-    stru = Structure(filename=fullpath)
-    return stru
-
 
 def _maxNormDiff(yobs, ycalc):
     '''Returned maximum difference normalized by RMS of the yobs
@@ -45,11 +39,11 @@ class TestPDFCalculator(unittest.TestCase):
 
     def setUp(self):
         self.pdfcalc = PDFCalculator()
-        if not TestPDFCalculator.nickel:
-            TestPDFCalculator.nickel = _loadTestStructure('Ni.stru')
-        if not TestPDFCalculator.tio2rutile:
-            TestPDFCalculator.tio2rutile = \
-                    _loadTestStructure('TiO2_rutile-fit.stru')
+        if not self.nickel:
+            type(self).nickel = loadDiffPyStructure('Ni.stru')
+        if not self.tio2rutile:
+            type(self).tio2rutile = (
+                    loadDiffPyStructure('TiO2_rutile-fit.stru'))
         return
 
     def tearDown(self):

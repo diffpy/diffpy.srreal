@@ -17,6 +17,7 @@ testdata_dir = os.path.join(tests_dir, 'testdata')
 
 from diffpy.srreal.bvscalculator import BVSCalculator
 from diffpy.Structure import Structure
+from srrealtestutils import loadDiffPyStructure
 
 ##############################################################################
 class TestBVSCalculator(unittest.TestCase):
@@ -24,8 +25,7 @@ class TestBVSCalculator(unittest.TestCase):
     def setUp(self):
         self.bvc = BVSCalculator()
         if not hasattr(self, 'rutile'):
-            rutile_cif = os.path.join(testdata_dir, 'rutile.cif')
-            TestBVSCalculator.rutile = Structure(filename=rutile_cif)
+            type(self).rutile = loadDiffPyStructure('rutile.cif')
             # rutile.cif does not have charge data, we need to add them here
             iondict = {'Ti' : 'Ti4+',  'O' : 'O2-'}
             for a in self.rutile:  a.element = iondict[a.element]

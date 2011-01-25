@@ -10,6 +10,7 @@ TestCaseObjCrystOptional -- use this as a TestCase base class that
 __id__ = '$Id$'
 
 import logging
+import os.path
 
 try:
     import pyobjcryst
@@ -18,5 +19,31 @@ except ImportError:
     TestCaseObjCrystOptional = object
     logging.warning('Cannot import pyobjcryst, pyobjcryst tests skipped.')
 
+
+# useful variables
+thisfile = locals().get('__file__', 'file.py')
+tests_dir = os.path.dirname(os.path.abspath(thisfile))
+testdata_dir = os.path.join(tests_dir, 'testdata')
+
+# helper functions
+
+def resolveDataFile(filename):
+    rv = (os.path.isfile(filename) and filename or
+        os.path.join(testdata_dir, filename))
+    return rv
+
+
+def loadObjCrystCrystal(filename):
+    from pyobjcryst.crystal import CreateCrystalFromCIF
+    fullpath = resolveDataFile(filename)
+    crst = CreateCrystalFromCIF(open(fullpath))
+    return crst
+
+
+def loadDiffPyStructure(filename):
+    from diffpy.Structure import Structure
+    fullpath = resolveDataFile(filename)
+    stru = Structure(filename=fullpath)
+    return stru
 
 # End of file

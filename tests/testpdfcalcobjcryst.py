@@ -14,6 +14,7 @@ import numpy
 from diffpy.srreal.pdfcalculator import PDFCalculator
 
 from srrealtestutils import TestCaseObjCrystOptional
+from srrealtestutils import loadObjCrystCrystal
 from testpdfcalculator import _maxNormDiff
 
 # useful variables
@@ -22,13 +23,6 @@ tests_dir = os.path.dirname(os.path.abspath(thisfile))
 testdata_dir = os.path.join(tests_dir, 'testdata')
 
 # helper functions
-
-def _loadTestStructure(basefilename):
-    from pyobjcryst.crystal import CreateCrystalFromCIF
-    fullpath = os.path.join(testdata_dir, basefilename)
-    crst = CreateCrystalFromCIF(open(fullpath))
-    return crst
-
 
 def _loadExpectedPDF(basefilename):
     '''Read expected result and return a tuple of (r, g, cfgdict).
@@ -76,7 +70,7 @@ class TestPDFCalcObjcryst(TestCaseObjCrystOptional):
             return
         r, gobs, cfg = _loadExpectedPDF(pdfbasename)
         setself(r=r, gobs=gobs, cfg=cfg)
-        crst = _loadTestStructure(cifbasename)
+        crst = loadObjCrystCrystal(cifbasename)
         setself(crst=crst)
         pdfc = _makePDFCalculator(crst, cfg)
         gcalc = pdfc.getPDF()
