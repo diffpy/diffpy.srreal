@@ -34,6 +34,48 @@ using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
 
+const char* doc_BondDistanceCalculator = "\
+FIXME\\n\
+";
+
+const char* doc_BondDistanceCalculator_rmin = "\
+Lower bound for the atom distances.\n\
+[0 A]\n\
+";
+
+const char* doc_BondDistanceCalculator_rmax = "\
+Upper bound for the atom distances.\n\
+[5 A]\n\
+";
+
+const char* doc_BondDistanceCalculator___call__ = "\
+FIXME\\n\
+";
+
+const char* doc_BondDistanceCalculator_distances = "\
+FIXME\\n\
+";
+
+const char* doc_BondDistanceCalculator_directions = "\
+FIXME\\n\
+";
+
+const char* doc_BondDistanceCalculator_sites0 = "\
+FIXME\\n\
+";
+
+const char* doc_BondDistanceCalculator_sites1 = "\
+FIXME\\n\
+";
+
+const char* doc_BondDistanceCalculator_filterCone = "\
+FIXME\\n\
+";
+
+const char* doc_BondDistanceCalculator_filterOff = "\
+FIXME\\n\
+";
+
 // wrappers ------------------------------------------------------------------
 
 bp::list callop_aslist(BondDistanceCalculator& obj, const object& a)
@@ -86,17 +128,30 @@ void wrap_BondDistanceCalculator()
     using namespace nswrap_BondDistanceCalculator;
 
     class_<BondDistanceCalculator, bases<PairQuantity>
-        >("BondDistanceCalculator")
-        .def("__call__", callop_aslist)
-        .def("distances", distances_aslist<BondDistanceCalculator>)
-        .def("directions", directions_aslist)
-        .def("sites0", sites0_aslist<BondDistanceCalculator>)
-        .def("sites1", sites1_aslist<BondDistanceCalculator>)
-        .def("filterCone", filter_cone)
-        .def("filterOff", &BondDistanceCalculator::filterOff)
+        >("BondDistanceCalculator", doc_BondDistanceCalculator)
+        .def("__call__", callop_aslist, doc_BondDistanceCalculator___call__)
+        .def("distances", distances_aslist<BondDistanceCalculator>,
+                doc_BondDistanceCalculator_distances)
+        .def("directions", directions_aslist,
+                doc_BondDistanceCalculator_directions)
+        .def("sites0", sites0_aslist<BondDistanceCalculator>,
+                doc_BondDistanceCalculator_sites0)
+        .def("sites1", sites1_aslist<BondDistanceCalculator>,
+                doc_BondDistanceCalculator_sites1)
+        .def("filterCone", filter_cone,
+                doc_BondDistanceCalculator_filterCone)
+        .def("filterOff", &BondDistanceCalculator::filterOff,
+                doc_BondDistanceCalculator_filterOff)
         .def_pickle(SerializationPickleSuite<BondDistanceCalculator>())
         ;
 
+    object propertyFromExtDoubleAttr =
+        import("diffpy.srreal.wraputils").attr("propertyFromExtDoubleAttr");
+    object bdc = scope().attr("BondDistanceCalculator");
+    bdc.attr("rmin") =
+        propertyFromExtDoubleAttr("rmin", doc_BondDistanceCalculator_rmin);
+    bdc.attr("rmax") =
+        propertyFromExtDoubleAttr("rmax", doc_BondDistanceCalculator_rmax);
 }
 
 }   // namespace srrealmodule
