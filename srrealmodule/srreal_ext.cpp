@@ -35,7 +35,7 @@ void wrap_BVSCalculator();
 void wrap_PDFBaseline();
 void wrap_PDFEnvelope();
 void wrap_PDFCalculators();
-void wrap_BondDistanceCalculator();
+void wrap_BondCalculator();
 }   // namespace srrealmodule
 
 // Module Definitions --------------------------------------------------------
@@ -57,7 +57,7 @@ BOOST_PYTHON_MODULE(srreal_ext)
     wrap_PDFBaseline();
     wrap_PDFEnvelope();
     wrap_PDFCalculators();
-    wrap_BondDistanceCalculator();
+    wrap_BondCalculator();
 }
 
 // End of file

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Unit tests for diffpy.srreal.bonddistancecalculator
+"""Unit tests for diffpy.srreal.bondcecalculator
 """
 
 # version
@@ -18,13 +18,13 @@ testdata_dir = os.path.join(tests_dir, 'testdata')
 
 from srrealtestutils import TestCaseObjCrystOptional
 from srrealtestutils import loadDiffPyStructure, loadObjCrystCrystal
-from diffpy.srreal.bonddistancecalculator import BondDistanceCalculator
+from diffpy.srreal.bondcalculator import BondCalculator
 
 ##############################################################################
 class TestBondCalculator(unittest.TestCase):
 
     def setUp(self):
-        self.bdc = BondDistanceCalculator()
+        self.bdc = BondCalculator()
         if not hasattr(self, 'rutile'):
             type(self).rutile = loadDiffPyStructure('rutile.cif')
         if not hasattr(self, 'nickel'):
@@ -39,7 +39,7 @@ class TestBondCalculator(unittest.TestCase):
 
 
     def test___init__(self):
-        """check BondDistanceCalculator.__init__()
+        """check BondCalculator.__init__()
         """
         self.assertEqual(0, self.bdc.rmin)
         self.assertEqual(5, self.bdc.rmax)
@@ -48,7 +48,7 @@ class TestBondCalculator(unittest.TestCase):
 
 
     def test___call__(self):
-        """check BondDistanceCalculator.__call__()
+        """check BondCalculator.__call__()
         """
         bdc = self.bdc
         bdc.rmax = 0
@@ -62,12 +62,12 @@ class TestBondCalculator(unittest.TestCase):
 
 
     def test_distances(self):
-        """check BondDistanceCalculator.distances()
+        """check BondCalculator.distances()
         """
         self.bdc.eval(self.nickel)
         dst = self.bdc.distances()
         self.failUnless(numpy.array_equal(dst,
-            BondDistanceCalculator()(self.nickel)))
+            BondCalculator()(self.nickel)))
         self.failUnless(numpy.array_equal(dst, numpy.sort(dst)))
         self.bdc.maskAllPairs(False)
         for i in range(4):
@@ -85,7 +85,7 @@ class TestBondCalculator(unittest.TestCase):
 
 
     def test_directions(self):
-        """check BondDistanceCalculator.directions()
+        """check BondCalculator.directions()
         """
         dst = self.bdc(self.rutile)
         drs = self.bdc.directions()
@@ -95,7 +95,7 @@ class TestBondCalculator(unittest.TestCase):
 
 
     def test_sites(self):
-        """check BondDistanceCalculator.sites()
+        """check BondCalculator.sites()
         """
         bdc = self.bdc
         dst = bdc(self.rutile)
@@ -119,7 +119,7 @@ class TestBondCalculator(unittest.TestCase):
 
 
     def test_filterCone(self):
-        """check BondDistanceCalculator.filterCone()
+        """check BondCalculator.filterCone()
         """
         bdc = self.bdc
         bdc.rmax = 2.5
@@ -139,7 +139,7 @@ class TestBondCalculator(unittest.TestCase):
 
 
     def test_filterOff(self):
-        """check BondDistanceCalculator.filterOff()
+        """check BondCalculator.filterOff()
         """
         bdc = self.bdc
         bdc.rmax = 2.5
@@ -157,7 +157,7 @@ class TestBondCalculator(unittest.TestCase):
 class TestBondCalculatorObjCryst(TestCaseObjCrystOptional):
 
     def setUp(self):
-        self.bdc = BondDistanceCalculator()
+        self.bdc = BondCalculator()
         if not hasattr(self, 'rutile'):
             type(self).rutile = loadObjCrystCrystal('rutile.cif')
         if not hasattr(self, 'nickel'):
@@ -170,7 +170,7 @@ class TestBondCalculatorObjCryst(TestCaseObjCrystOptional):
 
 
     def test___call__(self):
-        """check BondDistanceCalculator.__call__()
+        """check BondCalculator.__call__()
         """
         bdc = self.bdc
         bdc.rmax = 0
@@ -183,7 +183,7 @@ class TestBondCalculatorObjCryst(TestCaseObjCrystOptional):
 
 
     def test_filterCone(self):
-        """check BondDistanceCalculator.filterCone()
+        """check BondCalculator.filterCone()
         """
         bdc = self.bdc
         bdc.rmax = 2.5
@@ -202,7 +202,7 @@ class TestBondCalculatorObjCryst(TestCaseObjCrystOptional):
 
 
     def test_filterOff(self):
-        """check BondDistanceCalculator.filterOff()
+        """check BondCalculator.filterOff()
         """
         bdc = self.bdc
         bdc.rmax = 2.5

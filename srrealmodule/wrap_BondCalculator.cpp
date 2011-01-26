@@ -12,21 +12,21 @@
 *
 ******************************************************************************
 *
-* Bindings to the BondDistanceCalculator class.
+* Bindings to the BondCalculator class.
 *
 * $Id$
 *
 *****************************************************************************/
 
 #include <boost/python.hpp>
-#include <diffpy/srreal/BondDistanceCalculator.hpp>
+#include <diffpy/srreal/BondCalculator.hpp>
 #include <diffpy/srreal/PythonStructureAdapter.hpp>
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
 
 namespace srrealmodule {
-namespace nswrap_BondDistanceCalculator {
+namespace nswrap_BondCalculator {
 
 namespace bp = boost::python;
 using namespace boost::python;
@@ -34,51 +34,51 @@ using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
 
-const char* doc_BondDistanceCalculator = "\
+const char* doc_BondCalculator = "\
 FIXME\\n\
 ";
 
-const char* doc_BondDistanceCalculator_rmin = "\
+const char* doc_BondCalculator_rmin = "\
 Lower bound for the atom distances.\n\
 [0 A]\n\
 ";
 
-const char* doc_BondDistanceCalculator_rmax = "\
+const char* doc_BondCalculator_rmax = "\
 Upper bound for the atom distances.\n\
 [5 A]\n\
 ";
 
-const char* doc_BondDistanceCalculator___call__ = "\
+const char* doc_BondCalculator___call__ = "\
 FIXME\\n\
 ";
 
-const char* doc_BondDistanceCalculator_distances = "\
+const char* doc_BondCalculator_distances = "\
 FIXME\\n\
 ";
 
-const char* doc_BondDistanceCalculator_directions = "\
+const char* doc_BondCalculator_directions = "\
 FIXME\\n\
 ";
 
-const char* doc_BondDistanceCalculator_sites0 = "\
+const char* doc_BondCalculator_sites0 = "\
 FIXME\\n\
 ";
 
-const char* doc_BondDistanceCalculator_sites1 = "\
+const char* doc_BondCalculator_sites1 = "\
 FIXME\\n\
 ";
 
-const char* doc_BondDistanceCalculator_filterCone = "\
+const char* doc_BondCalculator_filterCone = "\
 FIXME\\n\
 ";
 
-const char* doc_BondDistanceCalculator_filterOff = "\
+const char* doc_BondCalculator_filterOff = "\
 FIXME\\n\
 ";
 
 // wrappers ------------------------------------------------------------------
 
-bp::list callop_aslist(BondDistanceCalculator& obj, const object& a)
+bp::list callop_aslist(BondCalculator& obj, const object& a)
 {
     bp::iterator<QuantityType> iter;
     bp::list rv(iter(obj(a)));
@@ -86,7 +86,7 @@ bp::list callop_aslist(BondDistanceCalculator& obj, const object& a)
 }
 
 
-bp::list directions_aslist(const BondDistanceCalculator& obj)
+bp::list directions_aslist(const BondCalculator& obj)
 {
     std::vector<R3::Vector> rv = obj.directions();
     std::vector<R3::Vector>::const_iterator ii;
@@ -99,7 +99,7 @@ bp::list directions_aslist(const BondDistanceCalculator& obj)
 }
 
 
-void filter_cone(BondDistanceCalculator& obj,
+void filter_cone(BondCalculator& obj,
         bp::object cartesiandir, double degrees)
 {
     if (len(cartesiandir) != 3)
@@ -119,39 +119,39 @@ DECLARE_PYLIST_METHOD_WRAPPER(distances, distances_aslist)
 DECLARE_PYLIST_METHOD_WRAPPER(sites0, sites0_aslist)
 DECLARE_PYLIST_METHOD_WRAPPER(sites1, sites1_aslist)
 
-}   // namespace nswrap_BondDistanceCalculator
+}   // namespace nswrap_BondCalculator
 
 // Wrapper definition --------------------------------------------------------
 
-void wrap_BondDistanceCalculator()
+void wrap_BondCalculator()
 {
-    using namespace nswrap_BondDistanceCalculator;
+    using namespace nswrap_BondCalculator;
 
-    class_<BondDistanceCalculator, bases<PairQuantity>
-        >("BondDistanceCalculator", doc_BondDistanceCalculator)
-        .def("__call__", callop_aslist, doc_BondDistanceCalculator___call__)
-        .def("distances", distances_aslist<BondDistanceCalculator>,
-                doc_BondDistanceCalculator_distances)
+    class_<BondCalculator, bases<PairQuantity>
+        >("BondCalculator", doc_BondCalculator)
+        .def("__call__", callop_aslist, doc_BondCalculator___call__)
+        .def("distances", distances_aslist<BondCalculator>,
+                doc_BondCalculator_distances)
         .def("directions", directions_aslist,
-                doc_BondDistanceCalculator_directions)
-        .def("sites0", sites0_aslist<BondDistanceCalculator>,
-                doc_BondDistanceCalculator_sites0)
-        .def("sites1", sites1_aslist<BondDistanceCalculator>,
-                doc_BondDistanceCalculator_sites1)
+                doc_BondCalculator_directions)
+        .def("sites0", sites0_aslist<BondCalculator>,
+                doc_BondCalculator_sites0)
+        .def("sites1", sites1_aslist<BondCalculator>,
+                doc_BondCalculator_sites1)
         .def("filterCone", filter_cone,
-                doc_BondDistanceCalculator_filterCone)
-        .def("filterOff", &BondDistanceCalculator::filterOff,
-                doc_BondDistanceCalculator_filterOff)
-        .def_pickle(SerializationPickleSuite<BondDistanceCalculator>())
+                doc_BondCalculator_filterCone)
+        .def("filterOff", &BondCalculator::filterOff,
+                doc_BondCalculator_filterOff)
+        .def_pickle(SerializationPickleSuite<BondCalculator>())
         ;
 
     object propertyFromExtDoubleAttr =
         import("diffpy.srreal.wraputils").attr("propertyFromExtDoubleAttr");
-    object bdc = scope().attr("BondDistanceCalculator");
+    object bdc = scope().attr("BondCalculator");
     bdc.attr("rmin") =
-        propertyFromExtDoubleAttr("rmin", doc_BondDistanceCalculator_rmin);
+        propertyFromExtDoubleAttr("rmin", doc_BondCalculator_rmin);
     bdc.attr("rmax") =
-        propertyFromExtDoubleAttr("rmax", doc_BondDistanceCalculator_rmax);
+        propertyFromExtDoubleAttr("rmax", doc_BondCalculator_rmax);
 }
 
 }   // namespace srrealmodule
