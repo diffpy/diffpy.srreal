@@ -52,7 +52,7 @@ class TestBondCalculator(unittest.TestCase):
         """
         bdc = self.bdc
         bdc.rmax = 0
-        self.assertEqual([], bdc(self.rutile))
+        self.assertEqual(0, len(bdc(self.rutile)))
         bdc.rmax = 2.0
         self.assertEqual(12, len(bdc(self.rutile)))
         self.assertEqual(0, len(bdc(self.niprim)))
@@ -144,7 +144,7 @@ class TestBondCalculator(unittest.TestCase):
         bdc = self.bdc
         bdc.rmax = 2.5
         bdc.filterCone([1, 2, 3], -1)
-        self.assertEqual([], bdc(self.niprim))
+        self.assertEqual(0, len(bdc(self.niprim).tolist()))
         bdc.filterOff()
         self.assertEqual(12, len(bdc(self.niprim)))
         return
@@ -174,7 +174,7 @@ class TestBondCalculatorObjCryst(TestCaseObjCrystOptional):
         """
         bdc = self.bdc
         bdc.rmax = 0
-        self.assertEqual([], bdc(self.rutile))
+        self.assertEqual(0, len(bdc(self.rutile).tolist()))
         bdc.rmax = 2.0
         self.assertEqual(3, len(bdc(self.rutile)))
         bdc.rmax = 2.5
@@ -207,7 +207,7 @@ class TestBondCalculatorObjCryst(TestCaseObjCrystOptional):
         bdc = self.bdc
         bdc.rmax = 2.5
         bdc.filterCone([1, 2, 3], -1)
-        self.assertEqual([], bdc(self.nickel))
+        self.assertEqual(0, len(bdc(self.nickel)))
         bdc.filterOff()
         self.assertEqual(12, len(bdc(self.nickel)))
         return

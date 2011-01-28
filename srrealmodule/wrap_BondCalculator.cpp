@@ -35,54 +35,68 @@ using namespace diffpy::srreal;
 // docstrings ----------------------------------------------------------------
 
 const char* doc_BondCalculator = "\
-FIXME\\n\
+Calculator of bond distances in a specified structure.\n\
 ";
 
 const char* doc_BondCalculator_rmin = "\
-Lower bound for the atom distances.\n\
+Lower bound for the bond distances.\n\
 [0 A]\n\
 ";
 
 const char* doc_BondCalculator_rmax = "\
-Upper bound for the atom distances.\n\
+Upper bound for the bond distances.\n\
 [5 A]\n\
 ";
 
 const char* doc_BondCalculator___call__ = "\
-FIXME\\n\
+Return sorted bond distances in the specified structure.\n\
 ";
 
 const char* doc_BondCalculator_distances = "\
-FIXME\\n\
+Array of bond distances in the evaluated structure.\n\
 ";
 
 const char* doc_BondCalculator_directions = "\
-FIXME\\n\
+List of bond directions in the evaluated structure.\n\
 ";
 
 const char* doc_BondCalculator_sites0 = "\
-FIXME\\n\
+List of zero-based indices of the first site in the pair.\n\
 ";
 
 const char* doc_BondCalculator_sites1 = "\
-FIXME\\n\
+List of zero-based indices of the second site in the pair.\n\
 ";
 
 const char* doc_BondCalculator_filterCone = "\
-FIXME\\n\
+Setup an additive bond filter in a specified direction cone.\n\
+Second and further calls create more filters that permit more bonds.\n\
+Use filterOff to create exclusive filter in a new direction.\n\
+\n\
+cartesiandir -- cone axis in Cartesian coordinates,\n\
+                list, tuple or array.\n\
+degrees      -- cone angle in degrees\n\
+\n\
+No return value.\n\
 ";
 
 const char* doc_BondCalculator_filterOff = "\
-FIXME\\n\
+Turn off bond filtering and destroy all cone filters.\n\
+Permit all bonds in further calculations.  Also used to create\n\
+exclusive cone filter in a new direction.\n\
 ";
 
 // wrappers ------------------------------------------------------------------
 
-bp::list callop_aslist(BondCalculator& obj, const object& a)
+DECLARE_PYARRAY_METHOD_WRAPPER(distances, distances_asarray)
+DECLARE_PYLIST_METHOD_WRAPPER(sites0, sites0_aslist)
+DECLARE_PYLIST_METHOD_WRAPPER(sites1, sites1_aslist)
+
+
+object callop_asarray(BondCalculator& obj, const object& a)
 {
-    bp::iterator<QuantityType> iter;
-    bp::list rv(iter(obj(a)));
-    return rv;
+    obj.eval(a);
+    return distances_asarray(obj);
 }
 
 
@@ -100,7 +114,7 @@ bp::list directions_aslist(const BondCalculator& obj)
 
 
 void filter_cone(BondCalculator& obj,
-        bp::object cartesiandir, double degrees)
+        object cartesiandir, double degrees)
 {
     if (len(cartesiandir) != 3)
     {
@@ -115,10 +129,6 @@ void filter_cone(BondCalculator& obj,
     obj.filterCone(cdir, degrees);
 }
 
-DECLARE_PYARRAY_METHOD_WRAPPER(distances, distances_asarray)
-DECLARE_PYLIST_METHOD_WRAPPER(sites0, sites0_aslist)
-DECLARE_PYLIST_METHOD_WRAPPER(sites1, sites1_aslist)
-
 }   // namespace nswrap_BondCalculator
 
 // Wrapper definition --------------------------------------------------------
@@ -129,7 +139,8 @@ void wrap_BondCalculator()
 
     class_<BondCalculator, bases<PairQuantity>
         >("BondCalculator", doc_BondCalculator)
-        .def("__call__", callop_aslist, doc_BondCalculator___call__)
+        .def("__call__", callop_asarray,
+                bp::arg("structure"), doc_BondCalculator___call__)
         .add_property("distances", distances_asarray<BondCalculator>,
                 doc_BondCalculator_distances)
         .add_property("directions", directions_aslist,
@@ -139,6 +150,7 @@ void wrap_BondCalculator()
         .add_property("sites1", sites1_aslist<BondCalculator>,
                 doc_BondCalculator_sites1)
         .def("filterCone", filter_cone,
+                (bp::arg("cartesiandir"), bp::arg("degrees")),
                 doc_BondCalculator_filterCone)
         .def("filterOff", &BondCalculator::filterOff,
                 doc_BondCalculator_filterOff)
