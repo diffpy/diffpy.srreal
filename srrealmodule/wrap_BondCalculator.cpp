@@ -38,16 +38,6 @@ const char* doc_BondCalculator = "\
 Calculator of bond distances in a specified structure.\n\
 ";
 
-const char* doc_BondCalculator_rmin = "\
-Lower bound for the bond distances.\n\
-[0 A]\n\
-";
-
-const char* doc_BondCalculator_rmax = "\
-Upper bound for the bond distances.\n\
-[5 A]\n\
-";
-
 const char* doc_BondCalculator___call__ = "\
 Return sorted bond distances in the specified structure.\n\
 ";
@@ -157,13 +147,8 @@ void wrap_BondCalculator()
         .def_pickle(SerializationPickleSuite<BondCalculator>())
         ;
 
-    object propertyFromExtDoubleAttr =
-        import("diffpy.srreal.wraputils").attr("propertyFromExtDoubleAttr");
-    object bdc = scope().attr("BondCalculator");
-    bdc.attr("rmin") =
-        propertyFromExtDoubleAttr("rmin", doc_BondCalculator_rmin);
-    bdc.attr("rmax") =
-        propertyFromExtDoubleAttr("rmax", doc_BondCalculator_rmax);
+    // inject __init__ support for keyword arguments and rmin, rmax properties
+    import("diffpy.srreal.bondcalculator");
 }
 
 }   // namespace srrealmodule

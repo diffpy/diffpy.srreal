@@ -146,7 +146,6 @@ class DebyePDFCalculator(DebyePDFCalculator_ext, PDFCalculatorInterface):
 
         dpc = DebyePDFCalculator(qmax=20, rmin=7, rmax=15)
 
-        No return value.
         Raise ValueError for invalid keyword argument.
         '''
         super(DebyePDFCalculator, self).__init__()
@@ -202,7 +201,6 @@ class PDFCalculator(PDFCalculator_ext, PDFCalculatorInterface):
 
         pc = PDFCalculator(qmax=20, rmin=7, rmax=15)
 
-        No return value.
         Raise ValueError for invalid keyword argument.
         '''
         super(PDFCalculator, self).__init__()

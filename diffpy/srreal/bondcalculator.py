@@ -22,6 +22,36 @@ __id__ = "$Id$"
 # exported items, these also makes them show in pydoc.
 __all__ = ['BondCalculator']
 
+from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
+from diffpy.srreal.wraputils import setattrFromKeywordArguments
 from diffpy.srreal.srreal_ext import BondCalculator
+
+# property wrappers to C++ double attributes
+
+BondCalculator.rmin = propertyFromExtDoubleAttr('rmin',
+        '''Lower bound for the bond distances.
+        [0 A]''')
+
+BondCalculator.rmax = propertyFromExtDoubleAttr('rmax',
+        '''Upper bound for the bond distances.
+        [5 A]''')
+
+# inject init method that accepts keyword arguments
+
+def _init_kwargs(self, **kwargs):
+    '''Create a new instance of BondCalculator.
+    Keyword arguments can be used to configure
+    calculator properties, for example:
+
+    bdc = BondCalculator(rmin=1.5, rmax=2.5)
+
+    Raise ValueError for invalid keyword argument.
+    '''
+    BondCalculator.__boostpython__init(self)
+    setattrFromKeywordArguments(self, **kwargs)
+    return
+
+BondCalculator.__boostpython__init = BondCalculator.__init__
+BondCalculator.__init__ = _init_kwargs
 
 # End of file
