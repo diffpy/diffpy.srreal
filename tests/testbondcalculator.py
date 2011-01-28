@@ -43,7 +43,7 @@ class TestBondCalculator(unittest.TestCase):
         """
         self.assertEqual(0, self.bdc.rmin)
         self.assertEqual(5, self.bdc.rmax)
-        self.assertEqual([], self.bdc.distances())
+        self.assertEqual(0, len(self.bdc.distances))
         return
 
 
@@ -62,10 +62,10 @@ class TestBondCalculator(unittest.TestCase):
 
 
     def test_distances(self):
-        """check BondCalculator.distances()
+        """check BondCalculator.distances
         """
         self.bdc.eval(self.nickel)
-        dst = self.bdc.distances()
+        dst = self.bdc.distances
         self.failUnless(numpy.array_equal(dst,
             BondCalculator()(self.nickel)))
         self.failUnless(numpy.array_equal(dst, numpy.sort(dst)))
@@ -85,36 +85,36 @@ class TestBondCalculator(unittest.TestCase):
 
 
     def test_directions(self):
-        """check BondCalculator.directions()
+        """check BondCalculator.directions
         """
         dst = self.bdc(self.rutile)
-        drs = self.bdc.directions()
+        drs = self.bdc.directions
         nms = numpy.sqrt(numpy.sum(numpy.power(drs, 2), axis=1))
         self.failUnless(numpy.array_equal(dst, nms))
         return
 
 
     def test_sites(self):
-        """check BondCalculator.sites()
+        """check BondCalculator.sites
         """
         bdc = self.bdc
         dst = bdc(self.rutile)
-        self.assertEqual(len(dst), len(bdc.sites0()))
-        self.assertEqual(len(dst), len(bdc.sites1()))
-        self.assertEqual(0, numpy.min(bdc.sites0()))
-        self.assertEqual(5, numpy.max(bdc.sites0()))
-        self.assertEqual(0, numpy.min(bdc.sites1()))
-        self.assertEqual(5, numpy.max(bdc.sites1()))
+        self.assertEqual(len(dst), len(bdc.sites0))
+        self.assertEqual(len(dst), len(bdc.sites1))
+        self.assertEqual(0, numpy.min(bdc.sites0))
+        self.assertEqual(5, numpy.max(bdc.sites0))
+        self.assertEqual(0, numpy.min(bdc.sites1))
+        self.assertEqual(5, numpy.max(bdc.sites1))
         dij = [(tuple(d) + (i0, i1)) for d, i0, i1 in zip(
-                    bdc.directions(), bdc.sites0(), bdc.sites1())]
+                    bdc.directions, bdc.sites0, bdc.sites1)]
         self.assertEqual(len(dij), len(set(dij)))
         bdc.maskAllPairs(False)
         bdc(self.rutile)
-        self.assertEqual([], bdc.sites0())
+        self.assertEqual([], bdc.sites0)
         bdc.setPairMask(3, 3, True)
         bdc(self.rutile)
-        self.failUnless(len(bdc.sites0()))
-        self.assertEqual(set([3]), set(bdc.sites0() + bdc.sites1()))
+        self.failUnless(len(bdc.sites0))
+        self.assertEqual(set([3]), set(bdc.sites0 + bdc.sites1))
         return
 
 

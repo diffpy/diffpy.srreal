@@ -115,7 +115,7 @@ void filter_cone(BondCalculator& obj,
     obj.filterCone(cdir, degrees);
 }
 
-DECLARE_PYLIST_METHOD_WRAPPER(distances, distances_aslist)
+DECLARE_PYARRAY_METHOD_WRAPPER(distances, distances_asarray)
 DECLARE_PYLIST_METHOD_WRAPPER(sites0, sites0_aslist)
 DECLARE_PYLIST_METHOD_WRAPPER(sites1, sites1_aslist)
 
@@ -130,13 +130,13 @@ void wrap_BondCalculator()
     class_<BondCalculator, bases<PairQuantity>
         >("BondCalculator", doc_BondCalculator)
         .def("__call__", callop_aslist, doc_BondCalculator___call__)
-        .def("distances", distances_aslist<BondCalculator>,
+        .add_property("distances", distances_asarray<BondCalculator>,
                 doc_BondCalculator_distances)
-        .def("directions", directions_aslist,
+        .add_property("directions", directions_aslist,
                 doc_BondCalculator_directions)
-        .def("sites0", sites0_aslist<BondCalculator>,
+        .add_property("sites0", sites0_aslist<BondCalculator>,
                 doc_BondCalculator_sites0)
-        .def("sites1", sites1_aslist<BondCalculator>,
+        .add_property("sites1", sites1_aslist<BondCalculator>,
                 doc_BondCalculator_sites1)
         .def("filterCone", filter_cone,
                 doc_BondCalculator_filterCone)
