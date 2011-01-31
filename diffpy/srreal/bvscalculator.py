@@ -60,7 +60,6 @@ class BVSCalculator(BVSCalculator_ext):
 
         bvscalc = BVSCalculator(valenceprecision=0.001)
 
-        No return value.
         Raise ValueError for invalid keyword argument.
         '''
         super(BVSCalculator, self).__init__()

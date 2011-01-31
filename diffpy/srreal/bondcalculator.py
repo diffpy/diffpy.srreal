@@ -51,7 +51,23 @@ def _init_kwargs(self, **kwargs):
     setattrFromKeywordArguments(self, **kwargs)
     return
 
+
+def _call_kwargs(self, structure, **kwargs):
+    '''Return sorted bond distances in the specified structure.
+
+    structure    -- structure to be evaluated, an instance of diffpy Structure
+                    or pyobjcryst Crystal
+    kwargs       -- optional parameter settings for this calculator
+
+    Return a sorted numpy array.
+    '''
+    setattrFromKeywordArguments(self, **kwargs)
+    self.eval(structure)
+    return self.distances
+
+
 BondCalculator.__boostpython__init = BondCalculator.__init__
 BondCalculator.__init__ = _init_kwargs
+BondCalculator.__call__ = _call_kwargs
 
 # End of file

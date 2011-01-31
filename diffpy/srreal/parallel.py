@@ -58,8 +58,6 @@ def createParallelCalculator(pqobj, ncpu, pmap):
                         in parallel
             ncpu     -- number of parallel jobs
             pmap     -- a parallel map function used to submit job to workers
-
-            No return value.
             '''
             self.pqobj = pqobj
             self.ncpu = ncpu

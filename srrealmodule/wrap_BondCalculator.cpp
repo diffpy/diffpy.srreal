@@ -38,12 +38,8 @@ const char* doc_BondCalculator = "\
 Calculator of bond distances in a specified structure.\n\
 ";
 
-const char* doc_BondCalculator___call__ = "\
-Return sorted bond distances in the specified structure.\n\
-";
-
 const char* doc_BondCalculator_distances = "\
-Array of bond distances in the evaluated structure.\n\
+Array of sorted bond distances in the evaluated structure.\n\
 ";
 
 const char* doc_BondCalculator_directions = "\
@@ -81,13 +77,6 @@ exclusive cone filter in a new direction.\n\
 DECLARE_PYARRAY_METHOD_WRAPPER(distances, distances_asarray)
 DECLARE_PYLIST_METHOD_WRAPPER(sites0, sites0_aslist)
 DECLARE_PYLIST_METHOD_WRAPPER(sites1, sites1_aslist)
-
-
-object callop_asarray(BondCalculator& obj, const object& a)
-{
-    obj.eval(a);
-    return distances_asarray(obj);
-}
 
 
 bp::list directions_aslist(const BondCalculator& obj)
@@ -129,8 +118,6 @@ void wrap_BondCalculator()
 
     class_<BondCalculator, bases<PairQuantity>
         >("BondCalculator", doc_BondCalculator)
-        .def("__call__", callop_asarray,
-                bp::arg("structure"), doc_BondCalculator___call__)
         .add_property("distances", distances_asarray<BondCalculator>,
                 doc_BondCalculator_distances)
         .add_property("directions", directions_aslist,
@@ -147,7 +134,8 @@ void wrap_BondCalculator()
         .def_pickle(SerializationPickleSuite<BondCalculator>())
         ;
 
-    // inject __init__ support for keyword arguments and rmin, rmax properties
+    // Inject __init__ and __call__ methods with support for keyword arguments
+    // and add the rmin and rmax properties.
     import("diffpy.srreal.bondcalculator");
 }
 
