@@ -70,15 +70,15 @@ void wrap_BVSCalculator()
     using namespace nswrap_BVSCalculator;
 
     class_<BVSCalculator, bases<PairQuantity> >("BVSCalculator")
-        .def("value", value_asarray<BVSCalculator>,
+        .add_property("value", value_asarray<BVSCalculator>,
                 doc_BVSCalculator_value)
-        .def("valences", valences_asarray<BVSCalculator>,
+        .add_property("valences", valences_asarray<BVSCalculator>,
                 doc_BVSCalculator_valences)
-        .def("bvdiff", bvdiff_asarray<BVSCalculator>,
+        .add_property("bvdiff", bvdiff_asarray<BVSCalculator>,
                 doc_BVSCalculator_bvdiff)
-        .def("bvmsdiff", &BVSCalculator::bvmsdiff,
+        .add_property("bvmsdiff", &BVSCalculator::bvmsdiff,
                 doc_BVSCalculator_bvmsdiff)
-        .def("bvrmsdiff", &BVSCalculator::bvrmsdiff,
+        .add_property("bvrmsdiff", &BVSCalculator::bvrmsdiff,
                 doc_BVSCalculator_bvrmsdiff)
         .def_pickle(SerializationPickleSuite<BVSCalculator>())
         ;

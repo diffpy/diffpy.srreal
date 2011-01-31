@@ -50,46 +50,46 @@ class TestBVSCalculator(unittest.TestCase):
         """
         vcalc = self.bvc(self.rutile)
         self.assertEqual(len(self.rutile), len(vcalc))
-        self.assertEqual(tuple(self.bvc.value()), tuple(vcalc))
+        self.assertEqual(tuple(self.bvc.value), tuple(vcalc))
         self.failUnless(vcalc[0] > 0)
         self.failUnless(vcalc[-1] < 0)
         self.assertAlmostEqual(0.0, sum(vcalc), 12)
-        self.assertAlmostEqual(0.0, sum(self.bvc.valences()), 12)
-        for vo, vc in zip(self.bvc.valences(), vcalc):
+        self.assertAlmostEqual(0.0, sum(self.bvc.valences), 12)
+        for vo, vc in zip(self.bvc.valences, vcalc):
             self.failUnless(abs((vo - vc) / vo) < 0.1)
         return
 
 
     def test_bvdiff(self):
-        """check BVSCalculator.bvdiff()
+        """check BVSCalculator.bvdiff
         """
         self.bvc(self.rutile)
-        self.assertEqual(6, len(self.bvc.bvdiff()))
+        self.assertEqual(6, len(self.bvc.bvdiff))
         # rutile is overbonded
-        for bvd in self.bvc.bvdiff():
+        for bvd in self.bvc.bvdiff:
             self.failUnless(bvd < 0)
         return
 
 
     def test_bvmsdiff(self):
-        """check BVSCalculator.bvmsdiff()
+        """check BVSCalculator.bvmsdiff
         """
-        self.assertEqual(0, self.bvc.bvmsdiff())
+        self.assertEqual(0, self.bvc.bvmsdiff)
         self.bvc(self.rutile)
-        self.assertAlmostEqual(0.0158969, self.bvc.bvmsdiff(), 6)
+        self.assertAlmostEqual(0.0158969, self.bvc.bvmsdiff, 6)
         return
 
 
     def test_bvrmsdiff(self):
-        """check BVSCalculator.bvrmsdiff()
+        """check BVSCalculator.bvrmsdiff
         """
         from math import sqrt
-        self.assertEqual(0, self.bvc.bvrmsdiff())
+        self.assertEqual(0, self.bvc.bvrmsdiff)
         self.bvc(self.rutile)
-        self.failUnless(self.bvc.bvrmsdiff() > 0)
-        self.assertAlmostEqual(sqrt(self.bvc.bvmsdiff()),
-                self.bvc.bvrmsdiff(), 12)
-        bvrmsd0 = self.bvc.bvrmsdiff()
+        self.failUnless(self.bvc.bvrmsdiff > 0)
+        self.assertAlmostEqual(sqrt(self.bvc.bvmsdiff),
+                self.bvc.bvrmsdiff, 12)
+        bvrmsd0 = self.bvc.bvrmsdiff
         # check mixed occupancy
         rutilemix = Structure(self.rutile)
         for a in self.rutile:
@@ -97,8 +97,8 @@ class TestBVSCalculator(unittest.TestCase):
         for a in rutilemix:
             a.occupancy = 0.5
         self.bvc(rutilemix)
-        self.assertEqual(12, len(self.bvc.value()))
-        self.assertAlmostEqual(bvrmsd0, self.bvc.bvrmsdiff(), 12)
+        self.assertEqual(12, len(self.bvc.value))
+        self.assertAlmostEqual(bvrmsd0, self.bvc.bvrmsdiff, 12)
         return
 
 
@@ -106,23 +106,23 @@ class TestBVSCalculator(unittest.TestCase):
         """check BVSCalculator.eval()
         """
         vcalc = self.bvc.eval(self.rutile)
-        self.assertEqual(tuple(vcalc), tuple(self.bvc.value()))
+        self.assertEqual(tuple(vcalc), tuple(self.bvc.value))
         return
 
 
     def test_valences(self):
-        """check BVSCalculator.valences()
+        """check BVSCalculator.valences
         """
         self.bvc(self.rutile)
         self.assertEqual((4, 4, -2, -2, -2, -2),
-                tuple(self.bvc.valences()))
+                tuple(self.bvc.valences))
         return
 
 
     def test_value(self):
-        """check BVSCalculator.value()
+        """check BVSCalculator.value
         """
-        self.assertEqual(0, len(self.bvc.value()))
+        self.assertEqual(0, len(self.bvc.value))
         return
 
 
