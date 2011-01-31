@@ -32,6 +32,10 @@ using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
 
+const char* doc_BVSCalculator_value = "\
+Return bond valence sums per each atom site in the structure.\n\
+";
+
 const char* doc_BVSCalculator_valences = "\
 Return valences expected at each site of the evaluated structure.\n\
 ";
@@ -53,6 +57,7 @@ Adjusted for multiplicity and occupancy of atom sites in the structure.\n\
 
 // wrappers ------------------------------------------------------------------
 
+DECLARE_PYARRAY_METHOD_WRAPPER(value, value_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(valences, valences_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(bvdiff, bvdiff_asarray)
 
@@ -64,7 +69,9 @@ void wrap_BVSCalculator()
 {
     using namespace nswrap_BVSCalculator;
 
-    class_<BVSCalculator, bases<PairQuantity> >("BVSCalculator_ext")
+    class_<BVSCalculator, bases<PairQuantity> >("BVSCalculator")
+        .def("value", value_asarray<BVSCalculator>,
+                doc_BVSCalculator_value)
         .def("valences", valences_asarray<BVSCalculator>,
                 doc_BVSCalculator_valences)
         .def("bvdiff", bvdiff_asarray<BVSCalculator>,
@@ -76,6 +83,9 @@ void wrap_BVSCalculator()
         .def_pickle(SerializationPickleSuite<BVSCalculator>())
         ;
 
+    // Inject __init__ and __call__ methods with support for keyword arguments.
+    // Add properties for the BVSCalculator double attributes.
+    import("diffpy.srreal.bvscalculator");
 }
 
 }   // namespace srrealmodule

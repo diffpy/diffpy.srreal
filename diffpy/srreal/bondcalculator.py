@@ -36,7 +36,8 @@ BondCalculator.rmax = propertyFromExtDoubleAttr('rmax',
         '''Upper bound for the bond distances.
         [5 A]''')
 
-# inject init method that accepts keyword arguments
+
+# method overrides that support keyword arguments
 
 def _init_kwargs(self, **kwargs):
     '''Create a new instance of BondCalculator.
