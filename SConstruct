@@ -5,6 +5,7 @@
 # develop    -- srreal_ext.so under diffpy/srreal/ directory
 
 import os
+import re
 
 def subdictionary(d, keyset):
     return dict([kv for kv in d.items() if kv[0] in keyset])
@@ -41,7 +42,7 @@ if icpc:
 
 # Declare external libraries.
 good_python_flags = lambda n : (
-    n not in ('-g', '-Wstrict-prototypes'))
+    not re.match(r'(-g|-Wstrict-prototypes|-O\d)$', n))
 env.ParseConfig("python-config --cflags")
 env.Replace(CCFLAGS=filter(good_python_flags, env['CCFLAGS']))
 env.Replace(CPPDEFINES='')
