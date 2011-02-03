@@ -83,7 +83,7 @@ def Gsrreal(qmax, peakprecision=None):
     if peakprecision is not None:
         pdfcalc._setDoubleAttr('peakprecision', peakprecision)
     pdfcalc.eval(nickel)
-    rg = numpy.array([pdfcalc.getRgrid(), pdfcalc.getPDF()])
+    rg = numpy.array([pdfcalc.rgrid, pdfcalc.pdf])
     return rg
 
 

@@ -119,7 +119,7 @@ class TestPDFCalculator(unittest.TestCase):
         gpf2 = numpy.loadtxt(fnipf2, usecols=(1,))
         self.pdfcalc._setDoubleAttr('rmax', 10.0001)
         self.pdfcalc.eval(self.nickel)
-        gcalc = self.pdfcalc.getPDF()
+        gcalc = self.pdfcalc.pdf
         self.failUnless(_maxNormDiff(gpf2, gcalc) < 0.0091)
         return
 
@@ -137,7 +137,7 @@ class TestPDFCalculator(unittest.TestCase):
         # apply data scale
         self.pdfcalc(self.tio2rutile)
         self.pdfcalc.scale *= dscale
-        gcalc = self.pdfcalc.getPDF()
+        gcalc = self.pdfcalc.pdf
         # termination at rmin is poorly cut in PDFfit2
         mxnd = _maxNormDiff(gpf2, gcalc)
         self.failUnless(mxnd < 0.057)
@@ -156,16 +156,16 @@ class TestPDFCalculator(unittest.TestCase):
         rutile = self.tio2rutile
         atomtypes = [a.element for a in rutile]
         r0, g0 = pdfc(rutile)
-        rdf0 = pdfc.getRDF()
+        rdf0 = pdfc.rdf
         # Ti-Ti
         pdfc.maskAllPairs(False)
         pdfc.setTypeMask("Ti", "Ti", True)
         r1, g1 = pdfc(rutile)
-        rdf1 = pdfc.getRDF()
+        rdf1 = pdfc.rdf
         self.failUnless(numpy.array_equal(r0, r1))
         pdfc.invertMask()
         r1i, g1i = pdfc(rutile)
-        rdf1i = pdfc.getRDF()
+        rdf1i = pdfc.rdf
         self.failUnless(numpy.array_equal(r0, r1i))
         self.failUnless(numpy.allclose(g0, g1 + g1i))
         self.failUnless(numpy.allclose(rdf0, rdf1 + rdf1i))
@@ -176,11 +176,11 @@ class TestPDFCalculator(unittest.TestCase):
                 if smbli == smblj:
                     pdfc.setPairMask(i, j, False)
         r2, g2 = pdfc(rutile)
-        rdf2 = pdfc.getRDF()
+        rdf2 = pdfc.rdf
         self.failUnless(numpy.array_equal(r0, r2))
         pdfc.invertMask()
         r2i, g2i = pdfc(rutile)
-        rdf2i = pdfc.getRDF()
+        rdf2i = pdfc.rdf
         self.failUnless(numpy.allclose(g0, g2 + g2i))
         self.failUnless(numpy.allclose(rdf0, rdf2 + rdf2i))
         # Ti-O using type mask
@@ -188,13 +188,13 @@ class TestPDFCalculator(unittest.TestCase):
         pdfc.setTypeMask("Ti", "Ti", False)
         pdfc.setTypeMask("O", "O", False)
         r2t, g2t = pdfc(rutile)
-        rdf2t = pdfc.getRDF()
+        rdf2t = pdfc.rdf
         self.failUnless(numpy.array_equal(r0, r2t))
         self.failUnless(numpy.array_equal(g2, g2t))
         self.failUnless(numpy.array_equal(rdf2, rdf2t))
         pdfc.invertMask()
         r2ti, g2ti = pdfc(rutile)
-        rdf2ti = pdfc.getRDF()
+        rdf2ti = pdfc.rdf
         self.failUnless(numpy.array_equal(g2i, g2ti))
         self.failUnless(numpy.array_equal(rdf2i, rdf2ti))
         # O-O
@@ -204,10 +204,10 @@ class TestPDFCalculator(unittest.TestCase):
                 if smbli == smblj == "O":
                     pdfc.setPairMask(i, j, True)
         r3, g3 = pdfc(rutile)
-        rdf3 = pdfc.getRDF()
+        rdf3 = pdfc.rdf
         pdfc.invertMask()
         r3i, g3i = pdfc(rutile)
-        rdf3i = pdfc.getRDF()
+        rdf3i = pdfc.rdf
         self.failUnless(numpy.allclose(g0, g3 + g3i))
         self.failUnless(numpy.allclose(rdf0, rdf3 + rdf3i))
         # check the sum of all partials
@@ -246,7 +246,7 @@ class TestPDFCalculator(unittest.TestCase):
                 pdfc.setPairMask(i, j, False)
         r, g = pdfc(rutile)
         self.assertEqual(0.0, numpy.dot(g, g))
-        rdf = pdfc.getRDF()
+        rdf = pdfc.rdf
         self.assertEqual(0.0, numpy.dot(rdf, rdf))
         return
 
@@ -301,13 +301,13 @@ class TestPDFCalculator(unittest.TestCase):
         return
 
 
-#   def test_getPDF(self):
-#       """check PDFCalculator.getPDF()
+#   def test_pdf(self):
+#       """check PDFCalculator.pdf
 #       """
 #       return
 
 #   def test_getRDF(self):
-#       """check PDFCalculator.getRDF()
+#       """check PDFCalculator.rdf
 #       """
 #       return
 
@@ -316,8 +316,8 @@ class TestPDFCalculator(unittest.TestCase):
 #       """
 #       return
 
-#   def test_getRgrid(self):
-#       """check PDFCalculator.getRgrid()
+#   def test_rgrid(self):
+#       """check PDFCalculator.rgrid
 #       """
 #       return
 

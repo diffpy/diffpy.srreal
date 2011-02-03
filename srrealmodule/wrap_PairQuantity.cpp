@@ -59,13 +59,13 @@ May need to be further transformed to get the desired value.\n\
 ";
 
 const char* doc_BasePairQuantity_value = "\
-Return total internal contributions as numpy array.\n\
+Read-only array of total contributions.\n\
 ";
 
 const char* doc_BasePairQuantity__mergeParallelValue = "\
 Add internal value from a parallel run to this instance.\n\
 \n\
-v    -- iterable of floats.  Must have the same length as value().\n\
+v    -- iterable of floats.  Must have the same length as self.value.\n\
 \n\
 No return value.\n\
 ";
@@ -255,7 +255,8 @@ void wrap_PairQuantity()
 
     class_<PairQuantity, bases<Attributes> >("BasePairQuantity_ext")
         .def("eval", eval_asarray, doc_BasePairQuantity_eval)
-        .def("value", value_asarray<PairQuantity>, doc_BasePairQuantity_value)
+        .add_property("value", value_asarray<PairQuantity>,
+                doc_BasePairQuantity_value)
         .def("_mergeParallelValue", merge_parallel_value,
                 doc_BasePairQuantity__mergeParallelValue)
         .def("setStructure", &PairQuantity::setStructure<object>)

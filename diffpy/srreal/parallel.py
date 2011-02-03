@@ -84,7 +84,7 @@ def createParallelCalculator(pqobj, ncpu, pmap):
             arglist = [kwd.copy() for kwd['cpuindex'] in range(self.ncpu)]
             for y in self.pmap(_partialValue, arglist):
                 self.pqobj._mergeParallelValue(y)
-            return self.pqobj.value()
+            return self.pqobj.value
 
 
         def __call__(self, *args, **kwargs):

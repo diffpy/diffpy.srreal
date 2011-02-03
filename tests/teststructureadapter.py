@@ -110,7 +110,7 @@ class TestNoSymmetry(unittest.TestCase):
         '''
         pdfc0 = PDFCalculator()
         r0, g0 = pdfc0(nickel)
-        rdf0 = pdfc0.getRDF()
+        rdf0 = pdfc0.rdf
         niuc = nosymmetry(nickel)
         self.failUnless(niuc is nosymmetry(niuc))
         pdfc1 = PDFCalculator()
@@ -119,8 +119,8 @@ class TestNoSymmetry(unittest.TestCase):
         self.failIf(numpy.allclose(g0, g1))
         tail = (r0 > 5.0)
         self.failUnless(numpy.allclose(0.0 * g1[tail], g1[tail]))
-        rdf0 = pdfc0.getRDF()
-        rdf1 = pdfc1.getRDF()
+        rdf0 = pdfc0.rdf
+        rdf1 = pdfc1.rdf
         head = r0 < 3.0
         self.assertAlmostEqual(12.0, numpy.sum(rdf0[head] * pdfc0.rstep), 5)
         self.assertAlmostEqual(3.0, numpy.sum(rdf1[head] * pdfc1.rstep), 5)

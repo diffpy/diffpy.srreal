@@ -103,9 +103,9 @@ class PDFCalculatorInterface(object):
         setattrFromKeywordArguments(self, **kwargs)
         self.eval(structure)
         # apply kwargs again if structure contained any attribute
-        # that may affect the getPDF result.
+        # that may affect the result.
         setattrFromKeywordArguments(self, **kwargs)
-        rv = (self.getRgrid(), self.getPDF())
+        rv = (self.rgrid, self.pdf)
         return rv
 
 # class PDFCalculatorInterface
@@ -153,7 +153,7 @@ class DebyePDFCalculator(DebyePDFCalculator_ext, PDFCalculatorInterface):
         return
 
 
-# class DebyePDFCalculator_ext
+# class DebyePDFCalculator
 
 ##############################################################################
 

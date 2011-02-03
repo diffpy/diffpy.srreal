@@ -98,8 +98,8 @@ class TestDebyePDFCalculator(unittest.TestCase):
         self.assertEqual(3.0, gdba('rmin'))
         return
 
-    def test_getPDF_C60bucky(self):
-        """check DebyePDFCalculator.getPDF()
+    def test_PDF_C60bucky(self):
+        """check DebyePDFCalculator.pdf for C60 Bucky ball.
         """
         qmax = self.dpdfc.qmax
         r0, g0 = PDFCalculator(qmax=qmax)(self.bucky)
@@ -221,8 +221,8 @@ class TestDebyePDFCalculator(unittest.TestCase):
 #       """
 #       return
 #
-#   def test_getQgrid(self):
-#       """check DebyePDFCalculator.getQgrid()
+#   def test_qgrid(self):
+#       """check DebyePDFCalculator.qgrid
 #       """
 #       return
 #
@@ -231,8 +231,8 @@ class TestDebyePDFCalculator(unittest.TestCase):
 #       """
 #       return
 #
-#   def test_getRgrid(self):
-#       """check DebyePDFCalculator.getRgrid()
+#   def test_rgrid(self):
+#       """check DebyePDFCalculator.rgrid
 #       """
 #       return
 #
@@ -272,7 +272,7 @@ class TestDebyePDFCalculator(unittest.TestCase):
 #       return
 #
 #   def test_value(self):
-#       """check DebyePDFCalculator.value()
+#       """check DebyePDFCalculator.value
 #       """
 #       return
 

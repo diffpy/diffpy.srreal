@@ -73,7 +73,7 @@ class TestPDFCalcObjcryst(TestCaseObjCrystOptional):
         crst = loadObjCrystCrystal(cifbasename)
         setself(crst=crst)
         pdfc = _makePDFCalculator(crst, cfg)
-        gcalc = pdfc.getPDF()
+        gcalc = pdfc.pdf
         mxnd = _maxNormDiff(gobs, gcalc)
         setself(gcalc=gcalc, mxnd=mxnd)
         return
