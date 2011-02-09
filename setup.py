@@ -12,7 +12,6 @@ Scripts:    (none yet)
 import glob
 from setuptools import setup, find_packages
 from setuptools import Extension
-import fix_setuptools_chmod
 
 # define extensions here
 ext_kws = {

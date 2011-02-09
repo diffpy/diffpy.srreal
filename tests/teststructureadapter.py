@@ -129,7 +129,7 @@ class TestNoSymmetry(unittest.TestCase):
         self.failUnless(numpy.array_equal(r0, ra2))
         self.failUnless(numpy.allclose(g1, ga2))
         return
- 
+
     def test_nosymmetry_pickling(self):
         '''check pickling of the NoSymmetryStructureAdapter wrapper.
         '''
@@ -169,7 +169,7 @@ class TestPyObjCrystAdapter(TestCaseObjCrystOptional):
             numpy.diag([0.021733, 0.021733, 0.007707]),
             self.rutile.siteCartesianUij(1)))
         return
- 
+
     def test_objcryst_pickling(self):
         '''check pickling of the NoSymmetryStructureAdapter wrapper.
         '''

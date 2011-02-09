@@ -52,9 +52,9 @@ nickel.readStr(nickel_discus_data, format='discus')
 
 def Gpdffit2(qmax):
     """Calculate reference nickel PDF using diffpy.pdffit2
-    
+
     qmax    -- vawevector cutoff value in 1/A
-    
+
     Return numpy array of (r, g).
     """
     # calculate reference data using pdffit2
@@ -68,11 +68,11 @@ def Gpdffit2(qmax):
 
 def Gsrreal(qmax, peakprecision=None):
     """Calculate nickel PDF using PDFCalculator from diffpy.srreal
-    
+
     qmax            -- vawevector cutoff value in 1/A
     peakprecision   -- precision factor affecting peak cutoff,
                        keep at default value when None.
-    
+
     Return numpy array of (r, g).
     """
     pdfcalc = PDFCalculator()
@@ -95,7 +95,7 @@ def comparePDFCalculators(qmax, peakprecision=None):
                        keep at default value when None.
 
     Return a dictionary of benchmark results with the following keys:
-    
+
     qmax    -- vawevector cutoff value
     peakprecision -- actual peak precision used in PDFCalculator
     r       -- common r-grid for the PDF arrays

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 ##############################################################################
 #
 # diffpy.srreal     by DANSE Diffraction group
