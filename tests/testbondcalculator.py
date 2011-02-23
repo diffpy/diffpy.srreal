@@ -90,7 +90,7 @@ class TestBondCalculator(unittest.TestCase):
         dst = self.bdc(self.rutile)
         drs = self.bdc.directions
         nms = numpy.sqrt(numpy.sum(numpy.power(drs, 2), axis=1))
-        self.failUnless(numpy.array_equal(dst, nms))
+        self.failUnless(numpy.allclose(dst, nms))
         return
 
 
