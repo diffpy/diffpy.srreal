@@ -114,6 +114,64 @@ void merge_parallel_value(PairQuantity& obj, const python::object& a)
     obj.mergeParallelValue(a2);
 }
 
+// support "all", "ALL" and integer iterables in setPairMask
+
+std::vector<int> parsepairindex(python::object i)
+{
+    std::vector<int> rv;
+    // single integer
+    python::extract<int> geti(i);
+    if (geti.check())
+    {
+        rv.push_back(geti());
+        return rv;
+    }
+    // string equal "all" or "ALL"
+    python::extract<std::string> gets(i);
+    if (gets.check())
+    {
+        python::str lc_all(PairQuantity::ALLATOMSSTR);
+        python::str uc_all = lc_all.upper();
+        if (i != lc_all && i != uc_all)
+        {
+            python::object emsg = ("String argument must be %r or %r." %
+                 python::make_tuple(lc_all, uc_all));
+            PyErr_SetObject(PyExc_ValueError, emsg.ptr());
+            throw_error_already_set();
+        }
+        rv.push_back(PairQuantity::ALLATOMSINT);
+        return rv;
+    }
+    // sequence of integers
+    python::stl_input_iterator<int> begin(i), end;
+    rv.assign(begin, end);
+    return rv;
+}
+
+
+void set_pair_mask(PairQuantity& obj,
+        python::object i, python::object j, bool mask)
+{
+    python::extract<int> geti(i);
+    python::extract<int> getj(j);
+    // short circuit for normal call
+    if (geti.check() && getj.check())
+    {
+        obj.setPairMask(geti(), getj(), mask);
+        return;
+    }
+    std::vector<int> iindices = parsepairindex(i);
+    std::vector<int> jindices = parsepairindex(j);
+    std::vector<int>::const_iterator ii, jj;
+    for (ii = iindices.begin(); ii != iindices.end(); ++ii)
+    {
+        for (jj = jindices.begin(); jj != jindices.end(); ++jj)
+        {
+            obj.setPairMask(*ii, *jj, mask);
+        }
+    }
+}
+
 // Helper C++ class for publicizing the protected methods.
 
 class PairQuantityExposed : public PairQuantity
@@ -263,7 +321,7 @@ void wrap_PairQuantity()
         .def("_setupParallelRun", &PairQuantity::setupParallelRun)
         .def("maskAllPairs", &PairQuantity::maskAllPairs)
         .def("invertMask", &PairQuantity::invertMask)
-        .def("setPairMask", &PairQuantity::setPairMask)
+        .def("setPairMask", set_pair_mask)
         .def("getPairMask", &PairQuantity::getPairMask)
         .def("setTypeMask", &PairQuantity::setTypeMask)
         .def("getTypeMask", &PairQuantity::getTypeMask)

@@ -171,10 +171,8 @@ class TestPDFCalculator(unittest.TestCase):
         self.failUnless(numpy.allclose(rdf0, rdf1 + rdf1i))
         # Ti-O
         pdfc.maskAllPairs(True)
-        for i, smbli in enumerate(atomtypes):
-            for j, smblj in enumerate(atomtypes):
-                if smbli == smblj:
-                    pdfc.setPairMask(i, j, False)
+        pdfc.setPairMask(range(2), range(2), False)
+        pdfc.setPairMask(range(2, 6), range(2, 6), False)
         r2, g2 = pdfc(rutile)
         rdf2 = pdfc.rdf
         self.failUnless(numpy.array_equal(r0, r2))
@@ -227,9 +225,7 @@ class TestPDFCalculator(unittest.TestCase):
         r1, g1 = pdfc(rutile)
         self.assertEqual(0.0, numpy.dot(g1, g1))
         indices = range(len(rutile))
-        for i in indices:
-            for j in indices:
-                pdfc.setPairMask(i, j, True)
+        pdfc.setPairMask(indices, indices, True)
         r2, g2 = pdfc(rutile)
         self.failUnless(numpy.array_equal(g0, g2))
         return

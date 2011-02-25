@@ -126,11 +126,10 @@ class TestDebyePDFCalculator(unittest.TestCase):
         self.failUnless(numpy.array_equal(r0, r1i))
         self.failUnless(numpy.allclose(g0, g1 + g1i))
         # Ti-O
-        dpdfc.maskAllPairs(True)
-        for i, smbli in enumerate(atomtypes):
-            for j, smblj in enumerate(atomtypes):
-                if smbli == smblj:
-                    dpdfc.setPairMask(i, j, False)
+        dpdfc.maskAllPairs(False)
+        dpdfc.setTypeMask('all', 'ALL', True)
+        dpdfc.setTypeMask('Ti', 'Ti', False)
+        dpdfc.setTypeMask('O', 'O', False)
         r2, g2 = dpdfc(rutile)
         self.failUnless(numpy.array_equal(r0, r2))
         dpdfc.invertMask()
@@ -148,10 +147,7 @@ class TestDebyePDFCalculator(unittest.TestCase):
         self.failUnless(numpy.array_equal(g2i, g2ti))
         # O-O
         dpdfc.maskAllPairs(False)
-        for i, smbli in enumerate(atomtypes):
-            for j, smblj in enumerate(atomtypes):
-                if smbli == smblj == "O":
-                    dpdfc.setPairMask(i, j, True)
+        dpdfc.setTypeMask('O', 'O', True)
         r3, g3 = dpdfc(rutile)
         dpdfc.invertMask()
         r3i, g3i = dpdfc(rutile)

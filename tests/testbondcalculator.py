@@ -150,6 +150,37 @@ class TestBondCalculator(unittest.TestCase):
         return
 
 
+    def test_setPairMask(self):
+        '''check different setPairMask arguments.
+        '''
+        bdc = self.bdc
+        dall = bdc(self.nickel)
+        bdc.maskAllPairs(False)
+        self.assertEqual(0, len(bdc(self.nickel)))
+        for i in range(4):
+            bdc.setPairMask(0, i, True)
+        dst0a = bdc(self.nickel)
+        bdc.maskAllPairs(False)
+        bdc.setPairMask(range(4), 0, True)
+        dst0b = bdc(self.nickel)
+        self.failUnless(numpy.array_equal(dst0a, dst0b))
+        bdc.maskAllPairs(False)
+        bdc.setPairMask(0, -7, True)
+        dst0c = bdc(self.nickel)
+        self.failUnless(numpy.array_equal(dst0a, dst0c))
+        bdc.maskAllPairs(False)
+        bdc.setPairMask(0, 'all', True)
+        dst0d = bdc(self.nickel)
+        self.failUnless(numpy.array_equal(dst0a, dst0d))
+        bdc.setPairMask('all', 'all', False)
+        self.assertEqual(0, len(bdc(self.nickel)))
+        bdc.setPairMask('all', range(4), True)
+        dall2 = bdc(self.nickel)
+        self.failUnless(numpy.array_equal(dall, dall2))
+        self.assertRaises(ValueError, bdc.setPairMask, 'fooo', 2, True)
+        self.assertRaises(ValueError, bdc.setPairMask, 'aLL', 2, True)
+        return
+
 # End of class TestBondCalculator
 
 
