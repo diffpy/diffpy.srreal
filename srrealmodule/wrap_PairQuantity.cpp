@@ -52,7 +52,8 @@ using namespace diffpy::srreal;
 const char* doc_BasePairQuantity_eval = "\
 Calculate a pair quantity for the specified structure.\n\
 \n\
-stru -- structure object that can be converted to StructureAdapter\n\
+stru -- structure object that can be converted to StructureAdapter.\n\
+        Use the last structure when None.\n\
 \n\
 Return a copy of the internal total contributions.\n\
 May need to be further transformed to get the desired value.\n\
@@ -92,7 +93,8 @@ python::object repr_QuantityType(const QuantityType& v)
 
 python::object eval_asarray(PairQuantity& obj, const python::object& a)
 {
-    python::object rv = convertToNumPyArray(obj.eval(a));
+    QuantityType value = (Py_None == a.ptr()) ? obj.eval() : obj.eval(a);
+    python::object rv = convertToNumPyArray(value);
     return rv;
 }
 
@@ -305,6 +307,7 @@ void wrap_PairQuantity()
 {
     using namespace nswrap_PairQuantity;
     using diffpy::Attributes;
+    const python::object None;
 
     class_<QuantityType>("QuantityType")
         .def(vector_indexing_suite<QuantityType>())
@@ -312,7 +315,8 @@ void wrap_PairQuantity()
         ;
 
     class_<PairQuantity, bases<Attributes> >("BasePairQuantity_ext")
-        .def("eval", eval_asarray, doc_BasePairQuantity_eval)
+        .def("eval", eval_asarray, python::arg("stru")=None,
+                doc_BasePairQuantity_eval)
         .add_property("value", value_asarray<PairQuantity>,
                 doc_BasePairQuantity_value)
         .def("_mergeParallelValue", merge_parallel_value,
