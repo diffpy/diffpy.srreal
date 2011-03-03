@@ -345,7 +345,7 @@ void wrap_PairQuantity()
                 doc_BasePairQuantity__mergeParallelValue)
         .def("setStructure", &PairQuantity::setStructure<object>)
         .def("getStructure", &PairQuantity::getStructure,
-                return_internal_reference<>())
+                return_value_policy<copy_const_reference>())
         .def("_setupParallelRun", &PairQuantity::setupParallelRun)
         .def("maskAllPairs", &PairQuantity::maskAllPairs)
         .def("invertMask", &PairQuantity::invertMask)
