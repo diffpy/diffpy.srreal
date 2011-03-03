@@ -53,6 +53,9 @@ const char* doc_StructureAdapter_siteOccupancy = "";
 const char* doc_StructureAdapter_siteAnisotropy = "";
 const char* doc_StructureAdapter_siteCartesianUij = "";
 const char* doc_StructureAdapter__customPQConfig = "";
+const char* doc_nometa = "";
+const char* doc_nosymmetry = "";
+const char* doc_createStructureAdapter = "";
 
 // wrappers ------------------------------------------------------------------
 
@@ -286,9 +289,10 @@ void wrap_StructureAdapter()
 
     register_ptr_to_python<StructureAdapterPtr>();
 
-    def("nometa", nometa<object>);
-    def("nosymmetry", nosymmetry<object>);
-    def("createStructureAdapter", createStructureAdapter);
+    def("nometa", nometa<object>, doc_nometa);
+    def("nosymmetry", nosymmetry<object>, doc_nosymmetry);
+    def("createStructureAdapter", createStructureAdapter,
+            doc_createStructureAdapter);
 }
 
 }   // namespace srrealmodule
