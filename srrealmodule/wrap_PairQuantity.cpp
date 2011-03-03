@@ -84,8 +84,8 @@ DECLARE_PYARRAY_METHOD_WRAPPER(value, value_asarray)
 // representation of QuantityType objects
 python::object repr_QuantityType(const QuantityType& v)
 {
-    python::object rv = python::str("QuantityType%r") %
-        python::make_tuple(python::tuple(v));
+    python::object rv = ("QuantityType%r" %
+        python::make_tuple(python::tuple(v)));
     return rv;
 }
 
@@ -344,6 +344,8 @@ void wrap_PairQuantity()
                 (python::arg("v"), python::arg("ncpu")),
                 doc_BasePairQuantity__mergeParallelValue)
         .def("setStructure", &PairQuantity::setStructure<object>)
+        .def("getStructure", &PairQuantity::getStructure,
+                return_internal_reference<>())
         .def("_setupParallelRun", &PairQuantity::setupParallelRun)
         .def("maskAllPairs", &PairQuantity::maskAllPairs)
         .def("invertMask", &PairQuantity::invertMask)

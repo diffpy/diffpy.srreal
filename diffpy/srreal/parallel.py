@@ -77,8 +77,11 @@ def createParallelCalculator(pqobj, ncpu, pmap):
             '''
             # use StructureAdapter for faster pickles
             from diffpy.srreal.structureadapter import createStructureAdapter
-            struadpt = createStructureAdapter(stru)
-            self.pqobj.setStructure(stru)
+            if stru is None:
+                struadpt = self.pqobj.getStructure()
+            else:
+                struadpt = createStructureAdapter(stru)
+            self.pqobj.setStructure(struadpt)
             kwd = { 'cpuindex' : None,
                     'ncpu' : self.ncpu,
                     'pqobj' : copy.copy(self.pqobj),
