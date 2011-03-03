@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Unit tests for pdfcalculator.py
+"""Unit tests for diffpy.srreal.pdfcalculator
 """
 
 # version
@@ -12,12 +12,8 @@ import cPickle
 
 import numpy
 from srrealtestutils import loadDiffPyStructure
+from srrealtestutils import datafile
 from diffpy.srreal.pdfcalculator import PDFCalculator
-
-# useful variables
-thisfile = locals().get('__file__', 'file.py')
-tests_dir = os.path.dirname(os.path.abspath(thisfile))
-testdata_dir = os.path.join(tests_dir, 'testdata')
 
 # helper functions
 
@@ -115,7 +111,7 @@ class TestPDFCalculator(unittest.TestCase):
     def test_eval_nickel(self):
         """check PDFCalculator.eval() on simple Nickel data
         """
-        fnipf2 = os.path.join(testdata_dir, 'Ni-fit.fgr')
+        fnipf2 = datafile('Ni-fit.fgr')
         gpf2 = numpy.loadtxt(fnipf2, usecols=(1,))
         self.pdfcalc._setDoubleAttr('rmax', 10.0001)
         self.pdfcalc.eval(self.nickel)
@@ -126,7 +122,7 @@ class TestPDFCalculator(unittest.TestCase):
     def test_eval_rutile(self):
         """check PDFCalculator.eval() on anisotropic rutile data
         """
-        frutile = os.path.join(testdata_dir, 'TiO2_rutile-fit.fgr')
+        frutile = datafile('TiO2_rutile-fit.fgr')
         gpf2 = numpy.loadtxt(frutile, usecols=(1,))
         # configure calculator according to testdata/TiO2_ruitile-fit.fgr
         self.pdfcalc.qmax = 26

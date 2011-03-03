@@ -13,13 +13,13 @@ import numpy
 from diffpy.Structure import Structure
 from diffpy.srreal.pdfcalculator import PDFCalculator
 from srrealtestutils import TestCaseObjCrystOptional, loadObjCrystCrystal
-from srrealtestutils import loadDiffPyStructure, resolveDataFile
+from srrealtestutils import loadDiffPyStructure, datafile
 from diffpy.srreal.structureadapter import *
 
 
 # useful variables
 nickel = loadDiffPyStructure('Ni.stru')
-rutile_cif = resolveDataFile('TiO2_rutile-fit.cif')
+rutile_cif = datafile('TiO2_rutile-fit.cif')
 
 ##############################################################################
 class TestRoutines(unittest.TestCase):

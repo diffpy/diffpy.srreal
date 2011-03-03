@@ -27,22 +27,21 @@ testdata_dir = os.path.join(tests_dir, 'testdata')
 
 # helper functions
 
-def resolveDataFile(filename):
-    rv = (os.path.isfile(filename) and filename or
-        os.path.join(testdata_dir, filename))
+def datafile(filename):
+    rv = os.path.join(testdata_dir, filename)
     return rv
 
 
 def loadObjCrystCrystal(filename):
     from pyobjcryst.crystal import CreateCrystalFromCIF
-    fullpath = resolveDataFile(filename)
+    fullpath = datafile(filename)
     crst = CreateCrystalFromCIF(open(fullpath))
     return crst
 
 
 def loadDiffPyStructure(filename):
     from diffpy.Structure import Structure
-    fullpath = resolveDataFile(filename)
+    fullpath = datafile(filename)
     stru = Structure(filename=fullpath)
     return stru
 
