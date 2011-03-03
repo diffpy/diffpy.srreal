@@ -33,6 +33,10 @@ class TestRoutines(unittest.TestCase):
         self.failUnless(StructureAdapter is type(adpt))
         adpt1 = createStructureAdapter(adpt)
         self.failUnless(adpt is adpt1)
+        self.assertRaises(TypeError, createStructureAdapter, 77)
+        self.assertRaises(TypeError, createStructureAdapter, range(8))
+        self.assertRaises(TypeError, createStructureAdapter, None)
+        self.assertRaises(TypeError, createStructureAdapter, {})
         return
 
     def test_pickling(self):
