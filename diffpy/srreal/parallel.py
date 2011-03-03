@@ -169,7 +169,7 @@ def _partialValue(kwd):
     '''
     pqobj = kwd['pqobj']
     pqobj._setupParallelRun(kwd['cpuindex'], kwd['ncpu'])
-    return pqobj.eval(kwd['structure'])
+    return pqobj.eval()
 
 
 # End of file
