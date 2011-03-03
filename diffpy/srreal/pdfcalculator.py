@@ -88,13 +88,14 @@ class PDFCalculatorInterface(object):
         [0.01 A]''')
 
 
-    def __call__(self, structure, **kwargs):
+    def __call__(self, structure=None, **kwargs):
         '''Calculate PDF for the given structure as an (r, G) tuple.
         Keyword arguments can be used to configure calculator attributes,
         these override any properties that may be passed from the structure,
         such as spdiameter.
 
-        structure    -- a structure object to be evaluated
+        structure    -- a structure object to be evaluated.  Reuse the last
+                        structure when None.
         kwargs       -- optional parameter settings for this calculator
 
         Example:    pdfcalc(structure, qmax=20, spdiameter=15)
