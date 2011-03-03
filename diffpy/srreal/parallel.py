@@ -66,25 +66,27 @@ def createParallelCalculator(pqobj, ncpu, pmap):
             return
 
 
-        def eval(self, structure):
+        def eval(self, stru=None):
             '''Perform parallel calculation and return internal value array.
 
-            structure    -- structure to be evaluated, an instance of
-                            diffpy Structure or pyobjcryst Crystal
+            stru -- object that can be converted to StructureAdapter,
+                    e.g., example diffpy Structure or pyobjcryst Crystal.
+                    Use the last structure when None.
 
             Return numpy array.
             '''
             # use StructureAdapter for faster pickles
             from diffpy.srreal.structureadapter import createStructureAdapter
-            struadpt = createStructureAdapter(structure)
-            self.pqobj.setStructure(structure)
-            kwd = { 'ncpu' : self.ncpu,
+            struadpt = createStructureAdapter(stru)
+            self.pqobj.setStructure(stru)
+            kwd = { 'cpuindex' : None,
+                    'ncpu' : self.ncpu,
                     'pqobj' : copy.copy(self.pqobj),
-                    'structure' : struadpt }
+                    }
             # shallow copies of kwd dictionary each with a unique cpuindex
             arglist = [kwd.copy() for kwd['cpuindex'] in range(self.ncpu)]
             for y in self.pmap(_partialValue, arglist):
-                self.pqobj._mergeParallelValue(y)
+                self.pqobj._mergeParallelValue(y, self.ncpu)
             return self.pqobj.value
 
 
@@ -100,10 +102,10 @@ def createParallelCalculator(pqobj, ncpu, pmap):
                     self.pqobj.eval = savedeval
                 else:
                     self.pqobj.__dict__.pop('eval', None)
-            def parallel_eval(structure):
+            def parallel_eval(stru):
                 assert self.pqobj.eval is parallel_eval
                 restore_eval()
-                return self.eval(structure)
+                return self.eval(stru)
             self.pqobj.eval = parallel_eval
             try:
                 rv = self.pqobj(*args, **kwargs)

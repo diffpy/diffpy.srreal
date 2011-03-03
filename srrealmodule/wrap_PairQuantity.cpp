@@ -60,13 +60,15 @@ May need to be further transformed to get the desired value.\n\
 ";
 
 const char* doc_BasePairQuantity_value = "\
-Read-only array of total contributions.\n\
+Internal vector of total contributions as numpy array.\n\
 ";
 
 const char* doc_BasePairQuantity__mergeParallelValue = "\
 Add internal value from a parallel run to this instance.\n\
 \n\
 v    -- iterable of floats.  Must have the same length as self.value.\n\
+ncpu -- number of parallel jobs.  The finishValue method is called after\n\
+        merging ncpu parallel values.\n\
 \n\
 No return value.\n\
 ";
@@ -101,7 +103,7 @@ python::object eval_asarray(PairQuantity& obj, const python::object& a)
 
 // This wrapper is to support all Python iterables in mergeParallelValue.
 
-void merge_parallel_value(PairQuantity& obj, const python::object& a)
+void merge_parallel_value(PairQuantity& obj, python::object& a, int ncpu)
 {
     python::extract<const QuantityType&> getquantitytype(a);
     QuantityType a1;
@@ -113,7 +115,7 @@ void merge_parallel_value(PairQuantity& obj, const python::object& a)
         stl_input_iterator<double> begin(a), end;
         a1.assign(begin, end);
     }
-    obj.mergeParallelValue(a2);
+    obj.mergeParallelValue(a2, ncpu);
 }
 
 // support "all", "ALL" and integer iterables in setPairMask
@@ -211,6 +213,12 @@ class PairQuantityExposed : public PairQuantity
         }
 
 
+        void executeParallelMerge(const QuantityType& pvalue)
+        {
+            this->PairQuantity::executeParallelMerge(pvalue);
+        }
+
+
         void finishValue()
         {
             this->PairQuantity::finishValue();
@@ -285,6 +293,19 @@ class PairQuantityWrap :
         }
 
 
+        void executeParallelMerge(const QuantityType& pvalue)
+        {
+            override f = this->get_override("_executeParallelMerge");
+            if (f)  f();
+            else    this->default_executeParallelMerge(pvalue);
+        }
+
+        void default_executeParallelMerge(const QuantityType& pvalue)
+        {
+            this->PairQuantityExposed::executeParallelMerge(pvalue);
+        }
+
+
         void finishValue()
         {
             override f = this->get_override("_finishValue");
@@ -320,6 +341,7 @@ void wrap_PairQuantity()
         .add_property("value", value_asarray<PairQuantity>,
                 doc_BasePairQuantity_value)
         .def("_mergeParallelValue", merge_parallel_value,
+                (python::arg("v"), python::arg("ncpu")),
                 doc_BasePairQuantity__mergeParallelValue)
         .def("setStructure", &PairQuantity::setStructure<object>)
         .def("_setupParallelRun", &PairQuantity::setupParallelRun)
@@ -346,6 +368,9 @@ void wrap_PairQuantity()
         .def("_addPairContribution",
                 &PairQuantityExposed::addPairContribution,
                 &PairQuantityWrap::default_addPairContribution)
+        .def("_executeParallelMerge",
+                &PairQuantityExposed::executeParallelMerge,
+                &PairQuantityWrap::default_executeParallelMerge)
         .def("_finishValue",
                 &PairQuantityExposed::finishValue,
                 &PairQuantityWrap::default_finishValue)
