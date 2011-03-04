@@ -40,6 +40,7 @@ dist = setup(
             'http://dev.danse.us/packages/',
             "http://www.diffpy.org/packages/",
         ],
+        zip_safe = False,
 
         author = "Simon J.L. Billinge",
         author_email = "sb2896@columbia.edu",

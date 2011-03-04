@@ -27,6 +27,8 @@ env.EnsureSConsVersion(0, 98)
 # Customizable compile variables
 vars = Variables('sconsvars.py')
 
+vars.Add(PathVariable('prefix',
+    'installation prefix directory', None))
 vars.Add(EnumVariable('build',
     'compiler settings', 'debug',
     allowed_values=('debug', 'fast')))

@@ -1,11 +1,34 @@
+import sys
+import os
+from distutils.core import Distribution
+from distutils.command.build import build
+
 Import('env')
 
 # python extension module
 module = env.SharedLibrary('srreal_ext', Glob('*.cpp'), SHLIBPREFIX='')
 Alias('module', module)
+Export('module')
 
 # install in a development mode
 Alias('develop', Install('#/diffpy/srreal', module))
+
+# normal install - trick distutils into using this module.
+bcmd = build(Distribution())
+bcmd.finalize_options()
+distmodfile = os.path.join(bcmd.build_platlib,
+    'diffpy', 'srreal', os.path.basename(str(module[0])))
+cmd_build_ext = sys.executable + ' setup.py build_ext'
+cmd_install = sys.executable + ' setup.py install' + (
+        'prefix' in env and (' --prefix=' + env['prefix']) or '')
+install = env.Alias('install', module, [
+    Mkdir(os.path.dirname(distmodfile)),
+    Touch(distmodfile),
+    cmd_build_ext,
+    Copy(distmodfile, '$SOURCE'),
+    cmd_install,
+    ])
+AlwaysBuild(install)
 
 # default targets:
 Default(module)
