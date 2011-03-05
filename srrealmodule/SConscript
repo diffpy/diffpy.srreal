@@ -8,10 +8,12 @@ Import('env')
 # python extension module
 module = env.SharedLibrary('srreal_ext', Glob('*.cpp'), SHLIBPREFIX='')
 Alias('module', module)
-Export('module')
 
 # install in a development mode
-Alias('develop', Install('#/diffpy/srreal', module))
+develop = Alias('develop', Install('#/diffpy/srreal', module))
+
+test = env.Alias('test', module, 'alltests.py tests')
+AlwaysBuild(test)
 
 # normal install - trick distutils into using this module.
 bcmd = build(Distribution())

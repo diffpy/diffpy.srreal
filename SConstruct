@@ -6,6 +6,7 @@
 
 import os
 import re
+import platform
 
 def subdictionary(d, keyset):
     return dict([kv for kv in d.items() if kv[0] in keyset])
@@ -73,12 +74,9 @@ if env['profile']:
     env.AppendUnique(CCFLAGS='-pg')
     env.AppendUnique(LINKFLAGS='-pg')
 
-builddir = env.Dir('build/' + env['build'])
+builddir = env.Dir('build/%s-%s' % (env['build'], platform.machine()))
 Export('env')
 
 env.SConscript('srrealmodule/SConscript', variant_dir=builddir)
-
-test = env.Alias('test', env.Alias('develop'), 'alltests.py tests')
-AlwaysBuild(test)
 
 # vim: ft=python
