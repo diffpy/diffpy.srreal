@@ -38,8 +38,8 @@ class TestAttributes(unittest.TestCase):
         a.x = 45
         self.failUnless("x" in a.__dict__)
         self.failIf("x" in a._namesOfDoubleAttributes())
-        self.assertRaises(Exception, a._getDoubleAttr, "x")
-        self.assertRaises(Exception, a._setDoubleAttr, "x", 13)
+        self.assertRaises(AttributeError, a._getDoubleAttr, "x")
+        self.assertRaises(AttributeError, a._setDoubleAttr, "x", 13)
         del a.x
         a._registerDoubleAttribute("x")
         self.failUnless("x" in a._namesOfDoubleAttributes())
@@ -81,7 +81,7 @@ class TestAttributes(unittest.TestCase):
         """
         pdfc = PDFCalculator()
         pdfc.foo = 11
-        self.assertRaises(Exception, pdfc._getDoubleAttr, 'foo')
+        self.assertRaises(AttributeError, pdfc._getDoubleAttr, 'foo')
         pdfc._registerDoubleAttribute('foo')
         self.assertEqual(11, pdfc._getDoubleAttr('foo'))
         pdfc.rmax = 22
@@ -162,8 +162,8 @@ class TestAttributes(unittest.TestCase):
         a._registerDoubleAttribute('a1readonly', g)
         self.assertEqual(47, a.a1readonly)
         self.failUnless(hasattr(a, 'a1readonly'))
-        self.assertRaises(Exception, a._setDoubleAttr, 'a1readonly', 7)
-        self.assertRaises(Exception, setattr, a, 'a1readonly', 5)
+        self.assertRaises(AttributeError, a._setDoubleAttr, 'a1readonly', 7)
+        self.assertRaises(AttributeError, setattr, a, 'a1readonly', 5)
         self.assertEqual(47, a.a1readonly)
         a.a1 = 9
         self.assertEqual(9, a.a1readonly)

@@ -46,7 +46,7 @@ Return value of a named C++ double attribute owned by this object.\n\
 name -- string name of a double attribute\n\
 \n\
 Return double.\n\
-Raise ValueError for invalid name.\n\
+Raise AttributeError for invalid name.\n\
 ";
 
 const char* doc_Attributes__setDoubleAttr = "\
@@ -56,7 +56,7 @@ name     -- string name of a double attribute\n\
 value    -- new value of the attribute\n\
 \n\
 No return value.\n\
-Raise ValueError for invalid name or read-only attribute.\n\
+Raise AttributeError for invalid name or read-only attribute.\n\
 ";
 
 const char* doc_Attributes__hasDoubleAttr = "\
@@ -174,6 +174,13 @@ void registerPythonDoubleAttribute(python::object owner,
     registerBaseDoubleAttribute(cowner, name, pa);
 }
 
+// exception translator ------------------------------------------------------
+
+void translate(const DoubleAttributeError& e)
+{
+    PyErr_SetString(PyExc_AttributeError, e.what());
+}
+
 }   // namespace nswrap_Attributes
 
 // Wrapper definition --------------------------------------------------------
@@ -204,6 +211,8 @@ void wrap_Attributes()
         ;
     // inject the __getattr__ and __setattr__ methods
     import("diffpy.srreal.attributes");
+    // translate exceptions
+    register_exception_translator<DoubleAttributeError>(&translate);
 }
 
 }   // namespace srrealmodule
