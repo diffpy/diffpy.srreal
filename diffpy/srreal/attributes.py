@@ -20,8 +20,36 @@
 
 # module version
 __id__ = "$Id$"
+__all__ = ['Attributes']
 
 from diffpy.srreal.srreal_ext import Attributes
 
+# Inject the __getattr__ and __setattr__ methods to the Attributes class
+
+def __getattr__(self, name):
+    '''Lookup a C++ double attribute if standard Python lookup fails.
+
+    Raise AttributeError if C++ double attribute does not exist.
+    '''
+    try:
+        rv = self._getDoubleAttr(name)
+    except Exception, e:
+        raise AttributeError(e)
+    return rv
+
+Attributes.__getattr__ = __getattr__
+
+
+def __setattr__(self, name, value):
+    '''Assign to C++ double attribute if it exists.  Use standard Python
+    attribute assignment otherwise.
+    '''
+    if self._hasDoubleAttr(name):
+        self._setDoubleAttr(name, value)
+    else:
+        object.__setattr__(self, name, value)
+    return
+
+Attributes.__setattr__ = __setattr__
 
 # End of file

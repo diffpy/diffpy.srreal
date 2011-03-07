@@ -32,29 +32,70 @@ using std::string;
 using namespace boost;
 using namespace diffpy::attributes;
 
+// docstrings ----------------------------------------------------------------
+
+const char* doc_Attributes = "\
+This class manages named C++ double attributes owned by an instance.\n\
+The derived objects own double attributes that can be looked up from C++\n\
+by name, without having to know a full C++ interface of their classes.\n\
+";
+
+const char* doc_Attributes__getDoubleAttr = "\
+Return value of a named C++ double attribute owned by this object.\n\
+\n\
+name -- string name of a double attribute\n\
+\n\
+Return double.\n\
+Raise ValueError for invalid name.\n\
+";
+
+const char* doc_Attributes__setDoubleAttr = "\
+Set named C++ double attribute to the specified value.\n\
+\n\
+name     -- string name of a double attribute\n\
+value    -- new value of the attribute\n\
+\n\
+No return value.\n\
+Raise ValueError for invalid name or read-only attribute.\n\
+";
+
+const char* doc_Attributes__hasDoubleAttr = "\
+Check if named C++ double attribute exists.\n\
+\n\
+name     -- string name of a double attribute\n\
+\n\
+Return bool.\n\
+";
+
+const char* doc_Attributes__namesOfDoubleAttributes = "\
+Return set of C++ double attributes owned by this object.\n\
+";
+
+const char* doc_Attributes__namesOfWritableDoubleAttributes = "\
+Return set of writable C++ double attributes related to this object.\n\
+";
+
+const char* doc_Attributes__registerDoubleAttribute = "\
+Register a C++ double attribute that is defined in Python.\n\
+This must be called from the __init__ method of a Python class\n\
+that derives from the Attributes.\n\
+\n\
+name     -- string name of a double attribute, must be a unique\n\
+            attribute name for this instance\n\
+getter   -- optional function that returns the attribute value\n\
+setter   -- optional function that sets the attribute value.\n\
+            The attribute is read-only when None.\n\
+\n\
+When both getter and setter are None, register standard Python\n\
+attribute access as a C++ double attribute.\n\
+";
+
+// wrappers ------------------------------------------------------------------
 
 DECLARE_PYSET_METHOD_WRAPPER(namesOfDoubleAttributes,
         namesOfDoubleAttributes_asset)
 DECLARE_PYSET_METHOD_WRAPPER(namesOfWritableDoubleAttributes,
         namesOfWritableDoubleAttributes_asset)
-
-
-const char* getattr_setattr_code = "\
-def __getattr__(self, name):\n\
-    try:\n\
-        rv = self._getDoubleAttr(name)\n\
-    except Exception, e:\n\
-        raise AttributeError(e)\n\
-    return rv\n\
-\n\
-\n\
-def __setattr__(self, name, value):\n\
-    if self._hasDoubleAttr(name):\n\
-        self._setDoubleAttr(name, value)\n\
-    else:\n\
-        object.__setattr__(self, name, value)\n\
-    return\n\
-";
 
 // Helper class to handle double attributes defined from Python
 
@@ -142,25 +183,27 @@ void wrap_Attributes()
     using namespace nswrap_Attributes;
     using namespace boost::python;
     const python::object None;
-    // store custom __getattr__ and __setattr__ in the locals dictionary
-    object globals = import("__main__").attr("__dict__");
-    dict locals;
-    exec(getattr_setattr_code, globals, locals);
     // ready for class definition
-    class_<Attributes>("Attributes")
-        .def("_getDoubleAttr", &Attributes::getDoubleAttr)
-        .def("_setDoubleAttr", &Attributes::setDoubleAttr)
-        .def("_hasDoubleAttr", &Attributes::hasDoubleAttr)
+    class_<Attributes>("Attributes", doc_Attributes)
+        .def("_getDoubleAttr", &Attributes::getDoubleAttr,
+                doc_Attributes__getDoubleAttr)
+        .def("_setDoubleAttr", &Attributes::setDoubleAttr,
+                doc_Attributes__setDoubleAttr)
+        .def("_hasDoubleAttr", &Attributes::hasDoubleAttr,
+                doc_Attributes__hasDoubleAttr)
         .def("_namesOfDoubleAttributes",
-                namesOfDoubleAttributes_asset<Attributes>)
+                namesOfDoubleAttributes_asset<Attributes>,
+                doc_Attributes__namesOfDoubleAttributes)
         .def("_namesOfWritableDoubleAttributes",
-                namesOfWritableDoubleAttributes_asset<Attributes>)
+                namesOfWritableDoubleAttributes_asset<Attributes>,
+                doc_Attributes__namesOfWritableDoubleAttributes)
         .def("_registerDoubleAttribute",
                 registerPythonDoubleAttribute,
-                (python::arg("getter")=None, python::arg("setter")=None))
-        .def("__getattr__", locals["__getattr__"])
-        .def("__setattr__", locals["__setattr__"])
+                (python::arg("getter")=None, python::arg("setter")=None),
+                doc_Attributes__registerDoubleAttribute)
         ;
+    // inject the __getattr__ and __setattr__ methods
+    import("diffpy.srreal.attributes");
 }
 
 }   // namespace srrealmodule
