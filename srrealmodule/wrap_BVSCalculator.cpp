@@ -32,6 +32,10 @@ using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
 
+const char* doc_BVSCalculator = "\
+Calculator of bond valence sums in the specified structure.\n\
+";
+
 const char* doc_BVSCalculator_value = "\
 Return bond valence sums per each atom site in the structure.\n\
 ";
@@ -69,7 +73,8 @@ void wrap_BVSCalculator()
 {
     using namespace nswrap_BVSCalculator;
 
-    class_<BVSCalculator, bases<PairQuantity> >("BVSCalculator")
+    class_<BVSCalculator, bases<PairQuantity> >("BVSCalculator",
+            doc_BVSCalculator)
         .add_property("value", value_asarray<BVSCalculator>,
                 doc_BVSCalculator_value)
         .add_property("valences", valences_asarray<BVSCalculator>,

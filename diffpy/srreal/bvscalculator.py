@@ -21,14 +21,13 @@
 __id__ = "$Id$"
 
 # exported items
-__all__ = ['BVSCalculator']
+__all__ = ['BVSCalculator', 'BVParam']
 
-from diffpy.srreal.srreal_ext import BVSCalculator
+from diffpy.srreal.srreal_ext import BVSCalculator, BVParam
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
 from diffpy.srreal.wraputils import setattrFromKeywordArguments
 
-
-    # Property wrappers to C++ double attributes
+# Property wrappers to C++ double attributes
 
 BVSCalculator.valenceprecision = propertyFromExtDoubleAttr('valenceprecision',
         '''Cutoff value for valence contributions at long distances.
