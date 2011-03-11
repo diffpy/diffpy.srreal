@@ -12,7 +12,7 @@ Alias('module', module)
 # install in a development mode
 develop = Alias('develop', Install('#/diffpy/srreal', module))
 
-test = env.Alias('test', module, 'alltests.py tests')
+test = env.Alias('test', develop, 'alltests.py tests')
 AlwaysBuild(test)
 
 # normal install - trick distutils into using this module.
