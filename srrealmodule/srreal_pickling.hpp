@@ -60,10 +60,10 @@ class SerializationPickleSuite : public boost::python::pickle_suite
         {
             using namespace std;
             const T& tobj = boost::python::extract<const T&>(obj);
-            boost::python::object none;
-            boost::python::tuple rv = boost::python::make_tuple(
-                    serialization_tostring(tobj),
-                    pickledict ? obj.attr("__dict__") : none);
+            string content = serialization_tostring(tobj);
+            boost::python::tuple rv = pickledict ?
+                boost::python::make_tuple(content, obj.attr("__dict__")) :
+                boost::python::make_tuple(content);
             return rv;
         }
 
@@ -74,10 +74,11 @@ class SerializationPickleSuite : public boost::python::pickle_suite
             using namespace std;
             using namespace boost::python;
             T& tobj = extract<T&>(obj);
-            if (len(state) != 2)
+            int statelen = pickledict ? 2 : 1;
+            if (len(state) != statelen)
             {
-                object emsg = ("expected 2-item tuple in call "
-                        "to __setstate__; got %s" % state);
+                object emsg = ("expected %i-item tuple in call to "
+                        "__setstate__; got %s" % make_tuple(statelen, state));
                 PyErr_SetObject(PyExc_ValueError, emsg.ptr());
                 throw_error_already_set();
             }
