@@ -46,7 +46,7 @@ atom0    -- symbol of the anion atom, no charge specification\n\
 valence0 -- integer anion valence, must be negative\n\
 Ro       -- valence parameter Ro\n\
 B        -- valence parameter B\n\
-ref_id   -- code of the reference paper in bvparm2009.cif (optional)\n\
+ref_id   -- optional reference code in bvparm2009.cif\n\
 ";
 
 const char* doc_BVParam___repr__ = "\
@@ -93,14 +93,90 @@ const char* doc_BVParam_ref_id = "\
 code of the reference paper in bvparm2009.cif.\n\
 ";
 
-const char* doc_BVParametersTable = "FIXME";
-const char* doc_BVParametersTable_none = "FIXME";
-const char* doc_BVParametersTable_lookup = "FIXME";
-const char* doc_BVParametersTable_setCustom = "FIXME";
-const char* doc_BVParametersTable_resetCustom = "FIXME";
-const char* doc_BVParametersTable_resetAll = "FIXME";
-const char* doc_BVParametersTable_getAll = "FIXME";
+const char* doc_BVParametersTable = "\
+Lookup table for bond valence parameters of a cation-anion pairs.\n\
+";
 
+const char* doc_BVParametersTable_none = "\
+Singleton instance of void bond valence parameters.\n\
+Also returned by 'lookup' when valence data do not exist.\n\
+";
+
+const char* doc_BVParametersTable_lookup1 = "\
+Lookup bond valence parameters by a BVParam instance.\n\
+\n\
+bvparam  -- BVParam object.  The only attributes considered for\n\
+            lookup are atom0, valence0, atom1, valence1.\n\
+\n\
+Return a BVParam object with the looked up data.\n\
+Return BVParametersTable.none() if bond valence data do not exist.\n\
+";
+
+const char* doc_BVParametersTable_lookup4 = "\
+Lookup bond valence parameters by cation-anion pair.\n\
+The cation-anion order may be flipped.\n\
+\n\
+atom0    -- bare symbol of the cation atom\n\
+valence0 -- positive integer cation valence\n\
+atom1    -- bare symbol of the anion atom\n\
+valence1 -- negative integer anion valence\n\
+\n\
+Return a BVParam object with the looked up data.\n\
+Return BVParametersTable.none() if bond valence data do not exist.\n\
+";
+
+const char* doc_BVParametersTable_setCustom1 = "\
+Insert custom bond valence data to the table.\n\
+\n\
+bvparam  -- BVParam object with the custom bond valence data.\n\
+\n\
+No return value.\n\
+";
+
+const char* doc_BVParametersTable_setCustom6 = "\
+Insert custom bond valence data to the table.\n\
+\n\
+atom0    -- bare symbol of the cation atom\n\
+valence0 -- positive integer cation valence\n\
+atom1    -- bare symbol of the anion atom\n\
+valence1 -- negative integer anion valence\n\
+Ro       -- valence parameter Ro in Angstroms\n\
+B        -- valence parameter B in Angstroms\n\
+ref_id   -- optional reference code in bvparm2009.cif\n\
+\n\
+No return value.\n\
+";
+
+const char* doc_BVParametersTable_resetCustom1 = "\
+Remove custom bond valence data for the specified cation-anion pair.\n\
+\n\
+bvparam  -- BVParam object.  The only attributes considered for\n\
+            custom entry lookup are atom0, valence0, atom1, valence1.\n\
+\n\
+No return value.\n\
+";
+
+const char* doc_BVParametersTable_resetCustom4 = "\
+Remove custom bond valence data for the specified cation-anion pair.\n\
+The cation-anion order may be flipped.\n\
+\n\
+atom0    -- bare symbol of the cation atom\n\
+valence0 -- positive integer cation valence\n\
+atom1    -- bare symbol of the anion atom\n\
+valence1 -- negative integer anion valence\n\
+\n\
+No return value.\n\
+";
+const char* doc_BVParametersTable_resetAll = "\
+Remove all custom bond valence data defined in this table.\n\
+";
+
+const char* doc_BVParametersTable_getAll = "\
+Return all bond valence parameter values in this table.\n\
+\n\
+Return a set of BVParam objects.\n\
+";
+    
 // wrappers ------------------------------------------------------------------
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(setcustom6, setCustom, 6, 7)
@@ -167,22 +243,26 @@ void wrap_BVParametersTable()
         .def("none", singleton_none, doc_BVParametersTable_none)
         .staticmethod("none")
         .def("lookup", bptb_bvparam_1(&BVParametersTable::lookup),
-                doc_BVParametersTable_lookup,
+                arg("bvparam"), doc_BVParametersTable_lookup1,
                 return_value_policy<copy_const_reference>())
         .def("lookup", bptb_bvparam_4(&BVParametersTable::lookup),
-                doc_BVParametersTable_lookup,
+                (arg("atom0"), arg("valence0"), arg("atom1"), arg("valence1")),
+                doc_BVParametersTable_lookup4,
                 return_value_policy<copy_const_reference>())
         .def("setCustom", bptb_void_1(&BVParametersTable::setCustom),
-                doc_BVParametersTable_setCustom)
+                arg("bvparm"), doc_BVParametersTable_setCustom1)
         .def("setCustom", (void(BVParametersTable::*)(const string&, int,
                     const string&, int, double, double, string)) NULL,
-                setcustom6(doc_BVParametersTable_setCustom))
+                setcustom6((arg("atom0"), arg("valence0"), arg("atom1"), arg("valence1"),
+                     arg("Ro"), arg("B"), arg("ref_id")=""),
+                    doc_BVParametersTable_setCustom6))
         .def("resetCustom", bptb_void_1(&BVParametersTable::resetCustom),
-                doc_BVParametersTable_resetCustom)
+                doc_BVParametersTable_resetCustom1)
         .def("resetCustom", bptb_void_4(&BVParametersTable::resetCustom),
-                doc_BVParametersTable_resetCustom)
+                (arg("atom0"), arg("valence0"), arg("atom1"), arg("valence1")),
+                doc_BVParametersTable_resetCustom4)
         .def("resetAll", &BVParametersTable::resetAll,
-                doc_BVParametersTable_resetCustom)
+                doc_BVParametersTable_resetAll)
         .def("getAll", getAll_asset<BVParametersTable>,
                 doc_BVParametersTable_getAll)
         .def_pickle(SerializationPickleSuite<BVParametersTable>())
