@@ -42,8 +42,8 @@ Initialize new instance of the BVParam class.\n\
 \n\
 atom0    -- symbol of the cation atom, no charge specification\n\
 valence0 -- integer cation valence, must be positive\n\
-atom0    -- symbol of the anion atom, no charge specification\n\
-valence0 -- integer anion valence, must be negative\n\
+atom1    -- symbol of the anion atom, no charge specification\n\
+valence1 -- integer anion valence, must be negative\n\
 Ro       -- valence parameter Ro\n\
 B        -- valence parameter B\n\
 ref_id   -- optional reference code in bvparm2009.cif\n\
