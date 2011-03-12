@@ -59,11 +59,25 @@ Root mean square difference between expected and calculated valences.\n\
 Adjusted for multiplicity and occupancy of atom sites in the structure.\n\
 ";
 
+const char* doc_BVSCalculator_bvparamtable = "\
+BVParametersTable object used for bond valence parameters lookup.\n\
+";
+
 // wrappers ------------------------------------------------------------------
 
 DECLARE_PYARRAY_METHOD_WRAPPER(value, value_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(valences, valences_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(bvdiff, bvdiff_asarray)
+
+BVParametersTablePtr getbvparamtable(BVSCalculator& obj)
+{
+    return obj.getBVParamTable();
+}
+
+void setbvparamtable(BVSCalculator& obj, BVParametersTablePtr bptb)
+{
+    obj.setBVParamTable(bptb);
+}
 
 }   // namespace nswrap_BVSCalculator
 
@@ -85,6 +99,8 @@ void wrap_BVSCalculator()
                 doc_BVSCalculator_bvmsdiff)
         .add_property("bvrmsdiff", &BVSCalculator::bvrmsdiff,
                 doc_BVSCalculator_bvrmsdiff)
+        .add_property("bvparamtable", getbvparamtable, setbvparamtable,
+                doc_BVSCalculator_bvparamtable)
         .def_pickle(SerializationPickleSuite<BVSCalculator>())
         ;
 
