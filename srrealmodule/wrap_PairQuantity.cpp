@@ -63,14 +63,18 @@ const char* doc_BasePairQuantity_value = "\
 Internal vector of total contributions as numpy array.\n\
 ";
 
-const char* doc_BasePairQuantity__mergeParallelValue = "\
-Add internal value from a parallel run to this instance.\n\
+const char* doc_BasePairQuantity__mergeParallelData = "\
+Process raw results string from a parallel job and add them to this instance.\n\
 \n\
-v    -- iterable of floats.  Must have the same length as self.value.\n\
-ncpu -- number of parallel jobs.  The finishValue method is called after\n\
-        merging ncpu parallel values.\n\
+pdata    -- raw data string from the parallel job's _getParallelData function.\n\
+ncpu     -- number of parallel jobs.  The finishValue method is called after\n\
+            merging ncpu parallel values.\n\
 \n\
 No return value.\n\
+";
+
+const char* doc_BasePairQuantity__getParallelData = "\
+Return raw results string from a parallel job.\n\
 ";
 
 const char* doc_PairQuantityWrap__value = "\
@@ -98,24 +102,6 @@ python::object eval_asarray(PairQuantity& obj, const python::object& a)
     QuantityType value = (Py_None == a.ptr()) ? obj.eval() : obj.eval(a);
     python::object rv = convertToNumPyArray(value);
     return rv;
-}
-
-
-// This wrapper is to support all Python iterables in mergeParallelValue.
-
-void merge_parallel_value(PairQuantity& obj, python::object& a, int ncpu)
-{
-    python::extract<const QuantityType&> getquantitytype(a);
-    QuantityType a1;
-    // use QuantityType reference if it can be extracted from object a
-    const QuantityType& a2 = getquantitytype.check() ? getquantitytype() : a1;
-    // otherwise copy the a-data to a local QuantityType a1.
-    if (&a2 == &a1)
-    {
-        stl_input_iterator<double> begin(a), end;
-        a1.assign(begin, end);
-    }
-    obj.mergeParallelValue(a2, ncpu);
 }
 
 // support "all", "ALL" and integer iterables in setPairMask
@@ -213,9 +199,9 @@ class PairQuantityExposed : public PairQuantity
         }
 
 
-        void executeParallelMerge(const QuantityType& pvalue)
+        void executeParallelMerge(const std::string& pdata)
         {
-            this->PairQuantity::executeParallelMerge(pvalue);
+            this->PairQuantity::executeParallelMerge(pdata);
         }
 
 
@@ -235,6 +221,20 @@ class PairQuantityWrap :
     public wrapper<PairQuantityExposed>
 {
     public:
+
+        // Make getParallelData overloadable from Python.
+
+        std::string getParallelData() const
+        {
+            override f = this->get_override("_getParallelData");
+            if (f)  return f();
+            return this->default_getParallelData();
+        }
+
+        std::string default_getParallelData() const
+        {
+            return this->PairQuantityExposed::getParallelData();
+        }
 
         // Make the protected virtual methods public so they
         // can be exported to Python and overloaded as well.
@@ -293,16 +293,16 @@ class PairQuantityWrap :
         }
 
 
-        void executeParallelMerge(const QuantityType& pvalue)
+        void executeParallelMerge(const std::string& pdata)
         {
             override f = this->get_override("_executeParallelMerge");
-            if (f)  f();
-            else    this->default_executeParallelMerge(pvalue);
+            if (f)  f(pdata);
+            else    this->default_executeParallelMerge(pdata);
         }
 
-        void default_executeParallelMerge(const QuantityType& pvalue)
+        void default_executeParallelMerge(const std::string& pdata)
         {
-            this->PairQuantityExposed::executeParallelMerge(pvalue);
+            this->PairQuantityExposed::executeParallelMerge(pdata);
         }
 
 
@@ -340,9 +340,11 @@ void wrap_PairQuantity()
                 doc_BasePairQuantity_eval)
         .add_property("value", value_asarray<PairQuantity>,
                 doc_BasePairQuantity_value)
-        .def("_mergeParallelValue", merge_parallel_value,
-                (python::arg("v"), python::arg("ncpu")),
-                doc_BasePairQuantity__mergeParallelValue)
+        .def("_mergeParallelData", &PairQuantity::mergeParallelData,
+                (python::arg("pdata"), python::arg("ncpu")),
+                doc_BasePairQuantity__mergeParallelData)
+        .def("_getParallelData", &PairQuantity::getParallelData,
+                doc_BasePairQuantity__getParallelData)
         .def("setStructure", &PairQuantity::setStructure<object>)
         .def("getStructure", &PairQuantity::getStructure,
                 return_value_policy<copy_const_reference>())
@@ -358,6 +360,9 @@ void wrap_PairQuantity()
 
     class_<PairQuantityWrap, bases<PairQuantity>,
         noncopyable>("PairQuantity_ext")
+        .def("_getParallelData",
+                &PairQuantityExposed::getParallelData,
+                &PairQuantityWrap::default_getParallelData)
         .def("_resizeValue",
                 &PairQuantityExposed::resizeValue,
                 &PairQuantityWrap::default_resizeValue)

@@ -88,8 +88,8 @@ def createParallelCalculator(pqobj, ncpu, pmap):
                     }
             # shallow copies of kwd dictionary each with a unique cpuindex
             arglist = [kwd.copy() for kwd['cpuindex'] in range(self.ncpu)]
-            for y in self.pmap(_partialValue, arglist):
-                self.pqobj._mergeParallelValue(y, self.ncpu)
+            for pdata in self.pmap(_parallelData, arglist):
+                self.pqobj._mergeParallelData(pdata, self.ncpu)
             return self.pqobj.value
 
 
@@ -164,12 +164,12 @@ def createParallelCalculator(pqobj, ncpu, pmap):
     return ParallelPairQuantity(pqobj, ncpu, pmap)
 
 
-def _partialValue(kwd):
-    '''Helper function for calculating partial value on a worker node.
+def _parallelData(kwd):
+    '''Helper for calculating and fetching raw results from a worker node.
     '''
     pqobj = kwd['pqobj']
     pqobj._setupParallelRun(kwd['cpuindex'], kwd['ncpu'])
-    return pqobj.eval()
-
+    pqobj.eval()
+    return pqobj._getParallelData()
 
 # End of file
