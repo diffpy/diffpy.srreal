@@ -151,7 +151,7 @@ void wrap_OverlapCalculator()
 
     // Inject __init__ and __call__ methods with support for keyword arguments.
     // Add properties for the OverlapCalculator double attributes.
-    // FIXME: import("diffpy.srreal.overlapcalculator");
+    import("diffpy.srreal.overlapcalculator");
 }
 
 }   // namespace srrealmodule
