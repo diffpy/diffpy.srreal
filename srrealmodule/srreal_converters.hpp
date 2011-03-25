@@ -25,11 +25,8 @@
 #include <algorithm>
 #include <boost/python.hpp>
 #include <diffpy/srreal/R3linalg.hpp>
-#include <diffpy/srreal/PairQuantity.hpp>
-
-// This macro is required for extension modules that are in several files.
-// It must be defined before inclusion of numpy/arrayobject.h
-#define PY_ARRAY_UNIQUE_SYMBOL DIFFPY_SRREAL_NUMPY_ARRAY_SYMBOL
+#include <diffpy/srreal/PairQuantityUtils.hpp>
+#include "srreal_numpy_symbol.hpp"
 
 namespace srrealmodule {
 

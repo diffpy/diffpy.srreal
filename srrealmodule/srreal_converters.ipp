@@ -24,7 +24,7 @@
 
 namespace srrealmodule {
 
-// definitions of template wrappers
+// definitions of shared template wrappers
 
 DECLARE_PYARRAY_METHOD_WRAPPER(value, value_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(distances, distances_asarray)

@@ -18,7 +18,8 @@
 *
 *****************************************************************************/
 
-#include "srreal_converters.hpp"
+#include <boost/python/module.hpp>
+#include "srreal_numpy_symbol.hpp"
 #include <numpy/arrayobject.h>
 
 // Declaration of the external wrappers --------------------------------------
