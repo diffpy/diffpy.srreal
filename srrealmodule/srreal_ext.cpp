@@ -24,6 +24,7 @@
 // Declaration of the external wrappers --------------------------------------
 
 namespace srrealmodule {
+
 void wrap_Attributes();
 void wrap_StructureAdapter();
 void wrap_BaseBondGenerator();
@@ -37,6 +38,8 @@ void wrap_PDFBaseline();
 void wrap_PDFEnvelope();
 void wrap_PDFCalculators();
 void wrap_BondCalculator();
+void wrap_OverlapCalculator();
+
 }   // namespace srrealmodule
 
 // Module Definitions --------------------------------------------------------
@@ -60,6 +63,7 @@ BOOST_PYTHON_MODULE(srreal_ext)
     wrap_PDFEnvelope();
     wrap_PDFCalculators();
     wrap_BondCalculator();
+    wrap_OverlapCalculator();
 }
 
 // End of file

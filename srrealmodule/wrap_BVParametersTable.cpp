@@ -176,7 +176,7 @@ Return all bond valence parameter values in this table.\n\
 \n\
 Return a set of BVParam objects.\n\
 ";
-    
+
 // wrappers ------------------------------------------------------------------
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(setcustom6, setCustom, 6, 7)
