@@ -8,13 +8,7 @@ __id__ = '$Id$'
 
 import os
 import unittest
-import cPickle
 import numpy
-
-# useful variables
-thisfile = locals().get('__file__', 'file.py')
-tests_dir = os.path.dirname(os.path.abspath(thisfile))
-testdata_dir = os.path.join(tests_dir, 'testdata')
 
 from srrealtestutils import TestCaseObjCrystOptional
 from srrealtestutils import loadDiffPyStructure, loadObjCrystCrystal
@@ -66,9 +60,9 @@ class TestBondCalculator(unittest.TestCase):
         """
         self.bdc.eval(self.nickel)
         dst = self.bdc.distances
-        self.failUnless(numpy.array_equal(dst,
+        self.assertTrue(numpy.array_equal(dst,
             BondCalculator()(self.nickel)))
-        self.failUnless(numpy.array_equal(dst, numpy.sort(dst)))
+        self.assertTrue(numpy.array_equal(dst, numpy.sort(dst)))
         self.bdc.maskAllPairs(False)
         for i in range(4):
             self.bdc.setPairMask(0, i, True)
@@ -79,8 +73,8 @@ class TestBondCalculator(unittest.TestCase):
         dst3a = self.bdc(self.nickel)
         self.bdc.maskAllPairs(True)
         dstp = self.bdc(self.niprim)
-        self.failUnless(numpy.allclose(dst0a, dst3a))
-        self.failUnless(numpy.allclose(dst0a, dstp))
+        self.assertTrue(numpy.allclose(dst0a, dst3a))
+        self.assertTrue(numpy.allclose(dst0a, dstp))
         return
 
 
@@ -90,7 +84,7 @@ class TestBondCalculator(unittest.TestCase):
         dst = self.bdc(self.rutile)
         drs = self.bdc.directions
         nms = numpy.sqrt(numpy.sum(numpy.power(drs, 2), axis=1))
-        self.failUnless(numpy.allclose(dst, nms))
+        self.assertTrue(numpy.allclose(dst, nms))
         return
 
 
@@ -113,8 +107,29 @@ class TestBondCalculator(unittest.TestCase):
         self.assertEqual([], bdc.sites0)
         bdc.setPairMask(3, 3, True)
         bdc(self.rutile)
-        self.failUnless(len(bdc.sites0))
+        self.assertTrue(len(bdc.sites0))
         self.assertEqual(set([3]), set(bdc.sites0 + bdc.sites1))
+        return
+
+
+    def test_types(self):
+        """check BondCalculator.types
+        """
+        bdc = self.bdc
+        dst = bdc(self.rutile)
+        self.assertEqual(len(dst), len(bdc.types0))
+        self.assertEqual(len(dst), len(bdc.types1))
+        self.assertEqual(set(('Ti', 'O')), set(bdc.types0))
+        self.assertEqual(set(('Ti', 'O')), set(bdc.types1))
+        self.assertNotEquals(bdc.types0, bdc.types1)
+        bdc.maskAllPairs(False)
+        bdc(self.rutile)
+        self.assertEqual([], bdc.types0)
+        self.assertEqual([], bdc.types1)
+        bdc.setPairMask(3, 3, True)
+        bdc(self.rutile)
+        self.assertTrue(len(bdc.types0))
+        self.assertEqual(set(['O']), set(bdc.types0 + bdc.types1))
         return
 
 
@@ -163,20 +178,20 @@ class TestBondCalculator(unittest.TestCase):
         bdc.maskAllPairs(False)
         bdc.setPairMask(range(4), 0, True)
         dst0b = bdc(self.nickel)
-        self.failUnless(numpy.array_equal(dst0a, dst0b))
+        self.assertTrue(numpy.array_equal(dst0a, dst0b))
         bdc.maskAllPairs(False)
         bdc.setPairMask(0, -7, True)
         dst0c = bdc(self.nickel)
-        self.failUnless(numpy.array_equal(dst0a, dst0c))
+        self.assertTrue(numpy.array_equal(dst0a, dst0c))
         bdc.maskAllPairs(False)
         bdc.setPairMask(0, 'all', True)
         dst0d = bdc(self.nickel)
-        self.failUnless(numpy.array_equal(dst0a, dst0d))
+        self.assertTrue(numpy.array_equal(dst0a, dst0d))
         bdc.setPairMask('all', 'all', False)
         self.assertEqual(0, len(bdc(self.nickel)))
         bdc.setPairMask('all', range(4), True)
         dall2 = bdc(self.nickel)
-        self.failUnless(numpy.array_equal(dall, dall2))
+        self.assertTrue(numpy.array_equal(dall, dall2))
         self.assertRaises(ValueError, bdc.setPairMask, 'fooo', 2, True)
         self.assertRaises(ValueError, bdc.setPairMask, 'aLL', 2, True)
         return
@@ -210,6 +225,51 @@ class TestBondCalculatorObjCryst(TestCaseObjCrystOptional):
         self.assertEqual(3, len(bdc(self.rutile)))
         bdc.rmax = 2.5
         self.assertEqual(12, len(bdc(self.nickel)))
+        return
+
+
+    def test_sites(self):
+        """check BondCalculator.sites
+        """
+        bdc = self.bdc
+        dst = bdc(self.rutile)
+        self.assertEqual(len(dst), len(bdc.sites0))
+        self.assertEqual(len(dst), len(bdc.sites1))
+        self.assertEqual(0, numpy.min(bdc.sites0))
+        self.assertEqual(1, numpy.max(bdc.sites0))
+        self.assertEqual(0, numpy.min(bdc.sites1))
+        self.assertEqual(1, numpy.max(bdc.sites1))
+        dij = [(tuple(d) + (i0, i1)) for d, i0, i1 in zip(
+                    bdc.directions, bdc.sites0, bdc.sites1)]
+        self.assertEqual(len(dij), len(set(dij)))
+        bdc.maskAllPairs(False)
+        bdc(self.rutile)
+        self.assertEqual([], bdc.sites0)
+        bdc.setPairMask(1, 1, True)
+        bdc(self.rutile)
+        self.assertTrue(len(bdc.sites0))
+        self.assertEqual(set([1]), set(bdc.sites0 + bdc.sites1))
+        return
+
+
+    def test_types(self):
+        """check BondCalculator.types
+        """
+        bdc = self.bdc
+        dst = bdc(self.rutile)
+        self.assertEqual(len(dst), len(bdc.types0))
+        self.assertEqual(len(dst), len(bdc.types1))
+        self.assertEqual(set(('Ti', 'O')), set(bdc.types0))
+        self.assertEqual(set(('Ti', 'O')), set(bdc.types1))
+        self.assertNotEquals(bdc.types0, bdc.types1)
+        bdc.maskAllPairs(False)
+        bdc(self.rutile)
+        self.assertEqual([], bdc.types0)
+        self.assertEqual([], bdc.types1)
+        bdc.setPairMask(1, 1, True)
+        bdc(self.rutile)
+        self.assertTrue(len(bdc.types0))
+        self.assertEqual(set(['O']), set(bdc.types0 + bdc.types1))
         return
 
 

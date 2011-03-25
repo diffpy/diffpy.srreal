@@ -50,6 +50,12 @@ const char* doc_OverlapCalculator_sites0 = "\
 const char* doc_OverlapCalculator_sites1 = "\
 ";
 
+const char* doc_OverlapCalculator_types0 = "\
+";
+
+const char* doc_OverlapCalculator_types1 = "\
+";
+
 const char* doc_OverlapCalculator_sitesquareoverlaps = "\
 ";
 
@@ -113,6 +119,12 @@ void wrap_OverlapCalculator()
         .add_property("sites1",
                 sites1_aslist<OverlapCalculator>,
                 doc_OverlapCalculator_sites1)
+        .add_property("types0",
+                types0_aslist<OverlapCalculator>,
+                doc_OverlapCalculator_types0)
+        .add_property("types1",
+                types1_aslist<OverlapCalculator>,
+                doc_OverlapCalculator_types1)
         .add_property("sitesquareoverlaps",
                 siteSquareOverlaps_asarray<OverlapCalculator>,
                 doc_OverlapCalculator_sitesquareoverlaps)

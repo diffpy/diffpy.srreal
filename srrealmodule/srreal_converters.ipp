@@ -30,6 +30,8 @@ DECLARE_PYARRAY_METHOD_WRAPPER(value, value_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(distances, distances_asarray)
 DECLARE_PYLIST_METHOD_WRAPPER(sites0, sites0_aslist)
 DECLARE_PYLIST_METHOD_WRAPPER(sites1, sites1_aslist)
+DECLARE_PYLIST_METHOD_WRAPPER(types0, types0_aslist)
+DECLARE_PYLIST_METHOD_WRAPPER(types1, types1_aslist)
 DECLARE_PYLISTARRAY_METHOD_WRAPPER(directions, directions_aslist)
 
 }   // namespace srrealmodule

@@ -54,6 +54,14 @@ const char* doc_BondCalculator_sites1 = "\
 List of zero-based indices of the second site in the pair.\n\
 ";
 
+const char* doc_BondCalculator_types0 = "\
+List of atom symbols for the first site in all pairs.\n\
+";
+
+const char* doc_BondCalculator_types1 = "\
+List of atom symbols for the second site in all pairs.\n\
+";
+
 const char* doc_BondCalculator_filterCone = "\
 Setup an additive bond filter in a specified direction cone.\n\
 Second and further calls create more filters that permit more bonds.\n\
@@ -101,14 +109,24 @@ void wrap_BondCalculator()
 
     class_<BondCalculator, bases<PairQuantity>
         >("BondCalculator", doc_BondCalculator)
-        .add_property("distances", distances_asarray<BondCalculator>,
+        .add_property("distances",
+                distances_asarray<BondCalculator>,
                 doc_BondCalculator_distances)
-        .add_property("directions", directions_aslist<BondCalculator>,
+        .add_property("directions",
+                directions_aslist<BondCalculator>,
                 doc_BondCalculator_directions)
-        .add_property("sites0", sites0_aslist<BondCalculator>,
+        .add_property("sites0",
+                sites0_aslist<BondCalculator>,
                 doc_BondCalculator_sites0)
-        .add_property("sites1", sites1_aslist<BondCalculator>,
+        .add_property("sites1",
+                sites1_aslist<BondCalculator>,
                 doc_BondCalculator_sites1)
+        .add_property("types0",
+                types0_aslist<BondCalculator>,
+                doc_BondCalculator_types0)
+        .add_property("types1",
+                types1_aslist<BondCalculator>,
+                doc_BondCalculator_types1)
         .def("filterCone", filter_cone,
                 (bp::arg("cartesiandir"), bp::arg("degrees")),
                 doc_BondCalculator_filterCone)
