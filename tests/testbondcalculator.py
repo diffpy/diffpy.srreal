@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Unit tests for diffpy.srreal.bondcecalculator
+"""Unit tests for diffpy.srreal.bondcalculator
 """
 
 # version
@@ -8,6 +8,7 @@ __id__ = '$Id$'
 
 import os
 import unittest
+import cPickle
 import numpy
 
 from srrealtestutils import TestCaseObjCrystOptional
@@ -52,6 +53,27 @@ class TestBondCalculator(unittest.TestCase):
         self.assertEqual(0, len(bdc(self.niprim)))
         bdc.rmax = 2.5
         self.assertEqual(12, len(bdc(self.niprim)))
+        return
+
+
+    def test_pickling(self):
+        '''check pickling and unpickling of BondCalculator.
+        '''
+        bdc = self.bdc
+        bdc.rmin = 0.1
+        bdc.rmax = 12.3
+        bdc.setPairMask(1, 2, False)
+        bdc.foobar = 'asdf'
+        bdc(self.nickel)
+        spkl = cPickle.dumps(bdc)
+        bdc1 = cPickle.loads(spkl)
+        self.assertFalse(bdc is bdc1)
+        for a in bdc._namesOfDoubleAttributes():
+            self.assertEqual(getattr(bdc, a), getattr(bdc1, a))
+        self.assertFalse(bdc1.getPairMask(1, 2))
+        self.assertTrue(bdc1.getPairMask(0, 0))
+        self.assertEqual('asdf', bdc1.foobar)
+        self.assertTrue(numpy.array_equal(bdc.distances, bdc1.distances))
         return
 
 
