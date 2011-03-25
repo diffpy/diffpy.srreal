@@ -24,6 +24,7 @@
 #include <boost/python.hpp>
 
 #include <diffpy/serialization.hpp>
+#include <diffpy/srreal/PairQuantity.hpp>
 #include <diffpy/srreal/PythonStructureAdapter.hpp>
 #include <diffpy/srreal/NoMetaStructureAdapter.hpp>
 #include <diffpy/srreal/NoSymmetryStructureAdapter.hpp>
