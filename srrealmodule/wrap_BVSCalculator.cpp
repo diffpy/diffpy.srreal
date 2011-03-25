@@ -65,7 +65,6 @@ BVParametersTable object used for bond valence parameters lookup.\n\
 
 // wrappers ------------------------------------------------------------------
 
-DECLARE_PYARRAY_METHOD_WRAPPER(value, value_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(valences, valences_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(bvdiff, bvdiff_asarray)
 

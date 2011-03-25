@@ -83,8 +83,6 @@ Reference to the internal vector of total contributions.\n\
 
 // wrappers ------------------------------------------------------------------
 
-DECLARE_PYARRAY_METHOD_WRAPPER(value, value_asarray)
-
 // representation of QuantityType objects
 python::object repr_QuantityType(const QuantityType& v)
 {

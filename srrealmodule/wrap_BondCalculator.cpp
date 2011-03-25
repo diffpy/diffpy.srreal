@@ -74,23 +74,6 @@ exclusive cone filter in a new direction.\n\
 
 // wrappers ------------------------------------------------------------------
 
-DECLARE_PYARRAY_METHOD_WRAPPER(distances, distances_asarray)
-DECLARE_PYLIST_METHOD_WRAPPER(sites0, sites0_aslist)
-DECLARE_PYLIST_METHOD_WRAPPER(sites1, sites1_aslist)
-
-
-bp::list directions_aslist(const BondCalculator& obj)
-{
-    std::vector<R3::Vector> rv = obj.directions();
-    std::vector<R3::Vector>::const_iterator ii;
-    bp::list rvlist;
-    for (ii = rv.begin(); ii != rv.end(); ++ii)
-    {
-        rvlist.append(convertToNumPyArray(*ii));
-    }
-    return rvlist;
-}
-
 
 void filter_cone(BondCalculator& obj,
         object cartesiandir, double degrees)
@@ -120,7 +103,7 @@ void wrap_BondCalculator()
         >("BondCalculator", doc_BondCalculator)
         .add_property("distances", distances_asarray<BondCalculator>,
                 doc_BondCalculator_distances)
-        .add_property("directions", directions_aslist,
+        .add_property("directions", directions_aslist<BondCalculator>,
                 doc_BondCalculator_directions)
         .add_property("sites0", sites0_aslist<BondCalculator>,
                 doc_BondCalculator_sites0)

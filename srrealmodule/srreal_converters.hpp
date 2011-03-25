@@ -87,6 +87,27 @@ namespace srrealmodule {
     } \
 
 
+/// this macro defines a wrapper function for a C++ method,
+/// that converts the result to a python list of NumPy arrays
+#define DECLARE_PYLISTARRAY_METHOD_WRAPPER(method, wrapper) \
+    template <class T> \
+    ::boost::python::list wrapper(const T& obj) \
+    { \
+        ::boost::python::list rvlist; \
+        fillPyListWithArrays(rvlist, obj.method()); \
+        return rvlist; \
+    } \
+
+
+/// helper template function for DECLARE_PYLISTARRAY_METHOD_WRAPPER
+template <class T>
+void fillPyListWithArrays(::boost::python::list lst, const T& value)
+{
+    typename T::const_iterator v = value.begin();
+    for (; v != value.end(); ++v)  lst.append(convertToNumPyArray(*v));
+}
+
+
 /// Type for numpy array object and a raw pointer to its double data
 typedef std::pair<boost::python::object, double*> NumPyArray_DoublePtr;
 
@@ -181,5 +202,9 @@ class wrapper_srreal : public ::boost::python::wrapper<T>
 
 
 }   // namespace srrealmodule
+
+// Include shared wrapper definitions ----------------------------------------
+
+#include "srreal_converters.ipp"
 
 #endif  // SRREAL_CONVERTERS_HPP_INCLUDED
