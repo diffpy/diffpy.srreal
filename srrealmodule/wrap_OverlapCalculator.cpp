@@ -81,7 +81,7 @@ AtomRadiiTable object used for radius lookup.\n\
 // wrappers ------------------------------------------------------------------
 
 DECLARE_PYARRAY_METHOD_WRAPPER(overlaps, overlaps_asarray)
-DECLARE_PYLISTARRAY_METHOD_WRAPPER(siteSquareOverlaps, siteSquareOverlaps_asarray)
+DECLARE_PYARRAY_METHOD_WRAPPER(siteSquareOverlaps, siteSquareOverlaps_asarray)
 DECLARE_PYLISTARRAY_METHOD_WRAPPER(gradients, gradients_aslist)
 
 AtomRadiiTablePtr getatomradiitable(OverlapCalculator& obj)

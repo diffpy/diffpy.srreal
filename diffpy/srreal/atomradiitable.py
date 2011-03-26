@@ -21,7 +21,7 @@
 __id__ = "$Id$"
 
 # exported items, these also makes them show in pydoc.
-__all__ = ['AtomRadiiTable', ]
+__all__ = ['AtomRadiiTable', 'CovalentRadiiTable']
 
 from diffpy.srreal.srreal_ext import AtomRadiiTable
 

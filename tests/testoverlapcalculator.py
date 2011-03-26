@@ -18,6 +18,8 @@ from diffpy.srreal.overlapcalculator import OverlapCalculator
 ##############################################################################
 class TestOverlapCalculator(unittest.TestCase):
 
+    pool = None
+
     def setUp(self):
         self.olc = OverlapCalculator()
         if not hasattr(self, 'rutile'):
@@ -30,6 +32,8 @@ class TestOverlapCalculator(unittest.TestCase):
 
 
     def tearDown(self):
+        # kill any potential multiprocessing pool
+        self.pool = None
         return
 
 
@@ -44,16 +48,21 @@ class TestOverlapCalculator(unittest.TestCase):
 
 
     def test___call__(self):
-        """check BondCalculator.__call__()
+        """check OverlapCalculator.__call__()
         """
         olc = self.olc
-        olc.rmax = 0
-        self.assertEqual(0, len(olc(self.rutile)))
-        olc.rmax = 2.0
-        self.assertEqual(12, len(olc(self.rutile)))
-        self.assertEqual(0, len(olc(self.niprim)))
-        olc.rmax = 2.5
-        self.assertEqual(12, len(olc(self.niprim)))
+        sso1 = olc(self.rutile)
+        self.assertEqual(6, len(sso1))
+        self.assertFalse(numpy.any(sso1))
+        self.assertEqual(0.0, olc.rmaxused)
+        rtb = olc.atomradiitable
+        rtb.fromString('Ti:1.6, O:0.66')
+        sso2 = olc(self.rutile)
+        self.assertEqual(6, len(sso2[sso2 > 0]))
+        self.assertEqual(3.2, olc.rmaxused)
+        sso3 = olc(self.rutile, rmax=1.93)
+        self.assertEqual(0.0, sum(sso3))
+        self.assertEqual(1.93, olc.rmaxused)
         return
 
 
@@ -78,115 +87,62 @@ class TestOverlapCalculator(unittest.TestCase):
         return
 
 
-#   def test_distances(self):
-#       """check BondCalculator.distances
-#       """
-#       self.olc.eval(self.nickel)
-#       dst = self.olc.distances
-#       self.assertTrue(numpy.array_equal(dst,
-#           BondCalculator()(self.nickel)))
-#       self.assertTrue(numpy.array_equal(dst, numpy.sort(dst)))
-#       self.olc.maskAllPairs(False)
-#       for i in range(4):
-#           self.olc.setPairMask(0, i, True)
-#       dst0a = self.olc(self.nickel)
-#       self.olc.maskAllPairs(False)
-#       for i in range(4):
-#           self.olc.setPairMask(3, i, True)
-#       dst3a = self.olc(self.nickel)
-#       self.olc.maskAllPairs(True)
-#       dstp = self.olc(self.niprim)
-#       self.assertTrue(numpy.allclose(dst0a, dst3a))
-#       self.assertTrue(numpy.allclose(dst0a, dstp))
-#       return
-#
-#
-#   def test_directions(self):
-#       """check BondCalculator.directions
-#       """
-#       dst = self.olc(self.rutile)
-#       drs = self.olc.directions
-#       nms = numpy.sqrt(numpy.sum(numpy.power(drs, 2), axis=1))
-#       self.assertTrue(numpy.allclose(dst, nms))
-#       return
-#
-#
-#   def test_sites(self):
-#       """check BondCalculator.sites
-#       """
-#       olc = self.olc
-#       dst = olc(self.rutile)
-#       self.assertEqual(len(dst), len(olc.sites0))
-#       self.assertEqual(len(dst), len(olc.sites1))
-#       self.assertEqual(0, numpy.min(olc.sites0))
-#       self.assertEqual(5, numpy.max(olc.sites0))
-#       self.assertEqual(0, numpy.min(olc.sites1))
-#       self.assertEqual(5, numpy.max(olc.sites1))
-#       dij = [(tuple(d) + (i0, i1)) for d, i0, i1 in zip(
-#                   olc.directions, olc.sites0, olc.sites1)]
-#       self.assertEqual(len(dij), len(set(dij)))
-#       olc.maskAllPairs(False)
-#       olc(self.rutile)
-#       self.assertEqual([], olc.sites0)
-#       olc.setPairMask(3, 3, True)
-#       olc(self.rutile)
-#       self.assertTrue(len(olc.sites0))
-#       self.assertEqual(set([3]), set(olc.sites0 + olc.sites1))
-#       return
-#
-#
-#   def test_types(self):
-#       """check BondCalculator.types
-#       """
-#       olc = self.olc
-#       dst = olc(self.rutile)
-#       self.assertEqual(len(dst), len(olc.types0))
-#       self.assertEqual(len(dst), len(olc.types1))
-#       self.assertEqual(set(('Ti', 'O')), set(olc.types0))
-#       self.assertEqual(set(('Ti', 'O')), set(olc.types1))
-#       self.assertNotEquals(olc.types0, olc.types1)
-#       olc.maskAllPairs(False)
-#       olc(self.rutile)
-#       self.assertEqual([], olc.types0)
-#       self.assertEqual([], olc.types1)
-#       olc.setPairMask(3, 3, True)
-#       olc(self.rutile)
-#       self.assertTrue(len(olc.types0))
-#       self.assertEqual(set(['O']), set(olc.types0 + olc.types1))
-#       return
-#
-#
-#   def test_filterCone(self):
-#       """check BondCalculator.filterCone()
-#       """
-#       olc = self.olc
-#       olc.rmax = 2.5
-#       self.assertEqual(12, len(olc(self.niprim)))
-#       olc.filterCone([0, 0, +1], 1)
-#       self.assertEqual(1, len(olc(self.niprim)))
-#       olc.filterCone([0, 0, -1], 1)
-#       self.assertEqual(2, len(olc(self.niprim)))
-#       olc.filterOff()
-#       self.assertEqual(12, len(olc(self.niprim)))
-#       olc.filterCone([0, 0.1, +1], 6)
-#       olc(self.niprim)
-#       self.assertEqual(1, len(olc(self.niprim)))
-#       olc.filterCone([0, 0, +1], 180)
-#       self.assertEqual(12, len(olc(self.niprim)))
-#       return
-#
-#
-#   def test_filterOff(self):
-#       """check BondCalculator.filterOff()
-#       """
-#       olc = self.olc
-#       olc.rmax = 2.5
-#       olc.filterCone([1, 2, 3], -1)
-#       self.assertEqual(0, len(olc(self.niprim).tolist()))
-#       olc.filterOff()
-#       self.assertEqual(12, len(olc(self.niprim)))
-#       return
-#
+    def test_parallel(self):
+        """check parallel run of OverlapCalculator
+        """
+        import multiprocessing
+        from diffpy.srreal.parallel import createParallelCalculator
+        ncpu = 4
+        self.pool = multiprocessing.Pool(processes=ncpu)
+        olc = self.olc
+        polc = createParallelCalculator(OverlapCalculator(),
+                ncpu, self.pool.imap_unordered)
+        olc.atomradiitable.fromString('Ti:1.6, O:0.66')
+        polc.atomradiitable = olc.atomradiitable
+        self.assertTrue(numpy.array_equal(olc(self.rutile), polc(self.rutile)))
+        self.assertTrue(olc.totalsquareoverlap > 0.0)
+        self.assertEqual(olc.totalsquareoverlap, polc.totalsquareoverlap)
+        self.assertEqual(sorted(zip(olc.sites0, olc.sites1)),
+                sorted(zip(polc.sites0, polc.sites1)))
+        olc.atomradiitable.resetAll()
+        self.assertEqual(0.0, sum(olc(self.rutile)))
+        self.assertEqual(0.0, sum(polc(self.rutile)))
+        return
+
+
+    def test_distances(self):
+        """check OverlapCalculator.distances
+        """
+        olc = self.olc
+        olc(self.nickel)
+        self.assertEqual(0, len(olc.distances))
+        olc.atomradiitable.setCustom('Ni', 1.25)
+        olc(self.nickel)
+        self.assertEqual(4 * 12 / 2, len(olc.distances))
+        dmin = numpy.sqrt(0.5) * self.nickel.lattice.a
+        self.assertAlmostEqual(dmin, numpy.min(olc.distances))
+        self.assertAlmostEqual(dmin, numpy.max(olc.distances))
+        olc.maskAllPairs(False)
+        olc.setPairMask(0, 'all', True)
+        olc(self.nickel)
+        self.assertEqual(12, len(olc.distances))
+        return
+ 
+ 
+    def test_directions(self):
+        """check OverlapCalculator.directions
+        """
+        olc = self.olc
+        olc(self.nickel)
+        self.assertEqual([], olc.directions)
+        olc.atomradiitable.setCustom('Ni', 1.25)
+        olc.eval(self.nickel)
+        drs = self.olc.directions
+        nms = numpy.sqrt(numpy.sum(numpy.power(drs, 2), axis=1))
+        self.assertTrue(0 < len(olc.directions))
+        self.assertTrue(numpy.allclose(olc.distances, nms))
+        return
+
 #
 #   def test_setPairMask(self):
 #       '''check different setPairMask arguments.
@@ -219,14 +175,14 @@ class TestOverlapCalculator(unittest.TestCase):
 #       self.assertRaises(ValueError, olc.setPairMask, 'aLL', 2, True)
 #       return
 #
-## End of class TestBondCalculator
+## End of class TestOverlapCalculator
 #
 #
 ###############################################################################
-#class TestBondCalculatorObjCryst(TestCaseObjCrystOptional):
+#class TestOverlapCalculatorObjCryst(TestCaseObjCrystOptional):
 #
 #   def setUp(self):
-#       self.olc = BondCalculator()
+#       self.olc = OverlapCalculator()
 #       if not hasattr(self, 'rutile'):
 #           type(self).rutile = loadObjCrystCrystal('rutile.cif')
 #       if not hasattr(self, 'nickel'):
@@ -239,7 +195,7 @@ class TestOverlapCalculator(unittest.TestCase):
 #
 #
 #   def test___call__(self):
-#       """check BondCalculator.__call__()
+#       """check OverlapCalculator.__call__()
 #       """
 #       olc = self.olc
 #       olc.rmax = 0
@@ -252,7 +208,7 @@ class TestOverlapCalculator(unittest.TestCase):
 #
 #
 #   def test_sites(self):
-#       """check BondCalculator.sites
+#       """check OverlapCalculator.sites
 #       """
 #       olc = self.olc
 #       dst = olc(self.rutile)
@@ -276,7 +232,7 @@ class TestOverlapCalculator(unittest.TestCase):
 #
 #
 #   def test_types(self):
-#       """check BondCalculator.types
+#       """check OverlapCalculator.types
 #       """
 #       olc = self.olc
 #       dst = olc(self.rutile)
@@ -297,7 +253,7 @@ class TestOverlapCalculator(unittest.TestCase):
 #
 #
 #   def test_filterCone(self):
-#       """check BondCalculator.filterCone()
+#       """check OverlapCalculator.filterCone()
 #       """
 #       olc = self.olc
 #       olc.rmax = 2.5
@@ -316,7 +272,7 @@ class TestOverlapCalculator(unittest.TestCase):
 #
 #
 #   def test_filterOff(self):
-#       """check BondCalculator.filterOff()
+#       """check OverlapCalculator.filterOff()
 #       """
 #       olc = self.olc
 #       olc.rmax = 2.5
