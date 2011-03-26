@@ -96,6 +96,17 @@ namespace srrealmodule {
     } \
 
 
+/// this macro defines a wrapper function for a C++ method,
+/// that converts the result to a python dict
+#define DECLARE_PYDICT_METHOD_WRAPPER(method, wrapper) \
+    template <class T> \
+    ::boost::python::object wrapper(const T& obj) \
+    { \
+        ::boost::python::object rv = convertToPythonDict(obj.method()); \
+        return rv; \
+    } \
+
+
 /// helper template function for DECLARE_PYLISTARRAY_METHOD_WRAPPER
 template <class T>
 void fillPyListWithArrays(::boost::python::list lst, const T& value)
@@ -176,6 +187,18 @@ convertToPythonList(const T& value)
     typename T::const_iterator ii;
     for (ii = value.begin(); ii != value.end(); ++ii)  rvlist.append(*ii);
     return rvlist;
+}
+
+
+/// template converter of a C++ map-like container to a python dictionary
+template <class T>
+::boost::python::dict
+convertToPythonDict(const T& value)
+{
+    ::boost::python::dict rv;
+    typename T::const_iterator ii = value.begin();
+    for (; ii != value.end(); ++ii)  rv[ii->first] = ii->second;
+    return rv;
 }
 
 

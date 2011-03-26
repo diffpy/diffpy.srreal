@@ -38,7 +38,7 @@ OverlapCalculator.rmax = propertyFromExtDoubleAttr('rmax',
         [5 A]''')
 
 OverlapCalculator.rmaxused = propertyFromExtDoubleAttr('rmaxused',
-        '''Effective upper bound for the bond distances. 
+        '''Effective upper bound for the bond distances.
         rmaxused equals either a double of the maximum atom radius
         in the structure or rmax.
         ''')

@@ -39,6 +39,7 @@ void wrap_PDFBaseline();
 void wrap_PDFEnvelope();
 void wrap_PDFCalculators();
 void wrap_BondCalculator();
+void wrap_AtomRadiiTable();
 void wrap_OverlapCalculator();
 
 }   // namespace srrealmodule
@@ -64,6 +65,7 @@ BOOST_PYTHON_MODULE(srreal_ext)
     wrap_PDFEnvelope();
     wrap_PDFCalculators();
     wrap_BondCalculator();
+    wrap_AtomRadiiTable();
     wrap_OverlapCalculator();
 }
 

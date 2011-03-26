@@ -187,19 +187,6 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getsft_overloads,
 DECLARE_PYSET_FUNCTION_WRAPPER(ScatteringFactorTable::getRegisteredTypes,
         getScatteringFactorTableTypes_asset)
 
-
-// explicit wrapper that returns a dictionary of custom scattering factors
-
-object getAllCustom_asdict(const ScatteringFactorTable& sft)
-{
-    dict rv;
-    std::map<std::string,double> csf = sft.getAllCustom();
-    std::map<std::string,double>::const_iterator kv;
-    for (kv = csf.begin(); kv != csf.end(); ++kv)  rv[kv->first] = kv->second;
-    return rv;
-}
-
-
 // Helper class for overloads of ScatteringFactorTable methods from Python
 
 class ScatteringFactorTableWrap :
@@ -298,7 +285,7 @@ void wrap_ScatteringFactorTable()
                 bp::arg("smbl"), doc_ScatteringFactorTable_setCustom)
         .def("resetAll", &ScatteringFactorTable::resetAll,
                 doc_ScatteringFactorTable_resetAll)
-        .def("getAllCustom", getAllCustom_asdict,
+        .def("getAllCustom", getAllCustom_asdict<ScatteringFactorTable>,
                 doc_ScatteringFactorTable_getAllCustom)
         .def("_registerThisType", &ScatteringFactorTable::registerThisType,
                 doc_ScatteringFactorTable__registerThisType)
