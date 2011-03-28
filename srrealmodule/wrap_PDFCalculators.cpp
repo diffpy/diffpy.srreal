@@ -33,27 +33,39 @@ namespace nswrap_PDFCalculators {
 using namespace boost::python;
 using namespace diffpy::srreal;
 
-// docstrings -- FIXME
+// docstrings
 
 const char* doc_PDFCommon_pdf = "\
+An array of PDF values in the form of G = 4*pi*r(rho - rho0) in A**-2.\n\
 ";
 
 const char* doc_PDFCommon_rgrid = "\
+An array of r-values in Angstrom.  This is a uniformly spaced array of\n\
+rstep multiples that are greater or equal to rmin and smaller than rmax.\n\
 ";
 
 const char* doc_PDFCommon_fq = "\
+An array of F values in 1/A that can be Fourier transformed to G(r).\n\
 ";
 
 const char* doc_PDFCommon_qgrid = "\
+An array of Q-values in 1/A.  This is a uniformly spaced array of qstep\n\
+values that start at 0/A and are smaller than qmax.\n\
 ";
 
 const char* doc_DebyePDFCalculator_setOptimumQstep = "\
+Use the optimum qstep value equal to the Nyquist step of pi/rmaxext,\n\
+where rmaxext is rmax extended for termination ripples and peak tails.\n\
+The qstep value depends on rmax when active.  This is disabled after\n\
+explicit qstep assignment, which makes qstep independent of rmax.\n\
 ";
 
 const char* doc_DebyePDFCalculator_isOptimumQstep = "\
+Return True if qstep is set to an optimum, rmax-dependent value.\n\
+Return False if qstep was overridden by the user.\n\
 ";
 
-const char* doc_PDFCommon_addEnvelope = "\
+const char* doc_PDFCommon_addEnvelope = "FIXME\
 ";
 
 const char* doc_PDFCommon_addEnvelopeByType = "\
