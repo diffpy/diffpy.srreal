@@ -115,7 +115,7 @@ class AtomRadiiTableWrap :
 
         double default_tableLookup(const std::string& smbl) const
         {
-            return this->AtomRadiiTable::lookup(smbl);
+            return this->AtomRadiiTable::tableLookup(smbl);
         }
 
 };  // class AtomRadiiTableWrap
