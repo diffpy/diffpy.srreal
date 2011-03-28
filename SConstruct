@@ -1,8 +1,9 @@
 # This SConstruct is for faster parallel builds.
 # Use "setup.py" for normal installation.
 #
-# module     -- build shared library object, srreal_ext.so
-# develop    -- srreal_ext.so under diffpy/srreal/ directory
+# module     -- build the shared library object srreal_ext.so
+# develop    -- copy srreal_ext.so to the diffpy/srreal/ directory
+# install    -- trick distutils into installing the scons build srreal_ext.so
 
 import os
 import re
