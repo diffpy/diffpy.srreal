@@ -26,6 +26,7 @@
 
 namespace srrealmodule {
 
+void wrap_exceptions();
 void wrap_Attributes();
 void wrap_StructureAdapter();
 void wrap_BaseBondGenerator();
@@ -52,6 +53,7 @@ BOOST_PYTHON_MODULE(srreal_ext)
     // initialize numpy module
     import_array();
     // execute external wrappers
+    wrap_exceptions();
     wrap_Attributes();
     wrap_StructureAdapter();
     wrap_BaseBondGenerator();

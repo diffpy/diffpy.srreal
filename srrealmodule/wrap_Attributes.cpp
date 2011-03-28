@@ -174,13 +174,6 @@ void registerPythonDoubleAttribute(python::object owner,
     registerBaseDoubleAttribute(cowner, name, pa);
 }
 
-// exception translator ------------------------------------------------------
-
-void translate(const DoubleAttributeError& e)
-{
-    PyErr_SetString(PyExc_AttributeError, e.what());
-}
-
 }   // namespace nswrap_Attributes
 
 // Wrapper definition --------------------------------------------------------
@@ -211,8 +204,6 @@ void wrap_Attributes()
         ;
     // inject the __getattr__ and __setattr__ methods
     import("diffpy.srreal.attributes");
-    // translate exceptions
-    register_exception_translator<DoubleAttributeError>(&translate);
 }
 
 }   // namespace srrealmodule

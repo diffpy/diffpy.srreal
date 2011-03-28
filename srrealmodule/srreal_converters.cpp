@@ -21,6 +21,10 @@
 
 #include <string>
 #include <valarray>
+#include <stdexcept>
+#include <boost/python/def.hpp>
+#include <boost/python/exception_translator.hpp>
+#include <diffpy/Attributes.hpp>
 #include "srreal_converters.hpp"
 
 // numpy/arrayobject.h needs to be included after srreal_converters.hpp,
@@ -29,7 +33,39 @@
 #define NO_IMPORT_ARRAY
 #include <numpy/arrayobject.h>
 
+
+namespace {
+
+// exception translations ----------------------------------------------------
+
+using diffpy::attributes::DoubleAttributeError;
+using std::invalid_argument;
+
+void translate_DoubleAttributeError(const DoubleAttributeError& e)
+{
+    PyErr_SetString(PyExc_AttributeError, e.what());
+}
+
+
+void translate_invalid_argument(const invalid_argument& e)
+{
+    PyErr_SetString(PyExc_ValueError, e.what());
+}
+
+}   // namespace
+
 namespace srrealmodule {
+
+/// this function registers all exception translators
+void wrap_exceptions()
+{
+    using boost::python::register_exception_translator;
+    register_exception_translator<DoubleAttributeError>(
+            &translate_DoubleAttributeError);
+    register_exception_translator<invalid_argument>(
+            &translate_invalid_argument);
+}
+
 
 /// helper for creating numpy array of doubles
 NumPyArray_DoublePtr createNumPyDoubleArray(int dim, const int* sz)
