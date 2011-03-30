@@ -31,12 +31,10 @@ class TestOverlapCalculator(unittest.TestCase):
             type(self).niprim = loadDiffPyStructure('Ni_primitive.stru')
         return
 
-
     def tearDown(self):
         # kill any potential multiprocessing pool
         self.pool = None
         return
-
 
     def test___init__(self):
         """check OverlapCalculator.__init__()
@@ -46,7 +44,6 @@ class TestOverlapCalculator(unittest.TestCase):
         self.assertEqual(0, self.olc.rmaxused)
         self.assertEqual(0.0, self.olc.totalsquareoverlap)
         return
-
 
     def test___call__(self):
         """check OverlapCalculator.__call__()
@@ -65,7 +62,6 @@ class TestOverlapCalculator(unittest.TestCase):
         self.assertEqual(0.0, sum(sso3))
         self.assertEqual(1.93, olc.rmaxused)
         return
-
 
     def test_pickling(self):
         '''check pickling and unpickling of OverlapCalculator.
@@ -86,7 +82,6 @@ class TestOverlapCalculator(unittest.TestCase):
         self.assertTrue(numpy.array_equal(
             olc.sitesquareoverlaps, olc1.sitesquareoverlaps))
         return
-
 
     def test_parallel(self):
         """check parallel run of OverlapCalculator
@@ -109,7 +104,6 @@ class TestOverlapCalculator(unittest.TestCase):
         self.assertEqual(0.0, sum(olc(self.rutile)))
         self.assertEqual(0.0, sum(polc(self.rutile)))
         return
-
 
     def test_distances(self):
         """check OverlapCalculator.distances
@@ -183,8 +177,8 @@ class TestOverlapCalculator(unittest.TestCase):
         olc(self.rutile)
         self.assertEqual(0.0, olc.totalsquareoverlap)
         olc.atomradiitable.fromString('Ti:1.6, O:0.66')
-        sso = olc(self.rutile)
-        self.assertTrue(olc.totalsquareoverlap > 0)
+        olc(self.rutile)
+        self.assertTrue(1.20854162728, olc.totalsquareoverlap)
         return
 
     def test_meansquareoverlap(self):
@@ -206,6 +200,26 @@ class TestOverlapCalculator(unittest.TestCase):
         self.assertAlmostEqual(0.201423604547, olc.meansquareoverlap)
         return
 
+    def test_flipDiffTotal(self):
+        """check OverlapCalculator.flipDiffTotal
+        """
+        olc = self.olc
+        olc.atomradiitable.fromString('Ti:1.6, O:0.66')
+        olc(self.rutile)
+        self.assertEqual(0.0, olc.flipDiffTotal(0, 0))
+        self.assertEqual(0.0, olc.flipDiffTotal(0, 1))
+        self.assertEqual(0.0, olc.flipDiffTotal(2, 5))
+        tso0 = olc.totalsquareoverlap
+        olc2 = copy.copy(olc)
+        rutile2 = loadDiffPyStructure('rutile.cif')
+        rutile2[0].element = 'O'
+        rutile2[2].element = 'Ti'
+        olc2(rutile2)
+        fdt02 = olc2.totalsquareoverlap - tso0
+        self.assertTrue(fdt02 > 0.01)
+        self.assertAlmostEqual(fdt02, olc.flipDiffTotal(0, 2))
+        return
+
 # End of class TestOverlapCalculator
 
 ###############################################################################
@@ -220,6 +234,18 @@ class TestOverlapCalculatorObjCryst(TestCaseObjCrystOptional):
         return
 
     def tearDown(self):
+        return
+
+    def test_totalsquareoverlap(self):
+        """check OverlapCalculator.totalsquareoverlap for ObjCryst crystal
+        """
+        olc = self.olc
+        self.assertEqual(0.0, olc.totalsquareoverlap)
+        olc(self.rutile)
+        self.assertEqual(0.0, olc.totalsquareoverlap)
+        olc.atomradiitable.fromString('Ti:1.6, O:0.66')
+        olc(self.rutile)
+        self.assertTrue(1.20854162728, olc.totalsquareoverlap)
         return
 
     def test_meansquareoverlap(self):
@@ -243,17 +269,28 @@ class TestOverlapCalculatorObjCryst(TestCaseObjCrystOptional):
         olc.atomradiitable.fromString('Ti:1.6, O:0.66')
         olc(self.rutile)
         tso0 = olc.totalsquareoverlap
-        self.assertTrue(tso0 > 1e-6)
         olc2 = copy.copy(olc)
-        rutile2 = loadDiffPyStructure('rutile.cif')
-        olc2(rutile2)
-        self.assertAlmostEqual(tso0, sum(olc2.sitesquareoverlaps[[0, 2]]))
-        elswitch = {'Ti' : 'O', 'O' : 'Ti'}
-        for a in rutile2:
-            a.element = elswitch[a.element]
-        olc2(rutile2)
-        fdt = sum(olc2.sitesquareoverlaps[[0, 2]]) - tso0
-        self.assertAlmostEqual(fdt, olc.flipDiffTotal(0, 1))
+        olc2.atomradiitable.fromString('Ti:0.66, O:1.6')
+        olc2(self.rutile)
+        fdt01 = olc2.totalsquareoverlap - tso0
+        self.assertAlmostEqual(fdt01, olc.flipDiffTotal(0, 1))
+        return
+
+    def test_flipDiffMean(self):
+        """check OverlapCalculator.flipDiffMean for an ObjCryst crystal
+        """
+        olc = self.olc
+        olc(self.rutile)
+        self.assertEqual(0.0, olc.flipDiffMean(0, 1))
+        olc.atomradiitable.fromString('Ti:1.6, O:0.66')
+        olc(self.rutile)
+        mso0 = olc.meansquareoverlap
+        olc2 = copy.copy(olc)
+        olc2.atomradiitable.fromString('Ti:0.66, O:1.6')
+        olc2(self.rutile)
+        fdm01 = olc2.meansquareoverlap - mso0
+        self.assertAlmostEqual(fdm01, olc.flipDiffMean(0, 1))
+        self.assertAlmostEqual(fdm01, olc.flipDiffTotal(0, 1) / 6)
         return
 
 # End of class TestOverlapCalculatorObjCryst
