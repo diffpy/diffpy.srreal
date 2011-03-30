@@ -51,6 +51,9 @@ class TestAtomRadiiTable(unittest.TestCase):
         self.rtb.fromString('C:2.3,,,')
         self.assertEqual(3, len(self.rtb.getAllCustom()))
         self.assertEqual(2.3, self.rtb.lookup('C'))
+        self.rtb.fromString('H:3.3')
+        self.assertEqual(3, len(self.rtb.getAllCustom()))
+        self.assertEqual(3.3, self.rtb.lookup('H'))
         return
 
     def test_getAllCustom(self):
