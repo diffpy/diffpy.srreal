@@ -21,9 +21,9 @@
 __id__ = "$Id$"
 
 # exported items
-__all__ = ['BVSCalculator', 'BVParam', 'BVParametersTable']
+__all__ = ['BVSCalculator']
 
-from diffpy.srreal.srreal_ext import BVSCalculator, BVParam, BVParametersTable
+from diffpy.srreal.srreal_ext import BVSCalculator
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
 from diffpy.srreal.wraputils import setattrFromKeywordArguments
 
