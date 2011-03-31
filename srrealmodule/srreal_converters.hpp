@@ -63,6 +63,17 @@ namespace srrealmodule {
     } \
 
 
+/// this macro defines a wrapper function for a C++ method with one argument,
+/// that converts the result to a python set
+#define DECLARE_PYSET_METHOD_WRAPPER1(method, wrapper) \
+    template <class T, class T1> \
+    ::boost::python::object wrapper(const T& obj, const T1& a1) \
+    { \
+        ::boost::python::object rv = convertToPythonSet(obj.method(a1)); \
+        return rv; \
+    } \
+
+
 /// this macro defines a wrapper for C++ function without arguments
 /// that converts the result to a python set
 #define DECLARE_PYSET_FUNCTION_WRAPPER(fnc, wrapper) \
@@ -97,6 +108,18 @@ namespace srrealmodule {
 
 
 /// this macro defines a wrapper function for a C++ method,
+/// that converts the result to a list of Python sets
+#define DECLARE_PYLISTSET_METHOD_WRAPPER(method, wrapper) \
+    template <class T> \
+    ::boost::python::list wrapper(const T& obj) \
+    { \
+        ::boost::python::list rvlist; \
+        fillPyListWithSets(rvlist, obj.method()); \
+        return rvlist; \
+    } \
+
+
+/// this macro defines a wrapper function for a C++ method,
 /// that converts the result to a python dict
 #define DECLARE_PYDICT_METHOD_WRAPPER(method, wrapper) \
     template <class T> \
@@ -107,12 +130,32 @@ namespace srrealmodule {
     } \
 
 
+/// this macro defines a wrapper function for a C++ method with one argument,
+/// that converts the result to a python dict
+#define DECLARE_PYDICT_METHOD_WRAPPER1(method, wrapper) \
+    template <class T, class T1> \
+    ::boost::python::object wrapper(const T& obj, const T1& a1) \
+    { \
+        ::boost::python::object rv = convertToPythonDict(obj.method(a1)); \
+        return rv; \
+    } \
+
+
 /// helper template function for DECLARE_PYLISTARRAY_METHOD_WRAPPER
 template <class T>
 void fillPyListWithArrays(::boost::python::list lst, const T& value)
 {
     typename T::const_iterator v = value.begin();
     for (; v != value.end(); ++v)  lst.append(convertToNumPyArray(*v));
+}
+
+
+/// helper template function for DECLARE_PYLISTSET_METHOD_WRAPPER
+template <class T>
+void fillPyListWithSets(::boost::python::list lst, const T& value)
+{
+    typename T::const_iterator v = value.begin();
+    for (; v != value.end(); ++v)  lst.append(convertToPythonSet(*v));
 }
 
 

@@ -220,6 +220,71 @@ class TestOverlapCalculator(unittest.TestCase):
         self.assertAlmostEqual(fdt02, olc.flipDiffTotal(0, 2))
         return
 
+    def test_getNeighborSites(self):
+        """check OverlapCalculator.getNeighborSites
+        """
+        olc = self.olc
+        olc(self.rutile)
+        self.assertEqual(set(), olc.getNeighborSites(0))
+        self.assertEqual(set(), olc.getNeighborSites(3))
+        olc.atomradiitable.fromString('Ti:1.6, O:0.66')
+        olc(self.rutile)
+        self.assertEqual(set([0] + range(2, 6)), olc.getNeighborSites(0))
+        self.assertEqual(set([1] + range(2, 6)), olc.getNeighborSites(1))
+        self.assertEqual(set(range(2)), olc.getNeighborSites(2))
+        self.assertEqual(set(range(2)), olc.getNeighborSites(5))
+        return
+
+    def test_coordinations(self):
+        """check OverlapCalculator.coordinations
+        """
+        olc = self.olc
+        self.assertEqual(0, len(olc.coordinations))
+        olc(self.rutile)
+        self.assertEqual(6, len(olc.coordinations))
+        self.assertFalse(numpy.any(olc.coordinations))
+        olc.atomradiitable.fromString('Ti:1.6, O:0.66')
+        olc(self.rutile)
+        self.assertTrue(numpy.array_equal(
+            [8, 8, 3, 3, 3, 3], olc.coordinations))
+        return
+
+    def test_coordinationByTypes(self):
+        """check OverlapCalculator.coordinationByTypes
+        """
+        olc = self.olc
+        olc(self.rutile)
+        self.assertEqual({}, olc.coordinationByTypes(0))
+        self.assertEqual({}, olc.coordinationByTypes(5))
+        olc.atomradiitable.fromString('Ti:1.6, O:0.66')
+        olc(self.rutile)
+        cTi = {'Ti' : 2.0, 'O' : 6.0}
+        cO = {'Ti' : 3.0}
+        self.assertEqual(cTi, olc.coordinationByTypes(0))
+        self.assertEqual(cTi, olc.coordinationByTypes(1))
+        self.assertEqual(cO, olc.coordinationByTypes(2))
+        self.assertEqual(cO, olc.coordinationByTypes(3))
+        self.assertEqual(cO, olc.coordinationByTypes(4))
+        self.assertEqual(cO, olc.coordinationByTypes(5))
+        return
+
+    def test_neighborhoods(self):
+        """check OverlapCalculator.neighborhoods
+        """
+        olc = self.olc
+        self.assertEqual([], olc.neighborhoods)
+        olc(self.rutile)
+        self.assertEqual([set((i,)) for i in range(6)], olc.neighborhoods)
+        olc.atomradiitable.fromString('Ti:1.6, O:0.66')
+        olc(self.rutile)
+        self.assertEqual([set(range(6))], olc.neighborhoods)
+        olc.atomradiitable.setCustom('Ti', 1.8)
+        olc.atomradiitable.setCustom('O', 0.1)
+        olc(self.rutile)
+        nghbs = [set((0, 1))] + [set((i,)) for i in range(2, 6)]
+        self.assertEqual(nghbs, olc.neighborhoods)
+        return
+
 # End of class TestOverlapCalculator
 
 ###############################################################################
@@ -291,6 +356,59 @@ class TestOverlapCalculatorObjCryst(TestCaseObjCrystOptional):
         fdm01 = olc2.meansquareoverlap - mso0
         self.assertAlmostEqual(fdm01, olc.flipDiffMean(0, 1))
         self.assertAlmostEqual(fdm01, olc.flipDiffTotal(0, 1) / 6)
+        return
+
+    def test_getNeighborSites(self):
+        """check OverlapCalculator.getNeighborSites for an ObjCryst crystal
+        """
+        olc = self.olc
+        olc(self.rutile)
+        self.assertEqual(set(), olc.getNeighborSites(0))
+        self.assertEqual(set(), olc.getNeighborSites(1))
+        olc.atomradiitable.fromString('Ti:1.6, O:0.66')
+        olc(self.rutile)
+        self.assertEqual(set([0, 1]), olc.getNeighborSites(0))
+        self.assertEqual(set([0]), olc.getNeighborSites(1))
+        return
+
+    def test_coordinations(self):
+        """check OverlapCalculator.coordinations for an ObjCryst crystal
+        """
+        olc = self.olc
+        self.assertEqual(0, len(olc.coordinations))
+        olc(self.rutile)
+        self.assertEqual(2, len(olc.coordinations))
+        self.assertFalse(numpy.any(olc.coordinations))
+        olc.atomradiitable.fromString('Ti:1.6, O:0.66')
+        olc(self.rutile)
+        self.assertTrue(numpy.array_equal([8, 3], olc.coordinations))
+        return
+
+    def test_coordinationByTypes(self):
+        """check OverlapCalculator.coordinationByTypes for an ObjCryst crystal
+        """
+        olc = self.olc
+        olc(self.rutile)
+        self.assertEqual({}, olc.coordinationByTypes(0))
+        self.assertEqual({}, olc.coordinationByTypes(1))
+        olc.atomradiitable.fromString('Ti:1.6, O:0.66')
+        olc(self.rutile)
+        cTi = {'Ti' : 2.0, 'O' : 6.0}
+        cO = {'Ti' : 3.0}
+        self.assertEqual(cTi, olc.coordinationByTypes(0))
+        self.assertEqual(cO, olc.coordinationByTypes(1))
+        return
+
+    def test_neighborhoods(self):
+        """check OverlapCalculator.neighborhoods for an ObjCryst crystal
+        """
+        olc = self.olc
+        self.assertEqual([], olc.neighborhoods)
+        olc(self.rutile)
+        self.assertEqual([set((i,)) for i in range(2)], olc.neighborhoods)
+        olc.atomradiitable.fromString('Ti:1.6, O:0.66')
+        olc(self.rutile)
+        self.assertEqual([set((0, 1))], olc.neighborhoods)
         return
 
 # End of class TestOverlapCalculatorObjCryst

@@ -74,6 +74,18 @@ const char* doc_OverlapCalculator_flipDiffMean = "\
 const char* doc_OverlapCalculator_gradients = "\
 ";
 
+const char* doc_OverlapCalculator_getNeighborSites = "\
+";
+
+const char* doc_OverlapCalculator_coordinations = "\
+";
+
+const char* doc_OverlapCalculator_coordinationByTypes = "\
+";
+
+const char* doc_OverlapCalculator_neighborhoods = "\
+";
+
 const char* doc_OverlapCalculator_atomradiitable = "\
 AtomRadiiTable object used for radius lookup.\n\
 ";
@@ -83,6 +95,10 @@ AtomRadiiTable object used for radius lookup.\n\
 DECLARE_PYARRAY_METHOD_WRAPPER(overlaps, overlaps_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(siteSquareOverlaps, siteSquareOverlaps_asarray)
 DECLARE_PYLISTARRAY_METHOD_WRAPPER(gradients, gradients_aslist)
+DECLARE_PYSET_METHOD_WRAPPER1(getNeighborSites, getNeighborSites_asset)
+DECLARE_PYARRAY_METHOD_WRAPPER(coordinations, coordinations_asarray)
+DECLARE_PYDICT_METHOD_WRAPPER1(coordinationByTypes, coordinationByTypes_asdict)
+DECLARE_PYLISTSET_METHOD_WRAPPER(neighborhoods, neighborhoods_aslistset)
 
 AtomRadiiTablePtr getatomradiitable(OverlapCalculator& obj)
 {
@@ -143,6 +159,18 @@ void wrap_OverlapCalculator()
         .add_property("gradients",
                 gradients_aslist<OverlapCalculator>,
                 doc_OverlapCalculator_gradients)
+        .def("getNeighborSites",
+                getNeighborSites_asset<OverlapCalculator,int>,
+                doc_OverlapCalculator_getNeighborSites)
+        .add_property("coordinations",
+                coordinations_asarray<OverlapCalculator>,
+                doc_OverlapCalculator_coordinations)
+        .def("coordinationByTypes",
+                coordinationByTypes_asdict<OverlapCalculator,int>,
+                doc_OverlapCalculator_coordinationByTypes)
+        .add_property("neighborhoods",
+                neighborhoods_aslistset<OverlapCalculator>,
+                doc_OverlapCalculator_neighborhoods)
         .add_property("atomradiitable",
                 getatomradiitable, setatomradiitable,
                 doc_OverlapCalculator_atomradiitable)
