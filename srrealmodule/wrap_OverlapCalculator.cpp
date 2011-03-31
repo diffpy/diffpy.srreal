@@ -33,57 +33,75 @@ using namespace diffpy::srreal;
 // docstrings ----------------------------------------------------------------
 
 const char* doc_OverlapCalculator = "\
+FIXME\n\
 ";
 
 const char* doc_OverlapCalculator_overlaps = "\
+FIXME\n\
 ";
 
 const char* doc_OverlapCalculator_distances = "\
+FIXME\n\
 ";
 
 const char* doc_OverlapCalculator_directions = "\
+FIXME\n\
 ";
 
 const char* doc_OverlapCalculator_sites0 = "\
+FIXME\n\
 ";
 
 const char* doc_OverlapCalculator_sites1 = "\
+FIXME\n\
 ";
 
 const char* doc_OverlapCalculator_types0 = "\
+FIXME\n\
 ";
 
 const char* doc_OverlapCalculator_types1 = "\
+FIXME\n\
 ";
 
 const char* doc_OverlapCalculator_sitesquareoverlaps = "\
+FIXME\n\
 ";
 
 const char* doc_OverlapCalculator_totalsquareoverlap = "\
+FIXME\n\
 ";
 
 const char* doc_OverlapCalculator_meansquareoverlap = "\
+FIXME\n\
 ";
 
 const char* doc_OverlapCalculator_flipDiffTotal = "\
+FIXME\n\
 ";
 
 const char* doc_OverlapCalculator_flipDiffMean = "\
+FIXME\n\
 ";
 
 const char* doc_OverlapCalculator_gradients = "\
+FIXME\n\
 ";
 
 const char* doc_OverlapCalculator_getNeighborSites = "\
+FIXME\n\
 ";
 
 const char* doc_OverlapCalculator_coordinations = "\
+FIXME\n\
 ";
 
 const char* doc_OverlapCalculator_coordinationByTypes = "\
+FIXME\n\
 ";
 
 const char* doc_OverlapCalculator_neighborhoods = "\
+FIXME\n\
 ";
 
 const char* doc_OverlapCalculator_atomradiitable = "\
