@@ -33,7 +33,7 @@ namespace nswrap_PDFCalculators {
 using namespace boost::python;
 using namespace diffpy::srreal;
 
-// docstrings
+// docstrings ----------------------------------------------------------------
 
 const char* doc_PDFCommon_pdf = "\
 An array of PDF values in the form of G = 4*pi*r(rho - rho0) in A**-2.\n\
@@ -53,6 +53,41 @@ An array of Q-values in 1/A.  This is a uniformly spaced array of qstep\n\
 values that start at 0/A and are smaller than qmax.\n\
 ";
 
+const char* doc_PDFCommon_addEnvelope = "FIXME\
+";
+
+const char* doc_PDFCommon_addEnvelopeByType = "\
+FIXME\n\
+";
+
+const char* doc_PDFCommon_popEnvelope = "\
+FIXME\n\
+";
+
+const char* doc_PDFCommon_popEnvelopeByType = "\
+FIXME\n\
+";
+
+const char* doc_PDFCommon_getEnvelopeByType = "\
+FIXME\n\
+";
+
+const char* doc_PDFCommon_usedEnvelopeTypes = "\
+FIXME\n\
+";
+
+const char* doc_PDFCommon_clearEnvelopes = "\
+FIXME\n\
+";
+
+const char* doc_PDFCommon_rdf = "\
+FIXME\n\
+";
+
+const char* doc_DebyePDFCalculator = "\
+FIXME\n\
+";
+
 const char* doc_DebyePDFCalculator_setOptimumQstep = "\
 Use the optimum qstep value equal to the Nyquist step of pi/rmaxext,\n\
 where rmaxext is rmax extended for termination ripples and peak tails.\n\
@@ -65,46 +100,32 @@ Return True if qstep is set to an optimum, rmax-dependent value.\n\
 Return False if qstep was overridden by the user.\n\
 ";
 
-const char* doc_PDFCommon_addEnvelope = "FIXME\
-";
-
-const char* doc_PDFCommon_addEnvelopeByType = "\
-";
-
-const char* doc_PDFCommon_popEnvelope = "\
-";
-
-const char* doc_PDFCommon_popEnvelopeByType = "\
-";
-
-const char* doc_PDFCommon_getEnvelopeByType = "\
-";
-
-const char* doc_PDFCommon_usedEnvelopeTypes = "\
-";
-
-const char* doc_PDFCommon_clearEnvelopes = "\
-";
-
-const char* doc_PDFCommon_rdf = "\
+const char* doc_PDFCalculator = "\
+FIXME\n\
 ";
 
 const char* doc_PDFCalculator_getPeakProfile = "\
+FIXME\n\
 ";
 
 const char* doc_PDFCalculator_setPeakProfile = "\
+FIXME\n\
 ";
 
 const char* doc_PDFCalculator_setPeakProfileByType = "\
+FIXME\n\
 ";
 
 const char* doc_PDFCalculator_getBaseline = "\
+FIXME\n\
 ";
 
 const char* doc_PDFCalculator_setBaseline = "\
+FIXME\n\
 ";
 
 const char* doc_PDFCalculator_setBaselineByType = "\
+FIXME\n\
 ";
 
 // common wrappers
@@ -133,10 +154,14 @@ void wrap_PDFCalculators()
 {
     using namespace nswrap_PDFCalculators;
 
+    // FIXME: rename PDFCalculator_ext to PDFCalculator and
+    // inject the shared methods in diffpy.srreal.pdfcalculators
+    // instead of inheriting from PDFCalculatorInterface
+
     // DebyePDFCalculator
     class_<DebyePDFCalculator,
         bases<PairQuantity, PeakWidthModelOwner, ScatteringFactorTableOwner>
-            >("DebyePDFCalculator_ext")
+            >("DebyePDFCalculator_ext", doc_DebyePDFCalculator)
         .add_property("pdf", getPDF_asarray<DebyePDFCalculator>,
                 doc_PDFCommon_pdf)
         .add_property("rgrid", getRgrid_asarray<DebyePDFCalculator>,
@@ -171,7 +196,7 @@ void wrap_PDFCalculators()
     // PDFCalculator
     class_<PDFCalculator,
         bases<PairQuantity, PeakWidthModelOwner, ScatteringFactorTableOwner>
-        >("PDFCalculator_ext")
+        >("PDFCalculator_ext", doc_PDFCalculator)
         .add_property("pdf", getPDF_asarray<PDFCalculator>,
                 doc_PDFCommon_pdf)
         .add_property("rdf", getRDF_asarray<PDFCalculator>,
