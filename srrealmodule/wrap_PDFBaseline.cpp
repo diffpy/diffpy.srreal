@@ -34,6 +34,34 @@ using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
 
+const char* doc_PDFBaseline = "\
+FIXME\n\
+";
+
+const char* doc_PDFBaseline_create = "\
+FIXME\n\
+";
+
+const char* doc_PDFBaseline_clone = "\
+FIXME\n\
+";
+
+const char* doc_PDFBaseline_type = "\
+FIXME\n\
+";
+
+const char* doc_PDFBaseline___call__ = "\
+FIXME\n\
+";
+
+const char* doc_PDFBaseline__registerThisType = "\
+FIXME\n\
+";
+
+const char* doc_PDFBaseline_createByType = "\
+FIXME\n\
+";
+
 const char* doc_PDFBaseline_getRegisteredTypes = "\
 Set of string identifiers for registered PDFBaseline classes.\n\
 These are allowed arguments for the createByType static method.\n\
@@ -94,14 +122,20 @@ void wrap_PDFBaseline()
     using diffpy::Attributes;
 
     class_<PDFBaselineWrap, bases<Attributes>,
-        noncopyable>("PDFBaseline_ext")
-        .def("create", &PDFBaseline::create)
-        .def("clone", &PDFBaseline::clone)
+        noncopyable>("PDFBaseline", doc_PDFBaseline)
+        .def("create", &PDFBaseline::create,
+                doc_PDFBaseline_create)
+        .def("clone", &PDFBaseline::clone,
+                doc_PDFBaseline_clone)
         .def("type", &PDFBaseline::type,
-                return_value_policy<copy_const_reference>())
-        .def("__call__", &PDFBaseline::operator())
-        .def("_registerThisType", &PDFBaseline::registerThisType)
-        .def("createByType", &PDFBaseline::createByType)
+                return_value_policy<copy_const_reference>(),
+                doc_PDFBaseline_type)
+        .def("__call__", &PDFBaseline::operator(),
+                doc_PDFBaseline___call__)
+        .def("_registerThisType", &PDFBaseline::registerThisType,
+                doc_PDFBaseline__registerThisType)
+        .def("createByType", &PDFBaseline::createByType,
+                doc_PDFBaseline_createByType)
         .staticmethod("createByType")
         .def("getRegisteredTypes", getPDFBaselineTypes_asset,
                 doc_PDFBaseline_getRegisteredTypes)
