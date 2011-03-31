@@ -48,7 +48,7 @@ void wrap_BaseBondGenerator()
     using namespace nswrap_BaseBondGenerator;
 
     class_<BaseBondGenerator>("BaseBondGenerator",
-            init<const StructureAdapter*>())
+            init<StructureAdapterConstPtr>())
         .def("rewind", &BaseBondGenerator::rewind)
         .def("finished", &BaseBondGenerator::finished)
         .def("next", &BaseBondGenerator::next)
@@ -73,6 +73,8 @@ void wrap_BaseBondGenerator()
         .def("Ucartesian1", Ucartesian1_asarray<BaseBondGenerator>)
         .def("msd", &BaseBondGenerator::msd)
         ;
+
+    register_ptr_to_python<BaseBondGeneratorPtr>();
 }
 
 }   // namespace srrealmodule

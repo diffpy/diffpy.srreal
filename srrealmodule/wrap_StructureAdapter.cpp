@@ -73,7 +73,7 @@ class StructureAdapterWrap :
 {
     public:
 
-        BaseBondGenerator* createBondGenerator() const
+        BaseBondGeneratorPtr createBondGenerator() const
         {
             return this->get_pure_virtual_override("createBondGenerator")();
         }
@@ -249,7 +249,6 @@ void wrap_StructureAdapter()
                 doc_StructureAdapter___init__)
         .def("createBondGenerator",
                 &StructureAdapter::createBondGenerator,
-                return_internal_reference<>(),
                 doc_StructureAdapter_createBondGenerator)
         .def("countSites", &StructureAdapter::countSites,
                 doc_StructureAdapter_countSites)
