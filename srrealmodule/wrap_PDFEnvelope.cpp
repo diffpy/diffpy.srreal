@@ -34,6 +34,34 @@ using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
 
+const char* doc_PDFEnvelope = "\
+FIXME\n\
+";
+
+const char* doc_PDFEnvelope_create = "\
+FIXME\n\
+";
+
+const char* doc_PDFEnvelope_clone = "\
+FIXME\n\
+";
+
+const char* doc_PDFEnvelope_type = "\
+FIXME\n\
+";
+
+const char* doc_PDFEnvelope___call__ = "\
+FIXME\n\
+";
+
+const char* doc_PDFEnvelope__registerThisType = "\
+FIXME\n\
+";
+
+const char* doc_PDFEnvelope_createByType = "\
+FIXME\n\
+";
+
 const char* doc_PDFEnvelope_getRegisteredTypes = "\
 Set of string identifiers for registered PDFEnvelope classes.\n\
 These are allowed arguments for the createByType static method.\n\
@@ -99,14 +127,18 @@ void wrap_PDFEnvelope()
     using diffpy::Attributes;
 
     class_<PDFEnvelopeWrap, bases<Attributes>,
-        noncopyable>("PDFEnvelope_ext")
-        .def("create", &PDFEnvelope::create)
-        .def("clone", &PDFEnvelope::clone)
+        noncopyable>("PDFEnvelope", doc_PDFEnvelope)
+        .def("create", &PDFEnvelope::create, doc_PDFEnvelope_create)
+        .def("clone", &PDFEnvelope::clone, doc_PDFEnvelope_clone)
         .def("type", &PDFEnvelope::type,
-                return_value_policy<copy_const_reference>())
-        .def("__call__", &PDFEnvelope::operator())
-        .def("_registerThisType", &PDFEnvelope::registerThisType)
-        .def("createByType", &PDFEnvelope::createByType)
+                return_value_policy<copy_const_reference>(),
+                doc_PDFEnvelope_type)
+        .def("__call__", &PDFEnvelope::operator(),
+                doc_PDFEnvelope___call__)
+        .def("_registerThisType", &PDFEnvelope::registerThisType,
+                doc_PDFEnvelope__registerThisType)
+        .def("createByType", &PDFEnvelope::createByType,
+                doc_PDFEnvelope_createByType)
         .staticmethod("createByType")
         .def("getRegisteredTypes", getPDFEnvelopeTypes_asset,
                 doc_PDFEnvelope_getRegisteredTypes)
