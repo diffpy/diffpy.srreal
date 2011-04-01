@@ -77,7 +77,75 @@ const char* doc_BasePairQuantity__getParallelData = "\
 Return raw results string from a parallel job.\n\
 ";
 
-const char* doc_PairQuantityWrap__value = "\
+const char* doc_BasePairQuantity_setStructure = "\
+FIXME\n\
+";
+
+const char* doc_BasePairQuantity_getStructure = "\
+FIXME\n\
+";
+
+const char* doc_BasePairQuantity__setupParallelRun = "\
+FIXME\n\
+";
+
+const char* doc_BasePairQuantity_maskAllPairs = "\
+FIXME\n\
+";
+
+const char* doc_BasePairQuantity_invertMask = "\
+FIXME\n\
+";
+
+const char* doc_BasePairQuantity_setPairMask = "\
+FIXME\n\
+";
+
+const char* doc_BasePairQuantity_getPairMask = "\
+FIXME\n\
+";
+
+const char* doc_BasePairQuantity_setTypeMask = "\
+FIXME\n\
+";
+
+const char* doc_BasePairQuantity_getTypeMask = "\
+FIXME\n\
+";
+
+const char* doc_PairQuantity = "\
+FIXME\n\
+";
+
+const char* doc_PairQuantity__getParallelData = "\
+FIXME\n\
+";
+
+const char* doc_PairQuantity__resizeValue = "\
+FIXME\n\
+";
+
+const char* doc_PairQuantity__resetValue = "\
+FIXME\n\
+";
+
+const char* doc_PairQuantity__configureBondGenerator = "\
+FIXME\n\
+";
+
+const char* doc_PairQuantity__addPairContribution = "\
+FIXME\n\
+";
+
+const char* doc_PairQuantity__executeParallelMerge = "\
+FIXME\n\
+";
+
+const char* doc_PairQuantity__finishValue = "\
+FIXME\n\
+";
+
+const char* doc_PairQuantity__value = "\
 Reference to the internal vector of total contributions.\n\
 ";
 
@@ -343,45 +411,63 @@ void wrap_PairQuantity()
                 doc_BasePairQuantity__mergeParallelData)
         .def("_getParallelData", &PairQuantity::getParallelData,
                 doc_BasePairQuantity__getParallelData)
-        .def("setStructure", &PairQuantity::setStructure<object>)
+        .def("setStructure", &PairQuantity::setStructure<object>,
+                doc_BasePairQuantity_setStructure)
         .def("getStructure", &PairQuantity::getStructure,
-                return_value_policy<copy_const_reference>())
-        .def("_setupParallelRun", &PairQuantity::setupParallelRun)
-        .def("maskAllPairs", &PairQuantity::maskAllPairs)
-        .def("invertMask", &PairQuantity::invertMask)
-        .def("setPairMask", set_pair_mask)
-        .def("getPairMask", &PairQuantity::getPairMask)
-        .def("setTypeMask", &PairQuantity::setTypeMask)
-        .def("getTypeMask", &PairQuantity::getTypeMask)
+                return_value_policy<copy_const_reference>(),
+                doc_BasePairQuantity_getStructure)
+        .def("_setupParallelRun", &PairQuantity::setupParallelRun,
+                doc_BasePairQuantity__setupParallelRun)
+        .def("maskAllPairs", &PairQuantity::maskAllPairs,
+                doc_BasePairQuantity_maskAllPairs)
+        .def("invertMask", &PairQuantity::invertMask,
+                doc_BasePairQuantity_invertMask)
+        .def("setPairMask", set_pair_mask,
+                doc_BasePairQuantity_setPairMask)
+        .def("getPairMask", &PairQuantity::getPairMask,
+                doc_BasePairQuantity_getPairMask)
+        .def("setTypeMask", &PairQuantity::setTypeMask,
+                doc_BasePairQuantity_setTypeMask)
+        .def("getTypeMask", &PairQuantity::getTypeMask,
+                doc_BasePairQuantity_getTypeMask)
         .def_pickle(SerializationPickleSuite<PairQuantity>())
         ;
 
+    // FIXME: rename PairQuantity_ext to PairQuantity and move here the
+    // docstrings from diffpy.srreal.pairquantity
     class_<PairQuantityWrap, bases<PairQuantity>,
-        noncopyable>("PairQuantity_ext")
+        noncopyable>("PairQuantity_ext", doc_PairQuantity)
         .def("_getParallelData",
                 &PairQuantityExposed::getParallelData,
-                &PairQuantityWrap::default_getParallelData)
+                &PairQuantityWrap::default_getParallelData,
+                doc_PairQuantity__getParallelData)
         .def("_resizeValue",
                 &PairQuantityExposed::resizeValue,
-                &PairQuantityWrap::default_resizeValue)
+                &PairQuantityWrap::default_resizeValue,
+                doc_PairQuantity__resizeValue)
         .def("_resetValue",
                 &PairQuantityExposed::resetValue,
-                &PairQuantityWrap::default_resetValue)
+                &PairQuantityWrap::default_resetValue,
+                doc_PairQuantity__resetValue)
         .def("_configureBondGenerator",
                 &PairQuantityExposed::configureBondGenerator,
-                &PairQuantityWrap::default_configureBondGenerator)
+                &PairQuantityWrap::default_configureBondGenerator,
+                doc_PairQuantity__configureBondGenerator)
         .def("_addPairContribution",
                 &PairQuantityExposed::addPairContribution,
-                &PairQuantityWrap::default_addPairContribution)
+                &PairQuantityWrap::default_addPairContribution,
+                doc_PairQuantity__addPairContribution)
         .def("_executeParallelMerge",
                 &PairQuantityExposed::executeParallelMerge,
-                &PairQuantityWrap::default_executeParallelMerge)
+                &PairQuantityWrap::default_executeParallelMerge,
+                doc_PairQuantity__executeParallelMerge)
         .def("_finishValue",
                 &PairQuantityExposed::finishValue,
-                &PairQuantityWrap::default_finishValue)
+                &PairQuantityWrap::default_finishValue,
+                doc_PairQuantity__finishValue)
         .add_property("_value", make_function(&PairQuantityWrap::value,
                     return_internal_reference<>()),
-                doc_PairQuantityWrap__value)
+                doc_PairQuantity__value)
         ;
 
 }
