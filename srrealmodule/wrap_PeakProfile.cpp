@@ -35,6 +35,42 @@ using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
 
+const char* doc_PeakProfile = "\
+FIXME\n\
+";
+
+const char* doc_PeakProfile_create = "\
+FIXME\n\
+";
+
+const char* doc_PeakProfile_clone = "\
+FIXME\n\
+";
+
+const char* doc_PeakProfile_type = "\
+FIXME\n\
+";
+
+const char* doc_PeakProfile_yvalue = "\
+FIXME\n\
+";
+
+const char* doc_PeakProfile_xboundlo = "\
+FIXME\n\
+";
+
+const char* doc_PeakProfile_xboundhi = "\
+FIXME\n\
+";
+
+const char* doc_PeakProfile__registerThisType = "\
+FIXME\n\
+";
+
+const char* doc_PeakProfile_createByType = "\
+FIXME\n\
+";
+
 const char* doc_PeakProfile_getRegisteredTypes = "\
 Set of string identifiers for registered PeakProfile classes.\n\
 These are allowed arguments for the createByType static method.\n\
@@ -106,16 +142,19 @@ void wrap_PeakProfile()
     using diffpy::Attributes;
 
     class_<PeakProfileWrap, bases<Attributes>,
-        noncopyable>("PeakProfile_ext")
-        .def("create", &PeakProfile::create)
-        .def("clone", &PeakProfile::clone)
+        noncopyable>("PeakProfile", doc_PeakProfile)
+        .def("create", &PeakProfile::create, doc_PeakProfile_create)
+        .def("clone", &PeakProfile::clone, doc_PeakProfile_clone)
         .def("type", &PeakProfile::type,
-                return_value_policy<copy_const_reference>())
-        .def("yvalue", &PeakProfile::yvalue)
-        .def("xboundlo", &PeakProfile::xboundlo)
-        .def("xboundhi", &PeakProfile::xboundhi)
-        .def("_registerThisType", &PeakProfile::registerThisType)
-        .def("createByType", &PeakProfile::createByType)
+                return_value_policy<copy_const_reference>(),
+                doc_PeakProfile_type)
+        .def("yvalue", &PeakProfile::yvalue, doc_PeakProfile_yvalue)
+        .def("xboundlo", &PeakProfile::xboundlo, doc_PeakProfile_xboundlo)
+        .def("xboundhi", &PeakProfile::xboundhi, doc_PeakProfile_xboundhi)
+        .def("_registerThisType", &PeakProfile::registerThisType,
+                doc_PeakProfile__registerThisType)
+        .def("createByType", &PeakProfile::createByType,
+                doc_PeakProfile_createByType)
         .staticmethod("createByType")
         .def("getRegisteredTypes", getPeakProfileTypes_asset,
                 doc_PeakProfile_getRegisteredTypes)
