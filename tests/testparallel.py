@@ -32,6 +32,9 @@ class TestRoutines(unittest.TestCase):
         return
 
     def tearDown(self):
+        if self._pool:
+            self._pool.terminate()
+            self._pool.join()
         self._pool = None
         return
 

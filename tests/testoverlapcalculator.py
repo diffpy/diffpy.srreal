@@ -32,7 +32,9 @@ class TestOverlapCalculator(unittest.TestCase):
         return
 
     def tearDown(self):
-        # kill any potential multiprocessing pool
+        if self.pool:
+            self.pool.terminate()
+            self.pool.join()
         self.pool = None
         return
 
