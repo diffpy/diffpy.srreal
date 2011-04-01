@@ -110,7 +110,7 @@ void wrap_PeakWidthModel()
     using diffpy::Attributes;
 
     class_<PeakWidthModelWrap, bases<Attributes>,
-        noncopyable>("PeakWidthModel_ext")
+        noncopyable>("PeakWidthModel")
         .def("create", &PeakWidthModel::create)
         .def("clone", &PeakWidthModel::clone)
         .def("type", &PeakWidthModel::type,
@@ -130,7 +130,7 @@ void wrap_PeakWidthModel()
 
     register_ptr_to_python<PeakWidthModelPtr>();
 
-    class_<PeakWidthModelOwner>("PeakWidthModelOwner_ext")
+    class_<PeakWidthModelOwner>("PeakWidthModelOwner")
         .def("getPeakWidthModel",
                 (PeakWidthModelPtr(PeakWidthModelOwner::*)()) NULL,
                 getpwm_overloads())

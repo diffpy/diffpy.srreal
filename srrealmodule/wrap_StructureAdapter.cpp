@@ -40,23 +40,69 @@ using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
 
-// FIXME:
-const char* doc_StructureAdapter = "";
-const char* doc_StructureAdapter___init__ = "";
-const char* doc_StructureAdapter_createBondGenerator = "";
-const char* doc_StructureAdapter_countSites = "";
-const char* doc_StructureAdapter_totalOccupancy = "";
-const char* doc_StructureAdapter_numberDensity = "";
-const char* doc_StructureAdapter_siteAtomType = "";
-const char* doc_StructureAdapter_siteCartesianPosition = "";
-const char* doc_StructureAdapter_siteMultiplicity = "";
-const char* doc_StructureAdapter_siteOccupancy = "";
-const char* doc_StructureAdapter_siteAnisotropy = "";
-const char* doc_StructureAdapter_siteCartesianUij = "";
-const char* doc_StructureAdapter__customPQConfig = "";
-const char* doc_nometa = "";
-const char* doc_nosymmetry = "";
-const char* doc_createStructureAdapter = "";
+const char* doc_StructureAdapter = "\
+FIXME\n\
+";
+
+const char* doc_StructureAdapter___init__ = "\
+FIXME\n\
+";
+
+const char* doc_StructureAdapter_createBondGenerator = "\
+FIXME\n\
+";
+
+const char* doc_StructureAdapter_countSites = "\
+FIXME\n\
+";
+
+const char* doc_StructureAdapter_totalOccupancy = "\
+FIXME\n\
+";
+
+const char* doc_StructureAdapter_numberDensity = "\
+FIXME\n\
+";
+
+const char* doc_StructureAdapter_siteAtomType = "\
+FIXME\n\
+";
+
+const char* doc_StructureAdapter_siteCartesianPosition = "\
+FIXME\n\
+";
+
+const char* doc_StructureAdapter_siteMultiplicity = "\
+FIXME\n\
+";
+
+const char* doc_StructureAdapter_siteOccupancy = "\
+FIXME\n\
+";
+
+const char* doc_StructureAdapter_siteAnisotropy = "\
+FIXME\n\
+";
+
+const char* doc_StructureAdapter_siteCartesianUij = "\
+FIXME\n\
+";
+
+const char* doc_StructureAdapter__customPQConfig = "\
+FIXME\n\
+";
+
+const char* doc_nometa = "\
+FIXME\n\
+";
+
+const char* doc_nosymmetry = "\
+FIXME\n\
+";
+
+const char* doc_createStructureAdapter = "\
+FIXME\n\
+";
 
 // wrappers ------------------------------------------------------------------
 

@@ -24,12 +24,13 @@ __id__ = "$Id$"
 
 # exported items
 __all__ = '''DebyePDFCalculator PDFCalculator
-    PDFBaseline PDFEnvelope PeakProfile
+    PDFBaseline PDFEnvelope PeakProfile PeakWidthModel
     '''.split()
 
 from diffpy.srreal.srreal_ext import DebyePDFCalculator_ext
 from diffpy.srreal.srreal_ext import PDFCalculator_ext
-from diffpy.srreal.srreal_ext import PDFBaseline, PDFEnvelope, PeakProfile
+from diffpy.srreal.srreal_ext import PDFBaseline, PDFEnvelope
+from diffpy.srreal.srreal_ext import PeakProfile, PeakWidthModel
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
 from diffpy.srreal.wraputils import setattrFromKeywordArguments
 
