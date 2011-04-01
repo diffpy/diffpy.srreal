@@ -12,10 +12,13 @@ import platform
 def subdictionary(d, keyset):
     return dict([kv for kv in d.items() if kv[0] in keyset])
 
+def getsyspaths(*names):
+    s = os.pathsep.join(filter(None, map(os.environ.get, names)))
+    return filter(os.path.exists, s.split(os.pathsep))
+
 # copy system environment variables related to compilation
 DefaultEnvironment(ENV=subdictionary(os.environ, [
     'PATH', 'PYTHONPATH',
-    'CPATH', 'CPLUS_INCLUDE_PATH',
     'LD_LIBRARY_PATH', 'LIBRARY_PATH',
     ])
 )
@@ -50,6 +53,9 @@ good_python_flags = lambda n : (
 env.ParseConfig("python-config --cflags")
 env.Replace(CCFLAGS=filter(good_python_flags, env['CCFLAGS']))
 env.Replace(CPPDEFINES='')
+# the CPPPATH directories are checked by scons dependency scanner
+cpppath = getsyspaths('CPLUS_INCLUDE_PATH', 'CPATH')
+env.AppendUnique(CPPPATH=cpppath + cpppath + cpppath)
 env.AppendUnique(LIBS=['libdiffpy'])
 
 # Compiler specific options
