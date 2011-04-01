@@ -55,7 +55,7 @@ env.Replace(CCFLAGS=filter(good_python_flags, env['CCFLAGS']))
 env.Replace(CPPDEFINES='')
 # the CPPPATH directories are checked by scons dependency scanner
 cpppath = getsyspaths('CPLUS_INCLUDE_PATH', 'CPATH')
-env.AppendUnique(CPPPATH=cpppath + cpppath + cpppath)
+env.AppendUnique(CPPPATH=cpppath)
 env.AppendUnique(LIBS=['libdiffpy'])
 
 # Compiler specific options
