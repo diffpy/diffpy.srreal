@@ -35,10 +35,59 @@ using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
 
+const char* doc_PeakWidthModel = "\
+FIXME\n\
+";
+
+const char* doc_PeakWidthModel_create = "\
+FIXME\n\
+";
+
+const char* doc_PeakWidthModel_clone = "\
+FIXME\n\
+";
+
+const char* doc_PeakWidthModel_type = "\
+FIXME\n\
+";
+
+const char* doc_PeakWidthModel_calculate = "\
+FIXME\n\
+";
+
+const char* doc_PeakWidthModel_calculateFromMSD = "\
+FIXME\n\
+";
+
+const char* doc_PeakWidthModel__registerThisType = "\
+FIXME\n\
+";
+
+const char* doc_PeakWidthModel_createByType = "\
+FIXME\n\
+";
+
 const char* doc_PeakWidthModel_getRegisteredTypes = "\
 Set of string identifiers for registered PeakWidthModel classes.\n\
 These are allowed arguments for the setPeakWidthModel method.\n\
 ";
+
+const char* doc_PeakWidthModelOwner = "\
+FIXME\n\
+";
+
+const char* doc_PeakWidthModelOwner_getPeakWidthModel = "\
+FIXME\n\
+";
+
+const char* doc_PeakWidthModelOwner_setPeakWidthModel = "\
+FIXME\n\
+";
+
+const char* doc_PeakWidthModelOwner_setPeakWidthModelByType = "\
+FIXME\n\
+";
+
 
 // wrappers ------------------------------------------------------------------
 
@@ -110,18 +159,22 @@ void wrap_PeakWidthModel()
     using diffpy::Attributes;
 
     class_<PeakWidthModelWrap, bases<Attributes>,
-        noncopyable>("PeakWidthModel")
-        .def("create", &PeakWidthModel::create)
-        .def("clone", &PeakWidthModel::clone)
+        noncopyable>("PeakWidthModel", doc_PeakWidthModel)
+        .def("create", &PeakWidthModel::create, doc_PeakWidthModel_create)
+        .def("clone", &PeakWidthModel::clone, doc_PeakWidthModel_clone)
         .def("type", &PeakWidthModel::type,
-                return_value_policy<copy_const_reference>())
+                return_value_policy<copy_const_reference>(),
+                doc_PeakWidthModel_type)
         .def("calculate",
-                &PeakWidthModel::calculate)
+                &PeakWidthModel::calculate, doc_PeakWidthModel_calculate)
         .def("calculateFromMSD",
                 &PeakWidthModel::calculateFromMSD,
-                &PeakWidthModelWrap::default_calculateFromMSD)
-        .def("_registerThisType", &PeakWidthModel::registerThisType)
-        .def("createByType", &PeakWidthModel::createByType)
+                &PeakWidthModelWrap::default_calculateFromMSD,
+                doc_PeakWidthModel_calculateFromMSD)
+        .def("_registerThisType", &PeakWidthModel::registerThisType,
+                doc_PeakWidthModel__registerThisType)
+        .def("createByType", &PeakWidthModel::createByType,
+                doc_PeakWidthModel_createByType)
         .staticmethod("createByType")
         .def("getRegisteredTypes", getPeakWidthModelTypes_asset,
                 doc_PeakWidthModel_getRegisteredTypes)
@@ -130,14 +183,16 @@ void wrap_PeakWidthModel()
 
     register_ptr_to_python<PeakWidthModelPtr>();
 
-    class_<PeakWidthModelOwner>("PeakWidthModelOwner")
+    class_<PeakWidthModelOwner>("PeakWidthModelOwner", doc_PeakWidthModelOwner)
         .def("getPeakWidthModel",
                 (PeakWidthModelPtr(PeakWidthModelOwner::*)()) NULL,
-                getpwm_overloads())
+                getpwm_overloads(doc_PeakWidthModelOwner_getPeakWidthModel))
         .def("setPeakWidthModel",
-                &PeakWidthModelOwner::setPeakWidthModel)
+                &PeakWidthModelOwner::setPeakWidthModel,
+                doc_PeakWidthModelOwner_setPeakWidthModel)
         .def("setPeakWidthModelByType",
-                &PeakWidthModelOwner::setPeakWidthModelByType)
+                &PeakWidthModelOwner::setPeakWidthModelByType,
+                doc_PeakWidthModelOwner_setPeakWidthModelByType)
         ;
 }
 
