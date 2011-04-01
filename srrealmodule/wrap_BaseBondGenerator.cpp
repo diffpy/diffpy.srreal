@@ -34,87 +34,113 @@ namespace nswrap_BaseBondGenerator {
 // docstrings ----------------------------------------------------------------
 
 const char* doc_BaseBondGenerator = "\
-FIXME\n\
+This class generates atom pairs in the structure within specified distance\n\
+bounds and returns the associated atom-pair data.  The generator walks over\n\
+all neighbors of the anchor site accounting for symmetry and periodicity of\n\
+the structure object.\n\
 ";
 
 const char* doc_BaseBondGenerator_rewind = "\
-FIXME\n\
+Reset generator to the first atom pair containing the anchor atom.\n\
 ";
 
 const char* doc_BaseBondGenerator_finished = "\
-FIXME\n\
+Return True if there are no more atom pairs containing the anchor atom.\n\
 ";
 
 const char* doc_BaseBondGenerator_next = "\
-FIXME\n\
+Advance to the next bond of the anchor atom.\n\
 ";
 
 const char* doc_BaseBondGenerator_nextsite = "\
-FIXME\n\
+Skip the remaining symmetry-related bonds of the current neighbor site\n\
+and advance to the next site in the structure.\n\
 ";
 
 const char* doc_BaseBondGenerator_selectAnchorSite = "\
-FIXME\n\
+Select the anchor site of the bond generator.\n\
+\n\
+anchor   -- integer index of the anchor site\n\
+\n\
+No return value.  Must be followed by a rewind call to get a valid state.\n\
 ";
 
 const char* doc_BaseBondGenerator_selectSiteRange = "\
-FIXME\n\
+Select a range of neighbor sites for the anchor atom bonds.\n\
+\n\
+first    -- integer index of the first neighbor site\n\
+last     -- index of the last neighbor site, not included\n\
+\n\
+No return value.  Must be followed by a rewind call to get a valid state.\n\
 ";
 
 const char* doc_BaseBondGenerator_setRmin = "\
-FIXME\n\
+Select minimum distance for the generated bonds.\n\
+\n\
+rmin -- the minimum distance\n\
+\n\
+No return value.  Must be followed by a rewind call to get a valid state.\n\
 ";
 
 const char* doc_BaseBondGenerator_setRmax = "\
-FIXME\n\
+Select the maximum distance limit of the generated bonds.\n\
+\n\
+rmax -- the maximum distance\n\
+\n\
+No return value.  Must be followed by a rewind call to get a valid state.\n\
 ";
 
 const char* doc_BaseBondGenerator_getRmin = "\
-FIXME\n\
+Return the minimum length of the generated bonds.\n\
 ";
 
 const char* doc_BaseBondGenerator_getRmax = "\
-FIXME\n\
+Return the maximum length of the generated bonds.\n\
 ";
 
 const char* doc_BaseBondGenerator_site0 = "\
-FIXME\n\
+Anchor site index of the current bond.\n\
 ";
 
 const char* doc_BaseBondGenerator_site1 = "\
-FIXME\n\
+Neighbor site index of the current bond.\n\
 ";
 
 const char* doc_BaseBondGenerator_multiplicity = "\
-FIXME\n\
+Symmetry multiplicity of the anchor site.\n\
 ";
 
 const char* doc_BaseBondGenerator_r0 = "\
-FIXME\n\
+Cartesian coordinates of the anchor site.\n\
 ";
 
 const char* doc_BaseBondGenerator_r1 = "\
-FIXME\n\
+Cartesian coordinates of the current neighbor site, these can\n\
+be adjusted for symmetry operations and periodic translations.\n\
 ";
 
 const char* doc_BaseBondGenerator_distance = "\
-FIXME\n\
+Current distance between anchor and neighbor site.\n\
 ";
 
 const char* doc_BaseBondGenerator_r01 = "\
-FIXME\n\
+Cartesian direction from anchor to neighbor site.\n\
 ";
 
 const char* doc_BaseBondGenerator_Ucartesian0 = "\
-FIXME\n\
+Cartesian anisotropic displacement parameters matrix at the anchor site.\n\
+Returns a 3x3 numpy array.\n\
 ";
 
 const char* doc_BaseBondGenerator_Ucartesian1 = "\
-FIXME\n\
+Cartesian anisotropic displacement parameters matrix at the neighbor site.\n\
+This can be adjusted for symmetry rotations at the neighbor site.\n\
+Returns a 3x3 numpy array.\n\
 ";
 
 const char* doc_BaseBondGenerator_msd = "\
-FIXME\n\
+Mean square displacement along the direction from anchor to neighbor site.\n\
+This is proportional to the sum of Ucartesian0 and Ucartesian1 matrices.\n\
 ";
 
 // wrappers ------------------------------------------------------------------
@@ -146,13 +172,14 @@ void wrap_BaseBondGenerator()
         .def("nextsite", &BaseBondGenerator::nextsite,
                 doc_BaseBondGenerator_nextsite)
         .def("selectAnchorSite", &BaseBondGenerator::selectAnchorSite,
-                doc_BaseBondGenerator_selectAnchorSite)
+                arg("anchor"), doc_BaseBondGenerator_selectAnchorSite)
         .def("selectSiteRange", &BaseBondGenerator::selectSiteRange,
+                (arg("first"), arg("last")),
                 doc_BaseBondGenerator_selectSiteRange)
         .def("setRmin", &BaseBondGenerator::setRmin,
-                doc_BaseBondGenerator_setRmin)
+                arg("rmin"), doc_BaseBondGenerator_setRmin)
         .def("setRmax", &BaseBondGenerator::setRmax,
-                doc_BaseBondGenerator_setRmax)
+                arg("rmax"), doc_BaseBondGenerator_setRmax)
         .def("getRmin", &BaseBondGenerator::getRmin,
                 return_value_policy<copy_const_reference>(),
                 doc_BaseBondGenerator_getRmin)
