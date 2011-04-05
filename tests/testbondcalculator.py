@@ -49,7 +49,7 @@ class TestBondCalculator(unittest.TestCase):
         bdc.rmax = 0
         self.assertEqual(0, len(bdc(self.rutile)))
         bdc.rmax = 2.0
-        self.assertEqual(12, len(bdc(self.rutile)))
+        self.assertEqual(24, len(bdc(self.rutile)))
         self.assertEqual(0, len(bdc(self.niprim)))
         bdc.rmax = 2.5
         self.assertEqual(12, len(bdc(self.niprim)))
@@ -89,6 +89,7 @@ class TestBondCalculator(unittest.TestCase):
         for i in range(4):
             self.bdc.setPairMask(0, i, True)
         dst0a = self.bdc(self.nickel)
+        idx0a = (self.bdc.sites0 == 0)
         self.bdc.maskAllPairs(False)
         for i in range(4):
             self.bdc.setPairMask(3, i, True)
@@ -96,7 +97,7 @@ class TestBondCalculator(unittest.TestCase):
         self.bdc.maskAllPairs(True)
         dstp = self.bdc(self.niprim)
         self.assertTrue(numpy.allclose(dst0a, dst3a))
-        self.assertTrue(numpy.allclose(dst0a, dstp))
+        self.assertTrue(numpy.allclose(dst0a[idx0a], dstp))
         return
 
 
@@ -126,11 +127,11 @@ class TestBondCalculator(unittest.TestCase):
         self.assertEqual(len(dij), len(set(dij)))
         bdc.maskAllPairs(False)
         bdc(self.rutile)
-        self.assertEqual([], bdc.sites0)
+        self.assertEqual(0, len(bdc.sites0))
         bdc.setPairMask(3, 3, True)
         bdc(self.rutile)
         self.assertTrue(len(bdc.sites0))
-        self.assertEqual(set([3]), set(bdc.sites0 + bdc.sites1))
+        self.assertEqual(set([3]), set(bdc.sites0).union(bdc.sites1))
         return
 
 
@@ -244,7 +245,7 @@ class TestBondCalculatorObjCryst(TestCaseObjCrystOptional):
         bdc.rmax = 0
         self.assertEqual(0, len(bdc(self.rutile).tolist()))
         bdc.rmax = 2.0
-        self.assertEqual(3, len(bdc(self.rutile)))
+        self.assertEqual(6, len(bdc(self.rutile)))
         bdc.rmax = 2.5
         self.assertEqual(12, len(bdc(self.nickel)))
         return
@@ -266,11 +267,11 @@ class TestBondCalculatorObjCryst(TestCaseObjCrystOptional):
         self.assertEqual(len(dij), len(set(dij)))
         bdc.maskAllPairs(False)
         bdc(self.rutile)
-        self.assertEqual([], bdc.sites0)
+        self.assertEqual(0, len(bdc.sites0))
         bdc.setPairMask(1, 1, True)
         bdc(self.rutile)
         self.assertTrue(len(bdc.sites0))
-        self.assertEqual(set([1]), set(bdc.sites0 + bdc.sites1))
+        self.assertEqual(set([1]), set(bdc.sites0).union(bdc.sites1))
         return
 
 

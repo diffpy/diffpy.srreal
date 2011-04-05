@@ -52,6 +52,21 @@ void translate_invalid_argument(const invalid_argument& e)
     PyErr_SetString(PyExc_ValueError, e.what());
 }
 
+
+boost::python::object newNumPyArray(int dim, const int* sz, int typenum)
+{
+    using namespace std;
+    using namespace boost;
+    // copy the size information to an array of npy_intp
+    valarray<npy_intp> npsza(dim);
+    npy_intp& npsz = npsza[0];
+    copy(sz, sz + dim, &npsz);
+    // create numpy array
+    python::object rv(
+            python::handle<>(PyArray_SimpleNew(dim, &npsz, typenum)));
+    return rv;
+}
+
 }   // namespace
 
 namespace srrealmodule {
@@ -70,18 +85,19 @@ void wrap_exceptions()
 /// helper for creating numpy array of doubles
 NumPyArray_DoublePtr createNumPyDoubleArray(int dim, const int* sz)
 {
-    using namespace std;
-    using namespace boost;
-    // import numpy array once
-    // copy the size information to an array of npy_intp
-    valarray<npy_intp> npsza(dim);
-    npy_intp& npsz = npsza[0];
-    copy(sz, sz + dim, &npsz);
-    // create numpy array
-    python::object rvobj(
-            python::handle<>(PyArray_SimpleNew(dim, &npsz, PyArray_DOUBLE)));
-    double* rvdata = (double*) PyArray_DATA((PyArrayObject*) rvobj.ptr());
+    boost::python::object rvobj = newNumPyArray(dim, sz, PyArray_DOUBLE);
+    double* rvdata = static_cast<double*>(PyArray_DATA(rvobj.ptr()));
     NumPyArray_DoublePtr rv(rvobj, rvdata);
+    return rv;
+}
+
+
+/// helper for creating numpy array of integers
+NumPyArray_IntPtr createNumPyIntArray(int dim, const int* sz)
+{
+    boost::python::object rvobj = newNumPyArray(dim, sz, PyArray_INT);
+    int* rvdata = static_cast<int*>(PyArray_DATA(rvobj.ptr()));
+    NumPyArray_IntPtr rv(rvobj, rvdata);
     return rv;
 }
 

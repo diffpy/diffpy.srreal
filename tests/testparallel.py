@@ -92,7 +92,7 @@ class TestRoutines(unittest.TestCase):
             bci.setPairMask(0, 'all', True)
             bci.filterCone([1, 0, 0], 48)
         d0a = bc(nickel)
-        self.assertEqual(4, len(d0a))
+        self.assertEqual(8, len(d0a))
         d1a = pbc1(nickel)
         self.failUnless(numpy.array_equal(d0a, d1a))
         d2a = pbc2(nickel)

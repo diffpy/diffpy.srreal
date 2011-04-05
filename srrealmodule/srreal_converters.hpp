@@ -173,7 +173,7 @@ convertToNumPyArray(Iter first, Iter last)
 {
     int sz = last - first;
     NumPyArray_DoublePtr ap = createNumPyDoubleArray(1, &sz);
-    ::std::copy(first, last, ap.second);
+    std::copy(first, last, ap.second);
     return ap.first;
 }
 
@@ -193,7 +193,7 @@ convertToNumPyArray(const ::diffpy::srreal::R3::Matrix& mx)
     using namespace diffpy::srreal;
     int sz[2] = {R3::Ndim, R3::Ndim};
     NumPyArray_DoublePtr ap = createNumPyDoubleArray(2, sz);
-    ::std::copy(mx.data(), mx.data() + sz[0] * sz[1], ap.second);
+    std::copy(mx.data(), mx.data() + sz[0] * sz[1], ap.second);
     return ap.first;
 }
 
@@ -203,6 +203,24 @@ inline ::boost::python::object
 convertToNumPyArray(const ::diffpy::srreal::QuantityType& value)
 {
     return convertToNumPyArray(value.begin(), value.end());
+}
+
+
+/// Type for numpy array object and a raw pointer to its double data
+typedef std::pair<boost::python::object, int*> NumPyArray_IntPtr;
+
+/// helper for creating numpy array of integers
+NumPyArray_IntPtr createNumPyIntArray(int dim, const int* sz);
+
+
+/// specialization for a vector of integers
+inline ::boost::python::object
+convertToNumPyArray(const ::std::vector<int>& value)
+{
+    int sz = value.size();
+    NumPyArray_IntPtr ap = createNumPyIntArray(1, &sz);
+    std::copy(value.begin(), value.end(), ap.second);
+    return ap.first;
 }
 
 
