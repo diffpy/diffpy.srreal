@@ -148,10 +148,10 @@ void wrap_OverlapCalculator()
                 directions_aslist<OverlapCalculator>,
                 doc_OverlapCalculator_directions)
         .add_property("sites0",
-                sites0_aslist<OverlapCalculator>,
+                sites0_asarray<OverlapCalculator>,
                 doc_OverlapCalculator_sites0)
         .add_property("sites1",
-                sites1_aslist<OverlapCalculator>,
+                sites1_asarray<OverlapCalculator>,
                 doc_OverlapCalculator_sites1)
         .add_property("types0",
                 types0_aslist<OverlapCalculator>,

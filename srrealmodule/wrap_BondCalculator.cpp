@@ -116,10 +116,10 @@ void wrap_BondCalculator()
                 directions_aslist<BondCalculator>,
                 doc_BondCalculator_directions)
         .add_property("sites0",
-                sites0_aslist<BondCalculator>,
+                sites0_asarray<BondCalculator>,
                 doc_BondCalculator_sites0)
         .add_property("sites1",
-                sites1_aslist<BondCalculator>,
+                sites1_asarray<BondCalculator>,
                 doc_BondCalculator_sites1)
         .add_property("types0",
                 types0_aslist<BondCalculator>,
