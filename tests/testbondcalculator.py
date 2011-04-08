@@ -245,7 +245,7 @@ class TestBondCalculatorObjCryst(TestCaseObjCrystOptional):
         bdc.rmax = 0
         self.assertEqual(0, len(bdc(self.rutile).tolist()))
         bdc.rmax = 2.0
-        self.assertEqual(6, len(bdc(self.rutile)))
+        self.assertEqual(6 + 3, len(bdc(self.rutile)))
         bdc.rmax = 2.5
         self.assertEqual(12, len(bdc(self.nickel)))
         return

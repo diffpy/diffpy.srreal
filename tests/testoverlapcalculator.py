@@ -115,14 +115,14 @@ class TestOverlapCalculator(unittest.TestCase):
         self.assertEqual(0, len(olc.distances))
         olc.atomradiitable.setCustom('Ni', 1.25)
         olc(self.nickel)
-        self.assertEqual(4 * 12 / 2, len(olc.distances))
+        self.assertEqual(4 * 12, len(olc.distances))
         dmin = numpy.sqrt(0.5) * self.nickel.lattice.a
         self.assertAlmostEqual(dmin, numpy.min(olc.distances))
         self.assertAlmostEqual(dmin, numpy.max(olc.distances))
         olc.maskAllPairs(False)
         olc.setPairMask(0, 'all', True)
         olc(self.nickel)
-        self.assertEqual(12, len(olc.distances))
+        self.assertEqual(12 + 12, len(olc.distances))
         return
 
     def test_directions(self):
