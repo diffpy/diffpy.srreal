@@ -247,7 +247,7 @@ class TestPDFCalculator(unittest.TestCase):
         '''
         pdfc = self.pdfcalc
         pdfc.setScatteringFactorTableByType('N')
-        pdfc.getScatteringFactorTable().setCustomFrom('Na', 'Na', 7)
+        pdfc.scatteringfactortable.setCustomFrom('Na', 'Na', 7)
         pdfc.addEnvelopeByType('sphericalshape')
         pdfc.delta1 = 0.2
         pdfc.delta2 = 0.3
@@ -266,8 +266,8 @@ class TestPDFCalculator(unittest.TestCase):
         pdfc.foobar = 'asdf'
         spkl = cPickle.dumps(pdfc)
         pdfc1 = cPickle.loads(spkl)
-        sft = pdfc.getScatteringFactorTable()
-        sft1 = pdfc1.getScatteringFactorTable()
+        sft = pdfc.scatteringfactortable
+        sft1 = pdfc1.scatteringfactortable
         self.assertEqual(sft.type(), sft1.type())
         self.assertEqual(7.0, sft1.lookup('Na'))
         for a in pdfc._namesOfDoubleAttributes():

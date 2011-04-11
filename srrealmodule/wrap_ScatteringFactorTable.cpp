@@ -156,16 +156,9 @@ const char* doc_ScatteringFactorTableOwner = "\
 Base class for classes that own ScatteringFactorTable instance.\n\
 ";
 
-const char* doc_ScatteringFactorTableOwner_getScatteringFactorTable = "\
-Return the internal ScatteringFactorTable.\n\
-";
-
-const char* doc_ScatteringFactorTableOwner_setScatteringFactorTable = "\
-Set internal ScatteringFactorTable to the specified instance.\n\
-\n\
-sftable  -- an instance of ScatteringFactorTable\n\
-\n\
-No return value.\n\
+const char* doc_ScatteringFactorTableOwner_scatteringfactortable = "\
+ScatteringFactorTable object used for a lookup of scattering factors.\n\
+This can be also set with the setScatteringFactorTableByType method.\n\
 ";
 
 const char* doc_ScatteringFactorTableOwner_setScatteringFactorTableByType = "\
@@ -182,15 +175,24 @@ Return string identifying the radiation type.\n\
 'X' for x-rays, 'N' for neutrons.\n\
 ";
 
-// wrappers
-
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getsft_overloads,
-        getScatteringFactorTable, 0, 0)
+// wrappers ------------------------------------------------------------------
 
 DECLARE_PYSET_METHOD_WRAPPER(getCustomSymbols, getCustomSymbols_asset)
 
 DECLARE_PYSET_FUNCTION_WRAPPER(ScatteringFactorTable::getRegisteredTypes,
         getScatteringFactorTableTypes_asset)
+
+// wrappers for the scatteringfactortable property
+
+ScatteringFactorTablePtr getsftable(ScatteringFactorTableOwner& obj)
+{
+    return obj.getScatteringFactorTable();
+}
+
+void setsftable(ScatteringFactorTableOwner& obj, ScatteringFactorTablePtr tb)
+{
+    obj.setScatteringFactorTable(tb);
+}
 
 // Helper class for overloads of ScatteringFactorTable methods from Python
 
@@ -312,14 +314,8 @@ void wrap_ScatteringFactorTable()
 
     class_<ScatteringFactorTableOwner>("ScatteringFactorTableOwner",
             doc_ScatteringFactorTableOwner)
-        .def("getScatteringFactorTable",
-                (ScatteringFactorTablePtr(SFTOwner::*)()) NULL,
-                getsft_overloads(
-                    doc_ScatteringFactorTableOwner_getScatteringFactorTable))
-        .def("setScatteringFactorTable",
-                &SFTOwner::setScatteringFactorTable,
-                bp::arg("sftable"),
-                doc_ScatteringFactorTableOwner_setScatteringFactorTable)
+        .add_property("scatteringfactortable", getsftable, setsftable,
+                doc_ScatteringFactorTableOwner_scatteringfactortable)
         .def("setScatteringFactorTableByType",
                 &SFTOwner::setScatteringFactorTableByType,
                 bp::arg("tp"),

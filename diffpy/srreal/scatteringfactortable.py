@@ -43,13 +43,13 @@ def _sft_setstate(self, state):
 def _sft_reduce(self):
     from diffpy.srreal.srreal_ext import ScatteringFactorTableOwner
     owner = ScatteringFactorTableOwner()
-    owner.setScatteringFactorTable(self)
+    owner.scatteringfactortable = self
     args = (owner,)
     rv = (_sft_create, args, self.__getstate__())
     return rv
 
 def _sft_create(owner):
-    return owner.getScatteringFactorTable()
+    return owner.scatteringfactortable
 
 # inject pickle methods to ScatteringFactorTable
 
