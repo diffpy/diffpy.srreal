@@ -43,7 +43,7 @@ A derived class has to overload the following methods:\n\
     clone(self)\n\
     type(self)\n\
     radiationType(self)\n\
-    lookupatq(self, smbl, q)\n\
+    _standardLookup(self, smbl, q)\n\
 \n\
 Derived class can be added to the global registry of ScatteringFactorTable\n\
 types by calling the _registerThisType method with any instance.\n\
@@ -80,32 +80,35 @@ This method must be overloaded in a derived class.\n\
 ";
 
 const char* doc_ScatteringFactorTable_lookup = "\
-Scattering factor of a specified atom at Q=0/A.  The standard value\n\
-can be overloaded using the setCustom method.  Otherwise the same as\n\
-lookupatq(smbl, 0)\n\
+Scattering factor of a specified atom at Q in 1/A.  The standard value\n\
+can be redefined using the setCustomFrom method.\n\
 \n\
 smbl -- string symbol for atom, ion or isotope\n\
+Q    -- Q value in inverse Angstroms, by default 0\n\
 \n\
 Return float.  Cannot be overloaded in Python.\n\
-Note: Used by PDFCalculator.\n\
 ";
 
-const char* doc_ScatteringFactorTable_lookupatq = "\
-Scattering factor of a specified atom at given Q in 1/A.\n\
+const char* doc_ScatteringFactorTable__standardLookup = "\
+Standard value of the atom scattering factor at given Q in 1/A.\n\
 \n\
 smbl -- string symbol for atom, ion or isotope\n\
 q    -- scattering vector amplitude in 1/A\n\
 \n\
 Return float.\n\
 This method must be overloaded in a derived class.\n\
-Note: Used by DebyePDFCalculator.\n\
 ";
 
-const char* doc_ScatteringFactorTable_setCustom = "\
+const char* doc_ScatteringFactorTable_setCustomFrom = "\
 Define custom scattering factor for the specified symbol.\n\
+The custom value is calculated by rescaling standard value\n\
+from a source atom type.\n\
 \n\
 smbl -- string symbol for atom, ion or isotope\n\
+src  -- atom symbol for the source standard scattering factor\n\
 sf   -- new scattering factor value\n\
+q    -- optional Q value for the new custom scattering factor.\n\
+        The internal standard value scaling is calculated at this Q.\n\
 \n\
 No return value.  Cannot be overloaded in Python.\n\
 ";
@@ -124,8 +127,8 @@ Reset all custom scattering factor values.\n\
 No return value.  Cannot be overloaded in Python.\n\
 ";
 
-const char* doc_ScatteringFactorTable_getAllCustom = "\
-Return a dictionary of all custom scattering factors.\n\
+const char* doc_ScatteringFactorTable_getCustomSymbols = "\
+Return a set of all atom symbols with custom scattering factors.\n\
 ";
 
 const char* doc_ScatteringFactorTable__registerThisType = "\
@@ -184,6 +187,8 @@ Return string identifying the radiation type.\n\
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getsft_overloads,
         getScatteringFactorTable, 0, 0)
 
+DECLARE_PYSET_METHOD_WRAPPER(getCustomSymbols, getCustomSymbols_asset)
+
 DECLARE_PYSET_FUNCTION_WRAPPER(ScatteringFactorTable::getRegisteredTypes,
         getScatteringFactorTableTypes_asset)
 
@@ -233,9 +238,9 @@ class ScatteringFactorTableWrap :
             return mradiationtype;
         }
 
-        double lookupatq(const std::string& smbl, double q) const
+        double standardLookup(const std::string& smbl, double q) const
         {
-            return this->get_pure_virtual_override("lookupatq")(smbl, q);
+            return this->get_pure_virtual_override("_standardLookup")(smbl, q);
         }
 
     private:
@@ -273,20 +278,22 @@ void wrap_ScatteringFactorTable()
                 doc_ScatteringFactorTable_radiationType)
         .def("lookup",
                 &ScatteringFactorTable::lookup,
-                bp::arg("smbl"), doc_ScatteringFactorTable_lookup)
-        .def("lookupatq",
-                &ScatteringFactorTable::lookupatq,
+                (bp::arg("smbl"), bp::arg("q")=0.0),
+                doc_ScatteringFactorTable_lookup)
+        .def("_standardLookup",
+                &ScatteringFactorTable::standardLookup,
                 (bp::arg("smbl"), bp::arg("q")),
-                doc_ScatteringFactorTable_lookupatq)
-        .def("setCustom", &ScatteringFactorTable::setCustom,
-                (bp::arg("smbl"), bp::arg("sf")),
-                doc_ScatteringFactorTable_setCustom)
+                doc_ScatteringFactorTable__standardLookup)
+        .def("setCustomFrom", &ScatteringFactorTable::setCustomFrom,
+                (bp::arg("smbl"), bp::arg("src"),
+                 bp::arg("sf"), bp::arg("q")=0.0),
+                doc_ScatteringFactorTable_setCustomFrom)
         .def("resetCustom", &ScatteringFactorTable::resetCustom,
-                bp::arg("smbl"), doc_ScatteringFactorTable_setCustom)
+                bp::arg("smbl"), doc_ScatteringFactorTable_resetCustom)
         .def("resetAll", &ScatteringFactorTable::resetAll,
                 doc_ScatteringFactorTable_resetAll)
-        .def("getAllCustom", getAllCustom_asdict<ScatteringFactorTable>,
-                doc_ScatteringFactorTable_getAllCustom)
+        .def("getCustomSymbols", getCustomSymbols_asset<ScatteringFactorTable>,
+                doc_ScatteringFactorTable_getCustomSymbols)
         .def("_registerThisType", &ScatteringFactorTable::registerThisType,
                 doc_ScatteringFactorTable__registerThisType)
         .def("createByType", &ScatteringFactorTable::createByType,

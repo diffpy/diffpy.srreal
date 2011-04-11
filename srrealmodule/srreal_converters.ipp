@@ -33,7 +33,6 @@ DECLARE_PYARRAY_METHOD_WRAPPER(sites1, sites1_asarray)
 DECLARE_PYLIST_METHOD_WRAPPER(types0, types0_aslist)
 DECLARE_PYLIST_METHOD_WRAPPER(types1, types1_aslist)
 DECLARE_PYLISTARRAY_METHOD_WRAPPER(directions, directions_aslist)
-DECLARE_PYDICT_METHOD_WRAPPER(getAllCustom, getAllCustom_asdict)
 
 }   // namespace srrealmodule
 

@@ -16,7 +16,7 @@ from diffpy.srreal.scatteringfactortable import ScatteringFactorTable
 class LocalTable(ScatteringFactorTable):
     def clone(self):  return LocalTable(self)
     def create(self): return LocalTable()
-    def lookupatq(self, smbl, q):   return q + 1
+    def _standardLookup(self, smbl, q):   return q + 1
     def radiationType(self):   return "rubbish"
     def type(self):   return "localtable"
 LocalTable()._registerThisType()
@@ -36,12 +36,12 @@ class TestScatteringFactorTable(unittest.TestCase):
     def test_pickling(self):
         """check pickling of ScatteringFactorTable instances.
         """
-        self.assertEqual(0, len(self.sftx.getAllCustom()))
-        self.sftx.setCustom('Na', 123)
+        self.assertEqual(0, len(self.sftx.getCustomSymbols()))
+        self.sftx.setCustomFrom('Na', 'Na', 123)
         self.sftx.foobar = 'asdf'
-        self.assertEqual(1, len(self.sftx.getAllCustom()))
+        self.assertEqual(1, len(self.sftx.getCustomSymbols()))
         sftx1 = cPickle.loads(cPickle.dumps(self.sftx))
-        self.assertEqual(1, len(sftx1.getAllCustom()))
+        self.assertEqual(1, len(sftx1.getCustomSymbols()))
         self.assertEqual(123, sftx1.lookup('Na'))
         self.assertEqual('asdf', sftx1.foobar)
         self.assertEqual(self.sftx.type(), sftx1.type())
@@ -51,17 +51,17 @@ class TestScatteringFactorTable(unittest.TestCase):
         """check pickling of a derived classes.
         """
         lsft = LocalTable()
-        self.assertEqual(3, lsft.lookupatq('Na', 2))
-        self.assertEqual({}, lsft.getAllCustom())
+        self.assertEqual(3, lsft._standardLookup('Na', 2))
+        self.assertEqual(set(), lsft.getCustomSymbols())
         lsft.foobar = 'asdf'
-        lsft.setCustom('Na', 123)
-        self.assertEqual(1, len(lsft.getAllCustom()))
+        lsft.setCustomFrom('Na', 'Na', 123)
+        self.assertEqual(1, len(lsft.getCustomSymbols()))
         lsft1 = cPickle.loads(cPickle.dumps(lsft))
-        self.assertEqual(1, len(lsft1.getAllCustom()))
+        self.assertEqual(1, len(lsft1.getCustomSymbols()))
         self.assertEqual(123, lsft1.lookup('Na'))
         self.assertEqual('asdf', lsft1.foobar)
         self.assertEqual(lsft.type(), lsft1.type())
-        self.assertEqual(3, lsft1.lookupatq('Cl', 2))
+        self.assertEqual(3, lsft1._standardLookup('Cl', 2))
         self.assertEqual(1, lsft1.lookup('H'))
         return
 

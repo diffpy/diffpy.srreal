@@ -247,7 +247,7 @@ class TestPDFCalculator(unittest.TestCase):
         '''
         pdfc = self.pdfcalc
         pdfc.setScatteringFactorTableByType('N')
-        pdfc.getScatteringFactorTable().setCustom('Na', 7)
+        pdfc.getScatteringFactorTable().setCustomFrom('Na', 'Na', 7)
         pdfc.addEnvelopeByType('sphericalshape')
         pdfc.delta1 = 0.2
         pdfc.delta2 = 0.3

@@ -98,6 +98,8 @@ Return string.\n\
 
 // wrappers ------------------------------------------------------------------
 
+DECLARE_PYDICT_METHOD_WRAPPER(getAllCustom, getAllCustom_asdict)
+
 // Helper class for overloads of AtomRadiiTable methods from Python
 
 class AtomRadiiTableWrap :
