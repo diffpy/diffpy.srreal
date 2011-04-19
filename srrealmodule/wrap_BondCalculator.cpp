@@ -113,7 +113,7 @@ void wrap_BondCalculator()
                 distances_asarray<BondCalculator>,
                 doc_BondCalculator_distances)
         .add_property("directions",
-                directions_aslist<BondCalculator>,
+                directions_asarray<BondCalculator>,
                 doc_BondCalculator_directions)
         .add_property("sites0",
                 sites0_asarray<BondCalculator>,

@@ -130,7 +130,7 @@ class TestOverlapCalculator(unittest.TestCase):
         """
         olc = self.olc
         olc(self.nickel)
-        self.assertEqual([], olc.directions)
+        self.assertEqual([], olc.directions.tolist())
         olc.atomradiitable.setCustom('Ni', 1.25)
         olc.eval(self.nickel)
         drs = self.olc.directions
@@ -145,7 +145,7 @@ class TestOverlapCalculator(unittest.TestCase):
         olc = self.olc
         olc.atomradiitable.fromString('Ti:1.6, O:0.66')
         olc(self.rutile)
-        self.assertEqual(6, len(olc.gradients))
+        self.assertEqual((6, 3), olc.gradients.shape)
         self.assertTrue(numpy.allclose([0, 0, 0], numpy.sum(olc.gradients)))
         g2 = olc.gradients[2]
         self.assertTrue(abs(g2[0]) > 0.1)

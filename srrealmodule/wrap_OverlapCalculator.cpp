@@ -144,7 +144,7 @@ AtomRadiiTable object used for radius lookup.\n\
 
 DECLARE_PYARRAY_METHOD_WRAPPER(overlaps, overlaps_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(siteSquareOverlaps, siteSquareOverlaps_asarray)
-DECLARE_PYLISTARRAY_METHOD_WRAPPER(gradients, gradients_aslist)
+DECLARE_PYARRAY_METHOD_WRAPPER(gradients, gradients_asarray)
 DECLARE_PYSET_METHOD_WRAPPER1(getNeighborSites, getNeighborSites_asset)
 DECLARE_PYARRAY_METHOD_WRAPPER(coordinations, coordinations_asarray)
 DECLARE_PYDICT_METHOD_WRAPPER1(coordinationByTypes, coordinationByTypes_asdict)
@@ -177,7 +177,7 @@ void wrap_OverlapCalculator()
                 distances_asarray<OverlapCalculator>,
                 doc_OverlapCalculator_distances)
         .add_property("directions",
-                directions_aslist<OverlapCalculator>,
+                directions_asarray<OverlapCalculator>,
                 doc_OverlapCalculator_directions)
         .add_property("sites0",
                 sites0_asarray<OverlapCalculator>,
@@ -208,7 +208,7 @@ void wrap_OverlapCalculator()
                 &OverlapCalculator::flipDiffMean,
                 doc_OverlapCalculator_flipDiffMean)
         .add_property("gradients",
-                gradients_aslist<OverlapCalculator>,
+                gradients_asarray<OverlapCalculator>,
                 doc_OverlapCalculator_gradients)
         .def("getNeighborSites",
                 getNeighborSites_asset<OverlapCalculator,int>,

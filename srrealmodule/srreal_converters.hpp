@@ -198,6 +198,26 @@ convertToNumPyArray(const ::diffpy::srreal::R3::Matrix& mx)
 }
 
 
+/// specialization for std::vector<R3::Vector>
+inline ::boost::python::object
+convertToNumPyArray(const ::std::vector<diffpy::srreal::R3::Vector>& vr3v)
+{
+    using namespace diffpy::srreal;
+    int sz[2] = {vr3v.size(), R3::Ndim};
+    NumPyArray_DoublePtr ap = createNumPyDoubleArray(2, sz);
+    double* p = ap.second;
+    std::vector<R3::Vector>::const_iterator v = vr3v.begin();
+    for (; v != vr3v.end(); ++v)
+    {
+        const double* pv = v->data();
+        const double* pvlast = pv + R3::Ndim;
+        for (; pv != pvlast; ++p, ++pv)  *p = *pv;
+    }
+    assert(p == ap.second + sz[0] * sz[1]);
+    return ap.first;
+}
+
+
 /// specialization for QuantityType
 inline ::boost::python::object
 convertToNumPyArray(const ::diffpy::srreal::QuantityType& value)
