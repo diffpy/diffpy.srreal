@@ -33,75 +33,107 @@ using namespace diffpy::srreal;
 // docstrings ----------------------------------------------------------------
 
 const char* doc_OverlapCalculator = "\
-FIXME\n\
+Calculate the overlap of atom radii and coordination numbers at each site.\n\
 ";
 
 const char* doc_OverlapCalculator_overlaps = "\
-FIXME\n\
+Magnitudes of all non-zero atom radii overlaps in the structure.\n\
 ";
 
 const char* doc_OverlapCalculator_distances = "\
-FIXME\n\
+Distances of all overlapping atom pairs in the structure.\n\
 ";
 
 const char* doc_OverlapCalculator_directions = "\
-FIXME\n\
+Directions from the first to the second atom in the overlapping pairs.\n\
+Returns an Nx3 array.\n\
 ";
 
 const char* doc_OverlapCalculator_sites0 = "\
-FIXME\n\
+Indices of all first sites of the overlapping pairs.\n\
 ";
 
 const char* doc_OverlapCalculator_sites1 = "\
-FIXME\n\
+Indices of all second sites of the overlapping pairs.\n\
 ";
 
 const char* doc_OverlapCalculator_types0 = "\
-FIXME\n\
+List of atom symbols of all first sites of the overlapping pairs.\n\
 ";
 
 const char* doc_OverlapCalculator_types1 = "\
-FIXME\n\
+List of atom symbols of all second sites of the overlapping pairs.\n\
 ";
 
 const char* doc_OverlapCalculator_sitesquareoverlaps = "\
-FIXME\n\
+Sum of squared overlaps per each site in the structure.\n\
 ";
 
 const char* doc_OverlapCalculator_totalsquareoverlap = "\
-FIXME\n\
+Total sum of squared overlaps in the structure adjusted\n\
+for site multiplicities and occupancies.\n\
 ";
 
 const char* doc_OverlapCalculator_meansquareoverlap = "\
-FIXME\n\
+Total square overlap per one atom in the structure.\n\
 ";
 
 const char* doc_OverlapCalculator_flipDiffTotal = "\
-FIXME\n\
+Calculate change of the totalsquareoverlap after flipping the atom types\n\
+at the i and j sites.\n\
+\n\
+i    -- zero-based index of the first site\n\
+j    -- zero-based index of the second site\n\
+\n\
+Return float.\n\
 ";
 
 const char* doc_OverlapCalculator_flipDiffMean = "\
-FIXME\n\
+Calculate change of the meansquareoverlap after flipping the atom types\n\
+at the i and j sites.\n\
+\n\
+i    -- zero-based index of the first site\n\
+j    -- zero-based index of the second site\n\
+\n\
+Return float.\n\
 ";
 
 const char* doc_OverlapCalculator_gradients = "\
-FIXME\n\
+Gradients of the totalsquareoverlap per each site in the structure.\n\
+Returns an Nx3 array.\n\
 ";
 
 const char* doc_OverlapCalculator_getNeighborSites = "\
-FIXME\n\
+Get indices of all sites that neighbor with the specified site,\n\
+either directly or as periodic or symmetry images.  Atoms are\n\
+assumed neighbors if they have non-zero overlap.\n\
+\n\
+i    -- zero-based index of the evaluated site\n\
+\n\
+Return a set of integer indices, this may include i.\n\
 ";
 
 const char* doc_OverlapCalculator_coordinations = "\
-FIXME\n\
+Return coordination numbers per each site in the structure.\n\
+These may be non-integer if there are sites with partial occupancies.\n\
 ";
 
 const char* doc_OverlapCalculator_coordinationByTypes = "\
-FIXME\n\
+Evaluate neighbor types and their occupancies at the specified site.\n\
+\n\
+i    -- zero-based index of the evaluated site\n\
+\n\
+Return a dictionary where the keys are atom type strings and the values\n\
+their total occupancies.\n\
 ";
 
 const char* doc_OverlapCalculator_neighborhoods = "\
-FIXME\n\
+Return all sets of connected site indices in the structure.\n\
+Sites are assumed in the same neighborhood if they have overlapping\n\
+neighbors or can be connected through neighbor links.  There are no\n\
+overlapping pairs between sites from different neighborhoods.\n\
+\n\
+Return a list of site indices sets.\n\
 ";
 
 const char* doc_OverlapCalculator_atomradiitable = "\
@@ -170,6 +202,7 @@ void wrap_OverlapCalculator()
                 doc_OverlapCalculator_meansquareoverlap)
         .def("flipDiffTotal",
                 &OverlapCalculator::flipDiffTotal,
+                (arg("i"), arg("j")),
                 doc_OverlapCalculator_flipDiffTotal)
         .def("flipDiffMean",
                 &OverlapCalculator::flipDiffMean,
@@ -179,12 +212,14 @@ void wrap_OverlapCalculator()
                 doc_OverlapCalculator_gradients)
         .def("getNeighborSites",
                 getNeighborSites_asset<OverlapCalculator,int>,
+                arg("i"),
                 doc_OverlapCalculator_getNeighborSites)
         .add_property("coordinations",
                 coordinations_asarray<OverlapCalculator>,
                 doc_OverlapCalculator_coordinations)
         .def("coordinationByTypes",
                 coordinationByTypes_asdict<OverlapCalculator,int>,
+                arg("i"),
                 doc_OverlapCalculator_coordinationByTypes)
         .add_property("neighborhoods",
                 neighborhoods_aslistset<OverlapCalculator>,
