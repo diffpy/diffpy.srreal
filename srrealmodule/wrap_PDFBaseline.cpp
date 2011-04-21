@@ -24,6 +24,7 @@
 #include <diffpy/srreal/PDFBaseline.hpp>
 
 #include "srreal_converters.hpp"
+#include "srreal_pickling.hpp"
 
 namespace srrealmodule {
 namespace nswrap_PDFBaseline {
@@ -77,7 +78,7 @@ const char* doc_PDFBaseline_createByType = "\
 Return a new PDFBaseline instance of the specified string type.\n\
 \n\
 tp   -- string type identifying a registered PDFBaseline class\n\
-        See also getRegisteredTypes.\n\
+        See getRegisteredTypes for the allowed values.\n\
 \n\
 Return a new instance of the PDFBaseline-derived class.\n\
 ";
@@ -132,6 +133,20 @@ class PDFBaselineWrap :
 
 };  // class PDFBaselineWrap
 
+
+std::string baseline_tostring(PDFBaselinePtr obj)
+{
+    return serialization_tostring(obj);
+}
+
+
+PDFBaselinePtr baseline_fromstring(std::string content)
+{
+    PDFBaselinePtr rv;
+    serialization_fromstring(rv, content);
+    return rv;
+}
+
 }   // namespace nswrap_PDFBaseline
 
 // Wrapper definition --------------------------------------------------------
@@ -161,9 +176,15 @@ void wrap_PDFBaseline()
         .def("getRegisteredTypes", getPDFBaselineTypes_asset,
                 doc_PDFBaseline_getRegisteredTypes)
         .staticmethod("getRegisteredTypes")
+        .enable_pickling()
         ;
 
     register_ptr_to_python<PDFBaselinePtr>();
+
+    // pickling support functions
+    def("_PDFBaseline_tostring", baseline_tostring);
+    def("_PDFBaseline_fromstring", baseline_fromstring);
+
 }
 
 }   // namespace srrealmodule

@@ -241,6 +241,9 @@ void wrap_PDFCalculators()
                 doc_PDFCommon_clearEnvelopes)
         .def_pickle(SerializationPickleSuite<PDFCalculator>())
         ;
+
+    // inject pickling methods for PDFBaseline and PDFEnvelope classes
+    import("diffpy.srreal.pdfcalculator");
 }
 
 }   // namespace srrealmodule

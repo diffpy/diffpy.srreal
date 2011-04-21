@@ -161,7 +161,7 @@ class DebyePDFCalculator(DebyePDFCalculator_ext, PDFCalculatorInterface):
 
 # class DebyePDFCalculator
 
-##############################################################################
+# ----------------------------------------------------------------------------
 
 class PDFCalculator(PDFCalculator_ext, PDFCalculatorInterface):
 
@@ -214,5 +214,35 @@ class PDFCalculator(PDFCalculator_ext, PDFCalculatorInterface):
         return
 
 # class PDFCalculator
+
+# class PDFBaseline - pickling support ---------------------------------------
+
+def _baseline_getstate(self):
+    state = (self.__dict__, )
+    return state
+
+def _baseline_setstate(self, state):
+    if len(state) != 1:
+        emsg = ("expected 1-item tuple in call to __setstate__, got " +
+                repr(state))
+        raise ValueError(emsg)
+    self.__dict__.update(state[0])
+    return
+
+def _baseline_reduce(self):
+    from diffpy.srreal.srreal_ext import _PDFBaseline_tostring
+    args = (_PDFBaseline_tostring(self),)
+    rv = (_baseline_create, args, self.__getstate__())
+    return rv
+
+def _baseline_create(s):
+    from diffpy.srreal.srreal_ext import _PDFBaseline_fromstring
+    return _PDFBaseline_fromstring(s)
+
+# inject pickle methods to ScatteringFactorTable
+
+PDFBaseline.__getstate__ = _baseline_getstate
+PDFBaseline.__setstate__ = _baseline_setstate
+PDFBaseline.__reduce__ = _baseline_reduce
 
 # End of file
