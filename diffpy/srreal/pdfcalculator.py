@@ -239,7 +239,7 @@ def _baseline_create(s):
     from diffpy.srreal.srreal_ext import _PDFBaseline_fromstring
     return _PDFBaseline_fromstring(s)
 
-# inject pickle methods to ScatteringFactorTable
+# inject pickle methods
 
 PDFBaseline.__getstate__ = _baseline_getstate
 PDFBaseline.__setstate__ = _baseline_setstate
