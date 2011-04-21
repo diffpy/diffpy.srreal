@@ -35,36 +35,56 @@ using namespace diffpy::srreal;
 // docstrings ----------------------------------------------------------------
 
 const char* doc_PDFBaseline = "\
-FIXME\n\
+Base class and registry for functions that calculate PDF baseline.\n\
 ";
 
 const char* doc_PDFBaseline_create = "\
-FIXME\n\
+Return a new instance of the same type as self.\n\
+\n\
+This method must be overloaded in a derived class.\n\
 ";
 
 const char* doc_PDFBaseline_clone = "\
-FIXME\n\
+Return a new instance that is a copy of self.\n\
+\n\
+This method must be overloaded in a derived class.\n\
 ";
 
 const char* doc_PDFBaseline_type = "\
-FIXME\n\
+Return a unique string type that identifies a PDFBaseline-derived class.\n\
+The string type is used for class registration and in the createByType\n\
+function.\n\
+\n\
+This method must be overloaded in a derived class.\n\
 ";
 
 const char* doc_PDFBaseline___call__ = "\
-FIXME\n\
+Calculate PDF baseline at the specified r.\n\
+\n\
+r    -- atom distance in Angstroms where the baseline is calculated.\n\
+\n\
+Return float.\n\
 ";
 
 const char* doc_PDFBaseline__registerThisType = "\
-FIXME\n\
+Add this class to the global registry of PDFBaseline types.\n\
+\n\
+This method must be called once after definition of the derived\n\
+class to support pickling and the createByType factory.\n\
 ";
 
 const char* doc_PDFBaseline_createByType = "\
-FIXME\n\
+Return a new PDFBaseline instance of the specified string type.\n\
+\n\
+tp   -- string type identifying a registered PDFBaseline class\n\
+        See also getRegisteredTypes.\n\
+\n\
+Return a new instance of the PDFBaseline-derived class.\n\
 ";
 
 const char* doc_PDFBaseline_getRegisteredTypes = "\
-Set of string identifiers for registered PDFBaseline classes.\n\
-These are allowed arguments for the createByType static method.\n\
+Return a set of string types of the registered PDFBaseline classes.\n\
+These are the allowed arguments for the createByType factory.\n\
 ";
 
 // wrappers ------------------------------------------------------------------
@@ -120,6 +140,7 @@ void wrap_PDFBaseline()
 {
     using namespace nswrap_PDFBaseline;
     using diffpy::Attributes;
+    namespace bp = boost::python;
 
     class_<PDFBaselineWrap, bases<Attributes>,
         noncopyable>("PDFBaseline", doc_PDFBaseline)
@@ -131,11 +152,11 @@ void wrap_PDFBaseline()
                 return_value_policy<copy_const_reference>(),
                 doc_PDFBaseline_type)
         .def("__call__", &PDFBaseline::operator(),
-                doc_PDFBaseline___call__)
+                bp::arg("r"), doc_PDFBaseline___call__)
         .def("_registerThisType", &PDFBaseline::registerThisType,
                 doc_PDFBaseline__registerThisType)
         .def("createByType", &PDFBaseline::createByType,
-                doc_PDFBaseline_createByType)
+                bp::arg("tp"), doc_PDFBaseline_createByType)
         .staticmethod("createByType")
         .def("getRegisteredTypes", getPDFBaselineTypes_asset,
                 doc_PDFBaseline_getRegisteredTypes)
