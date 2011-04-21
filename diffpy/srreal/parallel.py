@@ -26,6 +26,7 @@ __all__ = ['createParallelCalculator']
 
 import copy
 import inspect
+from diffpy.srreal.attributes import Attributes
 
 # ----------------------------------------------------------------------------
 
@@ -40,7 +41,7 @@ def createParallelCalculator(pqobj, ncpu, pmap):
     but executes the calculation in parallel split among ncpu jobs.
     '''
 
-    class ParallelPairQuantity(object):
+    class ParallelPairQuantity(Attributes):
 
         '''Class for running parallel calculations.  This is a proxy class
         to the wrapper PairQuantity type with the same interface.
@@ -60,9 +61,10 @@ def createParallelCalculator(pqobj, ncpu, pmap):
             ncpu     -- number of parallel jobs
             pmap     -- a parallel map function used to submit job to workers
             '''
-            self.pqobj = pqobj
-            self.ncpu = ncpu
-            self.pmap = pmap
+            # use explicit assignment to avoid setattr forwarding to the pqobj
+            object.__setattr__(self, 'pqobj', pqobj)
+            object.__setattr__(self, 'ncpu', ncpu)
+            object.__setattr__(self, 'pmap', pmap)
             return
 
 
@@ -124,24 +126,23 @@ def createParallelCalculator(pqobj, ncpu, pmap):
 
     # create proxy methods to all public methods and some protected methods
 
-    proxy_protected = set('''_getDoubleAttr _setDoubleAttr _hasDoubleAttr
+    proxy_forced = set('''_getDoubleAttr _setDoubleAttr _hasDoubleAttr
         _namesOfDoubleAttributes _namesOfWritableDoubleAttributes
-        __getattr__ __setattr__
         '''.split())
 
-    def _make_proxymethod(name):
-        f = getattr(pqtype, name)
+    def _make_proxymethod(name, f):
         def proxymethod(self, *args, **kwargs):
-            return f(self.pqobj, *args, **kwargs)
+            pqobj = object.__getattribute__(self, 'pqobj')
+            return f(pqobj, *args, **kwargs)
         proxymethod.__name__ = name
         proxymethod.__doc__ = f.__doc__
         return proxymethod
 
     for n, f in inspect.getmembers(pqtype, inspect.ismethod):
-        ignore = (hasattr(ParallelPairQuantity, n) or
-                (n.startswith('_') and n not in proxy_protected))
+        ignore = n not in proxy_forced and (n.startswith('_') or
+                hasattr(ParallelPairQuantity, n))
         if ignore:  continue
-        setattr(ParallelPairQuantity, n, _make_proxymethod(n))
+        setattr(ParallelPairQuantity, n, _make_proxymethod(n, f))
 
     # create proxy properties to all properties that do not conflict with
     # existing class items
