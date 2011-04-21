@@ -116,28 +116,20 @@ const char* doc_PDFCalculator_setPeakProfileByType = "\
 FIXME\n\
 ";
 
-const char* doc_PDFCalculator_getBaseline = "\
-FIXME\n\
-";
-
-const char* doc_PDFCalculator_setBaseline = "\
-FIXME\n\
+const char* doc_PDFCalculator_baseline = "\
+Instance of PDFBaseline that calculates unscaled baseline at r.\n\
 ";
 
 const char* doc_PDFCalculator_setBaselineByType = "\
 FIXME\n\
 ";
 
-// common wrappers
+// wrappers ------------------------------------------------------------------
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getpkf_overloads,
         getPeakProfile, 0, 0)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getenvelopebytype_overloads,
         getEnvelopeByType, 1, 1)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getbaseline_overloads,
-        getBaseline, 0, 0)
-
-// DebyePDFCalculator and PDFCalculator wrappers
 
 DECLARE_PYARRAY_METHOD_WRAPPER(getPDF, getPDF_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(getRDF, getRDF_asarray)
@@ -145,6 +137,18 @@ DECLARE_PYARRAY_METHOD_WRAPPER(getRgrid, getRgrid_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(getF, getF_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(getQgrid, getQgrid_asarray)
 DECLARE_PYSET_METHOD_WRAPPER(usedEnvelopeTypes, usedEnvelopeTypes_asset)
+
+// wrappers for the baseline property
+
+PDFBaselinePtr getbaseline(const PDFCalculator& obj)
+{
+    return obj.getBaseline();
+}
+
+void setbaseline(PDFCalculator& obj, PDFBaselinePtr bl)
+{
+    obj.setBaseline(bl);
+}
 
 }   // namespace nswrap_PDFCalculators
 
@@ -216,11 +220,8 @@ void wrap_PDFCalculators()
         .def("setPeakProfileByType", &PDFCalculator::setPeakProfileByType,
                 doc_PDFCalculator_setPeakProfileByType)
         // PDF baseline
-        .def("getBaseline",
-                (PDFBaselinePtr(PDFCalculator::*)()) NULL,
-                getbaseline_overloads(doc_PDFCalculator_getBaseline))
-        .def("setBaseline", &PDFCalculator::setBaseline,
-                doc_PDFCalculator_setBaseline)
+        .add_property("baseline", getbaseline, setbaseline,
+                doc_PDFCalculator_baseline)
         .def("setBaselineByType", &PDFCalculator::setBaselineByType,
                 doc_PDFCalculator_setBaselineByType)
         // PDF envelopes
