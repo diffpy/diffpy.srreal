@@ -215,7 +215,9 @@ class PDFCalculator(PDFCalculator_ext, PDFCalculatorInterface):
 
 # class PDFCalculator
 
-# class PDFBaseline - pickling support ---------------------------------------
+# class PDFBaseline ----------------------------------------------------------
+
+# pickling support
 
 def _baseline_getstate(self):
     state = (self.__dict__, )
@@ -244,5 +246,43 @@ def _baseline_create(s):
 PDFBaseline.__getstate__ = _baseline_getstate
 PDFBaseline.__setstate__ = _baseline_setstate
 PDFBaseline.__reduce__ = _baseline_reduce
+
+# Python functions wrapper
+
+def makePDFBaseline(name, fnc, **dbattrs):
+    '''Helper function for registering Python function as a PDFBaseline.
+    This is required for using Python function as PDFCalculator.baseline.
+
+    name     -- unique string name for registering Python function in the
+                global registry of PDFBaseline types.  This will be the
+                string identifier for the createByType factory.
+    fnc      -- Python function of a floating point argument and optional
+                float parameters.  The parameters need to be registered as
+                double attributes in the functor class.  The function fnc
+                must be picklable and it must return a float.
+    dbattrs  -- optional float parameters of the wrapped function.
+                These will be registered as double attributes in the
+                functor class.  The wrapped function must be callable as
+                fnc(x, **dbattrs).  Make sure to pick attribute names that
+                do not conflict with other PDFCalculator attributes.
+
+    Return an instance of the new PDFBaseline class.
+
+    Example:
+
+        # Python baseline function
+        def fshiftedline(x, aline, bline):
+            return aline * x + bline
+        # wrap it as a PDFBaseline and register as a "shiftedline" type
+        makePDFBaseline("shiftedline", fshiftedline, aline=-1, bline=0)
+        baseline = PDFBaseline.createByType("shiftedline")
+        print map(baseline, range(5))
+        # use it in PDFCalculator
+        pdfc = PDFCalculator()
+        pdfc.baseline = baseline
+        # or pdfc.setBaselineByType("shiftedline")
+    '''
+    from diffpy.srreal.wraputils import _wrapAsRegisteredUnaryFunction
+    return _wrapAsRegisteredUnaryFunction(PDFBaseline, name, fnc, **dbattrs)
 
 # End of file

@@ -20,6 +20,7 @@
 # module version
 __id__ = "$Id$"
 
+import copy
 
 # Routines -------------------------------------------------------------------
 
@@ -56,5 +57,72 @@ def setattrFromKeywordArguments(obj, **kwargs):
             raise ValueError(emsg)
         setattr(obj, n, v)
     return
+
+
+def _wrapAsRegisteredUnaryFunction(cls, regname, fnc, **dbattrs):
+    '''Helper function for wrapping Python function as PDFBaseline or
+    PDFEnvelope functor.  Not intended for direct usage, this function
+    is rather called from makePDFBaseline or makePDFEnvelope wrappers.
+
+    cls      -- the functor class for wrapping the Python function
+    regname  -- string name for registering the function in the global
+                registry of cls functors.  This will be the string
+                identifier for the createByType factory.
+    fnc      -- Python function of a floating point argument and optional
+                float parameters.  The parameters need to be registered as
+                dbattrs in the functor class.  The function fnc
+                must be picklable and it must return a float.
+    dbattrs  -- optional float parameters of the wrapped function.
+                These will be registered as double attributes in the
+                functor class.  The wrapped function must be callable as
+                fnc(x, **dbattrs).
+
+    Return an instance of the functor class.
+    '''
+    class RegisteredUnaryFunction(cls):
+
+        def create(self):
+            '''Create new instance of the same type as self.
+            '''
+            return RegisteredUnaryFunction()
+
+        def clone(self):
+            '''Return a new duplicate instance of self.
+            '''
+            return copy.copy(self)
+
+        def type(self):
+            '''Unique string identifier of this functor type.  The string
+            is used for class registration and as an argument for the
+            createByType function.
+
+            Return string identifier.
+            '''
+            return regname
+
+        def __call__(self, x):
+            '''Evaluate this functor at x.
+            '''
+            if dbattrs:
+                kw = dict([(n, self._getDoubleAttr(n))
+                        for n in self._namesOfWritableDoubleAttributes()])
+                rv = fnc(x, **kw)
+            else:
+                rv = fnc(x)
+            return rv
+
+        def __init__(self):
+            cls.__init__(self)
+            for n, v in dbattrs.items():
+                setattr(self, n, v)
+                self._registerDoubleAttribute(n)
+            return
+
+    # End of class RegisteredUnaryFunction
+
+    RegisteredUnaryFunction()._registerThisType()
+    rv = RegisteredUnaryFunction.createByType(regname)
+    assert type(rv) is RegisteredUnaryFunction
+    return rv
 
 # End of file

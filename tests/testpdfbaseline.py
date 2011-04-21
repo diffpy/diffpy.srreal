@@ -10,7 +10,7 @@ import os
 import unittest
 import cPickle
 
-from diffpy.srreal.pdfcalculator import PDFBaseline
+from diffpy.srreal.pdfcalculator import PDFBaseline, makePDFBaseline
 
 ##############################################################################
 class TestPDFBaseline(unittest.TestCase):
@@ -115,7 +115,33 @@ class TestPDFBaseline(unittest.TestCase):
         return
 
 
+    def test_makePDFBaseline(self):
+        '''check the makePDFBaseline wrapper.
+        '''
+        pbl = makePDFBaseline('parabolabaseline',
+                parabola_baseline, a=1, b=2, c=3)
+        self.assertEqual(3, pbl(0))
+        self.assertEqual(6, pbl(1))
+        self.assertEqual(11, pbl(2))
+        pbl.b = 0
+        self.assertEqual([7, 3, 28], map(pbl, [-2, 0, 5]))
+        pbl2 = pbl.clone()
+        self.assertEqual(1, pbl2.a)
+        self.assertEqual(0, pbl2.b)
+        self.assertEqual(3, pbl2.c)
+        self.assertEqual([7, 3, 28], map(pbl2, [-2, 0, 5]))
+        pbl3 = PDFBaseline.createByType('parabolabaseline')
+        self.assertEqual(1, pbl3.a)
+        self.assertEqual(2, pbl3.b)
+        self.assertEqual(3, pbl3.c)
+        return
+
 # End of class TestBVSCalculator
+
+# function for wrapping by makePDFBaseline
+
+def parabola_baseline(x, a, b, c):
+    return a * x**2 + b * x + c
 
 if __name__ == '__main__':
     unittest.main()
