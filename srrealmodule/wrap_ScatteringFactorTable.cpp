@@ -22,6 +22,7 @@
 #include <boost/python.hpp>
 
 #include <diffpy/srreal/ScatteringFactorTable.hpp>
+
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
 

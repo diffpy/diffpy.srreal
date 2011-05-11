@@ -20,8 +20,8 @@
 *
 *****************************************************************************/
 
-#include <sstream>
 #include <boost/python.hpp>
+#include <sstream>
 
 #include <diffpy/serialization.hpp>
 #include <diffpy/srreal/PairQuantity.hpp>

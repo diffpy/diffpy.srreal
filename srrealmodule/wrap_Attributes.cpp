@@ -18,11 +18,12 @@
 *
 *****************************************************************************/
 
+#include <boost/python.hpp>
 #include <cassert>
 #include <sstream>
-#include <boost/python.hpp>
 
 #include <diffpy/Attributes.hpp>
+
 #include "srreal_converters.hpp"
 
 namespace srrealmodule {

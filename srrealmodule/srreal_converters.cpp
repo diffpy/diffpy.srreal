@@ -19,14 +19,14 @@
 *
 *****************************************************************************/
 
+#include <boost/python/exception_translator.hpp>
 #include <string>
 #include <valarray>
 #include <stdexcept>
-#include <boost/python/def.hpp>
-#include <boost/python/exception_translator.hpp>
-#include <diffpy/Attributes.hpp>
-#include "srreal_converters.hpp"
 
+#include <diffpy/Attributes.hpp>
+
+#include "srreal_converters.hpp"
 // numpy/arrayobject.h needs to be included after srreal_converters.hpp,
 // which defines PY_ARRAY_UNIQUE_SYMBOL.  NO_IMPORT_ARRAY indicates
 // import_array will be called in the extension module initializer.

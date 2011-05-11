@@ -19,6 +19,7 @@
 *****************************************************************************/
 
 #include <boost/python.hpp>
+
 #include <diffpy/srreal/BondCalculator.hpp>
 #include <diffpy/srreal/PythonStructureAdapter.hpp>
 

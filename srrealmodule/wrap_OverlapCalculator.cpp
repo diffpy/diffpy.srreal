@@ -19,6 +19,7 @@
 *****************************************************************************/
 
 #include <boost/python.hpp>
+
 #include <diffpy/srreal/OverlapCalculator.hpp>
 
 #include "srreal_converters.hpp"

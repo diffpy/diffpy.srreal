@@ -19,8 +19,8 @@
 *
 *****************************************************************************/
 
-#include <string>
 #include <boost/python.hpp>
+#include <string>
 
 #include <diffpy/srreal/PeakProfile.hpp>
 

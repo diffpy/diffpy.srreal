@@ -21,9 +21,10 @@
 #ifndef SRREAL_PICKLING_HPP_INCLUDED
 #define SRREAL_PICKLING_HPP_INCLUDED
 
+#include <boost/python.hpp>
 #include <string>
 #include <sstream>
-#include <boost/python.hpp>
+
 #include <diffpy/serialization.hpp>
 
 namespace srrealmodule {

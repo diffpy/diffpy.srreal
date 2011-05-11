@@ -18,9 +18,11 @@
 *
 *****************************************************************************/
 
-#include <string>
 #include <boost/python.hpp>
+#include <string>
+
 #include <diffpy/srreal/AtomRadiiTable.hpp>
+
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
 

@@ -22,10 +22,12 @@
 #ifndef SRREAL_CONVERTERS_HPP_INCLUDED
 #define SRREAL_CONVERTERS_HPP_INCLUDED
 
-#include <algorithm>
 #include <boost/python.hpp>
+#include <algorithm>
+
 #include <diffpy/srreal/R3linalg.hpp>
 #include <diffpy/srreal/PairQuantityUtils.hpp>
+
 #include "srreal_numpy_symbol.hpp"
 
 namespace srrealmodule {

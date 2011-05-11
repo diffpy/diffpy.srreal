@@ -20,8 +20,8 @@
 *
 *****************************************************************************/
 
-#include <string>
 #include <boost/python.hpp>
+#include <string>
 
 #include <diffpy/srreal/BaseBondGenerator.hpp>
 #include <diffpy/srreal/StructureAdapter.hpp>
