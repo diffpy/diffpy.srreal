@@ -19,6 +19,7 @@
 *
 *****************************************************************************/
 
+#include <boost/python/def.hpp>
 #include <boost/python/exception_translator.hpp>
 #include <string>
 #include <valarray>
