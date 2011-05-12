@@ -56,7 +56,7 @@ env.Replace(CPPDEFINES='')
 # the CPPPATH directories are checked by scons dependency scanner
 cpppath = getsyspaths('CPLUS_INCLUDE_PATH', 'CPATH')
 env.AppendUnique(CPPPATH=cpppath)
-env.AppendUnique(LIBS=['libdiffpy'])
+env.AppendUnique(LIBS=['diffpy'])
 
 # Compiler specific options
 if icpc:
