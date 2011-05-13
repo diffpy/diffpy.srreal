@@ -184,7 +184,8 @@ convertToNumPyArray(Iter first, Iter last)
 inline ::boost::python::object
 convertToNumPyArray(const ::diffpy::srreal::R3::Vector& value)
 {
-    return convertToNumPyArray(value.data(), value.data() + value.length());
+    using diffpy::srreal::R3::Ndim;
+    return convertToNumPyArray(&(value[0]), &(value[Ndim]));
 }
 
 
@@ -195,7 +196,10 @@ convertToNumPyArray(const ::diffpy::srreal::R3::Matrix& mx)
     using namespace diffpy::srreal;
     int sz[2] = {R3::Ndim, R3::Ndim};
     NumPyArray_DoublePtr ap = createNumPyDoubleArray(2, sz);
-    std::copy(mx.data(), mx.data() + sz[0] * sz[1], ap.second);
+    double* xo = ap.second;
+    *(xo++) = mx(0, 0); *(xo++) = mx(0, 1); *(xo++) = mx(0, 2);
+    *(xo++) = mx(1, 0); *(xo++) = mx(1, 1); *(xo++) = mx(1, 2);
+    *(xo++) = mx(2, 0); *(xo++) = mx(2, 1); *(xo++) = mx(2, 2);
     return ap.first;
 }
 
@@ -211,7 +215,7 @@ convertToNumPyArray(const ::std::vector<diffpy::srreal::R3::Vector>& vr3v)
     std::vector<R3::Vector>::const_iterator v = vr3v.begin();
     for (; v != vr3v.end(); ++v)
     {
-        const double* pv = v->data();
+        const double* pv = &((*v)[0]);
         const double* pvlast = pv + R3::Ndim;
         for (; pv != pvlast; ++p, ++pv)  *p = *pv;
     }
