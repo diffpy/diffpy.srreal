@@ -82,7 +82,7 @@ This method must be overloaded in a derived class.\n\
 
 const char* doc_ScatteringFactorTable_lookup = "\
 Scattering factor of a specified atom at Q in 1/A.  The standard value\n\
-can be redefined using the setCustomFrom method.\n\
+can be redefined using the setCustomAs method.\n\
 \n\
 smbl -- string symbol for atom, ion or isotope\n\
 Q    -- Q value in inverse Angstroms, by default 0\n\
@@ -100,16 +100,27 @@ Return float.\n\
 This method must be overloaded in a derived class.\n\
 ";
 
-const char* doc_ScatteringFactorTable_setCustomFrom = "\
-Define custom scattering factor for the specified symbol.\n\
+const char* doc_ScatteringFactorTable_setCustomAs2 = "\
+Define custom alias for the specified atom symbol.\n\
+Example: setCustomAs('12-C', 'C')  will declare the same\n\
+scattering factors for '12-C' as for 'C'.\n\
+\n\
+smbl -- custom string alias for an existing standard symbol\n\
+src  -- standard atom symbol (cannot be another alias)\n\
+\n\
+No return value.  Cannot be overloaded in Python.\n\
+";
+
+const char* doc_ScatteringFactorTable_setCustomAs4 = "\
+Define custom scattering factor for the specified atom symbol.\n\
 The custom value is calculated by rescaling standard value\n\
 from a source atom type.\n\
 \n\
-smbl -- string symbol for atom, ion or isotope\n\
+smbl -- string symbol of the atom with custom scattering factor\n\
 src  -- atom symbol for the source standard scattering factor\n\
-sf   -- new scattering factor value\n\
+sf   -- new scattering factor value, defaults to the standard src factor.\n\
 q    -- optional Q value for the new custom scattering factor.\n\
-        The internal standard value scaling is calculated at this Q.\n\
+        The internal scaling of the standard value is calculated at this Q.\n\
 \n\
 No return value.  Cannot be overloaded in Python.\n\
 ";
@@ -287,10 +298,19 @@ void wrap_ScatteringFactorTable()
                 &ScatteringFactorTable::standardLookup,
                 (bp::arg("smbl"), bp::arg("q")),
                 doc_ScatteringFactorTable__standardLookup)
-        .def("setCustomFrom", &ScatteringFactorTable::setCustomFrom,
+
+        .def("setCustomAs", (void (ScatteringFactorTable::*)
+                (const std::string&, const std::string&))
+                &ScatteringFactorTable::setCustomAs,
+                (bp::arg("smbl"), bp::arg("src")),
+                doc_ScatteringFactorTable_setCustomAs2)
+        .def("setCustomAs", (void (ScatteringFactorTable::*)
+                (const std::string&, const std::string&, double, double))
+                &ScatteringFactorTable::setCustomAs,
                 (bp::arg("smbl"), bp::arg("src"),
                  bp::arg("sf"), bp::arg("q")=0.0),
-                doc_ScatteringFactorTable_setCustomFrom)
+                doc_ScatteringFactorTable_setCustomAs4)
+
         .def("resetCustom", &ScatteringFactorTable::resetCustom,
                 bp::arg("smbl"), doc_ScatteringFactorTable_resetCustom)
         .def("resetAll", &ScatteringFactorTable::resetAll,

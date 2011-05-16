@@ -37,12 +37,14 @@ class TestScatteringFactorTable(unittest.TestCase):
         """check pickling of ScatteringFactorTable instances.
         """
         self.assertEqual(0, len(self.sftx.getCustomSymbols()))
-        self.sftx.setCustomFrom('Na', 'Na', 123)
+        self.sftx.setCustomAs('Na', 'Na', 123)
+        self.sftx.setCustomAs('Calias', 'C')
         self.sftx.foobar = 'asdf'
-        self.assertEqual(1, len(self.sftx.getCustomSymbols()))
+        self.assertEqual(2, len(self.sftx.getCustomSymbols()))
         sftx1 = cPickle.loads(cPickle.dumps(self.sftx))
-        self.assertEqual(1, len(sftx1.getCustomSymbols()))
+        self.assertEqual(2, len(sftx1.getCustomSymbols()))
         self.assertEqual(123, sftx1.lookup('Na'))
+        self.assertEqual(self.sftx.lookup('C'), sftx1.lookup('Calias'))
         self.assertEqual('asdf', sftx1.foobar)
         self.assertEqual(self.sftx.type(), sftx1.type())
         return
@@ -54,7 +56,7 @@ class TestScatteringFactorTable(unittest.TestCase):
         self.assertEqual(3, lsft._standardLookup('Na', 2))
         self.assertEqual(set(), lsft.getCustomSymbols())
         lsft.foobar = 'asdf'
-        lsft.setCustomFrom('Na', 'Na', 123)
+        lsft.setCustomAs('Na', 'Na', 123)
         self.assertEqual(1, len(lsft.getCustomSymbols()))
         lsft1 = cPickle.loads(cPickle.dumps(lsft))
         self.assertEqual(1, len(lsft1.getCustomSymbols()))

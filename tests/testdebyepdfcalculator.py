@@ -161,7 +161,7 @@ class TestDebyePDFCalculator(unittest.TestCase):
         '''
         dpdfc = self.dpdfc
         dpdfc.setScatteringFactorTableByType('N')
-        dpdfc.scatteringfactortable.setCustomFrom('Na', 'Na', 7)
+        dpdfc.scatteringfactortable.setCustomAs('Na', 'Na', 7)
         dpdfc.addEnvelopeByType('sphericalshape')
         dpdfc.debyeprecision = 0.001
         dpdfc.delta1 = 0.2
