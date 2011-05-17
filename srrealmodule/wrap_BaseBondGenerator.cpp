@@ -52,11 +52,6 @@ const char* doc_BaseBondGenerator_next = "\
 Advance to the next bond of the anchor atom.\n\
 ";
 
-const char* doc_BaseBondGenerator_nextsite = "\
-Skip the remaining symmetry-related bonds of the current neighbor site\n\
-and advance to the next site in the structure.\n\
-";
-
 const char* doc_BaseBondGenerator_selectAnchorSite = "\
 Select the anchor site of the bond generator.\n\
 \n\
@@ -169,8 +164,6 @@ void wrap_BaseBondGenerator()
                 doc_BaseBondGenerator_finished)
         .def("next", &BaseBondGenerator::next,
                 doc_BaseBondGenerator_next)
-        .def("nextsite", &BaseBondGenerator::nextsite,
-                doc_BaseBondGenerator_nextsite)
         .def("selectAnchorSite", &BaseBondGenerator::selectAnchorSite,
                 arg("anchor"), doc_BaseBondGenerator_selectAnchorSite)
         .def("selectSiteRange", &BaseBondGenerator::selectSiteRange,
