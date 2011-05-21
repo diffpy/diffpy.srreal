@@ -25,6 +25,7 @@ __id__ = "$Id$"
 # exported items
 __all__ = '''DebyePDFCalculator PDFCalculator
     PDFBaseline PDFEnvelope PeakProfile PeakWidthModel
+    makePDFBaseline makePDFEnvelope
     '''.split()
 
 from diffpy.srreal.srreal_ext import DebyePDFCalculator_ext
@@ -284,5 +285,76 @@ def makePDFBaseline(name, fnc, **dbattrs):
     '''
     from diffpy.srreal.wraputils import _wrapAsRegisteredUnaryFunction
     return _wrapAsRegisteredUnaryFunction(PDFBaseline, name, fnc, **dbattrs)
+
+# class PDFEnvelope ----------------------------------------------------------
+
+# pickling support
+
+def _envelope_getstate(self):
+    state = (self.__dict__, )
+    return state
+
+def _envelope_setstate(self, state):
+    if len(state) != 1:
+        emsg = ("expected 1-item tuple in call to __setstate__, got " +
+                repr(state))
+        raise ValueError(emsg)
+    self.__dict__.update(state[0])
+    return
+
+def _envelope_reduce(self):
+    from diffpy.srreal.srreal_ext import _PDFEnvelope_tostring
+    args = (_PDFEnvelope_tostring(self),)
+    rv = (_envelope_create, args, self.__getstate__())
+    return rv
+
+def _envelope_create(s):
+    from diffpy.srreal.srreal_ext import _PDFEnvelope_fromstring
+    return _PDFEnvelope_fromstring(s)
+
+# inject pickle methods
+
+PDFEnvelope.__getstate__ = _envelope_getstate
+PDFEnvelope.__setstate__ = _envelope_setstate
+PDFEnvelope.__reduce__ = _envelope_reduce
+
+# Python functions wrapper
+
+def makePDFEnvelope(name, fnc, **dbattrs):
+    '''Helper function for registering Python function as a PDFEnvelope.
+    This is required for using Python function as PDFCalculator envelope.
+
+    name     -- unique string name for registering Python function in the
+                global registry of PDFEnvelope types.  This will be the
+                string identifier for the createByType factory.
+    fnc      -- Python function of a floating point argument and optional
+                float parameters.  The parameters need to be registered as
+                double attributes in the functor class.  The function fnc
+                must be picklable and it must return a float.
+    dbattrs  -- optional float parameters of the wrapped function.
+                These will be registered as double attributes in the
+                functor class.  The wrapped function must be callable as
+                fnc(x, **dbattrs).  Make sure to pick attribute names that
+                do not conflict with other PDFCalculator attributes.
+
+    Return an instance of the new PDFEnvelope class.
+
+    Example:
+
+        # Python envelope function
+        def fexpdecay(x, expscale, exptail):
+            from math import exp
+            return expscale * exp(-x / exptail)
+        # wrap it as a PDFEnvelope and register as a "expdecay" type
+        makePDFEnvelope("expdecay", fexpdecay, expscale=5, exptail=4)
+        envelope = PDFEnvelope.createByType("expdecay")
+        print map(envelope, range(9))
+        # use it in PDFCalculator
+        pdfc = PDFCalculator()
+        pdfc.addEnvelope(envelope)
+        # or pdfc.addEnvelopeByType("expdecay")
+    '''
+    from diffpy.srreal.wraputils import _wrapAsRegisteredUnaryFunction
+    return _wrapAsRegisteredUnaryFunction(PDFEnvelope, name, fnc, **dbattrs)
 
 # End of file

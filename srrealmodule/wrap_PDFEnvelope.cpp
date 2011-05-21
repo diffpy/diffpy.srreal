@@ -24,6 +24,7 @@
 #include <diffpy/srreal/PDFEnvelope.hpp>
 
 #include "srreal_converters.hpp"
+#include "srreal_pickling.hpp"
 
 namespace srrealmodule {
 namespace nswrap_PDFEnvelope {
@@ -35,36 +36,56 @@ using namespace diffpy::srreal;
 // docstrings ----------------------------------------------------------------
 
 const char* doc_PDFEnvelope = "\
-FIXME\n\
+Base class and registry for functions that return PDF scaling envelopes.\n\
 ";
 
 const char* doc_PDFEnvelope_create = "\
-FIXME\n\
+Return a new instance of the same type as self.\n\
+\n\
+This method must be overloaded in a derived class.\n\
 ";
 
 const char* doc_PDFEnvelope_clone = "\
-FIXME\n\
+Return a new instance that is a copy of self.\n\
+\n\
+This method must be overloaded in a derived class.\n\
 ";
 
 const char* doc_PDFEnvelope_type = "\
-FIXME\n\
+Return a unique string type that identifies a PDFEnvelope-derived class.\n\
+The string type is used for class registration and in the createByType\n\
+function.\n\
+\n\
+This method must be overloaded in a derived class.\n\
 ";
 
 const char* doc_PDFEnvelope___call__ = "\
-FIXME\n\
+Calculate PDF envelope at the specified r.\n\
+\n\
+r    -- atom distance in Angstroms where the scale envelope is evaluated.\n\
+\n\
+Return float.\n\
 ";
 
 const char* doc_PDFEnvelope__registerThisType = "\
-FIXME\n\
+Add this class to the global registry of PDFEnvelope types.\n\
+\n\
+This method must be called once after definition of the derived\n\
+class to support pickling and the createByType factory.\n\
 ";
 
 const char* doc_PDFEnvelope_createByType = "\
-FIXME\n\
+Return a new PDFEnvelope instance of the specified string type.\n\
+\n\
+tp   -- string type identifying a registered PDFEnvelope class\n\
+        See getRegisteredTypes for the allowed values.\n\
+\n\
+Return a new instance of the PDFEnvelope-derived class.\n\
 ";
 
 const char* doc_PDFEnvelope_getRegisteredTypes = "\
-Set of string identifiers for registered PDFEnvelope classes.\n\
-These are allowed arguments for the createByType static method.\n\
+Return a set of string types of the registered PDFEnvelope classes.\n\
+These are the allowed arguments for the createByType factory.\n\
 ";
 
 // wrappers ------------------------------------------------------------------
@@ -84,21 +105,17 @@ class PDFEnvelopeWrap :
 
         PDFEnvelopePtr create() const
         {
-            override f = this->get_pure_virtual_override("create");
-            return f();
+            return this->get_pure_virtual_override("create")();
         }
 
         PDFEnvelopePtr clone() const
         {
-            override f = this->get_pure_virtual_override("clone");
-            return f();
+            return this->get_pure_virtual_override("clone")();
         }
-
 
         const std::string& type() const
         {
-            override f = this->get_pure_virtual_override("type");
-            object tp = f();
+            python::object tp = this->get_pure_virtual_override("type")();
             mtype = python::extract<std::string>(tp);
             return mtype;
         }
@@ -107,8 +124,7 @@ class PDFEnvelopeWrap :
 
         double operator()(const double& x) const
         {
-            override f = this->get_pure_virtual_override("__call__");
-            return f(x);
+            return this->get_pure_virtual_override("__call__")(x);
         }
 
     private:
@@ -116,6 +132,20 @@ class PDFEnvelopeWrap :
         mutable std::string mtype;
 
 };  // class PDFEnvelopeWrap
+
+
+std::string envelope_tostring(PDFEnvelopePtr obj)
+{
+    return serialization_tostring(obj);
+}
+
+
+PDFEnvelopePtr envelope_fromstring(std::string content)
+{
+    PDFEnvelopePtr rv;
+    serialization_fromstring(rv, content);
+    return rv;
+}
 
 }   // namespace nswrap_PDFEnvelope
 
@@ -125,27 +155,36 @@ void wrap_PDFEnvelope()
 {
     using namespace nswrap_PDFEnvelope;
     using diffpy::Attributes;
+    namespace bp = boost::python;
 
     class_<PDFEnvelopeWrap, bases<Attributes>,
         noncopyable>("PDFEnvelope", doc_PDFEnvelope)
-        .def("create", &PDFEnvelope::create, doc_PDFEnvelope_create)
-        .def("clone", &PDFEnvelope::clone, doc_PDFEnvelope_clone)
+        .def("create", &PDFEnvelope::create,
+                doc_PDFEnvelope_create)
+        .def("clone", &PDFEnvelope::clone,
+                doc_PDFEnvelope_clone)
         .def("type", &PDFEnvelope::type,
                 return_value_policy<copy_const_reference>(),
                 doc_PDFEnvelope_type)
         .def("__call__", &PDFEnvelope::operator(),
-                doc_PDFEnvelope___call__)
+                bp::arg("r"), doc_PDFEnvelope___call__)
         .def("_registerThisType", &PDFEnvelope::registerThisType,
                 doc_PDFEnvelope__registerThisType)
         .def("createByType", &PDFEnvelope::createByType,
-                doc_PDFEnvelope_createByType)
+                bp::arg("tp"), doc_PDFEnvelope_createByType)
         .staticmethod("createByType")
         .def("getRegisteredTypes", getPDFEnvelopeTypes_asset,
                 doc_PDFEnvelope_getRegisteredTypes)
         .staticmethod("getRegisteredTypes")
+        .enable_pickling()
         ;
 
     register_ptr_to_python<PDFEnvelopePtr>();
+
+    // pickling support functions
+    def("_PDFEnvelope_tostring", envelope_tostring);
+    def("_PDFEnvelope_fromstring", envelope_fromstring);
+
 }
 
 }   // namespace srrealmodule

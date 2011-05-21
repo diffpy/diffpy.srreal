@@ -136,7 +136,7 @@ class TestPDFBaseline(unittest.TestCase):
         self.assertEqual(3, pbl3.c)
         return
 
-# End of class TestBVSCalculator
+# End of class TestPDFBaseline
 
 # function for wrapping by makePDFBaseline
 
