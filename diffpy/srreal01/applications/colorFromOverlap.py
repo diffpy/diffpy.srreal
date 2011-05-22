@@ -226,7 +226,7 @@ class ColorFromOverlap(object):
         # use initialAtomConflicts to setup proper atom radii
         ac = self.initialAtomConflicts(stru)
         # undo site shuffling
-        ac.setStructure(stru)
+        ac.setSiteColoring(self.expanded_formula)
         coststru = [(self.cost(ac), ac.getStructure())]
         for i in range(self.repeats):
             ac0 = self.initialAtomConflicts(stru)
