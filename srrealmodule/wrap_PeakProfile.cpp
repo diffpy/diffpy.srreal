@@ -111,19 +111,19 @@ class PeakProfileWrap :
 
         // own methods
 
-        double yvalue(double x, double fwhm) const
+        double yvalue(double x, double fwhm, double position) const
         {
-            return this->get_pure_virtual_override("yvalue")(x, fwhm);
+            return this->get_pure_virtual_override("yvalue")(x, fwhm, position);
         }
 
-        double xboundlo(double fwhm) const
+        double xboundlo(double fwhm, double position=0) const
         {
-            return this->get_pure_virtual_override("xboundlo")(fwhm);
+            return this->get_pure_virtual_override("xboundlo")(fwhm, position);
         }
 
-        double xboundhi(double fwhm) const
+        double xboundhi(double fwhm, double position=0) const
         {
-            return this->get_pure_virtual_override("xboundhi")(fwhm);
+            return this->get_pure_virtual_override("xboundhi")(fwhm, position);
         }
 
     private:
@@ -138,6 +138,7 @@ class PeakProfileWrap :
 
 void wrap_PeakProfile()
 {
+    namespace bp = boost::python;
     using namespace nswrap_PeakProfile;
     using diffpy::Attributes;
 
@@ -149,8 +150,12 @@ void wrap_PeakProfile()
                 return_value_policy<copy_const_reference>(),
                 doc_PeakProfile_type)
         .def("yvalue", &PeakProfile::yvalue, doc_PeakProfile_yvalue)
-        .def("xboundlo", &PeakProfile::xboundlo, doc_PeakProfile_xboundlo)
-        .def("xboundhi", &PeakProfile::xboundhi, doc_PeakProfile_xboundhi)
+        .def("xboundlo", &PeakProfile::xboundlo,
+                (bp::arg("fwhm"), bp::arg("position")=0.0),
+                doc_PeakProfile_xboundlo)
+        .def("xboundhi", &PeakProfile::xboundhi,
+                (bp::arg("fwhm"), bp::arg("position")=0.0),
+                doc_PeakProfile_xboundhi)
         .def("_registerThisType", &PeakProfile::registerThisType,
                 doc_PeakProfile__registerThisType)
         .def("createByType", &PeakProfile::createByType,
