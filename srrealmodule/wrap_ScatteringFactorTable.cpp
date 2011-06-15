@@ -152,7 +152,7 @@ No return value.  Cannot be overloaded in Python.\n\
 const char* doc_ScatteringFactorTable_createByType = "\
 Create a new ScatteringFactorTable instance of the specified type.\n\
 \n\
-tp   -- string identifier for a registered ScatteringFactorTable\n\
+tp   -- string identifier for a registered ScatteringFactorTable class.\n\
         Use getRegisteredTypes for a set of allowed values.\n\
 \n\
 Return new ScatteringFactorTable instance.\n\
@@ -176,8 +176,8 @@ This can be also set with the setScatteringFactorTableByType method.\n\
 const char* doc_ScatteringFactorTableOwner_setScatteringFactorTableByType = "\
 Set internal ScatteringFactorTable according to specified string type.\n\
 \n\
-tp   -- string identifier of a registered ScatteringFactorTable type\n\
-        Use ScatteringFactorTable.getRegisteredTypes for allowed values.\n\
+tp   -- string identifier of a registered ScatteringFactorTable type.\n\
+        Use ScatteringFactorTable.getRegisteredTypes for the allowed values.\n\
 \n\
 No return value.\n\
 ";

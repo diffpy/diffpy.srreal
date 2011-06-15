@@ -36,66 +36,99 @@ using namespace diffpy::srreal;
 // docstrings ----------------------------------------------------------------
 
 const char* doc_PeakWidthModel = "\
-FIXME\n\
+Base class for functors that calculate the PDF peak widths.\n\
+Peak width is defined as full width at half maximum (FWHM).\n\
 ";
 
 const char* doc_PeakWidthModel_create = "\
-FIXME\n\
+Return a new instance of the same PeakWidthModel type.\n\
+This method must be overloaded in a derived class.\n\
 ";
 
 const char* doc_PeakWidthModel_clone = "\
-FIXME\n\
+Return a duplicate of this PeakWidthModel instance.\n\
+This method must be overloaded in a derived class.\n\
 ";
 
 const char* doc_PeakWidthModel_type = "\
-FIXME\n\
+Return a unique string name for this PeakWidthModel class.\n\
+This method must be overloaded in a derived class.\n\
 ";
 
 const char* doc_PeakWidthModel_calculate = "\
-FIXME\n\
+Calculate the peak width for the specified bond.\n\
+\n\
+bnds -- instance of BaseBondGenerator with the current bond data.\n\
+\n\
+Return float.\n\
 ";
 
 const char* doc_PeakWidthModel_calculateFromMSD = "\
-FIXME\n\
+Calculate the width from mean square displacement along the bond vector.\n\
+\n\
+msd  -- mean square displacement along the bond vector.  In case of two\n\
+        isotropically vibrating atoms this equals to a sum of their Uiso\n\
+        values.\n\
+\n\
+Return float.\n\
 ";
 
 const char* doc_PeakWidthModel__registerThisType = "\
-FIXME\n\
+Add this instance to the global registry of PeakWidthModel types.\n\
+\n\
+No return value.  Cannot be overloaded in Python.\n\
 ";
 
 const char* doc_PeakWidthModel_createByType = "\
-FIXME\n\
+Create a new PeakWidthModel instance of the specified type.\n\
+\n\
+tp   -- string identifier for a registered PeakWidthModel class.\n\
+        Use getRegisteredTypes for a set of allowed values.\n\
+\n\
+Return new PeakWidthModel instance.\n\
 ";
 
 const char* doc_PeakWidthModel_getRegisteredTypes = "\
 Set of string identifiers for registered PeakWidthModel classes.\n\
-These are allowed arguments for the setPeakWidthModel method.\n\
+These are the allowed arguments for the createByType method and\n\
+setPeakWidthModelByType methods in the PDF calculator classes.\n\
 ";
 
 const char* doc_PeakWidthModelOwner = "\
-FIXME\n\
+Base class for classes that own PeakWidthModel instance.\n\
 ";
 
-const char* doc_PeakWidthModelOwner_getPeakWidthModel = "\
-FIXME\n\
-";
-
-const char* doc_PeakWidthModelOwner_setPeakWidthModel = "\
-FIXME\n\
+const char* doc_PeakWidthModelOwner_peakwidthmodel = "\
+PeakWidthModel object used for calculating the FWHM of the PDF peaks.\n\
+This can be also set with the setPeakWidthModelByType method.\n\
 ";
 
 const char* doc_PeakWidthModelOwner_setPeakWidthModelByType = "\
-FIXME\n\
+Set the peakwidthmodel attribute according to specified string type.\n\
+\n\
+tp   -- string identifier of a registered PeakWidthModel type.\n\
+        Use PeakWidthModel.getRegisteredTypes for the allowed values.\n\
+\n\
+No return value.\n\
 ";
 
 
 // wrappers ------------------------------------------------------------------
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getpwm_overloads,
-        getPeakWidthModel, 0, 0)
-
 DECLARE_PYSET_FUNCTION_WRAPPER(PeakWidthModel::getRegisteredTypes,
         getPeakWidthModelTypes_asset)
+
+// wrappers for the peakwidthmodel property
+
+PeakWidthModelPtr getpwmodel(PeakWidthModelOwner& obj)
+{
+    return obj.getPeakWidthModel();
+}
+
+void setpwmodel(PeakWidthModelOwner& obj, PeakWidthModelPtr pwm)
+{
+    obj.setPeakWidthModel(pwm);
+}
 
 // Helper class allows overload of the PeakWidthModel methods from Python.
 
@@ -155,6 +188,7 @@ class PeakWidthModelWrap :
 
 void wrap_PeakWidthModel()
 {
+    namespace bp = boost::python;
     using namespace nswrap_PeakWidthModel;
     using diffpy::Attributes;
 
@@ -166,15 +200,18 @@ void wrap_PeakWidthModel()
                 return_value_policy<copy_const_reference>(),
                 doc_PeakWidthModel_type)
         .def("calculate",
-                &PeakWidthModel::calculate, doc_PeakWidthModel_calculate)
+                &PeakWidthModel::calculate,
+                bp::arg("bnds"),
+                doc_PeakWidthModel_calculate)
         .def("calculateFromMSD",
                 &PeakWidthModel::calculateFromMSD,
                 &PeakWidthModelWrap::default_calculateFromMSD,
+                bp::arg("msd"),
                 doc_PeakWidthModel_calculateFromMSD)
         .def("_registerThisType", &PeakWidthModel::registerThisType,
                 doc_PeakWidthModel__registerThisType)
         .def("createByType", &PeakWidthModel::createByType,
-                doc_PeakWidthModel_createByType)
+                bp::arg("tp"), doc_PeakWidthModel_createByType)
         .staticmethod("createByType")
         .def("getRegisteredTypes", getPeakWidthModelTypes_asset,
                 doc_PeakWidthModel_getRegisteredTypes)
@@ -184,14 +221,11 @@ void wrap_PeakWidthModel()
     register_ptr_to_python<PeakWidthModelPtr>();
 
     class_<PeakWidthModelOwner>("PeakWidthModelOwner", doc_PeakWidthModelOwner)
-        .def("getPeakWidthModel",
-                (PeakWidthModelPtr(PeakWidthModelOwner::*)()) NULL,
-                getpwm_overloads(doc_PeakWidthModelOwner_getPeakWidthModel))
-        .def("setPeakWidthModel",
-                &PeakWidthModelOwner::setPeakWidthModel,
-                doc_PeakWidthModelOwner_setPeakWidthModel)
+        .add_property("peakwidthmodel", getpwmodel, setpwmodel,
+                doc_PeakWidthModelOwner_peakwidthmodel)
         .def("setPeakWidthModelByType",
                 &PeakWidthModelOwner::setPeakWidthModelByType,
+                bp::arg("tp"),
                 doc_PeakWidthModelOwner_setPeakWidthModelByType)
         ;
 }
