@@ -190,7 +190,7 @@ class TestDebyePDFCalculator(unittest.TestCase):
                 dpdfc1.getEnvelopeByType('sphericalshape').spdiameter)
         self.assertEqual(dpdfc._namesOfDoubleAttributes(),
                 dpdfc1._namesOfDoubleAttributes())
-        self.assertEqual(dpdfc.usedEnvelopeTypes(), dpdfc1.usedEnvelopeTypes())
+        self.assertEqual(dpdfc.usedenvelopetypes, dpdfc1.usedenvelopetypes)
         self.assertEqual('asdf', dpdfc1.foobar)
         return
 

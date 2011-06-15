@@ -19,6 +19,7 @@
 *****************************************************************************/
 
 #include <boost/python.hpp>
+#include <boost/python/stl_iterator.hpp>
 
 #include <diffpy/srreal/DebyePDFCalculator.hpp>
 #include <diffpy/srreal/PDFCalculator.hpp>
@@ -53,6 +54,14 @@ An array of Q-values in 1/A.  This is a uniformly spaced array of qstep\n\
 values that start at 0/A and are smaller than qmax.\n\
 ";
 
+const char* doc_PDFCommon_envelopes = "\
+FIXME\n\
+";
+
+const char* doc_PDFCommon_usedenvelopetypes = "\
+FIXME\n\
+";
+
 const char* doc_PDFCommon_addEnvelope = "FIXME\
 ";
 
@@ -69,10 +78,6 @@ FIXME\n\
 ";
 
 const char* doc_PDFCommon_getEnvelopeByType = "\
-FIXME\n\
-";
-
-const char* doc_PDFCommon_usedEnvelopeTypes = "\
 FIXME\n\
 ";
 
@@ -136,7 +141,7 @@ DECLARE_PYARRAY_METHOD_WRAPPER(getRDF, getRDF_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(getRgrid, getRgrid_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(getF, getF_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(getQgrid, getQgrid_asarray)
-DECLARE_PYSET_METHOD_WRAPPER(usedEnvelopeTypes, usedEnvelopeTypes_asset)
+DECLARE_PYLIST_METHOD_WRAPPER(usedEnvelopeTypes, usedEnvelopeTypes_aslist)
 
 // wrappers for the baseline property
 
@@ -150,9 +155,46 @@ void setbaseline(PDFCalculator& obj, PDFBaselinePtr bl)
     obj.setBaseline(bl);
 }
 
+// wrappers for the envelopes property
+
+template <class T>
+tuple getenvelopes(T& obj)
+{
+    std::set<std::string> etps = obj.usedEnvelopeTypes();
+    std::set<std::string>::const_iterator tpi;
+    list elst;
+    for (tpi = etps.begin(); tpi != etps.end(); ++tpi)
+    {
+        elst.append(obj.getEnvelopeByType(*tpi));
+    }
+    tuple rv(elst);
+    return rv;
+}
+
+template <class T>
+void setenvelopes(T& obj, object evps)
+{
+    stl_input_iterator<PDFEnvelopePtr> begin(evps), end;
+    // first check if all evps items can be converted to PDFEnvelopePtr
+    std::list<PDFEnvelopePtr> elst(begin, end);
+    // if that worked, overwrite the original envelopes
+    obj.clearEnvelopes();
+    std::list<PDFEnvelopePtr>::iterator eii = elst.begin();
+    for (; eii != elst.end(); ++eii)  obj.addEnvelope(*eii);
+}
+
+// wrapper for the usedenvelopetypes
+
+template <class T>
+tuple getusedenvelopetypes(T& obj)
+{
+    tuple rv(usedEnvelopeTypes_aslist<T>(obj));
+    return rv;
+}
+
 // wrap shared methods and attributes of PDFCalculators
 
-template <class C> 
+template <class C>
 C& wrap_PDFCommon(C& boostpythonclass)
 {
     typedef typename C::wrapped_type W;
@@ -169,6 +211,12 @@ C& wrap_PDFCommon(C& boostpythonclass)
         .add_property("qgrid", getQgrid_asarray<W>,
                 doc_PDFCommon_qgrid)
         // PDF envelopes
+        .add_property("envelopes",
+                getenvelopes<W>, setenvelopes<W>,
+                doc_PDFCommon_envelopes)
+        .add_property("usedenvelopetypes",
+                getusedenvelopetypes<W>,
+                doc_PDFCommon_usedenvelopetypes)
         .def("addEnvelope", &W::addEnvelope,
                 doc_PDFCommon_addEnvelope)
         .def("addEnvelopeByType", &W::addEnvelopeByType,
@@ -180,8 +228,6 @@ C& wrap_PDFCommon(C& boostpythonclass)
         .def("getEnvelopeByType",
                 (PDFEnvelopePtr(W::*)(const std::string&)) NULL,
                 getenvelopebytype_overloads(doc_PDFCommon_getEnvelopeByType))
-        .def("usedEnvelopeTypes", usedEnvelopeTypes_asset<W>,
-                doc_PDFCommon_usedEnvelopeTypes)
         .def("clearEnvelopes", &W::clearEnvelopes,
                 doc_PDFCommon_clearEnvelopes)
         ;

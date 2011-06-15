@@ -276,7 +276,7 @@ class TestPDFCalculator(unittest.TestCase):
                 pdfc1.getEnvelopeByType('sphericalshape').spdiameter)
         self.assertEqual(pdfc._namesOfDoubleAttributes(),
                 pdfc1._namesOfDoubleAttributes())
-        self.assertEqual(pdfc.usedEnvelopeTypes(), pdfc1.usedEnvelopeTypes())
+        self.assertEqual(pdfc.usedenvelopetypes, pdfc1.usedenvelopetypes)
         self.assertEqual('asdf', pdfc1.foobar)
         return
 
