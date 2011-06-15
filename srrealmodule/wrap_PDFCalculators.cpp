@@ -150,6 +150,44 @@ void setbaseline(PDFCalculator& obj, PDFBaselinePtr bl)
     obj.setBaseline(bl);
 }
 
+// wrap shared methods and attributes of PDFCalculators
+
+template <class C> 
+C& wrap_PDFCommon(C& boostpythonclass)
+{
+    typedef typename C::wrapped_type W;
+    boostpythonclass
+        // result vectors
+        .add_property("pdf", getPDF_asarray<W>,
+                doc_PDFCommon_pdf)
+        .add_property("rdf", getRDF_asarray<W>,
+                doc_PDFCommon_rdf)
+        .add_property("rgrid", getRgrid_asarray<W>,
+                doc_PDFCommon_rgrid)
+        .add_property("fq", getF_asarray<W>,
+                doc_PDFCommon_fq)
+        .add_property("qgrid", getQgrid_asarray<W>,
+                doc_PDFCommon_qgrid)
+        // PDF envelopes
+        .def("addEnvelope", &W::addEnvelope,
+                doc_PDFCommon_addEnvelope)
+        .def("addEnvelopeByType", &W::addEnvelopeByType,
+                doc_PDFCommon_addEnvelopeByType)
+        .def("popEnvelope", &W::popEnvelope,
+                doc_PDFCommon_popEnvelope)
+        .def("popEnvelopeByType", &W::popEnvelopeByType,
+                doc_PDFCommon_popEnvelopeByType)
+        .def("getEnvelopeByType",
+                (PDFEnvelopePtr(W::*)(const std::string&)) NULL,
+                getenvelopebytype_overloads(doc_PDFCommon_getEnvelopeByType))
+        .def("usedEnvelopeTypes", usedEnvelopeTypes_asset<W>,
+                doc_PDFCommon_usedEnvelopeTypes)
+        .def("clearEnvelopes", &W::clearEnvelopes,
+                doc_PDFCommon_clearEnvelopes)
+        ;
+    return boostpythonclass;
+}
+
 }   // namespace nswrap_PDFCalculators
 
 // Wrapper definition --------------------------------------------------------
@@ -164,53 +202,21 @@ void wrap_PDFCalculators()
 
     // DebyePDFCalculator
     class_<DebyePDFCalculator,
-        bases<PairQuantity, PeakWidthModelOwner, ScatteringFactorTableOwner>
-            >("DebyePDFCalculator_ext", doc_DebyePDFCalculator)
-        .add_property("pdf", getPDF_asarray<DebyePDFCalculator>,
-                doc_PDFCommon_pdf)
-        .add_property("rgrid", getRgrid_asarray<DebyePDFCalculator>,
-                doc_PDFCommon_rgrid)
-        .add_property("fq", getF_asarray<DebyePDFCalculator>,
-                doc_PDFCommon_fq)
-        .add_property("qgrid", getQgrid_asarray<DebyePDFCalculator>,
-                doc_PDFCommon_qgrid)
+        bases<PairQuantity, PeakWidthModelOwner, ScatteringFactorTableOwner> >
+            dbpdfc_class("DebyePDFCalculator_ext", doc_DebyePDFCalculator);
+    wrap_PDFCommon(dbpdfc_class)
         .def("setOptimumQstep", &DebyePDFCalculator::setOptimumQstep,
                 doc_DebyePDFCalculator_setOptimumQstep)
         .def("isOptimumQstep", &DebyePDFCalculator::isOptimumQstep,
                 doc_DebyePDFCalculator_isOptimumQstep)
-        // PDF envelopes
-        .def("addEnvelope", &DebyePDFCalculator::addEnvelope,
-                doc_PDFCommon_addEnvelope)
-        .def("addEnvelopeByType", &DebyePDFCalculator::addEnvelopeByType,
-                doc_PDFCommon_addEnvelopeByType)
-        .def("popEnvelope", &DebyePDFCalculator::popEnvelope,
-                doc_PDFCommon_popEnvelope)
-        .def("popEnvelopeByType", &DebyePDFCalculator::popEnvelopeByType,
-                doc_PDFCommon_popEnvelopeByType)
-        .def("getEnvelopeByType",
-                (PDFEnvelopePtr(DebyePDFCalculator::*)(const std::string&)) NULL,
-                getenvelopebytype_overloads(doc_PDFCommon_getEnvelopeByType))
-        .def("usedEnvelopeTypes", usedEnvelopeTypes_asset<DebyePDFCalculator>,
-                doc_PDFCommon_usedEnvelopeTypes)
-        .def("clearEnvelopes", &DebyePDFCalculator::clearEnvelopes,
-                doc_PDFCommon_clearEnvelopes)
         .def_pickle(SerializationPickleSuite<DebyePDFCalculator>())
         ;
 
     // PDFCalculator
     class_<PDFCalculator,
-        bases<PairQuantity, PeakWidthModelOwner, ScatteringFactorTableOwner>
-        >("PDFCalculator_ext", doc_PDFCalculator)
-        .add_property("pdf", getPDF_asarray<PDFCalculator>,
-                doc_PDFCommon_pdf)
-        .add_property("rdf", getRDF_asarray<PDFCalculator>,
-                doc_PDFCommon_rdf)
-        .add_property("rgrid", getRgrid_asarray<PDFCalculator>,
-                doc_PDFCommon_rgrid)
-        .add_property("fq", getF_asarray<PDFCalculator>,
-                doc_PDFCommon_fq)
-        .add_property("qgrid", getQgrid_asarray<PDFCalculator>,
-                doc_PDFCommon_qgrid)
+        bases<PairQuantity, PeakWidthModelOwner, ScatteringFactorTableOwner> >
+        pdfc_class("PDFCalculator_ext", doc_PDFCalculator);
+    wrap_PDFCommon(pdfc_class)
         // PDF peak profile
         .def("getPeakProfile",
                 (PeakProfilePtr(PDFCalculator::*)()) NULL,
@@ -224,22 +230,6 @@ void wrap_PDFCalculators()
                 doc_PDFCalculator_baseline)
         .def("setBaselineByType", &PDFCalculator::setBaselineByType,
                 doc_PDFCalculator_setBaselineByType)
-        // PDF envelopes
-        .def("addEnvelope", &PDFCalculator::addEnvelope,
-                doc_PDFCommon_addEnvelope)
-        .def("addEnvelopeByType", &PDFCalculator::addEnvelopeByType,
-                doc_PDFCommon_addEnvelopeByType)
-        .def("popEnvelope", &PDFCalculator::popEnvelope,
-                doc_PDFCommon_popEnvelope)
-        .def("popEnvelopeByType", &PDFCalculator::popEnvelopeByType,
-                doc_PDFCommon_popEnvelopeByType)
-        .def("getEnvelopeByType",
-                (PDFEnvelopePtr(PDFCalculator::*)(const std::string&)) NULL,
-                getenvelopebytype_overloads(doc_PDFCommon_getEnvelopeByType))
-        .def("usedEnvelopeTypes", usedEnvelopeTypes_asset<PDFCalculator>,
-                doc_PDFCommon_usedEnvelopeTypes)
-        .def("clearEnvelopes", &PDFCalculator::clearEnvelopes,
-                doc_PDFCommon_clearEnvelopes)
         .def_pickle(SerializationPickleSuite<PDFCalculator>())
         ;
 
