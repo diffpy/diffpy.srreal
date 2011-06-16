@@ -20,6 +20,7 @@
 *****************************************************************************/
 
 #include <boost/python/def.hpp>
+#include <boost/python/stl_iterator.hpp>
 #include <boost/python/exception_translator.hpp>
 #include <string>
 #include <valarray>
@@ -99,6 +100,35 @@ NumPyArray_IntPtr createNumPyIntArray(int dim, const int* sz)
     boost::python::object rvobj = newNumPyArray(dim, sz, PyArray_INT);
     int* rvdata = static_cast<int*>(PyArray_DATA(rvobj.ptr()));
     NumPyArray_IntPtr rv(rvobj, rvdata);
+    return rv;
+}
+
+
+/// efficient conversion of Python object to a QuantityType
+diffpy::srreal::QuantityType&
+extractQuantityType(
+        boost::python::object obj,
+        diffpy::srreal::QuantityType& rv)
+{
+    using namespace boost;
+    // extract QuantityType directly
+    python::extract<diffpy::srreal::QuantityType&> getqt(obj);
+    if (getqt.check())  return getqt();
+    // copy data directly if it is a numpy array of doubles
+    PyObject* pobj = obj.ptr();
+    bool isdoublenumpyarray = PyArray_Check(pobj) &&
+        (1 == PyArray_NDIM(pobj)) &&
+        (PyArray_DOUBLE == PyArray_TYPE(pobj));
+    if (isdoublenumpyarray)
+    {
+        double* pfirst = static_cast<double*>(PyArray_DATA(pobj));
+        double* plast = pfirst + PyArray_SIZE(pobj);
+        rv.assign(pfirst, plast);
+        return rv;
+    }
+    // otherwise copy elementwise converting each element to a double
+    python::stl_input_iterator<double> begin(obj), end;
+    rv.assign(begin, end);
     return rv;
 }
 

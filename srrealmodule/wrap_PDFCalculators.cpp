@@ -129,6 +129,32 @@ const char* doc_PDFCalculator_setBaselineByType = "\
 FIXME\n\
 ";
 
+const char* doc_fftftog = "\
+Perform sine-fast Fourier transform from F(Q) to G(r).\n\
+The length of the output array is padded to the next power of 2.\n\
+\n\
+f        -- array of the F values on a regular Q-space grid.\n\
+qstep    -- spacing in the Q-space grid, this is used for proper\n\
+            scaling of the output array.\n\
+qmin     -- optional starting point of the Q-space grid.\n\
+\n\
+Return a tuple of (g, rstep).  These can be used with the complementary\n\
+fftgtof function to recover the original signal f.\n\
+";
+
+const char* doc_fftgtof = "\
+Perform sine-fast Fourier transform from G(r) to F(Q).\n\
+The length of the output array is padded to the next power of 2.\n\
+\n\
+g        -- array of the G values on a regular r-space grid.\n\
+rstep    -- spacing in the r-space grid, this is used for proper\n\
+            scaling of the output array.\n\
+rmin     -- optional starting point of the r-space grid.\n\
+\n\
+Return a tuple of (f, qstep).  These can be used with the complementary\n\
+fftftog function to recover the original signal g.\n\
+";
+
 // wrappers ------------------------------------------------------------------
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getpkf_overloads,
@@ -234,6 +260,31 @@ C& wrap_PDFCommon(C& boostpythonclass)
     return boostpythonclass;
 }
 
+// local helper for converting python object to a quantity type
+
+tuple fftftog_array_step(object f, double qstep, double qmin)
+{
+    QuantityType f0;
+    const QuantityType& f1 = extractQuantityType(f, f0);
+    QuantityType g = fftftog(f1, qstep, qmin);
+    object ga = convertToNumPyArray(g);
+    double qmaxpad = g.size() * qstep;
+    double rstep = (qmaxpad > 0) ? (M_PI / qmaxpad) : 0.0;
+    return make_tuple(ga, rstep);
+}
+
+
+tuple fftgtof_array_step(object g, double rstep, double rmin)
+{
+    QuantityType g0;
+    const QuantityType& g1 = extractQuantityType(g, g0);
+    QuantityType f = fftgtof(g1, rstep, rmin);
+    object fa = convertToNumPyArray(f);
+    double rmaxpad = f.size() * rstep;
+    double qstep = (rmaxpad > 0) ? (M_PI / rmaxpad) : 0.0;
+    return make_tuple(fa, qstep);
+}
+
 }   // namespace nswrap_PDFCalculators
 
 // Wrapper definition --------------------------------------------------------
@@ -241,6 +292,7 @@ C& wrap_PDFCommon(C& boostpythonclass)
 void wrap_PDFCalculators()
 {
     using namespace nswrap_PDFCalculators;
+    namespace bp = boost::python;
 
     // FIXME: rename PDFCalculator_ext to PDFCalculator and
     // inject the shared methods in diffpy.srreal.pdfcalculators
@@ -278,6 +330,14 @@ void wrap_PDFCalculators()
                 doc_PDFCalculator_setBaselineByType)
         .def_pickle(SerializationPickleSuite<PDFCalculator>())
         ;
+
+    // FFT functions
+    def("fftftog", fftftog_array_step,
+            (bp::arg("f"), bp::arg("qstep"), bp::arg("qmin")=0.0),
+            doc_fftftog);
+    def("fftgtof", fftgtof_array_step,
+            (bp::arg("g"), bp::arg("rstep"), bp::arg("rmin")=0.0),
+            doc_fftgtof);
 
     // inject pickling methods for PDFBaseline and PDFEnvelope classes
     import("diffpy.srreal.pdfcalculator");

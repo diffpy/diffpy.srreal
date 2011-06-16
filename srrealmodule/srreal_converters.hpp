@@ -289,6 +289,12 @@ convertToPythonDict(const T& value)
 }
 
 
+/// efficient conversion of Python object to a QuantityType
+::diffpy::srreal::QuantityType&
+extractQuantityType(::boost::python::object obj,
+        ::diffpy::srreal::QuantityType& rv);
+
+
 /// helper for raising RuntimeError on a call of pure virtual function
 void throwPureVirtualCalled(const char* fncname);
 

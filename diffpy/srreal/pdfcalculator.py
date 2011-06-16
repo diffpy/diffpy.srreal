@@ -25,11 +25,12 @@ __id__ = "$Id$"
 # exported items
 __all__ = '''DebyePDFCalculator PDFCalculator
     PDFBaseline PDFEnvelope PeakProfile PeakWidthModel
-    makePDFBaseline makePDFEnvelope
+    makePDFBaseline makePDFEnvelope fftftog fftgtof
     '''.split()
 
 from diffpy.srreal.srreal_ext import DebyePDFCalculator_ext
 from diffpy.srreal.srreal_ext import PDFCalculator_ext
+from diffpy.srreal.srreal_ext import fftftog, fftgtof
 from diffpy.srreal.srreal_ext import PDFBaseline, PDFEnvelope
 from diffpy.srreal.srreal_ext import PeakProfile, PeakWidthModel
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
