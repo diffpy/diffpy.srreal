@@ -38,57 +38,57 @@ from diffpy.srreal.wraputils import setattrFromKeywordArguments
 
 # ----------------------------------------------------------------------------
 
-def _defineCommonInterface(klass):
+def _defineCommonInterface(cls):
 
     '''This function defines shared properties of PDF calculator classes.
     '''
 
-    klass.scale = propertyFromExtDoubleAttr('scale',
+    cls.scale = propertyFromExtDoubleAttr('scale',
         '''Scale factor of the calculated PDF.  Active for ScaleEnvelope.
         [1.0 unitless]''')
 
-    klass.delta1 = propertyFromExtDoubleAttr('delta1',
+    cls.delta1 = propertyFromExtDoubleAttr('delta1',
         '''Coefficient for (1/r) contribution to the peak sharpening.
         Active for JeongPeakWidth model.
         [0 A]''')
 
-    klass.delta2 = propertyFromExtDoubleAttr('delta2',
+    cls.delta2 = propertyFromExtDoubleAttr('delta2',
         '''Coefficient for (1/r**2) contribution to the peak sharpening.
         Active for JeongPeakWidth model.
         [0 A**2]''')
 
-    klass.qdamp = propertyFromExtDoubleAttr('qdamp',
+    cls.qdamp = propertyFromExtDoubleAttr('qdamp',
         '''PDF Gaussian dampening envelope due to limited Q-resolution.
         Not applied when equal to zero.  Active for QResolutionEnvelope.
         [0 1/A]''')
 
-    klass.qbroad = propertyFromExtDoubleAttr('qbroad',
+    cls.qbroad = propertyFromExtDoubleAttr('qbroad',
         '''PDF peak broadening from increased intensity noise at high Q.
         Not applied when equal zero.  Active for JeongPeakWidth model.
         [0 1/A]''')
 
-    klass.extendedrmin = propertyFromExtDoubleAttr('extendedrmin',
+    cls.extendedrmin = propertyFromExtDoubleAttr('extendedrmin',
         '''Low boundary of the extended r-range, read-only.
         [A]''')
 
-    klass.extendedrmax = propertyFromExtDoubleAttr('extendedrmax',
+    cls.extendedrmax = propertyFromExtDoubleAttr('extendedrmax',
         '''Upper boundary of the extended r-range, read-only.
         [A]''')
 
-    klass.maxextension = propertyFromExtDoubleAttr('maxextension',
+    cls.maxextension = propertyFromExtDoubleAttr('maxextension',
         '''Maximum extension of the r-range that accounts for contributions
         from the out of range peaks.
         [10 A]''')
 
-    klass.rmin = propertyFromExtDoubleAttr('rmin',
+    cls.rmin = propertyFromExtDoubleAttr('rmin',
         '''Lower bound of the r-grid for PDF calculation.
         [0 A]''')
 
-    klass.rmax = propertyFromExtDoubleAttr('rmax',
+    cls.rmax = propertyFromExtDoubleAttr('rmax',
         '''Upper bound of the r-grid for PDF calculation.
         [10 A]''')
 
-    klass.rstep = propertyFromExtDoubleAttr('rstep',
+    cls.rstep = propertyFromExtDoubleAttr('rstep',
         '''Spacing in the calculated r-grid.  r-values are at the
         multiples of rstep.
         [0.01 A]''')
@@ -114,7 +114,7 @@ def _defineCommonInterface(klass):
         setattrFromKeywordArguments(self, **kwargs)
         rv = (self.rgrid, self.pdf)
         return rv
-    klass.__call__ = _call_kwargs
+    cls.__call__ = _call_kwargs
 
 # _defineCommonInterface
 
