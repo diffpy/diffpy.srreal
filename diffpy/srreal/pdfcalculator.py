@@ -28,8 +28,8 @@ __all__ = '''DebyePDFCalculator PDFCalculator
     makePDFBaseline makePDFEnvelope fftftog fftgtof
     '''.split()
 
-from diffpy.srreal.srreal_ext import DebyePDFCalculator_ext
-from diffpy.srreal.srreal_ext import PDFCalculator_ext
+from diffpy.srreal.srreal_ext import DebyePDFCalculator
+from diffpy.srreal.srreal_ext import PDFCalculator
 from diffpy.srreal.srreal_ext import fftftog, fftgtof
 from diffpy.srreal.srreal_ext import PDFBaseline, PDFEnvelope
 from diffpy.srreal.srreal_ext import PeakProfile, PeakWidthModel
@@ -38,63 +38,62 @@ from diffpy.srreal.wraputils import setattrFromKeywordArguments
 
 # ----------------------------------------------------------------------------
 
-class PDFCalculatorInterface(object):
+def _defineCommonInterface(klass):
 
-    '''Base class for shared properties and methods.
+    '''This function defines shared properties of PDF calculator classes.
     '''
 
-    scale = propertyFromExtDoubleAttr('scale',
+    klass.scale = propertyFromExtDoubleAttr('scale',
         '''Scale factor of the calculated PDF.  Active for ScaleEnvelope.
         [1.0 unitless]''')
 
-    delta1 = propertyFromExtDoubleAttr('delta1',
+    klass.delta1 = propertyFromExtDoubleAttr('delta1',
         '''Coefficient for (1/r) contribution to the peak sharpening.
         Active for JeongPeakWidth model.
         [0 A]''')
 
-    delta2 = propertyFromExtDoubleAttr('delta2',
+    klass.delta2 = propertyFromExtDoubleAttr('delta2',
         '''Coefficient for (1/r**2) contribution to the peak sharpening.
         Active for JeongPeakWidth model.
         [0 A**2]''')
 
-    qdamp = propertyFromExtDoubleAttr('qdamp',
+    klass.qdamp = propertyFromExtDoubleAttr('qdamp',
         '''PDF Gaussian dampening envelope due to limited Q-resolution.
         Not applied when equal to zero.  Active for QResolutionEnvelope.
         [0 1/A]''')
 
-    qbroad = propertyFromExtDoubleAttr('qbroad',
+    klass.qbroad = propertyFromExtDoubleAttr('qbroad',
         '''PDF peak broadening from increased intensity noise at high Q.
         Not applied when equal zero.  Active for JeongPeakWidth model.
         [0 1/A]''')
 
-    extendedrmin = propertyFromExtDoubleAttr('extendedrmin',
+    klass.extendedrmin = propertyFromExtDoubleAttr('extendedrmin',
         '''Low boundary of the extended r-range, read-only.
         [A]''')
 
-    extendedrmax = propertyFromExtDoubleAttr('extendedrmax',
+    klass.extendedrmax = propertyFromExtDoubleAttr('extendedrmax',
         '''Upper boundary of the extended r-range, read-only.
         [A]''')
 
-    maxextension = propertyFromExtDoubleAttr('maxextension',
+    klass.maxextension = propertyFromExtDoubleAttr('maxextension',
         '''Maximum extension of the r-range that accounts for contributions
         from the out of range peaks.
         [10 A]''')
 
-    rmin = propertyFromExtDoubleAttr('rmin',
+    klass.rmin = propertyFromExtDoubleAttr('rmin',
         '''Lower bound of the r-grid for PDF calculation.
         [0 A]''')
 
-    rmax = propertyFromExtDoubleAttr('rmax',
+    klass.rmax = propertyFromExtDoubleAttr('rmax',
         '''Upper bound of the r-grid for PDF calculation.
         [10 A]''')
 
-    rstep = propertyFromExtDoubleAttr('rstep',
+    klass.rstep = propertyFromExtDoubleAttr('rstep',
         '''Spacing in the calculated r-grid.  r-values are at the
         multiples of rstep.
         [0.01 A]''')
 
-
-    def __call__(self, structure=None, **kwargs):
+    def _call_kwargs(self, structure=None, **kwargs):
         '''Calculate PDF for the given structure as an (r, G) tuple.
         Keyword arguments can be used to configure calculator attributes,
         these override any properties that may be passed from the structure,
@@ -115,107 +114,117 @@ class PDFCalculatorInterface(object):
         setattrFromKeywordArguments(self, **kwargs)
         rv = (self.rgrid, self.pdf)
         return rv
+    klass.__call__ = _call_kwargs
 
-# class PDFCalculatorInterface
+# _defineCommonInterface
 
-# ----------------------------------------------------------------------------
+# class DebyePDFCalculator ---------------------------------------------------
 
-class DebyePDFCalculator(DebyePDFCalculator_ext, PDFCalculatorInterface):
+# shared interface of the PDF calculator classes
 
-    # Property wrappers to double attributes of the C++ DebyePDFCalculator_ext
+_defineCommonInterface(DebyePDFCalculator)
 
-    debyeprecision = propertyFromExtDoubleAttr('debyeprecision',
+# Property wrappers to double attributes of the C++ DebyePDFCalculator
+
+DebyePDFCalculator.debyeprecision = propertyFromExtDoubleAttr('debyeprecision',
         '''Cutoff amplitude for the sine contributions to the F(Q).
         [1e-6 unitless]''')
 
-    qmin = propertyFromExtDoubleAttr('qmin',
+DebyePDFCalculator.qmin = propertyFromExtDoubleAttr('qmin',
         '''Lower bound of the Q-grid for the calculated F(Q).
         Affects the shape envelope.
         [0 1/A]
         ''')
 
-    qmax = propertyFromExtDoubleAttr('qmax',
+DebyePDFCalculator.qmax = propertyFromExtDoubleAttr('qmax',
         '''Upper bound of the Q-grid for the calculated F(Q).
         Affects the termination ripples.
         [25 1/A]
         ''')
 
-    qstep = propertyFromExtDoubleAttr('qstep',
+DebyePDFCalculator.qstep = propertyFromExtDoubleAttr('qstep',
         '''Spacing in the Q-grid.  Q-values are at the multiples of qstep.
         [PI/extendedrmax A] unless user overridden.
         See also setOptimumQstep, isOptimumQstep.''')
 
-    # Methods
+# method overrides to support optional keyword arguments
 
-    def __init__(self, **kwargs):
-        '''Create a new instance of the DebyePDFCalculator.
-        Keyword arguments can be used to configure the calculator properties,
-        for example:
+def _init_kwargs0(self, **kwargs):
+    '''Create a new instance of the DebyePDFCalculator.
+    Keyword arguments can be used to configure the calculator properties,
+    for example:
 
-        dpc = DebyePDFCalculator(qmax=20, rmin=7, rmax=15)
+    dpc = DebyePDFCalculator(qmax=20, rmin=7, rmax=15)
 
-        Raise ValueError for invalid keyword argument.
-        '''
-        super(DebyePDFCalculator, self).__init__()
-        setattrFromKeywordArguments(self, **kwargs)
-        return
+    Raise ValueError for invalid keyword argument.
+    '''
+    DebyePDFCalculator.__boostpython__init(self)
+    setattrFromKeywordArguments(self, **kwargs)
+    return
 
+DebyePDFCalculator.__boostpython__init = DebyePDFCalculator.__init__
+DebyePDFCalculator.__init__ = _init_kwargs0
 
-# class DebyePDFCalculator
+# End of class DebyePDFCalculator
 
-# ----------------------------------------------------------------------------
+# PDFCalculator --------------------------------------------------------------
 
-class PDFCalculator(PDFCalculator_ext, PDFCalculatorInterface):
+# shared interface of the PDF calculator classes
 
-    # Property wrappers to double attributes of the C++ PDFCalculator_ext
+_defineCommonInterface(PDFCalculator)
 
-    peakprecision = propertyFromExtDoubleAttr('peakprecision',
+# Property wrappers to double attributes of the C++ PDFCalculator
+
+PDFCalculator.peakprecision = propertyFromExtDoubleAttr('peakprecision',
         '''Cutoff amplitude of the peak tail relative to the peak maximum.
         [3.33e-6 unitless]''')
 
-    qmin = propertyFromExtDoubleAttr('qmin',
+PDFCalculator.qmin = propertyFromExtDoubleAttr('qmin',
         '''Lower bound of the experimental Q-range used.
         Affects the shape envelope.
         [0 1/A]''')
 
-    qmax = propertyFromExtDoubleAttr('qmax',
+PDFCalculator.qmax = propertyFromExtDoubleAttr('qmax',
         '''Upper bound of the experimental Q-range used.
         Affects the termination ripples.  Not used when zero.
         [0 1/A]''')
 
-    slope = propertyFromExtDoubleAttr('slope',
+PDFCalculator.slope = propertyFromExtDoubleAttr('slope',
         '''Slope of the linear PDF background.  Assigned according to
         number density of the evaluated structure at each PDF calculation.
         Active for LinearBaseline.
         [-4*pi*numdensity unitless]''')
 
-    spdiameter = propertyFromExtDoubleAttr('spdiameter',
+PDFCalculator.spdiameter = propertyFromExtDoubleAttr('spdiameter',
         '''Spherical particle diameter for PDF shape damping correction.
         Not used when zero.  Active for SphericalShapeEnvelope.
         [0 A]''')
 
-    stepcut = propertyFromExtDoubleAttr('stepcut',
+PDFCalculator.stepcut = propertyFromExtDoubleAttr('stepcut',
         '''r-boundary for a step cutoff of the calculated PDF.
         Not used when negative or zero.  Active for StepCutEnvelope.
         Not used when zero.  Active for StepCutEnvelope.
         [0 A]''')
 
-    # Methods
+# method overrides to support optional keyword arguments
 
-    def __init__(self, **kwargs):
-        '''Create a new instance of PDFCalculator.
-        Keyword arguments can be used to configure the calculator properties,
-        for example:
+def _init_kwargs1(self, **kwargs):
+    '''Create a new instance of PDFCalculator.
+    Keyword arguments can be used to configure the calculator properties,
+    for example:
 
-        pc = PDFCalculator(qmax=20, rmin=7, rmax=15)
+    pc = PDFCalculator(qmax=20, rmin=7, rmax=15)
 
-        Raise ValueError for invalid keyword argument.
-        '''
-        super(PDFCalculator, self).__init__()
-        setattrFromKeywordArguments(self, **kwargs)
-        return
+    Raise ValueError for invalid keyword argument.
+    '''
+    PDFCalculator.__boostpython__init(self)
+    setattrFromKeywordArguments(self, **kwargs)
+    return
 
-# class PDFCalculator
+PDFCalculator.__boostpython__init = PDFCalculator.__init__
+PDFCalculator.__init__ = _init_kwargs1
+
+# End of class PDFCalculator
 
 # class PDFBaseline ----------------------------------------------------------
 
