@@ -143,16 +143,18 @@ const char* doc_PDFCalculator = "\
 Calculate PDF using the real-space summation of PeakProfile functions.\n\
 ";
 
-const char* doc_PDFCalculator_getPeakProfile = "\
-FIXME\n\
-";
-
-const char* doc_PDFCalculator_setPeakProfile = "\
-FIXME\n\
+const char* doc_PDFCalculator_peakprofile = "\
+Instance of PeakProfile that calculates the real-space profile for\n\
+a single atom-pair contribution.\n\
 ";
 
 const char* doc_PDFCalculator_setPeakProfileByType = "\
-FIXME\n\
+Set the PeakProfile object according to the specified string type.\n\
+\n\
+tp   -- string identifier of a registered PeakProfile class.\n\
+        Use PeakProfile.getRegisteredTypes for the allowed values.\n\
+\n\
+No return value.\n\
 ";
 
 const char* doc_PDFCalculator_baseline = "\
@@ -160,7 +162,12 @@ Instance of PDFBaseline that calculates unscaled baseline at r.\n\
 ";
 
 const char* doc_PDFCalculator_setBaselineByType = "\
-FIXME\n\
+Set the PDFBaseline object according to the specified string type.\n\
+\n\
+tp   -- string identifier of a registered PDFBaseline class.\n\
+        Use PDFBaseline.getRegisteredTypes for the allowed values.\n\
+\n\
+No return value.\n\
 ";
 
 const char* doc_fftftog = "\
@@ -191,8 +198,6 @@ fftftog function to recover the original signal g.\n\
 
 // wrappers ------------------------------------------------------------------
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getpkf_overloads,
-        getPeakProfile, 0, 0)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getenvelopebytype_overloads,
         getEnvelopeByType, 1, 1)
 
@@ -203,16 +208,18 @@ DECLARE_PYARRAY_METHOD_WRAPPER(getF, getF_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(getQgrid, getQgrid_asarray)
 DECLARE_PYLIST_METHOD_WRAPPER(usedEnvelopeTypes, usedEnvelopeTypes_aslist)
 
-// wrappers for the baseline property
+// wrappers for the peakprofile property
 
-PDFBaselinePtr getbaseline(const PDFCalculator& obj)
+PeakProfilePtr getpeakprofile(PDFCalculator& obj)
 {
-    return obj.getBaseline();
+    return obj.getPeakProfile();
 }
 
-void setbaseline(PDFCalculator& obj, PDFBaselinePtr bl)
+// wrappers for the baseline property
+
+PDFBaselinePtr getbaseline(PDFCalculator& obj)
 {
-    obj.setBaseline(bl);
+    return obj.getBaseline();
 }
 
 // wrappers for the envelopes property
@@ -348,17 +355,18 @@ void wrap_PDFCalculators()
         pdfc_class("PDFCalculator", doc_PDFCalculator);
     wrap_PDFCommon(pdfc_class)
         // PDF peak profile
-        .def("getPeakProfile",
-                (PeakProfilePtr(PDFCalculator::*)()) NULL,
-                getpkf_overloads(doc_PDFCalculator_getPeakProfile))
-        .def("setPeakProfile", &PDFCalculator::setPeakProfile,
-                doc_PDFCalculator_setPeakProfile)
-        .def("setPeakProfileByType", &PDFCalculator::setPeakProfileByType,
+        .add_property("peakprofile",
+                getpeakprofile, &PDFCalculator::setPeakProfile,
+                doc_PDFCalculator_peakprofile)
+        .def("setPeakProfileByType",
+                &PDFCalculator::setPeakProfileByType, bp::arg("tp"),
                 doc_PDFCalculator_setPeakProfileByType)
         // PDF baseline
-        .add_property("baseline", getbaseline, setbaseline,
+        .add_property("baseline",
+                getbaseline, &PDFCalculator::setBaseline,
                 doc_PDFCalculator_baseline)
-        .def("setBaselineByType", &PDFCalculator::setBaselineByType,
+        .def("setBaselineByType",
+                &PDFCalculator::setBaselineByType, bp::arg("tp"),
                 doc_PDFCalculator_setBaselineByType)
         .def_pickle(SerializationPickleSuite<PDFCalculator>())
         ;
