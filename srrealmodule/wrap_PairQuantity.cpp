@@ -169,6 +169,10 @@ Return boolean mask.  The value is meaningless for index-based\n\
 masking.  Use getTypeMask('', '') to get the default pair mask.\n\
 ";
 
+const char* doc_BasePairQuantity_copy = "\
+Return a deep copy of this PairQuantity object.\n\
+";
+
 const char* doc_PairQuantity = "\
 Base class for Python defined pair quantity calculators.\n\
 No action by default.  Concrete calculators must overload the\n\
@@ -326,6 +330,15 @@ void set_pair_mask(PairQuantity& obj,
             obj.setPairMask(*ii, *jj, mask);
         }
     }
+}
+
+// provide a copy method for convenient deepcopy of the object
+
+python::object pqcopy(python::object pqobj)
+{
+    python::object copy = python::import("copy").attr("copy");
+    python::object rv = copy(pqobj);
+    return rv;
 }
 
 // Helper C++ class for publicizing the protected methods.
@@ -537,6 +550,8 @@ void wrap_PairQuantity()
         .def("getTypeMask", &PairQuantity::getTypeMask,
                 (python::arg("tpi"), python::arg("tpj")),
                 doc_BasePairQuantity_getTypeMask)
+        .def("copy", pqcopy,
+                doc_BasePairQuantity_copy)
         .def_pickle(SerializationPickleSuite<PairQuantity>())
         ;
 
