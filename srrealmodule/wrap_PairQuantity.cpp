@@ -22,9 +22,9 @@
 *
 * class QuantityType -- wrapped std::vector<double>
 *
-* class BasePairQuantity_ext -- base class to all calculators in Python
+* class BasePairQuantity -- base class to all calculators in Python
 
-* class PairQuantity_ext -- derived class with publicized protected methods
+* class PairQuantity -- derived class with publicized protected methods
 * _addPairContribution, _resetValue, etc.  Allows their overload from Python.
 *
 * $Id$
@@ -66,11 +66,14 @@ Internal vector of total contributions as numpy array.\n\
 const char* doc_BasePairQuantity__mergeParallelData = "\
 Process raw results string from a parallel job and add them to this instance.\n\
 \n\
-pdata    -- raw data string from the parallel job's _getParallelData function.\n\
+pdata    -- raw data string from the parallel _getParallelData function.\n\
+            The actual processing of pdata happens in _executeParallelMerge.\n\
 ncpu     -- number of parallel jobs.  The finishValue method is called after\n\
             merging ncpu parallel values.\n\
 \n\
-No return value.\n\
+No return value.  For parallel calculation this method has to be executed\n\
+exactly ncpu times in the master object after the resetValue call.\n\
+Raise RuntimeError if called too many times.\n\
 ";
 
 const char* doc_BasePairQuantity__getParallelData = "\
@@ -78,71 +81,168 @@ Return raw results string from a parallel job.\n\
 ";
 
 const char* doc_BasePairQuantity_setStructure = "\
-FIXME\n\
+Assign structure to be evaluated without executing the calculation.\n\
+This zeros the internal values array and updates the pair mask data.\n\
+\n\
+stru -- structure object that can be converted to StructureAdapter.\n\
+\n\
+No return value.\n\
 ";
 
 const char* doc_BasePairQuantity_getStructure = "\
-FIXME\n\
+The StructureAdapter instance of the last evaluated structure.\n\
 ";
 
 const char* doc_BasePairQuantity__setupParallelRun = "\
-FIXME\n\
+Configure this object for a partial calculation in a parallel run.\n\
+\n\
+cpuindex -- integer from 0 to ncpu-1 that identifies the partial\n\
+            calculation to be evaluated.\n\
+ncpu     -- number of parallel processes or the total number of\n\
+            partial calculations.  Must be at least one.\n\
+\n\
+No return value.\n\
 ";
 
 const char* doc_BasePairQuantity_maskAllPairs = "\
-FIXME\n\
+Set the calculation mask for all atom pairs in the structure.\n\
+\n\
+mask -- True if all pairs should be included, False if excluded.\n\
+\n\
+No return value.\n\
 ";
 
 const char* doc_BasePairQuantity_invertMask = "\
-FIXME\n\
+Invert mask that controls which atom pairs should be included.\n\
 ";
 
 const char* doc_BasePairQuantity_setPairMask = "\
-FIXME\n\
+Include or exclude specified atom pairs in the calculation.\n\
+The pair masking is exclusively based either on site indices\n\
+or atom types.  This function applies index-based masking and\n\
+cancels any type-based masks.\n\
+\n\
+i    -- zero based index of the first site in the pair.\n\
+        Can be also an iterable of indices or a string 'all' or 'ALL',\n\
+        which select all sites in the structure.\n\
+j    -- index of the second site in the pair.  Can be an iterable\n\
+        or string 'all', just like argument i\n\
+\n\
+mask -- mask of the atom pair i, j,  True if included, False if excluded.\n\
+\n\
+No return value.\n\
 ";
 
 const char* doc_BasePairQuantity_getPairMask = "\
-FIXME\n\
+Return calculation mask for a pair of atom indices.\n\
+\n\
+i    -- zero based index of the first site in the pair\n\
+j    -- zero based index of the second site in the pair\n\
+\n\
+Return boolean mask.  Note the value may be incorrect, because type-based\n\
+masking is applied with a delay.  The value is guaranteed correct after\n\
+a call of setStructure or eval methods.\n\
 ";
 
 const char* doc_BasePairQuantity_setTypeMask = "\
-FIXME\n\
+Include or exclude specified atom-type pairs in the calculation.\n\
+The pair masking is exclusively based either on site indices\n\
+or atom types.  This function applies type-based masking and\n\
+cancels any previous index-based masks.\n\
+\n\
+tpi  -- element symbol of the first type in the pair.  Can be also\n\
+        'all' or 'ALL', which select all sites in the structure.\n\
+tpj  -- element symbol of the second type in the pair.  Can be\n\
+        'all' or 'ALL' just like tpi.\n\
+mask -- mask for the atom types pair.  True if included, False if excluded.\n\
+\n\
+No return value.\n\
 ";
 
 const char* doc_BasePairQuantity_getTypeMask = "\
-FIXME\n\
+Return calculation mask for a pair of atom types.\n\
+\n\
+tpi  -- element symbol of the first type in the pair.\n\
+tpj  -- element symbol of the second type in the pair.\n\
+\n\
+Return boolean mask.  The value is meaningless for index-based\n\
+masking.  Use getTypeMask('', '') to get the default pair mask.\n\
 ";
 
 const char* doc_PairQuantity = "\
-FIXME\n\
+Base class for Python defined pair quantity calculators.\n\
+No action by default.  Concrete calculators must overload the\n\
+_addPairContribution method to get some results.\n\
 ";
 
 const char* doc_PairQuantity__getParallelData = "\
-FIXME\n\
+Return raw results string from a parallel job.\n\
+By default a serialized content of the internal values array.\n\
+This can be added to the master object values by calling\n\
+PairQuantity._executeParallelMerge.\n\
+\n\
+This method can be overloaded in the derived class.\n\
 ";
 
 const char* doc_PairQuantity__resizeValue = "\
-FIXME\n\
+Resize the internal contributions array to the specified size.\n\
+\n\
+sz   -- new length of the internal array.\n\
+\n\
+No return value.  This method can be overloaded in the derived class.\n\
 ";
 
 const char* doc_PairQuantity__resetValue = "\
-FIXME\n\
+Reset all contribution in the internal array to zero.\n\
+\n\
+No return value.  This method can be overloaded in the derived class.\n\
+For parallel calculations this resets the count of merged parallel\n\
+results to zero.\n\
 ";
 
 const char* doc_PairQuantity__configureBondGenerator = "\
-FIXME\n\
+Configure bond generator just before the start of summation.\n\
+The default method sets the upper and lower limits for the pair\n\
+distances.  An overloaded method can be used to apply a different\n\
+distance range.\n\
+\n\
+bnds -- instance of BaseBondGenerator to be configured\n\
+\n\
+No return value.  This method can be overloaded in the derived class.\n\
 ";
 
 const char* doc_PairQuantity__addPairContribution = "\
-FIXME\n\
+Process pair contribution at a unique bond generator state.\n\
+No action by default, needs to be overloaded to do something.\n\
+\n\
+bnds     -- instance of BaseBondGenerator holding data for\n\
+            a particular pair of atoms during summation.\n\
+sumscale -- integer scaling for this contribution passed from\n\
+            PQEvaluator.  Equals 1 if bnds.site0() == bnds.site1(),\n\
+            2 otherwise.  Can be negative when contribution is\n\
+            removed for fast quantity updates.\n\
+\n\
+No return value.  This method is executed for every atom pair in the structure.\n\
 ";
 
 const char* doc_PairQuantity__executeParallelMerge = "\
-FIXME\n\
+Process raw results string from a parallel job and add them to this instance.\n\
+By default converts the string to an array an adds it to the internal values.\n\
+This method should be never used directly, it is instead called by the\n\
+_mergeParallelData method.\n\
+\n\
+pdata    -- raw data string from the parallel _getParallelData function.\n\
+\n\
+No return value.  This method can be overloaded in the derived class.\n\
 ";
 
 const char* doc_PairQuantity__finishValue = "\
-FIXME\n\
+Final processing of the results after iteration over all pairs.\n\
+This is for operations that are not suitable in the _addPairContribution\n\
+method, for example sorting.\n\
+\n\
+No return value.  This method can be overloaded in the derived class.\n\
+No action by default.\n\
 ";
 
 const char* doc_PairQuantity__value = "\
@@ -401,7 +501,7 @@ void wrap_PairQuantity()
         .def("__repr__", repr_QuantityType)
         ;
 
-    class_<PairQuantity, bases<Attributes> >("BasePairQuantity_ext")
+    class_<PairQuantity, bases<Attributes> >("BasePairQuantity")
         .def("eval", eval_asarray, python::arg("stru")=None,
                 doc_BasePairQuantity_eval)
         .add_property("value", value_asarray<PairQuantity>,
@@ -412,31 +512,36 @@ void wrap_PairQuantity()
         .def("_getParallelData", &PairQuantity::getParallelData,
                 doc_BasePairQuantity__getParallelData)
         .def("setStructure", &PairQuantity::setStructure<object>,
+                python::arg("stru"),
                 doc_BasePairQuantity_setStructure)
         .def("getStructure", &PairQuantity::getStructure,
                 return_value_policy<copy_const_reference>(),
                 doc_BasePairQuantity_getStructure)
         .def("_setupParallelRun", &PairQuantity::setupParallelRun,
+                (python::arg("cpuindex"), python::arg("ncpu")),
                 doc_BasePairQuantity__setupParallelRun)
         .def("maskAllPairs", &PairQuantity::maskAllPairs,
+                python::arg("mask"),
                 doc_BasePairQuantity_maskAllPairs)
         .def("invertMask", &PairQuantity::invertMask,
                 doc_BasePairQuantity_invertMask)
         .def("setPairMask", set_pair_mask,
+                (python::arg("i"), python::arg("j"), python::arg("mask")),
                 doc_BasePairQuantity_setPairMask)
         .def("getPairMask", &PairQuantity::getPairMask,
+                (python::arg("i"), python::arg("j")),
                 doc_BasePairQuantity_getPairMask)
         .def("setTypeMask", &PairQuantity::setTypeMask,
+                (python::arg("tpi"), python::arg("tpj"), python::arg("mask")),
                 doc_BasePairQuantity_setTypeMask)
         .def("getTypeMask", &PairQuantity::getTypeMask,
+                (python::arg("tpi"), python::arg("tpj")),
                 doc_BasePairQuantity_getTypeMask)
         .def_pickle(SerializationPickleSuite<PairQuantity>())
         ;
 
-    // FIXME: rename PairQuantity_ext to PairQuantity and move here the
-    // docstrings from diffpy.srreal.pairquantity
     class_<PairQuantityWrap, bases<PairQuantity>,
-        noncopyable>("PairQuantity_ext", doc_PairQuantity)
+        noncopyable>("PairQuantity", doc_PairQuantity)
         .def("_getParallelData",
                 &PairQuantityExposed::getParallelData,
                 &PairQuantityWrap::default_getParallelData,
@@ -444,6 +549,7 @@ void wrap_PairQuantity()
         .def("_resizeValue",
                 &PairQuantityExposed::resizeValue,
                 &PairQuantityWrap::default_resizeValue,
+                python::arg("sz"),
                 doc_PairQuantity__resizeValue)
         .def("_resetValue",
                 &PairQuantityExposed::resetValue,
@@ -452,14 +558,17 @@ void wrap_PairQuantity()
         .def("_configureBondGenerator",
                 &PairQuantityExposed::configureBondGenerator,
                 &PairQuantityWrap::default_configureBondGenerator,
+                python::arg("bnds"),
                 doc_PairQuantity__configureBondGenerator)
         .def("_addPairContribution",
                 &PairQuantityExposed::addPairContribution,
                 &PairQuantityWrap::default_addPairContribution,
+                (python::arg("bnds"), python::arg("sumscale")),
                 doc_PairQuantity__addPairContribution)
         .def("_executeParallelMerge",
                 &PairQuantityExposed::executeParallelMerge,
                 &PairQuantityWrap::default_executeParallelMerge,
+                python::arg("pdata"),
                 doc_PairQuantity__executeParallelMerge)
         .def("_finishValue",
                 &PairQuantityExposed::finishValue,
