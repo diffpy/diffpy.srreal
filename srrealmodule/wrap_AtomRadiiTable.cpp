@@ -19,7 +19,7 @@
 *****************************************************************************/
 
 #include <boost/python.hpp>
-#include <string>
+#include <boost/serialization/export.hpp>
 
 #include <diffpy/srreal/AtomRadiiTable.hpp>
 
@@ -122,6 +122,16 @@ class AtomRadiiTableWrap :
             return this->AtomRadiiTable::tableLookup(smbl);
         }
 
+    private:
+
+        // serialization
+        friend class boost::serialization::access;
+        template<class Archive>
+            void serialize(Archive& ar, const unsigned int version)
+        {
+            ar & boost::serialization::base_object<AtomRadiiTable>(*this);
+        }
+
 };  // class AtomRadiiTableWrap
 
 }   // namespace nswrap_AtomRadiiTable
@@ -168,5 +178,7 @@ void wrap_AtomRadiiTable()
 }
 
 }   // namespace srrealmodule
+
+BOOST_CLASS_EXPORT(srrealmodule::nswrap_AtomRadiiTable::AtomRadiiTableWrap)
 
 // End of file

@@ -161,6 +161,37 @@ void setatomradiitable(OverlapCalculator& obj, AtomRadiiTablePtr rtb)
     obj.setAtomRadiiTable(rtb);
 }
 
+
+class OverlapCalculatorPickleSuite :
+    public SerializationPickleSuite<OverlapCalculator>
+{
+    private:
+
+        typedef SerializationPickleSuite<OverlapCalculator> Super;
+
+    public:
+
+        static boost::python::tuple getstate(boost::python::object obj)
+        {
+            boost::python::tuple rv = boost::python::make_tuple(
+                    Super::getstate(obj), obj.attr("atomradiitable"));
+            return rv;
+        }
+
+
+        static void setstate(
+                boost::python::object obj, boost::python::tuple state)
+        {
+            ensure_tuple_length(state, 2);
+            // restore the state using boost serialization
+            boost::python::tuple st0 =
+                boost::python::extract<boost::python::tuple>(state[0]);
+            Super::setstate(obj, st0);
+            // boost serialization sets atomradiitable to the base class
+            obj.attr("atomradiitable") = state[1];
+        }
+};
+
 }   // namespace nswrap_OverlapCalculator
 
 // Wrapper definition --------------------------------------------------------
@@ -228,7 +259,7 @@ void wrap_OverlapCalculator()
         .add_property("atomradiitable",
                 getatomradiitable, setatomradiitable,
                 doc_OverlapCalculator_atomradiitable)
-        .def_pickle(SerializationPickleSuite<OverlapCalculator>())
+        .def_pickle(OverlapCalculatorPickleSuite())
         ;
 
     // Inject __init__ and __call__ methods with support for keyword arguments.

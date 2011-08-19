@@ -50,6 +50,17 @@ void serialization_fromstring(T& tobj, const std::string& s)
 }
 
 
+inline
+void ensure_tuple_length(boost::python::tuple state, const int statelen)
+{
+    using namespace boost::python;
+    if (len(state) == statelen)  return;
+    object emsg = ("expected %i-item tuple in call to "
+            "__setstate__; got %s" % make_tuple(statelen, state));
+    PyErr_SetObject(PyExc_ValueError, emsg.ptr());
+    throw_error_already_set();
+}
+
 enum {DICT_IGNORE=false, DICT_PICKLE=true};
 
 template <class T, bool pickledict=DICT_PICKLE>
@@ -76,13 +87,7 @@ class SerializationPickleSuite : public boost::python::pickle_suite
             using namespace boost::python;
             T& tobj = extract<T&>(obj);
             int statelen = pickledict ? 2 : 1;
-            if (len(state) != statelen)
-            {
-                object emsg = ("expected %i-item tuple in call to "
-                        "__setstate__; got %s" % make_tuple(statelen, state));
-                PyErr_SetObject(PyExc_ValueError, emsg.ptr());
-                throw_error_already_set();
-            }
+            ensure_tuple_length(state, statelen);
             // load the C++ object
             string content = extract<string>(state[0]);
             serialization_fromstring(tobj, content);

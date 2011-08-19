@@ -21,15 +21,14 @@
 *****************************************************************************/
 
 #include <boost/python.hpp>
-#include <sstream>
 
-#include <diffpy/serialization.hpp>
 #include <diffpy/srreal/PairQuantity.hpp>
 #include <diffpy/srreal/PythonStructureAdapter.hpp>
 #include <diffpy/srreal/NoMetaStructureAdapter.hpp>
 #include <diffpy/srreal/NoSymmetryStructureAdapter.hpp>
 
 #include "srreal_converters.hpp"
+#include "srreal_pickling.hpp"
 
 namespace srrealmodule {
 namespace nswrap_StructureAdapter {
@@ -307,6 +306,17 @@ class StructureAdapterWrap :
             this->StructureAdapter::customPQConfig(pq);
         }
 
+    /* NOTE: uncomment to support serialization of Python classes
+    private:
+
+        // serialization
+        friend class boost::serialization::access;
+        template<class Archive>
+            void serialize(Archive& ar, const unsigned int version)
+        {
+            ar & boost::serialization::base_object<StructureAdapter>(*this);
+        }
+    */
 
 };  // class StructureAdapterWrap
 
@@ -315,11 +325,8 @@ class StructureAdapterWrap :
 StructureAdapterPtr
 createStructureAdapterFromString(const std::string& content)
 {
-    using namespace std;
-    istringstream storage(content, ios::binary);
-    diffpy::serialization::iarchive ia(storage, ios::binary);
     StructureAdapterPtr adpt;
-    ia >> adpt;
+    serialization_fromstring(adpt, content);
     return adpt;
 }
 
@@ -330,11 +337,8 @@ class StructureAdapterPickleSuite : public pickle_suite
 
         static python::tuple getinitargs(StructureAdapterPtr adpt)
         {
-            using namespace std;
-            ostringstream storage(ios::binary);
-            diffpy::serialization::oarchive oa(storage, ios::binary);
-            oa << adpt;
-            return python::make_tuple(storage.str());
+            std::string content = serialization_tostring(adpt);
+            return python::make_tuple(content);
         }
 
 };  // class StructureAdapterPickleSuite
