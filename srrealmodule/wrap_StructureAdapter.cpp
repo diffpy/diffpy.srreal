@@ -41,67 +41,125 @@ using namespace diffpy::srreal;
 // docstrings ----------------------------------------------------------------
 
 const char* doc_StructureAdapter = "\
-FIXME\n\
+An adaptor to structure representation compatible with PairQuantity.\n\
+This class provides a uniform interface to structure data that is\n\
+understood by all PairQuantity calculators.\n\
 ";
 
 const char* doc_StructureAdapter___init__ = "\
-FIXME\n\
+Construct StructureAdapter object from a string.  This is used\n\
+internally by the pickle protocol and should not be called directly.\n\
 ";
 
 const char* doc_StructureAdapter_createBondGenerator = "\
-FIXME\n\
+Create a bond generator instance linked to this structure adapter\n\
+\n\
+Return a BaseBondGenerator object.\n\
 ";
 
 const char* doc_StructureAdapter_countSites = "\
-FIXME\n\
+Return number of symmetry independent atom sites in the structure.\n\
 ";
 
 const char* doc_StructureAdapter_totalOccupancy = "\
-FIXME\n\
+Return total atom occupancy in the structure accounting for symmetry\n\
+multiplicity and fractional occupancies.\n\
 ";
 
 const char* doc_StructureAdapter_numberDensity = "\
-FIXME\n\
+Number density of atoms in periodic crystal structures.\n\
+Return zero for non-periodic structures.\n\
 ";
 
 const char* doc_StructureAdapter_siteAtomType = "\
-FIXME\n\
+Element, isotope or ion symbol at the specified atom site.\n\
+\n\
+i    -- zero-based atom site index.\n\
+\n\
+Return a string symbol.\n\
 ";
 
 const char* doc_StructureAdapter_siteCartesianPosition = "\
-FIXME\n\
+Return absolute cartesian coordinates of the specified atom site.\n\
+\n\
+i    -- zero-based atom site index.\n\
+\n\
+Return an array of 3 cartesian positions.\n\
 ";
 
 const char* doc_StructureAdapter_siteMultiplicity = "\
-FIXME\n\
+Symmetry multiplicity of the specified atom site in the structure.\n\
+\n\
+i    -- zero-based atom site index.\n\
+\n\
+Return integer multiplicity.\n\
 ";
 
 const char* doc_StructureAdapter_siteOccupancy = "\
-FIXME\n\
+Fractional occupancy of the specified site in the structure.\n\
+\n\
+i    -- zero-based atom site index.\n\
+\n\
+Return float.\n\
 ";
 
 const char* doc_StructureAdapter_siteAnisotropy = "\
-FIXME\n\
+Flag for anisotropic displacement parameters at the specified site.\n\
+\n\
+i    -- zero-based atom site index.\n\
+\n\
+Return boolean flag.\n\
 ";
 
 const char* doc_StructureAdapter_siteCartesianUij = "\
-FIXME\n\
+Matrix of displacement parameters expressed in cartesian coordinates.\n\
+\n\
+i    -- zero-based atom site index.\n\
+\n\
+Return a 3 by 3 array.\n\
 ";
 
 const char* doc_StructureAdapter__customPQConfig = "\
-FIXME\n\
+Support for optional custom configuration of the PairQuantity object.\n\
+This method is called from the setStructure and eval methods of the owner\n\
+PairQuantity object.\n\
+\n\
+pqobj    -- the owner PairQuantity object.  The function should check for the\n\
+            exact type of pqobj and apply configuration accordingly.\n\
+\n\
+No return value.  This method can be overloaded in the derived class.\n\
+No action by default.\n\
 ";
 
 const char* doc_nometa = "\
-FIXME\n\
+Return a proxy to StructureAdapter with _customPQConfig method disabled.\n\
+This creates a thin wrapper over a source StructureAdapter object that\n\
+disables _customPQConfig.\n\
+\n\
+stru -- StructureAdapter object or an object convertible to StructureAdapter.\n\
+\n\
+Return a proxy StructureAdapter with disabled _customPQConfig.\n\
 ";
 
 const char* doc_nosymmetry = "\
-FIXME\n\
+Return a proxy StructureAdapter with crystal symmetry disabled.\n\
+For crystals the new adapter generates bonds only within the asymmetric\n\
+unit ignoring any translational or other symmetries.\n\
+\n\
+stru -- StructureAdapter object or an object convertible to StructureAdapter.\n\
+\n\
+Return a proxy StructureAdapter with disabled symmetry expansion.\n\
 ";
 
 const char* doc_createStructureAdapter = "\
-FIXME\n\
+Create StructureAdapter from a Python object.\n\
+\n\
+stru -- an object that is convertible to StructureAdapter, i.e., it has\n\
+        a registered factory that converts Python structure object to\n\
+        StructureAdapter.  Return stru if already a StructureAdapter.\n\
+\n\
+Return a StructureAdapter instance.\n\
+Raise TypeError if stru cannot be converted to StructureAdapter.\n\
 ";
 
 // wrappers ------------------------------------------------------------------
@@ -329,6 +387,7 @@ void wrap_StructureAdapter()
         .def("_customPQConfig",
                 &StructureAdapter::customPQConfig,
                 &StructureAdapterWrap::default_customPQConfig,
+                python::arg("pqobj"),
                 doc_StructureAdapter__customPQConfig)
         .def_pickle(StructureAdapterPickleSuite())
         ;

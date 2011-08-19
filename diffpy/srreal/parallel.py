@@ -48,7 +48,7 @@ def createParallelCalculator(pqobj, ncpu, pmap):
 
         Instance data:
 
-        pqclass  -- some concrete PairQuantity class.
+        pqobj    -- the master PairQuantity object to be evaluated in parallel
         ncpu     -- number of parallel jobs
         pmap     -- a parallel map function used to submit job to workers
         '''
