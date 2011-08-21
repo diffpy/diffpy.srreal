@@ -19,9 +19,9 @@
 *****************************************************************************/
 
 #include <boost/python.hpp>
-#include <boost/serialization/export.hpp>
 
 #include <diffpy/srreal/AtomRadiiTable.hpp>
+#include <diffpy/srreal/ZeroRadiiTable.hpp>
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
@@ -33,6 +33,13 @@ using namespace boost::python;
 using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
+
+const char* doc_AtomRadiiTable_create = "FIXME";
+const char* doc_AtomRadiiTable_clone = "FIXME";
+const char* doc_AtomRadiiTable_type = "FIXME";
+const char* doc_AtomRadiiTable__registerThisType = "FIXME";
+const char* doc_AtomRadiiTable_createByType = "FIXME";
+const char* doc_AtomRadiiTable_getRegisteredTypes = "FIXME";
 
 const char* doc_AtomRadiiTable = "\
 Lookup table for empirical atom radii.\n\
@@ -98,41 +105,68 @@ separator    -- string separator between 'A1:r1' entries, by default ','\n\
 Return string.\n\
 ";
 
+const char* doc_ZeroRadiiTable = "FIXME";
+
 // wrappers ------------------------------------------------------------------
 
 DECLARE_PYDICT_METHOD_WRAPPER(getAllCustom, getAllCustom_asdict)
+DECLARE_PYSET_FUNCTION_WRAPPER(AtomRadiiTable::getRegisteredTypes,
+        getAtomRadiiTableTypes_asset)
+
 
 // Helper class for overloads of AtomRadiiTable methods from Python
 
 class AtomRadiiTableWrap :
     public AtomRadiiTable,
-    public wrapper<AtomRadiiTable>
+    public wrapper_srreal<AtomRadiiTable>
 {
     public:
 
-        double tableLookup(const std::string& smbl) const
+        // HasClassRegistry methods
+
+        AtomRadiiTablePtr create() const
         {
-            override f = this->get_override("_tableLookup");
-            if (f)  return f(smbl);
-            return this->default_tableLookup(smbl);
+            return this->get_pure_virtual_override("create")();
         }
 
-        double default_tableLookup(const std::string& smbl) const
+        AtomRadiiTablePtr clone() const
         {
-            return this->AtomRadiiTable::tableLookup(smbl);
+            return this->get_pure_virtual_override("clone")();
+        }
+
+        const std::string& type() const
+        {
+            object tp = this->get_pure_virtual_override("type")();
+            mtype = extract<std::string>(tp);
+            return mtype;
+        }
+
+        // own methods
+
+        double tableLookup(const std::string& smbl) const
+        {
+            return this->get_pure_virtual_override("_tableLookup")(smbl);
         }
 
     private:
 
-        // serialization
-        friend class boost::serialization::access;
-        template<class Archive>
-            void serialize(Archive& ar, const unsigned int version)
-        {
-            ar & boost::serialization::base_object<AtomRadiiTable>(*this);
-        }
+        mutable std::string mtype;
 
 };  // class AtomRadiiTableWrap
+
+
+std::string atomradiitable_tostring(AtomRadiiTablePtr obj)
+{
+    return serialization_tostring(obj);
+}
+
+
+AtomRadiiTablePtr atomradiitable_fromstring(std::string content)
+{
+    AtomRadiiTablePtr rv;
+    serialization_fromstring(rv, content);
+    return rv;
+}
 
 }   // namespace nswrap_AtomRadiiTable
 
@@ -145,12 +179,26 @@ void wrap_AtomRadiiTable()
 
     class_<AtomRadiiTableWrap, noncopyable>(
             "AtomRadiiTable", doc_AtomRadiiTable)
+        .def("create", &AtomRadiiTable::create,
+                doc_AtomRadiiTable_create)
+        .def("clone", &AtomRadiiTable::clone,
+                doc_AtomRadiiTable_clone)
+        .def("type", &AtomRadiiTable::type,
+                return_value_policy<copy_const_reference>(),
+                doc_AtomRadiiTable_type)
+        .def("_registerThisType", &AtomRadiiTable::registerThisType,
+                doc_AtomRadiiTable__registerThisType)
+        .def("createByType", &AtomRadiiTable::createByType,
+                arg("tp"), doc_AtomRadiiTable_createByType)
+        .staticmethod("createByType")
+        .def("getRegisteredTypes", getAtomRadiiTableTypes_asset,
+                doc_AtomRadiiTable_getRegisteredTypes)
+        .staticmethod("getRegisteredTypes")
         .def("lookup",
                 &AtomRadiiTable::lookup, arg("smbl"),
                 doc_AtomRadiiTable_lookup)
         .def("_tableLookup",
                 &AtomRadiiTable::tableLookup,
-                &AtomRadiiTableWrap::default_tableLookup,
                 arg("smbl"), doc_AtomRadiiTable__tableLookup)
         .def("setCustom",
                 &AtomRadiiTable::setCustom,
@@ -175,10 +223,16 @@ void wrap_AtomRadiiTable()
         ;
 
     register_ptr_to_python<AtomRadiiTablePtr>();
+
+    // pickling support functions
+    def("_AtomRadiiTable_tostring", atomradiitable_tostring);
+    def("_AtomRadiiTable_fromstring", atomradiitable_fromstring);
+
+    class_<ZeroRadiiTable, bases<AtomRadiiTable> >(
+            "ZeroRadiiTable", doc_ZeroRadiiTable);
+
 }
 
 }   // namespace srrealmodule
-
-BOOST_CLASS_EXPORT(srrealmodule::nswrap_AtomRadiiTable::AtomRadiiTableWrap)
 
 // End of file

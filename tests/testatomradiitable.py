@@ -10,12 +10,14 @@ import os
 import unittest
 import cPickle
 from diffpy.srreal.atomradiitable import AtomRadiiTable, CovalentRadiiTable
+from diffpy.srreal.atomradiitable import ZeroRadiiTable
 
 ##############################################################################
 class TestAtomRadiiTable(unittest.TestCase):
 
     def setUp(self):
         self.rtb = AtomRadiiTable()
+        self.ztb = ZeroRadiiTable()
         return
 
     def tearDown(self):
@@ -24,20 +26,22 @@ class TestAtomRadiiTable(unittest.TestCase):
     def test_pickling(self):
         '''check pickling and unpickling of AtomRadiiTable.
         '''
-        rtb1 = cPickle.loads(cPickle.dumps(self.rtb))
-        self.assertTrue(type(rtb1) is AtomRadiiTable)
-        self.assertEqual({}, rtb1.getAllCustom())
-        self.rtb.setCustom('Na', 1.3)
-        self.rtb.foobar = 'foo'
-        rtb2 = cPickle.loads(cPickle.dumps(self.rtb))
-        self.assertEqual({'Na' : 1.3}, rtb2.getAllCustom())
-        self.assertEqual('foo', rtb2.foobar)
+        ztb1 = cPickle.loads(cPickle.dumps(self.ztb))
+        self.assertTrue(type(ztb1) is ZeroRadiiTable)
+        self.assertEqual({}, ztb1.getAllCustom())
+        self.ztb.setCustom('Na', 1.3)
+        self.ztb.foobar = 'foo'
+        ztb2 = cPickle.loads(cPickle.dumps(self.ztb))
+        self.assertEqual({'Na' : 1.3}, ztb2.getAllCustom())
+        self.assertEqual('foo', ztb2.foobar)
         return
 
     def test__tableLookup(self):
         """check AtomRadiiTable._tableLookup()
         """
-        self.assertEqual(0.0, self.rtb._tableLookup('anything'))
+        self.assertRaises(RuntimeError, self.rtb._tableLookup,
+                'anything')
+        self.assertEqual(0.0, self.ztb._tableLookup('anything'))
         return
 
     def test_fromString(self):
@@ -65,7 +69,8 @@ class TestAtomRadiiTable(unittest.TestCase):
     def test_lookup(self):
         """check AtomRadiiTable.lookup()
         """
-        self.assertEqual(0.0, self.rtb.lookup('C'))
+        self.assertRaises(RuntimeError, self.rtb.lookup, 'C')
+        self.assertEqual(0.0, self.ztb.lookup('C'))
         self.rtb.setCustom('C', 1.23)
         self.assertEqual(1.23, self.rtb.lookup('C'))
         return
