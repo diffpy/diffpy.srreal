@@ -310,10 +310,11 @@ std::vector<int> parsepairindex(python::object i)
 
 
 void set_pair_mask(PairQuantity& obj,
-        python::object i, python::object j, bool mask)
+        python::object i, python::object j, python::object msk)
 {
     python::extract<int> geti(i);
     python::extract<int> getj(j);
+    bool mask = msk;
     // short circuit for normal call
     if (geti.check() && getj.check())
     {
@@ -331,6 +332,15 @@ void set_pair_mask(PairQuantity& obj,
         }
     }
 }
+
+
+void set_type_mask(PairQuantity& obj,
+        std::string smbli, std::string smblj, python::object msk)
+{
+    bool mask = msk;
+    obj.setTypeMask(smbli, smblj, mask);
+}
+
 
 // provide a copy method for convenient deepcopy of the object
 
@@ -544,7 +554,7 @@ void wrap_PairQuantity()
         .def("getPairMask", &PairQuantity::getPairMask,
                 (python::arg("i"), python::arg("j")),
                 doc_BasePairQuantity_getPairMask)
-        .def("setTypeMask", &PairQuantity::setTypeMask,
+        .def("setTypeMask", set_type_mask,
                 (python::arg("tpi"), python::arg("tpj"), python::arg("mask")),
                 doc_BasePairQuantity_setTypeMask)
         .def("getTypeMask", &PairQuantity::getTypeMask,
