@@ -295,6 +295,14 @@ extractQuantityType(::boost::python::object obj,
         ::diffpy::srreal::QuantityType& rv);
 
 
+/// extract integer with a support for numpy.int types
+int extractint(::boost::python::object obj);
+
+
+/// extract a vector of integers from a numpy array, iterable or scalar
+std::vector<int> extractintvector(::boost::python::object obj);
+
+
 /// helper for raising RuntimeError on a call of pure virtual function
 void throwPureVirtualCalled(const char* fncname);
 

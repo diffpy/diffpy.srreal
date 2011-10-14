@@ -25,6 +25,7 @@
 #include <string>
 #include <valarray>
 #include <stdexcept>
+#include <cassert>
 
 #include <diffpy/Attributes.hpp>
 
@@ -66,6 +67,15 @@ boost::python::object newNumPyArray(int dim, const int* sz, int typenum)
     // create numpy array
     python::object rv(
             python::handle<>(PyArray_SimpleNew(dim, &npsz, typenum)));
+    return rv;
+}
+
+
+bool isiterable(boost::python::object obj)
+{
+    using namespace boost::python;
+    object Iterable = import("collections").attr("Iterable");
+    bool rv = (1 == PyObject_IsInstance(obj.ptr(), Iterable.ptr()));
     return rv;
 }
 
@@ -129,6 +139,69 @@ extractQuantityType(
     // otherwise copy elementwise converting each element to a double
     python::stl_input_iterator<double> begin(obj), end;
     rv.assign(begin, end);
+    return rv;
+}
+
+
+/// extract integer with a support for numpy.int types
+int extractint(boost::python::object obj)
+{
+    using namespace boost;
+    python::extract<int> geti(obj);
+    if (geti.check())  return geti();
+    PyObject* pobj = obj.ptr();
+    if (PyArray_CheckScalar(pobj))
+    {
+        int rv = PyArray_PyIntAsInt(pobj);
+        return rv;
+    }
+    // nothing worked, call geti which will raise an exception
+    return geti();
+}
+
+
+/// extract a vector of integers from a numpy array, iterable or scalar
+std::vector<int> extractintvector(boost::python::object obj)
+{
+    using namespace boost::python;
+    std::vector<int> rv;
+    // iterable of integers
+    if (isiterable(obj))
+    {
+        PyObject* pobj = obj.ptr();
+        // handle numpy array of integers
+        bool isintegernumpyarray = PyArray_Check(pobj) &&
+            (1 == PyArray_NDIM(pobj)) && PyArray_ISINTEGER(pobj);
+        if (isintegernumpyarray)
+        {
+            object aobj = obj;
+            if (PyArray_INT != PyArray_TYPE(pobj))
+            {
+                object a1(handle<>(PyArray_Cast(
+                                reinterpret_cast<PyArrayObject*>(pobj),
+                                PyArray_INT)));
+                aobj = a1;
+            }
+            PyObject* pa = aobj.ptr();
+            assert(PyArray_INT == PyArray_TYPE(pa));
+            int* pfirst = static_cast<int*>(PyArray_DATA(pa));
+            int* plast = pfirst + PyArray_SIZE(pa);
+            rv.assign(pfirst, plast);
+            return rv;
+        }
+        // otherwise translate every item in the iterable
+        stl_input_iterator<object> ii(obj), end;
+        rv.reserve(len(obj));
+        for (; ii != end; ++ii)
+        {
+            int idx = extractint(*ii);
+            rv.push_back(idx);
+        }
+        return rv;
+    }
+    // try to handle it as a scalar
+    int idx = extractint(obj);
+    rv.push_back(idx);
     return rv;
 }
 

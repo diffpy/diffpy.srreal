@@ -154,7 +154,8 @@ tpi  -- element symbol of the first type in the pair.  Can be also\n\
         'all' or 'ALL', which select all sites in the structure.\n\
 tpj  -- element symbol of the second type in the pair.  Can be\n\
         'all' or 'ALL' just like tpi.\n\
-mask -- mask for the atom types pair.  True if included, False if excluded.\n\
+mask -- mask for the atom types pair.\n\
+        True if included, False if excluded.\n\
 \n\
 No return value.\n\
 ";
@@ -279,13 +280,6 @@ python::object eval_asarray(PairQuantity& obj, const python::object& a)
 std::vector<int> parsepairindex(python::object i)
 {
     std::vector<int> rv;
-    // single integer
-    python::extract<int> geti(i);
-    if (geti.check())
-    {
-        rv.push_back(geti());
-        return rv;
-    }
     // string equal "all" or "ALL"
     python::extract<std::string> gets(i);
     if (gets.check())
@@ -302,9 +296,8 @@ std::vector<int> parsepairindex(python::object i)
         rv.push_back(PairQuantity::ALLATOMSINT);
         return rv;
     }
-    // sequence of integers
-    python::stl_input_iterator<int> begin(i), end;
-    rv.assign(begin, end);
+    // otherwise translate to a vector of integers
+    rv = extractintvector(i);
     return rv;
 }
 
