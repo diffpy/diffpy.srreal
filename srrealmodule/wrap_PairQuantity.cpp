@@ -302,6 +302,13 @@ std::vector<int> parsepairindex(python::object i)
 }
 
 
+void mask_all_pairs(PairQuantity& obj, python::object msk)
+{
+    bool mask = msk;
+    obj.maskAllPairs(mask);
+}
+
+
 void set_pair_mask(PairQuantity& obj,
         python::object i, python::object j, python::object msk)
 {
@@ -536,7 +543,7 @@ void wrap_PairQuantity()
         .def("_setupParallelRun", &PairQuantity::setupParallelRun,
                 (python::arg("cpuindex"), python::arg("ncpu")),
                 doc_BasePairQuantity__setupParallelRun)
-        .def("maskAllPairs", &PairQuantity::maskAllPairs,
+        .def("maskAllPairs", mask_all_pairs,
                 python::arg("mask"),
                 doc_BasePairQuantity_maskAllPairs)
         .def("invertMask", &PairQuantity::invertMask,
