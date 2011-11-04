@@ -63,12 +63,13 @@ bnds -- instance of BaseBondGenerator with the current bond data.\n\
 Return float.\n\
 ";
 
-const char* doc_PeakWidthModel_calculateFromMSD = "\
-Calculate the width from mean square displacement along the bond vector.\n\
+const char* doc_PeakWidthModel_maxWidth = "\
+Return maximum peak width for the specified structure and distance range\n\
 \n\
-msd  -- mean square displacement along the bond vector.  In case of two\n\
-        isotropically vibrating atoms this equals to a sum of their Uiso\n\
-        values.\n\
+stru -- StructureAdapter object or an object convertible to StructureAdapter.\n\
+rmin -- lower bound for the PDF calculation\n\
+rmax -- upper bound for the PDF calculation\n\
+        isotropically vibrating atoms this\n\
 \n\
 Return float.\n\
 ";
@@ -164,16 +165,11 @@ class PeakWidthModelWrap :
             return this->get_pure_virtual_override("calculate")(ptr(&bnds));
         }
 
-        double calculateFromMSD(double msdval) const
+        double maxWidth(StructureAdapterPtr stru,
+                double rmin, double rmax) const
         {
-            override f = this->get_override("calculateFromMSD");
-            if (f)  return f(msdval);
-            return this->default_calculateFromMSD(msdval);
-        }
-
-        double default_calculateFromMSD(double msdval) const
-        {
-            return this->PeakWidthModel::calculateFromMSD(msdval);
+            override f = this->get_pure_virtual_override("maxWidth");
+            return f(stru, rmin, rmax);
         }
 
     private:
@@ -203,11 +199,10 @@ void wrap_PeakWidthModel()
                 &PeakWidthModel::calculate,
                 bp::arg("bnds"),
                 doc_PeakWidthModel_calculate)
-        .def("calculateFromMSD",
-                &PeakWidthModel::calculateFromMSD,
-                &PeakWidthModelWrap::default_calculateFromMSD,
-                bp::arg("msd"),
-                doc_PeakWidthModel_calculateFromMSD)
+        .def("maxWidth",
+                &PeakWidthModel::maxWidth,
+                (bp::arg("stru"), bp::arg("rmin"), bp::arg("rmax")),
+                doc_PeakWidthModel_maxWidth)
         .def("_registerThisType", &PeakWidthModel::registerThisType,
                 doc_PeakWidthModel__registerThisType)
         .def("createByType", &PeakWidthModel::createByType,
