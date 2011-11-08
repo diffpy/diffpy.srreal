@@ -84,7 +84,7 @@ class TestPDFCalcObjcryst(TestCaseObjCrystOptional):
         '''
         self._comparePDFs('cdsen',
                 'CdSe_cadmoselite_N.fgr', 'CdSe_cadmoselite.cif')
-        self.failUnless(self.cdsen_mxnd < 0.005)
+        self.failUnless(self.cdsen_mxnd < 0.01)
         return
 
 
@@ -93,7 +93,7 @@ class TestPDFCalcObjcryst(TestCaseObjCrystOptional):
         '''
         self._comparePDFs('cdsex',
                 'CdSe_cadmoselite_X.fgr', 'CdSe_cadmoselite.cif')
-        self.failUnless(self.cdsex_mxnd < 0.005)
+        self.failUnless(self.cdsex_mxnd < 0.01)
         return
 
 
