@@ -66,11 +66,11 @@ def _init_kwargs(self, **kwargs):
     return
 
 
-def _call_kwargs(self, structure, **kwargs):
+def _call_kwargs(self, structure=None, **kwargs):
     '''Return bond valence sums at each atom site in the structure.
 
     structure    -- structure to be evaluated, an instance of diffpy Structure
-                    or pyobjcryst Crystal
+                    or pyobjcryst Crystal.  Reuse the last structure when None.
     kwargs       -- optional parameter settings for this calculator
 
     Return an array of calculated valence sums.
