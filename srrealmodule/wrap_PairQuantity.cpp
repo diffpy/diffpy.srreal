@@ -33,6 +33,7 @@
 
 #include <boost/python.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
+#include <boost/python/stl_iterator.hpp>
 
 #include <diffpy/srreal/PairQuantity.hpp>
 #include <diffpy/srreal/PythonStructureAdapter.hpp>
@@ -150,10 +151,10 @@ The pair masking is exclusively based either on site indices\n\
 or atom types.  This function applies type-based masking and\n\
 cancels any previous index-based masks.\n\
 \n\
-tpi  -- element symbol of the first type in the pair.  Can be also\n\
-        'all' or 'ALL', which select all sites in the structure.\n\
-tpj  -- element symbol of the second type in the pair.  Can be\n\
-        'all' or 'ALL' just like tpi.\n\
+tpi  -- first atom type in the pair, string or an iterable of strings.\n\
+        When 'all' or 'ALL', tpi refers to all sites in the structure.\n\
+tpj  -- second atom type in the pair, string or an iterable of strings.\n\
+        When 'all' or 'ALL', tpj refers to all sites in the structure.\n\
 mask -- mask for the atom types pair.\n\
         True if included, False if excluded.\n\
 others -- optional mask applied to all other pairs.  Ignored when None.\n\
@@ -302,6 +303,24 @@ std::vector<int> parsepairindex(python::object i)
     return rv;
 }
 
+// support string iterables in setTypeMask
+
+std::vector<std::string> parsepairtypes(
+        python::extract<std::string>& getsmbli, python::object smbli)
+{
+    std::vector<std::string> rv;
+    if (getsmbli.check())
+    {
+        rv.push_back(getsmbli());
+    }
+    else
+    {
+        python::stl_input_iterator<std::string> first(smbli), last;
+        rv.assign(first, last);
+    }
+    return rv;
+}
+
 
 void mask_all_pairs(PairQuantity& obj, python::object msk)
 {
@@ -338,12 +357,30 @@ void set_pair_mask(PairQuantity& obj,
 
 
 void set_type_mask(PairQuantity& obj,
-        std::string smbli, std::string smblj, python::object msk,
+        python::object smbli, python::object smblj, python::object msk,
         python::object others)
 {
+    using namespace std;
     if (Py_None != others.ptr())  mask_all_pairs(obj, others);
+    python::extract<string> getsmbli(smbli);
+    python::extract<string> getsmblj(smblj);
     bool mask = msk;
-    obj.setTypeMask(smbli, smblj, mask);
+    // short circuit for normal call
+    if (getsmbli.check() && getsmblj.check())
+    {
+        obj.setTypeMask(getsmbli(), getsmblj(), mask);
+        return;
+    }
+    vector<string> isymbols = parsepairtypes(getsmbli, smbli);
+    vector<string> jsymbols = parsepairtypes(getsmblj, smblj);
+    vector<string>::const_iterator tii, tjj;
+    for (tii = isymbols.begin(); tii != isymbols.end(); ++tii)
+    {
+        for (tjj = jsymbols.begin(); tjj != jsymbols.end(); ++tjj)
+        {
+            obj.setTypeMask(*tii, *tjj, mask);
+        }
+    }
 }
 
 

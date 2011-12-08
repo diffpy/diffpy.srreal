@@ -198,8 +198,7 @@ class TestBondCalculator(unittest.TestCase):
         for i in range(4):
             bdc.setPairMask(0, i, True)
         dst0a = bdc(self.nickel)
-        bdc.maskAllPairs(False)
-        bdc.setPairMask(range(4), 0, True)
+        bdc.setPairMask(range(4), 0, True, others=False)
         dst0b = bdc(self.nickel)
         self.assertTrue(numpy.array_equal(dst0a, dst0b))
         bdc.maskAllPairs(False)
@@ -218,6 +217,30 @@ class TestBondCalculator(unittest.TestCase):
         self.assertRaises(ValueError, bdc.setPairMask, 'fooo', 2, True)
         self.assertRaises(ValueError, bdc.setPairMask, 'aLL', 2, True)
         return
+
+
+    def test_setTypeMask(self):
+        '''check different setTypeMask arguments.
+        '''
+        bdc = self.bdc
+        dall = bdc(self.rutile)
+        bdc.setTypeMask('all', 'All', False)
+        self.assertTrue(numpy.array_equal(dall, bdc(self.rutile)))
+        bdc.setTypeMask('all', 'ALL', False)
+        self.assertEqual(0, len(bdc(self.rutile)))
+        bdc.maskAllPairs(True)
+        bdc.setTypeMask('Ti', ['O'], True, others=False)
+        bdc()
+        tps = set(zip(bdc.types0, bdc.types1))
+        self.assertEqual(2, len(tps))
+        self.assertTrue(('Ti', 'O') in tps)
+        self.assertTrue(('O', 'Ti') in tps)
+        bdc.setTypeMask(['Ti'], self.rutile.element, 0, others=1)
+        bdc()
+        tps = set(zip(bdc.types0, bdc.types1))
+        self.assertEqual(set([('O', 'O')]), tps)
+        return
+
 
 # End of class TestBondCalculator
 
