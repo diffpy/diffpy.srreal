@@ -127,8 +127,8 @@ i    -- zero based index of the first site in the pair.\n\
         which select all sites in the structure.\n\
 j    -- index of the second site in the pair.  Can be an iterable\n\
         or string 'all', just like argument i\n\
-\n\
 mask -- mask of the atom pair i, j,  True if included, False if excluded.\n\
+others -- optional mask applied to all other pairs.  Ignored when None.\n\
 \n\
 No return value.\n\
 ";
@@ -156,6 +156,7 @@ tpj  -- element symbol of the second type in the pair.  Can be\n\
         'all' or 'ALL' just like tpi.\n\
 mask -- mask for the atom types pair.\n\
         True if included, False if excluded.\n\
+others -- optional mask applied to all other pairs.  Ignored when None.\n\
 \n\
 No return value.\n\
 ";
@@ -310,8 +311,10 @@ void mask_all_pairs(PairQuantity& obj, python::object msk)
 
 
 void set_pair_mask(PairQuantity& obj,
-        python::object i, python::object j, python::object msk)
+        python::object i, python::object j, python::object msk,
+        python::object others)
 {
+    if (Py_None != others.ptr())  mask_all_pairs(obj, others);
     python::extract<int> geti(i);
     python::extract<int> getj(j);
     bool mask = msk;
@@ -335,8 +338,10 @@ void set_pair_mask(PairQuantity& obj,
 
 
 void set_type_mask(PairQuantity& obj,
-        std::string smbli, std::string smblj, python::object msk)
+        std::string smbli, std::string smblj, python::object msk,
+        python::object others)
 {
+    if (Py_None != others.ptr())  mask_all_pairs(obj, others);
     bool mask = msk;
     obj.setTypeMask(smbli, smblj, mask);
 }
@@ -549,13 +554,15 @@ void wrap_PairQuantity()
         .def("invertMask", &PairQuantity::invertMask,
                 doc_BasePairQuantity_invertMask)
         .def("setPairMask", set_pair_mask,
-                (python::arg("i"), python::arg("j"), python::arg("mask")),
+                (python::arg("i"), python::arg("j"), python::arg("mask"),
+                 python::arg("others")=None),
                 doc_BasePairQuantity_setPairMask)
         .def("getPairMask", &PairQuantity::getPairMask,
                 (python::arg("i"), python::arg("j")),
                 doc_BasePairQuantity_getPairMask)
         .def("setTypeMask", set_type_mask,
-                (python::arg("tpi"), python::arg("tpj"), python::arg("mask")),
+                (python::arg("tpi"), python::arg("tpj"), python::arg("mask"),
+                 python::arg("others")=None),
                 doc_BasePairQuantity_setTypeMask)
         .def("getTypeMask", &PairQuantity::getTypeMask,
                 (python::arg("tpi"), python::arg("tpj")),
