@@ -1,0 +1,63 @@
+#!/usr/bin/env python
+##############################################################################
+#
+# diffpy.srreal     by DANSE Diffraction group
+#                   Simon J. L. Billinge
+#                   (c) 2012 Trustees of the Columbia University
+#                   in the City of New York.  All rights reserved.
+#
+# File coded by:    Pavol Juhas
+#
+# See AUTHORS.txt for a list of people who contributed.
+# See LICENSE.txt for license information.
+#
+##############################################################################
+
+"""Unit tests for diffpy.srreal.
+"""
+
+# version
+__id__ = '$Id$'
+
+
+def testsuite():
+    '''Build a unit tests suite for the diffpy.srreal package.
+
+    Return a unittest.TestSuite object.
+    '''
+    import unittest
+    modulenames = '''
+        diffpy.srreal.tests.testatomradiitable
+        diffpy.srreal.tests.testattributes
+        diffpy.srreal.tests.testbondcalculator
+        diffpy.srreal.tests.testbvscalculator
+        diffpy.srreal.tests.testdebyepdfcalculator
+        diffpy.srreal.tests.testoverlapcalculator
+        diffpy.srreal.tests.testparallel
+        diffpy.srreal.tests.testpdfbaseline
+        diffpy.srreal.tests.testpdfcalcobjcryst
+        diffpy.srreal.tests.testpdfcalculator
+        diffpy.srreal.tests.testpdfenvelope
+        diffpy.srreal.tests.testscatteringfactortable
+        diffpy.srreal.tests.teststructureadapter
+    '''.split()
+    suite = unittest.TestSuite()
+    loader = unittest.defaultTestLoader
+    for mname in modulenames:
+        exec ('import %s as mobj' % mname)
+        suite.addTests(loader.loadTestsFromModule(mobj))
+    return suite
+
+
+def test():
+    '''Execute all unit tests for the diffpy.srreal package.
+    Return a unittest TestResult object.
+    '''
+    import unittest
+    suite = testsuite()
+    runner = unittest.TextTestRunner()
+    result = runner.run(suite)
+    return result
+
+
+# End of file

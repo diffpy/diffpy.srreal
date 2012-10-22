@@ -11,8 +11,9 @@ import unittest
 import cPickle
 import numpy
 
-from srrealtestutils import TestCaseObjCrystOptional
-from srrealtestutils import loadDiffPyStructure, loadObjCrystCrystal
+from diffpy.srreal.tests.testutils import TestCaseObjCrystOptional
+from diffpy.srreal.tests.testutils import loadDiffPyStructure
+from diffpy.srreal.tests.testutils import loadObjCrystCrystal
 from diffpy.srreal.bondcalculator import BondCalculator
 
 ##############################################################################

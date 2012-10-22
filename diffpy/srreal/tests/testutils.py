@@ -12,6 +12,8 @@ __id__ = '$Id$'
 import logging
 import os.path
 
+# class TestCaseObjCrystOptional
+
 try:
     import pyobjcryst
     from unittest import TestCase as TestCaseObjCrystOptional
@@ -19,16 +21,11 @@ except ImportError:
     TestCaseObjCrystOptional = object
     logging.warning('Cannot import pyobjcryst, pyobjcryst tests skipped.')
 
-
-# useful variables
-thisfile = locals().get('__file__', 'file.py')
-tests_dir = os.path.dirname(os.path.abspath(thisfile))
-testdata_dir = os.path.join(tests_dir, 'testdata')
-
 # helper functions
 
 def datafile(filename):
-    rv = os.path.join(testdata_dir, filename)
+    from pkg_resources import resource_filename
+    rv = resource_filename(__name__, "testdata/" + filename)
     return rv
 
 

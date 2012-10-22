@@ -11,8 +11,8 @@ import unittest
 import cPickle
 
 import numpy
-from srrealtestutils import loadDiffPyStructure
-from srrealtestutils import datafile
+from diffpy.srreal.tests.testutils import loadDiffPyStructure
+from diffpy.srreal.tests.testutils import datafile
 from diffpy.srreal.pdfcalculator import PDFCalculator
 
 # helper functions

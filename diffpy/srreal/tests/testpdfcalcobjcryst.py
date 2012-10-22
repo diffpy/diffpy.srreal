@@ -13,14 +13,10 @@ import unittest
 import numpy
 from diffpy.srreal.pdfcalculator import PDFCalculator
 
-from srrealtestutils import TestCaseObjCrystOptional
-from srrealtestutils import loadObjCrystCrystal
+from diffpy.srreal.tests.testutils import TestCaseObjCrystOptional
+from diffpy.srreal.tests.testutils import loadObjCrystCrystal
+from diffpy.srreal.tests.testutils import datafile
 from testpdfcalculator import _maxNormDiff
-
-# useful variables
-thisfile = locals().get('__file__', 'file.py')
-tests_dir = os.path.dirname(os.path.abspath(thisfile))
-testdata_dir = os.path.join(tests_dir, 'testdata')
 
 # helper functions
 
@@ -28,7 +24,7 @@ def _loadExpectedPDF(basefilename):
     '''Read expected result and return a tuple of (r, g, cfgdict).
     '''
     rxf = re.compile(r'[-+]?(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?')
-    fullpath = os.path.join(testdata_dir, basefilename)
+    fullpath = datafile(basefilename)
     cfgdict = {}
     for line in open(fullpath):
         if line[:1] != '#':  break

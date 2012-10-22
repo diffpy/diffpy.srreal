@@ -11,13 +11,8 @@ import unittest
 import cPickle
 import numpy
 
-# useful variables
-thisfile = locals().get('__file__', 'file.py')
-tests_dir = os.path.dirname(os.path.abspath(thisfile))
-testdata_dir = os.path.join(tests_dir, 'testdata')
-
 from diffpy.srreal.pdfcalculator import DebyePDFCalculator, PDFCalculator
-from srrealtestutils import loadDiffPyStructure
+from diffpy.srreal.tests.testutils import loadDiffPyStructure
 from testpdfcalculator import _maxNormDiff
 
 ##############################################################################

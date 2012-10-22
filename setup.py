@@ -30,7 +30,8 @@ dist = setup(
         version = "0.2a1",
         namespace_packages = ['diffpy'],
         packages = find_packages(exclude=['tests']),
-        test_suite = 'tests',
+        test_suite = 'diffpy.srreal.tests',
+        include_package_data = True,
         ext_modules = [srreal_ext],
         install_requires = [
             'diffpy.Structure',
