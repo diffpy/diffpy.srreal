@@ -35,8 +35,8 @@
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include <boost/python/stl_iterator.hpp>
 
-#include <diffpy/srreal/PairQuantity.hpp>
 #include <diffpy/srreal/PythonStructureAdapter.hpp>
+#include <diffpy/srreal/PairQuantity.hpp>
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"

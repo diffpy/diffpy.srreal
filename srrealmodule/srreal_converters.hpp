@@ -152,6 +152,20 @@ void fillPyListWithArrays(::boost::python::list lst, const T& value)
 }
 
 
+/// template function for converting C++ STL container to a python set
+template <class T>
+::boost::python::object
+convertToPythonSet(const T& value)
+{
+    using namespace ::boost;
+    python::object rvset(python::handle<>(PySet_New(NULL)));
+    python::object rvset_add = rvset.attr("add");
+    typename T::const_iterator ii;
+    for (ii = value.begin(); ii != value.end(); ++ii)  rvset_add(*ii);
+    return rvset;
+}
+
+
 /// helper template function for DECLARE_PYLISTSET_METHOD_WRAPPER
 template <class T>
 void fillPyListWithSets(::boost::python::list lst, const T& value)
@@ -247,20 +261,6 @@ convertToNumPyArray(const ::std::vector<int>& value)
     NumPyArray_IntPtr ap = createNumPyIntArray(1, &sz);
     std::copy(value.begin(), value.end(), ap.second);
     return ap.first;
-}
-
-
-/// template function for converting C++ STL container to a python set
-template <class T>
-::boost::python::object
-convertToPythonSet(const T& value)
-{
-    using namespace ::boost;
-    python::object rvset(python::handle<>(PySet_New(NULL)));
-    python::object rvset_add = rvset.attr("add");
-    typename T::const_iterator ii;
-    for (ii = value.begin(); ii != value.end(); ++ii)  rvset_add(*ii);
-    return rvset;
 }
 
 
