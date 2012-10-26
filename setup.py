@@ -12,12 +12,14 @@ Scripts:    (none yet)
 import glob
 from setuptools import setup, find_packages
 from setuptools import Extension
+from numpy.distutils.misc_util import get_numpy_include_dirs
 
 # define extensions here
 ext_kws = {
         'libraries' : ['diffpy'],
         'extra_compile_args' : [],
         'extra_link_args' : [],
+        'include_dirs' : get_numpy_include_dirs(),
 }
 
 srreal_ext = Extension('diffpy.srreal.srreal_ext',
