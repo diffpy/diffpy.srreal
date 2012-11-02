@@ -17,10 +17,11 @@ def getsyspaths(*names):
     return filter(os.path.exists, s.split(os.pathsep))
 
 # copy system environment variables related to compilation
-DefaultEnvironment(ENV=subdictionary(os.environ, [
-    'PATH', 'PYTHONPATH',
-    'LD_LIBRARY_PATH', 'LIBRARY_PATH',
-    ])
+DefaultEnvironment(ENV=subdictionary(os.environ, '''
+    PATH PYTHONPATH
+    LD_LIBRARY_PATH LIBRARY_PATH
+    http_proxy
+    '''.split())
 )
 
 # Create construction environment
