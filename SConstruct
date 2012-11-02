@@ -58,6 +58,10 @@ cpppath = getsyspaths('CPLUS_INCLUDE_PATH', 'CPATH')
 env.AppendUnique(CPPPATH=cpppath)
 env.AppendUnique(LIBS=['diffpy'])
 
+# Platform specific intricacies.
+if env['PLATFORM'] == 'darwin':
+    env.AppendUnique(SHLINKFLAGS=['-undefined', 'dynamic_lookup'])
+
 # Compiler specific options
 if icpc:
     # options for Intel C++ compiler on hpc dev-intel07
