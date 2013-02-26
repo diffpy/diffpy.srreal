@@ -21,7 +21,7 @@
 #include <boost/python.hpp>
 
 #include <diffpy/srreal/AtomRadiiTable.hpp>
-#include <diffpy/srreal/ZeroRadiiTable.hpp>
+#include <diffpy/srreal/ConstantRadiiTable.hpp>
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
@@ -105,7 +105,9 @@ separator    -- string separator between 'A1:r1' entries, by default ','\n\
 Return string.\n\
 ";
 
-const char* doc_ZeroRadiiTable = "FIXME";
+const char* doc_ConstantRadiiTable = "FIXME";
+const char* doc_ConstantRadiiTable_setDefault = "FIXME";
+const char* doc_ConstantRadiiTable_getDefault = "FIXME";
 
 // wrappers ------------------------------------------------------------------
 
@@ -219,7 +221,7 @@ void wrap_AtomRadiiTable()
         .def("toString",
                 &AtomRadiiTable::toString, arg("separator")=",",
                 doc_AtomRadiiTable_toString)
-        .def_pickle(SerializationPickleSuite<AtomRadiiTable>())
+        .def_pickle(SerializationPickleSuite<AtomRadiiTable,DICT_PICKLE>())
         ;
 
     register_ptr_to_python<AtomRadiiTablePtr>();
@@ -228,8 +230,17 @@ void wrap_AtomRadiiTable()
     def("_AtomRadiiTable_tostring", atomradiitable_tostring);
     def("_AtomRadiiTable_fromstring", atomradiitable_fromstring);
 
-    class_<ZeroRadiiTable, bases<AtomRadiiTable> >(
-            "ZeroRadiiTable", doc_ZeroRadiiTable);
+    class_<ConstantRadiiTable, bases<AtomRadiiTable> >(
+            "ConstantRadiiTable", doc_ConstantRadiiTable)
+        .def("setDefault",
+                &ConstantRadiiTable::setDefault,
+                arg("radius"),
+                doc_ConstantRadiiTable_setDefault)
+        .def("getDefault",
+                &ConstantRadiiTable::getDefault,
+                doc_ConstantRadiiTable_getDefault)
+        .def_pickle(SerializationPickleSuite<ConstantRadiiTable,DICT_PICKLE>())
+        ;
 
 }
 

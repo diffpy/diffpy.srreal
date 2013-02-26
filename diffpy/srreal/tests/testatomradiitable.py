@@ -10,14 +10,14 @@ import os
 import unittest
 import cPickle
 from diffpy.srreal.atomradiitable import AtomRadiiTable, CovalentRadiiTable
-from diffpy.srreal.atomradiitable import ZeroRadiiTable
+from diffpy.srreal.atomradiitable import ConstantRadiiTable
 
 ##############################################################################
 class TestAtomRadiiTable(unittest.TestCase):
 
     def setUp(self):
         self.rtb = AtomRadiiTable()
-        self.ztb = ZeroRadiiTable()
+        self.ctb = ConstantRadiiTable()
         return
 
     def tearDown(self):
@@ -26,14 +26,16 @@ class TestAtomRadiiTable(unittest.TestCase):
     def test_pickling(self):
         '''check pickling and unpickling of AtomRadiiTable.
         '''
-        ztb1 = cPickle.loads(cPickle.dumps(self.ztb))
-        self.assertTrue(type(ztb1) is ZeroRadiiTable)
-        self.assertEqual({}, ztb1.getAllCustom())
-        self.ztb.setCustom('Na', 1.3)
-        self.ztb.foobar = 'foo'
-        ztb2 = cPickle.loads(cPickle.dumps(self.ztb))
-        self.assertEqual({'Na' : 1.3}, ztb2.getAllCustom())
-        self.assertEqual('foo', ztb2.foobar)
+        ctb1 = cPickle.loads(cPickle.dumps(self.ctb))
+        self.assertTrue(type(ctb1) is ConstantRadiiTable)
+        self.assertEqual({}, ctb1.getAllCustom())
+        self.ctb.setCustom('Na', 1.3)
+        self.ctb.foobar = 'foo'
+        self.ctb.setDefault(3.7)
+        ctb2 = cPickle.loads(cPickle.dumps(self.ctb))
+        self.assertEqual({'Na' : 1.3}, ctb2.getAllCustom())
+        self.assertEqual('foo', ctb2.foobar)
+        self.assertEqual(3.7, ctb2.getDefault())
         return
 
     def test__tableLookup(self):
@@ -41,7 +43,9 @@ class TestAtomRadiiTable(unittest.TestCase):
         """
         self.assertRaises(RuntimeError, self.rtb._tableLookup,
                 'anything')
-        self.assertEqual(0.0, self.ztb._tableLookup('anything'))
+        self.assertEqual(0.0, self.ctb._tableLookup('anything'))
+        self.ctb.setDefault(7.3)
+        self.assertEqual(7.3, self.ctb._tableLookup('anything'))
         return
 
     def test_fromString(self):
@@ -70,7 +74,7 @@ class TestAtomRadiiTable(unittest.TestCase):
         """check AtomRadiiTable.lookup()
         """
         self.assertRaises(RuntimeError, self.rtb.lookup, 'C')
-        self.assertEqual(0.0, self.ztb.lookup('C'))
+        self.assertEqual(0.0, self.ctb.lookup('C'))
         self.rtb.setCustom('C', 1.23)
         self.assertEqual(1.23, self.rtb.lookup('C'))
         return

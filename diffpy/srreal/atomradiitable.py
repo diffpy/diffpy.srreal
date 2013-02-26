@@ -21,10 +21,9 @@
 __id__ = "$Id$"
 
 # exported items, these also makes them show in pydoc.
-__all__ = ['AtomRadiiTable', 'ZeroRadiiTable', 'CovalentRadiiTable']
+__all__ = ['AtomRadiiTable', 'ConstantRadiiTable', 'CovalentRadiiTable']
 
-import copy
-from diffpy.srreal.srreal_ext import AtomRadiiTable, ZeroRadiiTable
+from diffpy.srreal.srreal_ext import AtomRadiiTable, ConstantRadiiTable
 
 # class CovalentRadiiTable ---------------------------------------------------
 
@@ -79,6 +78,7 @@ class CovalentRadiiTable(AtomRadiiTable):
     def clone(self):
         '''Return a new duplicate instance of self.
         '''
+        import copy
         return copy.copy(self)
 
 
@@ -93,40 +93,5 @@ class CovalentRadiiTable(AtomRadiiTable):
 
 # End of class CovalentRadiiTable
 
-# class AtomRadiiTable ----------------------------------------------------------
-
-# pickling support
-
-def _atomradiitable_getstate(self):
-    state = (self.__dict__, )
-    return state
-
-def _atomradiitable_setstate(self, state):
-    if len(state) != 1:
-        emsg = ("expected 1-item tuple in call to __setstate__, got " +
-                repr(state))
-        raise ValueError(emsg)
-    self.__dict__.update(state[0])
-    return
-
-def _atomradiitable_reduce(self):
-    from diffpy.srreal.srreal_ext import _AtomRadiiTable_tostring
-    args = (_AtomRadiiTable_tostring(self),)
-    rv = (_atomradiitable_create, args, self.__getstate__())
-    return rv
-
-def _atomradiitable_create(s):
-    from diffpy.srreal.srreal_ext import _AtomRadiiTable_fromstring
-    return _AtomRadiiTable_fromstring(s)
-
-# inject pickle methods
-
-AtomRadiiTable.__getstate__ = _atomradiitable_getstate
-AtomRadiiTable.__setstate__ = _atomradiitable_setstate
-AtomRadiiTable.__reduce__ = _atomradiitable_reduce
-
-ZeroRadiiTable.__getstate__ = _atomradiitable_getstate
-ZeroRadiiTable.__setstate__ = _atomradiitable_setstate
-ZeroRadiiTable.__reduce__ = _atomradiitable_reduce
 
 # End of file
