@@ -145,15 +145,15 @@ class TestBondCalculator(unittest.TestCase):
         self.assertEqual(len(dst), len(bdc.types1))
         self.assertEqual(set(('Ti', 'O')), set(bdc.types0))
         self.assertEqual(set(('Ti', 'O')), set(bdc.types1))
-        self.assertNotEquals(bdc.types0, bdc.types1)
+        self.assertFalse((bdc.types0 == bdc.types1).all())
         bdc.maskAllPairs(False)
         bdc(self.rutile)
-        self.assertEqual([], bdc.types0)
-        self.assertEqual([], bdc.types1)
+        self.assertEqual(0, bdc.types0.size)
+        self.assertEqual(0, bdc.types1.size)
         bdc.setPairMask(3, 3, True)
         bdc(self.rutile)
         self.assertTrue(len(bdc.types0))
-        self.assertEqual(set(['O']), set(bdc.types0 + bdc.types1))
+        self.assertEqual(set(['O']), set(bdc.types0).union(set(bdc.types1)))
         return
 
 
@@ -308,15 +308,15 @@ class TestBondCalculatorObjCryst(TestCaseObjCrystOptional):
         self.assertEqual(len(dst), len(bdc.types1))
         self.assertEqual(set(('Ti', 'O')), set(bdc.types0))
         self.assertEqual(set(('Ti', 'O')), set(bdc.types1))
-        self.assertNotEquals(bdc.types0, bdc.types1)
+        self.assertNotEquals(bdc.types0.tolist(), bdc.types1.tolist())
         bdc.maskAllPairs(False)
         bdc(self.rutile)
-        self.assertEqual([], bdc.types0)
-        self.assertEqual([], bdc.types1)
+        self.assertEqual(0, bdc.types0.size)
+        self.assertEqual(0, bdc.types1.size)
         bdc.setPairMask(1, 1, True)
         bdc(self.rutile)
         self.assertTrue(len(bdc.types0))
-        self.assertEqual(set(['O']), set(bdc.types0 + bdc.types1))
+        self.assertEqual(set(['O']), set(bdc.types0).union(set(bdc.types1)))
         return
 
 

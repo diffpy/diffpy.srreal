@@ -55,6 +55,20 @@ namespace srrealmodule {
 
 
 /// this macro defines a wrapper function for a C++ method,
+/// that converts the result to numpy character array
+#define DECLARE_PYCHARARRAY_METHOD_WRAPPER(method, wrapper) \
+    template <class T> \
+    ::boost::python::object wrapper(const T& obj) \
+    { \
+        ::boost::python::list lst = convertToPythonList(obj.method()); \
+        ::boost::python::object tochararray = \
+            ::boost::python::import("numpy").attr("char").attr("array"); \
+        ::boost::python::object rv = tochararray(lst); \
+        return rv; \
+    } \
+
+
+/// this macro defines a wrapper function for a C++ method,
 /// that converts the result to a python set
 #define DECLARE_PYSET_METHOD_WRAPPER(method, wrapper) \
     template <class T> \

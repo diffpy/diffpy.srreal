@@ -123,10 +123,10 @@ void wrap_BondCalculator()
                 sites1_asarray<BondCalculator>,
                 doc_BondCalculator_sites1)
         .add_property("types0",
-                types0_aslist<BondCalculator>,
+                types0_aschararray<BondCalculator>,
                 doc_BondCalculator_types0)
         .add_property("types1",
-                types1_aslist<BondCalculator>,
+                types1_aschararray<BondCalculator>,
                 doc_BondCalculator_types1)
         .def("filterCone", filter_cone,
                 (bp::arg("cartesiandir"), bp::arg("degrees")),
