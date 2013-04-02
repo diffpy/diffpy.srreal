@@ -1,5 +1,5 @@
-include diffpy/srreal/tests/testdata/*
-exclude MANIFEST.in
+recursive-include diffpy *
+recursive-include srrealmodule *
+include SConstruct
 include AUTHORS.txt LICENSE.txt README.txt
-include SConstruct srrealmodule/SConscript
-# recursive-include doc/examples *
+exclude MANIFEST.in
