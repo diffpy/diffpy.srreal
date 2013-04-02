@@ -34,6 +34,10 @@ dist = setup(
         packages = find_packages(exclude=['tests']),
         test_suite = 'diffpy.srreal.tests',
         include_package_data = True,
+        data_files = [
+            ('diffpy/srreal/tests/testdata',
+                glob.glob('diffpy/srreal/tests/testdata/*')),
+        ],
         ext_modules = [srreal_ext],
         install_requires = [
             'diffpy.Structure',
