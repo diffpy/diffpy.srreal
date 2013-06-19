@@ -50,6 +50,7 @@ if icpc:
 
 # Declare external libraries.
 good_python_flags = lambda n : (
+    not isinstance(n, basestring) or
     not re.match(r'(-g|-Wstrict-prototypes|-O\d)$', n))
 env.ParseConfig("python-config --cflags")
 env.Replace(CCFLAGS=filter(good_python_flags, env['CCFLAGS']))
