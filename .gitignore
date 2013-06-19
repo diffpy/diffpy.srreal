@@ -19,6 +19,7 @@ develop-eggs
 .sconsign.dblite
 lib
 lib64
+tags
 
 # Installer logs
 pip-log.txt
