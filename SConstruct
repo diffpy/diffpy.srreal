@@ -62,6 +62,10 @@ env.AppendUnique(LIBS=['diffpy'])
 
 # Platform specific intricacies.
 if env['PLATFORM'] == 'darwin':
+    darwin_shlinkflags = [n for n in env['SHLINKFLAGS']
+            if n != '-dynamiclib']
+    env.Replace(SHLINKFLAGS=darwin_shlinkflags)
+    env.AppendUnique(SHLINKFLAGS=['-bundle'])
     env.AppendUnique(SHLINKFLAGS=['-undefined', 'dynamic_lookup'])
 
 # Compiler specific options
