@@ -105,7 +105,8 @@ class PDFEnvelopeWrap :
 
         PDFEnvelopePtr create() const
         {
-            return this->get_pure_virtual_override("create")();
+            object rv = this->get_pure_virtual_override("create")();
+            return mconfigurator.fetch(rv);
         }
 
         PDFEnvelopePtr clone() const
@@ -127,9 +128,19 @@ class PDFEnvelopeWrap :
             return this->get_pure_virtual_override("__call__")(x);
         }
 
+    protected:
+
+        // HasClassRegistry method
+
+        void setupRegisteredObject(PDFEnvelopePtr p) const
+        {
+            mconfigurator.setup(p);
+        }
+
     private:
 
         mutable std::string mtype;
+        wrapper_registry_configurator<PDFEnvelope> mconfigurator;
 
 };  // class PDFEnvelopeWrap
 

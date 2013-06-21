@@ -93,7 +93,8 @@ class PeakProfileWrap :
 
         PeakProfilePtr create() const
         {
-            return this->get_pure_virtual_override("create")();
+            object rv = this->get_pure_virtual_override("create")();
+            return mconfigurator.fetch(rv);
         }
 
         PeakProfilePtr clone() const
@@ -126,9 +127,19 @@ class PeakProfileWrap :
             return this->get_pure_virtual_override("xboundhi")(fwhm);
         }
 
+    protected:
+
+        // HasClassRegistry method
+
+        void setupRegisteredObject(PeakProfilePtr p) const
+        {
+            mconfigurator.setup(p);
+        }
+
     private:
 
         mutable std::string mtype;
+        wrapper_registry_configurator<PeakProfile> mconfigurator;
 
 };  // class PeakProfileWrap
 

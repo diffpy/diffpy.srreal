@@ -228,7 +228,8 @@ class ScatteringFactorTableWrap :
 
         ScatteringFactorTablePtr create() const
         {
-            return this->get_pure_virtual_override("create")();
+            object rv = this->get_pure_virtual_override("create")();
+            return mconfigurator.fetch(rv);
         }
 
         ScatteringFactorTablePtr clone() const
@@ -257,10 +258,20 @@ class ScatteringFactorTableWrap :
             return this->get_pure_virtual_override("_standardLookup")(smbl, q);
         }
 
+    protected:
+
+        // HasClassRegistry method
+
+        void setupRegisteredObject(ScatteringFactorTablePtr p) const
+        {
+            mconfigurator.setup(p);
+        }
+
     private:
 
         mutable std::string mtype;
         mutable std::string mradiationtype;
+        wrapper_registry_configurator<ScatteringFactorTable> mconfigurator;
 
 };  // class ScatteringFactorTableWrap
 

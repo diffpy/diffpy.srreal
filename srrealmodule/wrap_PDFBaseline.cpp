@@ -105,7 +105,8 @@ class PDFBaselineWrap :
 
         PDFBaselinePtr create() const
         {
-            return this->get_pure_virtual_override("create")();
+            object rv = this->get_pure_virtual_override("create")();
+            return mconfigurator.fetch(rv);
         }
 
         PDFBaselinePtr clone() const
@@ -127,9 +128,19 @@ class PDFBaselineWrap :
             return this->get_pure_virtual_override("__call__")(x);
         }
 
+    protected:
+
+        // HasClassRegistry method
+
+        void setupRegisteredObject(PDFBaselinePtr p) const
+        {
+            mconfigurator.setup(p);
+        }
+
     private:
 
         mutable std::string mtype;
+        wrapper_registry_configurator<PDFBaseline> mconfigurator;
 
 };  // class PDFBaselineWrap
 

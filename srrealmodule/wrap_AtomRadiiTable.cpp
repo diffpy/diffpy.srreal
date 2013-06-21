@@ -128,7 +128,8 @@ class AtomRadiiTableWrap :
 
         AtomRadiiTablePtr create() const
         {
-            return this->get_pure_virtual_override("create")();
+            object rv = this->get_pure_virtual_override("create")();
+            return mconfigurator.fetch(rv);
         }
 
         AtomRadiiTablePtr clone() const
@@ -150,9 +151,19 @@ class AtomRadiiTableWrap :
             return this->get_pure_virtual_override("_tableLookup")(smbl);
         }
 
+    protected:
+
+        // HasClassRegistry method
+
+        void setupRegisteredObject(AtomRadiiTablePtr p) const
+        {
+            mconfigurator.setup(p);
+        }
+
     private:
 
         mutable std::string mtype;
+        wrapper_registry_configurator<AtomRadiiTable> mconfigurator;
 
 };  // class AtomRadiiTableWrap
 
