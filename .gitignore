@@ -20,6 +20,7 @@ develop-eggs
 lib
 lib64
 tags
+errors.err
 
 # Installer logs
 pip-log.txt
