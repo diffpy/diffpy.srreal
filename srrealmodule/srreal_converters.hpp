@@ -336,6 +336,49 @@ class wrapper_srreal : public ::boost::python::wrapper<T>
 };
 
 
+/// template class for handling Python Wrapper classes in C++ class registry
+template <class T>
+class WrapperRegistryConfigurator
+{
+        typedef typename T::SharedPtr TSharedPtr;
+        typedef typename T::SharedPtr::element_type* TPtr;
+
+    public:
+
+        // constructor
+        WrapperRegistryConfigurator() : mcptr(0), mpyptr(0)  { }
+
+        // methods
+        /// the fetch method should be called only from the wrapped method
+        /// create() to remember pointers to the last Python object and
+        /// the C++ instance that it wrap.
+        void fetch(::boost::python::object& obj) const
+        {
+            TSharedPtr p = ::boost::python::extract<TSharedPtr>(obj);
+            mcptr = p.get();
+            mpyptr = obj.ptr();
+        }
+
+        /// the setup function should be executed just once from the
+        /// HasClassRegistry::setupRegisteredObject method in the wrapper
+        /// class.  This insures the Python object in a prototype factory
+        /// stays alive when the process is shut down.
+        void setup(TSharedPtr ptr) const
+        {
+            assert(mcptr && mcptr && ptr.get());
+            ::boost::python::incref(mpyptr);
+            mcptr = 0;
+            mpyptr = 0;
+        }
+
+    private:
+
+        // data
+        mutable TPtr mcptr;
+        mutable PyObject* mpyptr;
+};
+
+
 }   // namespace srrealmodule
 
 // Include shared wrapper definitions ----------------------------------------
