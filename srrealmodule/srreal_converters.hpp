@@ -351,7 +351,7 @@ class wrapper_registry_configurator
         // methods
         /// the fetch method should be called only from the wrapped method
         /// create() to remember pointers to the last Python object and
-        /// the C++ instance that it wrap.
+        /// the C++ instance that it wraps.
         TSharedPtr fetch(::boost::python::object& obj) const
         {
             TSharedPtr p = ::boost::python::extract<TSharedPtr>(obj);
@@ -366,7 +366,7 @@ class wrapper_registry_configurator
         /// stays alive when the process is shut down.
         void setup(TSharedPtr ptr) const
         {
-            assert(mcptr && mcptr && ptr.get());
+            assert(mcptr && mcptr == ptr.get());
             ::boost::python::incref(mpyptr);
             mcptr = 0;
             mpyptr = 0;
