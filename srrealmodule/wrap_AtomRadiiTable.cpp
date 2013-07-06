@@ -167,20 +167,6 @@ class AtomRadiiTableWrap :
 
 };  // class AtomRadiiTableWrap
 
-
-std::string atomradiitable_tostring(AtomRadiiTablePtr obj)
-{
-    return serialization_tostring(obj);
-}
-
-
-AtomRadiiTablePtr atomradiitable_fromstring(std::string content)
-{
-    AtomRadiiTablePtr rv;
-    serialization_fromstring(rv, content);
-    return rv;
-}
-
 }   // namespace nswrap_AtomRadiiTable
 
 // Wrapper definition --------------------------------------------------------
@@ -236,10 +222,6 @@ void wrap_AtomRadiiTable()
         ;
 
     register_ptr_to_python<AtomRadiiTablePtr>();
-
-    // pickling support functions
-    def("_AtomRadiiTable_tostring", atomradiitable_tostring);
-    def("_AtomRadiiTable_fromstring", atomradiitable_fromstring);
 
     class_<ConstantRadiiTable, bases<AtomRadiiTable> >(
             "ConstantRadiiTable", doc_ConstantRadiiTable)
