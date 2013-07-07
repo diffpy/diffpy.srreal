@@ -22,6 +22,10 @@
 #include <boost/python.hpp>
 
 #include <diffpy/srreal/ScatteringFactorTable.hpp>
+#include <diffpy/srreal/SFTXray.hpp>
+#include <diffpy/srreal/SFTElectron.hpp>
+#include <diffpy/srreal/SFTNeutron.hpp>
+#include <diffpy/srreal/SFTElectronNumber.hpp>
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
@@ -187,6 +191,11 @@ Return string identifying the radiation type.\n\
 'X' for x-rays, 'N' for neutrons.\n\
 ";
 
+const char* doc_SFTXray = "FIXME";
+const char* doc_SFTElectron = "FIXME";
+const char* doc_SFTNeutron = "FIXME";
+const char* doc_SFTElectronNumber = "FIXME";
+
 // wrappers ------------------------------------------------------------------
 
 DECLARE_PYSET_METHOD_WRAPPER(getCustomSymbols, getCustomSymbols_asset)
@@ -340,6 +349,15 @@ void wrap_ScatteringFactorTable()
         ;
 
     register_ptr_to_python<ScatteringFactorTablePtr>();
+
+    class_<SFTXray, bases<ScatteringFactorTable> >(
+            "SFTXray", doc_SFTXray);
+    class_<SFTElectron, bases<ScatteringFactorTable> >(
+            "SFTElectron", doc_SFTElectron);
+    class_<SFTNeutron, bases<ScatteringFactorTable> >(
+            "SFTNeutron", doc_SFTNeutron);
+    class_<SFTElectronNumber, bases<ScatteringFactorTable> >(
+            "SFTElectronNumber", doc_SFTElectronNumber);
 
     // inject pickling methods
     import("diffpy.srreal.scatteringfactortable");

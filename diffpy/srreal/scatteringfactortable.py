@@ -25,6 +25,10 @@ __id__ = "$Id$"
 __all__ = ['ScatteringFactorTable']
 
 from diffpy.srreal.srreal_ext import ScatteringFactorTable
+from diffpy.srreal.srreal_ext import SFTXray
+from diffpy.srreal.srreal_ext import SFTElectron
+from diffpy.srreal.srreal_ext import SFTNeutron
+from diffpy.srreal.srreal_ext import SFTElectronNumber
 
 # Pickling Support -----------------------------------------------------------
 
@@ -56,5 +60,21 @@ def _sft_create(owner):
 ScatteringFactorTable.__getstate__ = _sft_getstate
 ScatteringFactorTable.__setstate__ = _sft_setstate
 ScatteringFactorTable.__reduce__ = _sft_reduce
+
+SFTXray.__getstate__ = _sft_getstate
+SFTXray.__setstate__ = _sft_setstate
+SFTXray.__reduce__ = _sft_reduce
+
+SFTElectron.__getstate__ = _sft_getstate
+SFTElectron.__setstate__ = _sft_setstate
+SFTElectron.__reduce__ = _sft_reduce
+
+SFTNeutron.__getstate__ = _sft_getstate
+SFTNeutron.__setstate__ = _sft_setstate
+SFTNeutron.__reduce__ = _sft_reduce
+
+SFTElectronNumber.__getstate__ = _sft_getstate
+SFTElectronNumber.__setstate__ = _sft_setstate
+SFTElectronNumber.__reduce__ = _sft_reduce
 
 # End of file
