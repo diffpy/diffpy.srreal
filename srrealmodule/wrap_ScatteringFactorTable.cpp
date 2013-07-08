@@ -191,7 +191,13 @@ Return string identifying the radiation type.\n\
 'X' for x-rays, 'N' for neutrons.\n\
 ";
 
-const char* doc_SFTXray = "FIXME";
+const char* doc_SFTXray = "\
+X-ray scattering factors table.\n\
+\n\
+Q-dependence of scattering factors is calculated using\n\
+Waasmaier - Kirfel approximation valid up to Q=75/A.\n\
+";
+
 const char* doc_SFTElectron = "FIXME";
 const char* doc_SFTNeutron = "FIXME";
 const char* doc_SFTElectronNumber = "FIXME";
