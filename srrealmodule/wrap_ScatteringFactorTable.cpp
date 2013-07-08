@@ -196,9 +196,22 @@ Q-dependence of scattering factors is calculated using\n\
 Waasmaier - Kirfel approximation valid up to Q=75/A.\n\
 ";
 
-const char* doc_SFTElectron = "FIXME";
-const char* doc_SFTNeutron = "FIXME";
-const char* doc_SFTElectronNumber = "FIXME";
+const char* doc_SFTElectron = "\
+Electron scattering factors table.\n\
+\n\
+Q-dependence is derived from X-ray scattering factors according\n\
+to the International Tables Volume C.\n\
+";
+
+const char* doc_SFTNeutron = "\
+Table of neutron scattering lengths in fm.\n\
+";
+
+const char* doc_SFTElectronNumber = "\
+Table of electron numbers for elements and ions.\n\
+\n\
+Can be used as Q-indendent scattering factors for X-rays.\n\
+";
 
 // wrappers ------------------------------------------------------------------
 
