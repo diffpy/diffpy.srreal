@@ -19,8 +19,6 @@ class DebyePDFCalculator -- PDF calculator that uses Debye Formula
 class PDFCalculator      -- PDF calculator in real space
 """
 
-# module version
-__id__ = "$Id$"
 
 # exported items
 __all__ = '''DebyePDFCalculator PDFCalculator

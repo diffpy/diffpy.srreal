@@ -17,8 +17,6 @@
 """class BVSCalculator -- bond valence sums calculator
 """
 
-# module version
-__id__ = "$Id$"
 
 # exported items
 __all__ = ['BVSCalculator']

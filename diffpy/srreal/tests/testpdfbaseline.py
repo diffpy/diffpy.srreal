@@ -3,8 +3,6 @@
 """Unit tests for the PDFBaseline class from diffpy.srreal.pdfcalculator
 """
 
-# version
-__id__ = '$Id$'
 
 import os
 import unittest

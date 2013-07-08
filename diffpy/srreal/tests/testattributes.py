@@ -3,8 +3,6 @@
 """Unit tests for the wrapped diffpy::Attributes
 """
 
-# version
-__id__ = '$Id$'
 
 import os
 import unittest

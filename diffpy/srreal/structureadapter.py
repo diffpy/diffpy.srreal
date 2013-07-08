@@ -26,8 +26,6 @@ nometa       -- create StructureAdapter with disabled _customPQConfig method
 nosymmetry   -- create StructureAdapter with disabled symmetry expansion.
 """
 
-# module version
-__id__ = "$Id$"
 
 from diffpy.srreal.srreal_ext import StructureAdapter, createStructureAdapter
 from diffpy.srreal.srreal_ext import nometa, nosymmetry

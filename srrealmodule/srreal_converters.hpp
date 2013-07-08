@@ -15,8 +15,6 @@
 * utilities for conversion between C++ and Python types.
 * boost python converters are prone to conflicts.
 *
-* $Id$
-*
 *****************************************************************************/
 
 #ifndef SRREAL_CONVERTERS_HPP_INCLUDED

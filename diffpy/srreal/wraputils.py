@@ -17,8 +17,6 @@
 """Local utilities helpful for tweaking interfaces to boost python classes.
 """
 
-# module version
-__id__ = "$Id$"
 
 import copy
 

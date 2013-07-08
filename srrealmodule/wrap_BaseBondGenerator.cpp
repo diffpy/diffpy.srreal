@@ -16,8 +16,6 @@
 * only for accessing the C++ created BaseBondGenerator instances and there
 * is no support for method overrides from Python.
 *
-* $Id$
-*
 *****************************************************************************/
 
 #include <boost/python.hpp>

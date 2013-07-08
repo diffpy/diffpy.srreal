@@ -14,8 +14,6 @@
 *
 * Bindings to the diffpy::Attributes class.
 *
-* $Id$
-*
 *****************************************************************************/
 
 #include <boost/python.hpp>

@@ -18,8 +18,6 @@
 into parallel calculators.
 """
 
-# module version
-__id__ = "$Id$"
 
 # exported items
 __all__ = ['createParallelCalculator']

@@ -27,8 +27,6 @@
 * class PairQuantity -- derived class with publicized protected methods
 * _addPairContribution, _resetValue, etc.  Allows their overload from Python.
 *
-* $Id$
-*
 *****************************************************************************/
 
 #include <boost/python.hpp>

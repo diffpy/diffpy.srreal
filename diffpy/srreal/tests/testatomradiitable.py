@@ -3,8 +3,6 @@
 """Unit tests for the AtomRadiiTable class.
 """
 
-# version
-__id__ = '$Id$'
 
 import os
 import unittest

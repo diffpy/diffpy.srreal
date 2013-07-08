@@ -14,8 +14,6 @@
 *
 * Bindings to the AtomRadiiTable class.
 *
-* $Id$
-*
 *****************************************************************************/
 
 #include <boost/python.hpp>

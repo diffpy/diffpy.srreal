@@ -14,8 +14,6 @@
 *
 * srreal_ext - boost python interface to the srreal C++ codes in libdiffpy
 *
-* $Id$
-*
 *****************************************************************************/
 
 #include <boost/python/module.hpp>

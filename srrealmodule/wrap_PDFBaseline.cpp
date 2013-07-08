@@ -15,8 +15,6 @@
 * Bindings to the PDFBaseline class.  The business methods can be overloaded
 * from Python to create custom PDF baseline functions.
 *
-* $Id$
-*
 *****************************************************************************/
 
 #include <boost/python.hpp>

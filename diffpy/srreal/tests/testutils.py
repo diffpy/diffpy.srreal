@@ -6,8 +6,6 @@ TestCaseObjCrystOptional -- use this as a TestCase base class that
     disables unit tests when pyobjcryst is not installed.
 """
 
-# version
-__id__ = '$Id$'
 
 import logging
 import os.path

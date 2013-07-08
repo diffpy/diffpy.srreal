@@ -3,8 +3,6 @@
 """Unit tests for pdfcalculator.py on ObjCryst crystal structures
 """
 
-# version
-__id__ = '$Id$'
 
 import os
 import re

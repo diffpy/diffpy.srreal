@@ -15,8 +15,6 @@
 * Bindings to the PeakProfile class.  The business methods can be overloaded
 * from Python to create custom peak profiles.  This may be however quite slow.
 *
-* $Id$
-*
 *****************************************************************************/
 
 #include <boost/python.hpp>

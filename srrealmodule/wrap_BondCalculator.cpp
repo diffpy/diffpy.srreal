@@ -14,8 +14,6 @@
 *
 * Bindings to the BondCalculator class.
 *
-* $Id$
-*
 *****************************************************************************/
 
 #include <boost/python.hpp>

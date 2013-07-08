@@ -14,8 +14,6 @@
 *
 * Bindings to the BVSCalculator class.
 *
-* $Id$
-*
 *****************************************************************************/
 
 #include <boost/python.hpp>

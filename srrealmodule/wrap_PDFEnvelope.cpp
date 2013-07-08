@@ -15,8 +15,6 @@
 * Bindings to the PDFEnvelope class.  The business methods can be overloaded
 * from Python to create custom PDF envelope functions.
 *
-* $Id$
-*
 *****************************************************************************/
 
 #include <boost/python.hpp>

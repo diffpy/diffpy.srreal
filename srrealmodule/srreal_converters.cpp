@@ -15,8 +15,6 @@
 * utilities for conversion between C++ and Python types.
 * boost python converters are prone to conflicts.
 *
-* $Id$
-*
 *****************************************************************************/
 
 #include <boost/python/def.hpp>

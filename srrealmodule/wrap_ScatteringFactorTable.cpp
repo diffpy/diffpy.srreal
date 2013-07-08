@@ -15,8 +15,6 @@
 * Bindings to the ScatteringFactorTable class.  The business methods can be
 * overloaded from Python to create custom peak profiles.
 *
-* $Id$
-*
 *****************************************************************************/
 
 #include <boost/python.hpp>

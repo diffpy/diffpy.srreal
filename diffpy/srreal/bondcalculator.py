@@ -17,8 +17,6 @@
 """class BondCalculator -- distances between atoms in the structure.
 """
 
-# module version
-__id__ = "$Id$"
 
 # exported items, these also makes them show in pydoc.
 __all__ = ['BondCalculator']

@@ -18,8 +18,6 @@
 python -m diffpy.srreal.tests.run
 """
 
-# version
-__id__ = '$Id$'
 
 
 if __name__ == '__main__':

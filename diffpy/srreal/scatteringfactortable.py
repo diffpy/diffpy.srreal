@@ -18,8 +18,6 @@
 isotopes.
 """
 
-# module version
-__id__ = "$Id$"
 
 # exported items, these also makes them show in pydoc.
 __all__ = ['ScatteringFactorTable']

@@ -18,8 +18,6 @@
     A base to PairQuantity and quite a few other classes.
 """
 
-# module version
-__id__ = "$Id$"
 __all__ = ['Attributes']
 
 from diffpy.srreal.srreal_ext import Attributes

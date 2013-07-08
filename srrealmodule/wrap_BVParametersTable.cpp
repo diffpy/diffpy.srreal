@@ -14,8 +14,6 @@
 *
 * Bindings to the BVParametersTable and BVParam classes.
 *
-* $Id$
-*
 *****************************************************************************/
 
 #include <boost/python.hpp>

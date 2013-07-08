@@ -17,8 +17,6 @@
 """class AtomRadiiTable -- storage of empirical atom radii.
 """
 
-# module version
-__id__ = "$Id$"
 
 # exported items, these also makes them show in pydoc.
 __all__ = ['AtomRadiiTable', 'ConstantRadiiTable', 'CovalentRadiiTable']

@@ -15,8 +15,6 @@
 * Shared declarations of wrapper functions that convert to Python types.
 * This file is always included from srreal_converters.hpp.
 *
-* $Id$
-*
 *****************************************************************************/
 
 #ifndef SRREAL_CONVERTERS_IPP_INCLUDED

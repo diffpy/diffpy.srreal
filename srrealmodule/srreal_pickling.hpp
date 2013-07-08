@@ -14,8 +14,6 @@
 *
 * Pickling support that uses serialization of the libdiffpy classes.
 *
-* $Id$
-*
 *****************************************************************************/
 
 #ifndef SRREAL_PICKLING_HPP_INCLUDED

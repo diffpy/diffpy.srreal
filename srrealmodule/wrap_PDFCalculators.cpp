@@ -14,8 +14,6 @@
 *
 * Bindings to DebyePDFCalculator and PDFCalculator classes.
 *
-* $Id$
-*
 *****************************************************************************/
 
 #include <boost/python.hpp>

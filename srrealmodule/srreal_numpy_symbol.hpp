@@ -14,8 +14,6 @@
 *
 * Definition of the PY_ARRAY_UNIQUE_SYMBOL for the srreal extension module.
 *
-* $Id$
-*
 *****************************************************************************/
 
 #ifndef SRREAL_NUMPY_SYMBOL_HPP_INCLUDED

@@ -3,8 +3,6 @@
 """Unit tests for diffpy.srreal.bvscalculator
 """
 
-# version
-__id__ = '$Id$'
 
 import os
 import unittest

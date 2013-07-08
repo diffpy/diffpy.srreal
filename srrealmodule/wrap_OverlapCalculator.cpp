@@ -14,8 +14,6 @@
 *
 * Bindings to the OverlapCalculator class.
 *
-* $Id$
-*
 *****************************************************************************/
 
 #include <boost/python.hpp>

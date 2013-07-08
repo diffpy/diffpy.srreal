@@ -3,8 +3,6 @@
 """Unit tests for pdfcalculator.py
 """
 
-# version
-__id__ = '$Id$'
 
 import os
 import unittest

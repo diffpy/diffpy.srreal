@@ -17,8 +17,6 @@
 """Definition of __version__ and __date__ for diffpy.srreal.
 """
 
-# module version
-__id__ = "$Id$"
 
 # obtain version information
 from pkg_resources import get_distribution

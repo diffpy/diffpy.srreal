@@ -17,8 +17,6 @@
 """class PairQuantity    -- base class for Python defined calculators.
 """
 
-# module version
-__id__ = "$Id$"
 
 # exported items
 __all__ = ['PairQuantity']

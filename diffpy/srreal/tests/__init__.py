@@ -16,8 +16,6 @@
 """Unit tests for diffpy.srreal.
 """
 
-# version
-__id__ = '$Id$'
 
 
 def testsuite():
