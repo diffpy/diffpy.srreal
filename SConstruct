@@ -19,7 +19,7 @@ def getsyspaths(*names):
 # copy system environment variables related to compilation
 DefaultEnvironment(ENV=subdictionary(os.environ, '''
     PATH PYTHONPATH
-    LD_LIBRARY_PATH LIBRARY_PATH
+    LD_LIBRARY_PATH DYLD_LIBRARY_PATH LIBRARY_PATH
     http_proxy
     '''.split())
 )
