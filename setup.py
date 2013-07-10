@@ -9,6 +9,7 @@ Packages:   diffpy.srreal
 Scripts:    (none yet)
 """
 
+import os
 import glob
 from setuptools import setup, find_packages
 from setuptools import Extension
@@ -26,10 +27,38 @@ srreal_ext = Extension('diffpy.srreal.srreal_ext',
     glob.glob('srrealmodule/*.cpp'),
     **ext_kws)
 
+
+def gitversion():
+    from subprocess import Popen, PIPE
+    proc = Popen(['git', 'describe'], stdout=PIPE)
+    desc = proc.stdout.read().strip()
+    proc = Popen(['git', 'log', '-1', '--format=%ai'], stdout=PIPE)
+    isodate = proc.stdout.read()
+    date = isodate.split()[0].replace('-', '')
+    rv = desc + '-' + date
+    return rv
+
+
+def getsetupcfg():
+    cfgfile = 'setup.cfg'
+    from ConfigParser import SafeConfigParser
+    cp = SafeConfigParser()
+    cp.read(cfgfile)
+    if not os.path.isdir('.git'):  return cp
+    d = cp.defaults()
+    vcfg = d.get('version', '')
+    vgit = gitversion()
+    if vgit != vcfg:
+        cp.set('DEFAULT', 'version', vgit)
+        cp.write(open(cfgfile, 'w'))
+    return cp
+
+cp = getsetupcfg()
+
 # define distribution
 dist = setup(
         name = "diffpy.srreal",
-        version = "0.2a1",
+        version = cp.get('DEFAULT', 'version'),
         namespace_packages = ['diffpy'],
         packages = find_packages(exclude=['tests']),
         test_suite = 'diffpy.srreal.tests',
