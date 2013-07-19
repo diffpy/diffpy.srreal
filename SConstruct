@@ -94,6 +94,9 @@ if env['profile']:
 builddir = env.Dir('build/%s-%s' % (env['build'], platform.machine()))
 Export('env')
 
+if os.path.isfile('sconscript.local'):
+    env.SConscript('sconscript.local')
+
 env.SConscript('srrealmodule/SConscript', variant_dir=builddir)
 
 # vim: ft=python

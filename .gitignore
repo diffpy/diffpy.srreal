@@ -21,6 +21,7 @@ lib
 lib64
 tags
 errors.err
+sconscript.local
 
 # Installer logs
 pip-log.txt
