@@ -33,6 +33,8 @@ using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
 
+// FIXME merge in all unused ByType docstrings...
+
 const char* doc_PeakWidthModel = "\
 Base class for functors that calculate the PDF peak widths.\n\
 Peak width is defined as full width at half maximum (FWHM).\n\
@@ -124,10 +126,7 @@ PeakWidthModelPtr getpwmodel(PeakWidthModelOwner& obj)
     return obj.getPeakWidthModel();
 }
 
-void setpwmodel(PeakWidthModelOwner& obj, PeakWidthModelPtr pwm)
-{
-    obj.setPeakWidthModel(pwm);
-}
+DECLARE_BYTYPE_SETTER_WRAPPER(setPeakWidthModel, setpwmodel)
 
 // Helper class allows overload of the PeakWidthModel methods from Python.
 
@@ -225,12 +224,10 @@ void wrap_PeakWidthModel()
     register_ptr_to_python<PeakWidthModelPtr>();
 
     class_<PeakWidthModelOwner>("PeakWidthModelOwner", doc_PeakWidthModelOwner)
-        .add_property("peakwidthmodel", getpwmodel, setpwmodel,
+        .add_property("peakwidthmodel",
+                getpwmodel,
+                setpwmodel<PeakWidthModelOwner,PeakWidthModel>,
                 doc_PeakWidthModelOwner_peakwidthmodel)
-        .def("setPeakWidthModelByType",
-                &PeakWidthModelOwner::setPeakWidthModelByType,
-                bp::arg("tp"),
-                doc_PeakWidthModelOwner_setPeakWidthModelByType)
         ;
 }
 

@@ -22,6 +22,7 @@
 
 #include <boost/python.hpp>
 #include <algorithm>
+#include <string>
 
 #include <diffpy/srreal/R3linalg.hpp>
 #include <diffpy/srreal/QuantityType.hpp>
@@ -29,6 +30,22 @@
 #include "srreal_numpy_symbol.hpp"
 
 namespace srrealmodule {
+
+/// this macro creates a setter for overloaded method that can accept
+/// either instance or a type string
+#define DECLARE_BYTYPE_SETTER_WRAPPER(method, wrapper) \
+    template <class T, class V> \
+    void wrapper(T& obj, ::boost::python::object value) \
+    { \
+        ::boost::python::extract<std::string> tp(value); \
+        if (tp.check())  obj.method##ByType(tp()); \
+        else \
+        { \
+            typename V::SharedPtr p = extract<typename V::SharedPtr>(value); \
+            obj.method(p); \
+        } \
+    } \
+
 
 /// this macro defines a wrapper function for a C++ method,
 /// that converts the result to numpy array

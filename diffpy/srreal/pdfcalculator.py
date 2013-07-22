@@ -289,7 +289,7 @@ def makePDFBaseline(name, fnc, **dbattrs):
         # use it in PDFCalculator
         pdfc = PDFCalculator()
         pdfc.baseline = baseline
-        # or pdfc.setBaselineByType("shiftedline")
+        # or pdfc.baseline = "shiftedline"
     '''
     from diffpy.srreal.wraputils import _wrapAsRegisteredUnaryFunction
     return _wrapAsRegisteredUnaryFunction(PDFBaseline, name, fnc, **dbattrs)
@@ -360,7 +360,7 @@ def makePDFEnvelope(name, fnc, **dbattrs):
         # use it in PDFCalculator
         pdfc = PDFCalculator()
         pdfc.addEnvelope(envelope)
-        # or pdfc.addEnvelopeByType("expdecay")
+        # or pdfc.addEnvelope("expdecay")
     '''
     from diffpy.srreal.wraputils import _wrapAsRegisteredUnaryFunction
     return _wrapAsRegisteredUnaryFunction(PDFEnvelope, name, fnc, **dbattrs)

@@ -155,7 +155,7 @@ class TestDebyePDFCalculator(unittest.TestCase):
         dpdfc = self.dpdfc
         dpdfc.setScatteringFactorTableByType('N')
         dpdfc.scatteringfactortable.setCustomAs('Na', 'Na', 7)
-        dpdfc.addEnvelopeByType('sphericalshape')
+        dpdfc.addEnvelope('sphericalshape')
         dpdfc.debyeprecision = 0.001
         dpdfc.delta1 = 0.2
         dpdfc.delta2 = 0.3
@@ -180,7 +180,7 @@ class TestDebyePDFCalculator(unittest.TestCase):
         for a in dpdfc._namesOfDoubleAttributes():
             self.assertEqual(getattr(dpdfc, a), getattr(dpdfc1, a))
         self.assertEqual(13.3,
-                dpdfc1.getEnvelopeByType('sphericalshape').spdiameter)
+                dpdfc1.getEnvelope('sphericalshape').spdiameter)
         self.assertEqual(dpdfc._namesOfDoubleAttributes(),
                 dpdfc1._namesOfDoubleAttributes())
         self.assertEqual(dpdfc.usedenvelopetypes, dpdfc1.usedenvelopetypes)
@@ -225,8 +225,8 @@ class TestDebyePDFCalculator(unittest.TestCase):
 #       """
 #       return
 #
-#   def test_getScatteringFactorTable(self):
-#       """check DebyePDFCalculator.scatteringfactortable
+#   def test_scatteringfactortable(self):
+#       """check DebyePDFCalculator.scatteringfactortable property
 #       """
 #       return
 #
@@ -240,18 +240,8 @@ class TestDebyePDFCalculator(unittest.TestCase):
 #       """
 #       return
 #
-#   def test_setPeakWidthModel(self):
+#   def test_peakwidthmodel(self):
 #       """check DebyePDFCalculator.setPeakWidthModel()
-#       """
-#       return
-#
-#   def test_setPeakWidthModelByType(self):
-#       """check DebyePDFCalculator.setPeakWidthModelByType()
-#       """
-#       return
-#
-#   def test_setScatteringFactorTableByType(self):
-#       """check DebyePDFCalculator.setScatteringFactorTableByType()
 #       """
 #       return
 #

@@ -244,9 +244,9 @@ class TestPDFCalculator(unittest.TestCase):
         '''check pickling and unpickling of PDFCalculator.
         '''
         pdfc = self.pdfcalc
-        pdfc.setScatteringFactorTableByType('N')
+        pdfc.scatteringfactortable = 'N'
         pdfc.scatteringfactortable.setCustomAs('Na', 'Na', 7)
-        pdfc.addEnvelopeByType('sphericalshape')
+        pdfc.addEnvelope('sphericalshape')
         pdfc.delta1 = 0.2
         pdfc.delta2 = 0.3
         pdfc.maxextension = 10.1
@@ -271,7 +271,7 @@ class TestPDFCalculator(unittest.TestCase):
         for a in pdfc._namesOfDoubleAttributes():
             self.assertEqual(getattr(pdfc, a), getattr(pdfc1, a))
         self.assertEqual(13.3,
-                pdfc1.getEnvelopeByType('sphericalshape').spdiameter)
+                pdfc1.getEnvelope('sphericalshape').spdiameter)
         self.assertEqual(pdfc._namesOfDoubleAttributes(),
                 pdfc1._namesOfDoubleAttributes())
         self.assertEqual(pdfc.usedenvelopetypes, pdfc1.usedenvelopetypes)

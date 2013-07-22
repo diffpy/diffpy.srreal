@@ -34,6 +34,8 @@ using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
 
+// FIXME merge in all unused ByType docstrings...
+
 const char* doc_PDFCommon_pdf = "\
 An array of PDF values in the form of G = 4*pi*r(rho - rho0) in A**-2.\n\
 ";
@@ -196,9 +198,6 @@ fftftog function to recover the original signal g.\n\
 
 // wrappers ------------------------------------------------------------------
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(getenvelopebytype_overloads,
-        getEnvelopeByType, 1, 1)
-
 DECLARE_PYARRAY_METHOD_WRAPPER(getPDF, getPDF_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(getRDF, getRDF_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(getRgrid, getRgrid_asarray)
@@ -213,6 +212,8 @@ PeakProfilePtr getpeakprofile(PDFCalculator& obj)
     return obj.getPeakProfile();
 }
 
+DECLARE_BYTYPE_SETTER_WRAPPER(setPeakProfile, setpeakprofile)
+
 // wrappers for the baseline property
 
 PDFBaselinePtr getbaseline(PDFCalculator& obj)
@@ -220,10 +221,20 @@ PDFBaselinePtr getbaseline(PDFCalculator& obj)
     return obj.getBaseline();
 }
 
+DECLARE_BYTYPE_SETTER_WRAPPER(setBaseline, setbaseline)
+
 // wrappers for the envelopes property
 
-template <class T>
-tuple getenvelopes(T& obj)
+PDFEnvelopePtr pyobjtoenvelope(object evp)
+{
+    extract<std::string> tp(evp);
+    if (tp.check())  return PDFEnvelope::createByType(tp());
+    PDFEnvelopePtr rv = extract<PDFEnvelopePtr>(evp);
+    return rv;
+}
+
+
+tuple getenvelopes(PDFEnvelopeOwner& obj)
 {
     std::set<std::string> etps = obj.usedEnvelopeTypes();
     std::set<std::string>::const_iterator tpi;
@@ -239,9 +250,10 @@ tuple getenvelopes(T& obj)
 template <class T>
 void setenvelopes(T& obj, object evps)
 {
-    stl_input_iterator<PDFEnvelopePtr> begin(evps), end;
+    stl_input_iterator<object> eit(evps), end;
     // first check if all evps items can be converted to PDFEnvelopePtr
-    std::list<PDFEnvelopePtr> elst(begin, end);
+    std::list<PDFEnvelopePtr> elst;
+    for (; eit != end; ++eit)  elst.push_back(pyobjtoenvelope(*eit));
     // if that worked, overwrite the original envelopes
     obj.clearEnvelopes();
     std::list<PDFEnvelopePtr>::iterator eii = elst.begin();
@@ -256,6 +268,32 @@ tuple getusedenvelopetypes(T& obj)
     tuple rv(usedEnvelopeTypes_aslist<T>(obj));
     return rv;
 }
+
+template <class T>
+void addenvelope(T& obj, object evp)
+{
+    PDFEnvelopePtr e = pyobjtoenvelope(evp);
+    obj.addEnvelope(e);
+}
+
+template <class T>
+void popenvelope(T& obj, object evp)
+{
+    extract<std::string> tp(evp);
+    if (tp.check())  obj.popEnvelopeByType(tp());
+    else
+    {
+        PDFEnvelopePtr e = extract<PDFEnvelopePtr>(evp);
+        obj.popEnvelope(e);
+    }
+}
+
+template <class T>
+PDFEnvelopePtr getoneenvelope(T& obj, const std::string& tp)
+{
+    return obj.getEnvelopeByType(tp);
+}
+
 
 // wrap shared methods and attributes of PDFCalculators
 
@@ -278,23 +316,17 @@ C& wrap_PDFCommon(C& boostpythonclass)
                 doc_PDFCommon_qgrid)
         // PDF envelopes
         .add_property("envelopes",
-                getenvelopes<W>, setenvelopes<W>,
+                getenvelopes, setenvelopes<W>,
                 doc_PDFCommon_envelopes)
         .add_property("usedenvelopetypes",
                 getusedenvelopetypes<W>,
                 doc_PDFCommon_usedenvelopetypes)
-        .def("addEnvelope", &W::addEnvelope,
+        .def("addEnvelope", addenvelope<W>,
                 bp::arg("envlp"), doc_PDFCommon_addEnvelope)
-        .def("addEnvelopeByType", &W::addEnvelopeByType,
-                bp::arg("tp"), doc_PDFCommon_addEnvelopeByType)
-        .def("popEnvelope", &W::popEnvelope,
+        .def("popEnvelope", popenvelope<W>,
                 doc_PDFCommon_popEnvelope)
-        .def("popEnvelopeByType", &W::popEnvelopeByType,
-                bp::arg("tp"), doc_PDFCommon_popEnvelopeByType)
-        .def("getEnvelopeByType",
-                (PDFEnvelopePtr(W::*)(const std::string&)) NULL,
-                getenvelopebytype_overloads(
-                    bp::arg("tp"), doc_PDFCommon_getEnvelopeByType))
+        .def("getEnvelope", getoneenvelope<W>,
+                bp::arg("tp"), doc_PDFCommon_getEnvelopeByType)
         .def("clearEnvelopes", &W::clearEnvelopes,
                 doc_PDFCommon_clearEnvelopes)
         ;
@@ -354,18 +386,14 @@ void wrap_PDFCalculators()
     wrap_PDFCommon(pdfc_class)
         // PDF peak profile
         .add_property("peakprofile",
-                getpeakprofile, &PDFCalculator::setPeakProfile,
+                getpeakprofile,
+                setpeakprofile<PDFCalculator,PeakProfile>,
                 doc_PDFCalculator_peakprofile)
-        .def("setPeakProfileByType",
-                &PDFCalculator::setPeakProfileByType, bp::arg("tp"),
-                doc_PDFCalculator_setPeakProfileByType)
         // PDF baseline
         .add_property("baseline",
-                getbaseline, &PDFCalculator::setBaseline,
+                getbaseline,
+                setbaseline<PDFCalculator,PDFBaseline>,
                 doc_PDFCalculator_baseline)
-        .def("setBaselineByType",
-                &PDFCalculator::setBaselineByType, bp::arg("tp"),
-                doc_PDFCalculator_setBaselineByType)
         .def_pickle(SerializationPickleSuite<PDFCalculator>())
         ;
 

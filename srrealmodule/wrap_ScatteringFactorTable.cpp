@@ -227,6 +227,7 @@ ScatteringFactorTablePtr getsftable(ScatteringFactorTableOwner& obj)
     return obj.getScatteringFactorTable();
 }
 
+    DECLARE_BYTYPE_SETTER_WRAPPER(setScatteringFactorTable, setsftable)
 void setsftable(ScatteringFactorTableOwner& obj, ScatteringFactorTablePtr tb)
 {
     obj.setScatteringFactorTable(tb);
@@ -381,7 +382,9 @@ void wrap_ScatteringFactorTable()
 
     class_<ScatteringFactorTableOwner>("ScatteringFactorTableOwner",
             doc_ScatteringFactorTableOwner)
-        .add_property("scatteringfactortable", getsftable, setsftable,
+        .add_property("scatteringfactortable",
+                getsftable,
+                setsftable<ScatteringFactorTableOwner,ScatteringFactorTable>,
                 doc_ScatteringFactorTableOwner_scatteringfactortable)
         .def("setScatteringFactorTableByType",
                 &SFTOwner::setScatteringFactorTableByType,
