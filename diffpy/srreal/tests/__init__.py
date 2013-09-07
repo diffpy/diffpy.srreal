@@ -31,6 +31,7 @@ def testsuite():
         diffpy.srreal.tests.testbvscalculator
         diffpy.srreal.tests.testdebyepdfcalculator
         diffpy.srreal.tests.testoverlapcalculator
+        diffpy.srreal.tests.testpairquantity
         diffpy.srreal.tests.testparallel
         diffpy.srreal.tests.testpdfbaseline
         diffpy.srreal.tests.testpdfcalcobjcryst

@@ -103,6 +103,15 @@ ncpu     -- number of parallel processes or the total number of\n\
 No return value.\n\
 ";
 
+const char* doc_BasePairQuantity_evaluatortype = "\
+String type of evaluation procedure used in calculation.\n\
+\n\
+Possible values are 'BASIC' and 'OPTIMIZED'.  The value is always\n\
+calculated from scratch when 'BASIC'.  The 'OPTIMIZED' evaluation\n\
+updates the existing results by recalculating only the contributions\n\
+from changed atoms.\n\
+";
+
 const char* doc_BasePairQuantity_maskAllPairs = "\
 Set the calculation mask for all atom pairs in the structure.\n\
 \n\
@@ -273,6 +282,34 @@ python::object eval_asarray(PairQuantity& obj, const python::object& a)
     QuantityType value = (Py_None == a.ptr()) ? obj.eval() : obj.eval(a);
     python::object rv = convertToNumPyArray(value);
     return rv;
+}
+
+const char* evtp_BASIC = "BASIC";
+const char* evtp_OPTIMIZED = "OPTIMIZED";
+
+// support for the evaluatortype property
+std::string getevaluatortype(const PairQuantity& obj)
+{
+    switch (obj.getEvaluatorType())
+    {
+        case BASIC:
+            return evtp_BASIC;
+        case OPTIMIZED:
+            return evtp_OPTIMIZED;
+    }
+    std::string emsg = "Unknown internal value of PQEvaluatorType.";
+    throw std::out_of_range(emsg);
+}
+
+
+void setevaluatortype(PairQuantity& pq, const std::string& tp)
+{
+    if (tp == evtp_BASIC)  return pq.setEvaluatorType(BASIC);
+    if (tp == evtp_OPTIMIZED)  return pq.setEvaluatorType(OPTIMIZED);
+    python::object emsg = ("evaluatortype must be either %r or %r." %
+            python::make_tuple(evtp_BASIC, evtp_OPTIMIZED));
+    PyErr_SetObject(PyExc_ValueError, emsg.ptr());
+    throw_error_already_set();
 }
 
 // support "all", "ALL" and integer iterables in setPairMask
@@ -583,6 +620,9 @@ void wrap_PairQuantity()
         .def("_setupParallelRun", &PairQuantity::setupParallelRun,
                 (python::arg("cpuindex"), python::arg("ncpu")),
                 doc_BasePairQuantity__setupParallelRun)
+        .add_property("evaluatortype",
+                getevaluatortype, setevaluatortype,
+                doc_BasePairQuantity_evaluatortype)
         .def("maskAllPairs", mask_all_pairs,
                 python::arg("mask"),
                 doc_BasePairQuantity_maskAllPairs)
