@@ -291,6 +291,24 @@ class TestPDFCalculator(unittest.TestCase):
         return
 
 
+    def test_envelopes(self):
+        '''Check the envelopes property.
+        '''
+        from diffpy.srreal.pdfcalculator import PDFEnvelope
+        pc = self.pdfcalc
+        self.failUnless(len(pc.envelopes) > 0)
+        pc.clearEnvelopes()
+        self.assertEqual(0, len(pc.envelopes))
+        pc.addEnvelope(PDFEnvelope.createByType('scale'))
+        self.assertEqual(1, len(pc.envelopes))
+        self.assertEqual('scale', pc.envelopes[0].type())
+        pc.envelopes += ('qresolution',)
+        self.assertEqual(('qresolution', 'scale'), pc.usedenvelopetypes)
+        self.failUnless(all([isinstance(e, PDFEnvelope)
+            for e in pc.envelopes]))
+        return
+
+
 #   def test_pdf(self):
 #       """check PDFCalculator.pdf
 #       """

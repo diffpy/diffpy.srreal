@@ -234,7 +234,8 @@ PDFEnvelopePtr pyobjtoenvelope(object evp)
 }
 
 
-tuple getenvelopes(PDFEnvelopeOwner& obj)
+template <class T>
+tuple getenvelopes(T& obj)
 {
     std::set<std::string> etps = obj.usedEnvelopeTypes();
     std::set<std::string>::const_iterator tpi;
@@ -316,7 +317,7 @@ C& wrap_PDFCommon(C& boostpythonclass)
                 doc_PDFCommon_qgrid)
         // PDF envelopes
         .add_property("envelopes",
-                getenvelopes, setenvelopes<W>,
+                getenvelopes<W>, setenvelopes<W>,
                 doc_PDFCommon_envelopes)
         .add_property("usedenvelopetypes",
                 getusedenvelopetypes<W>,
