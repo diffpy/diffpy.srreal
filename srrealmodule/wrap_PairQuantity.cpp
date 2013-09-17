@@ -188,6 +188,8 @@ Return boolean mask.  The value is meaningless for index-based\n\
 masking.  Use getTypeMask('', '') to get the default pair mask.\n\
 ";
 
+const char* doc_BasePairQuantity_ticker = "FIXME";
+
 const char* doc_BasePairQuantity_copy = "\
 Return a deep copy of this PairQuantity object.\n\
 ";
@@ -197,6 +199,8 @@ Base class for Python defined pair quantity calculators.\n\
 No action by default.  Concrete calculators must overload the\n\
 _addPairContribution method to get some results.\n\
 ";
+
+const char* doc_PairQuantity_ticker = "FIXME";
 
 const char* doc_PairQuantity__getParallelData = "\
 Return raw results string from a parallel job.\n\
@@ -528,6 +532,20 @@ class PairQuantityWrap :
             return this->PairQuantityExposed::getParallelData();
         }
 
+        // Make the ticker method overloadable from Python
+
+        diffpy::eventticker::EventTicker& ticker() const
+        {
+            override f = this->get_override("ticker");
+            if (f)  return f();
+            return this->default_ticker();
+        }
+
+        diffpy::eventticker::EventTicker& default_ticker() const
+        {
+            return this->PairQuantityExposed::ticker();
+        }
+
         // Make the protected virtual methods public so they
         // can be exported to Python and overloaded as well.
 
@@ -671,6 +689,9 @@ void wrap_PairQuantity()
         .def("getTypeMask", &PairQuantity::getTypeMask,
                 (python::arg("tpi"), python::arg("tpj")),
                 doc_BasePairQuantity_getTypeMask)
+        .def("ticker", &PairQuantity::ticker,
+                return_internal_reference<>(),
+                doc_BasePairQuantity_ticker)
         .def("copy", pqcopy,
                 doc_BasePairQuantity_copy)
         .def_pickle(SerializationPickleSuite<PairQuantity>())
@@ -678,6 +699,11 @@ void wrap_PairQuantity()
 
     class_<PairQuantityWrap, bases<PairQuantity>,
         noncopyable>("PairQuantity", doc_PairQuantity)
+        .def("ticker",
+                &PairQuantityExposed::ticker,
+                &PairQuantityWrap::ticker,
+                return_internal_reference<>(),
+                doc_PairQuantity_ticker)
         .def("_getParallelData",
                 &PairQuantityExposed::getParallelData,
                 &PairQuantityWrap::default_getParallelData,
