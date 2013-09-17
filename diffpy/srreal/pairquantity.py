@@ -14,13 +14,16 @@
 ##############################################################################
 
 
-"""class PairQuantity    -- base class for Python defined calculators.
+"""\
+class PairQuantity    -- base class for Python defined calculators.
+class EventTicker     -- class for handling update times of dependent objects.
 """
 
 
 # exported items
-__all__ = ['PairQuantity']
+__all__ = ['PairQuantity', 'EventTicker']
 
 from diffpy.srreal.srreal_ext import PairQuantity
+from diffpy.srreal.srreal_ext import EventTicker
 
 # End of file
