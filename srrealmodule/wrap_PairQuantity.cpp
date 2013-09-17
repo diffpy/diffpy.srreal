@@ -104,12 +104,21 @@ No return value.\n\
 ";
 
 const char* doc_BasePairQuantity_evaluatortype = "\
-String type of evaluation procedure used in calculation.\n\
+String type of preferred evaluation procedure.\n\
 \n\
 Possible values are 'BASIC' and 'OPTIMIZED'.  The value is always\n\
 calculated from scratch when 'BASIC'.  The 'OPTIMIZED' evaluation\n\
 updates the existing results by recalculating only the contributions\n\
 from changed atoms.\n\
+\n\
+See also evaluatortypeused.\n\
+";
+
+const char* doc_BasePairQuantity_evaluatortypeused = "\
+String type of evaluation procedure used in the last calculation.\n\
+\n\
+Possible values are 'BASIC', 'OPTIMIZED', and 'NONE' for calculator\n\
+that has not been used yet.\n\
 ";
 
 const char* doc_BasePairQuantity_maskAllPairs = "\
@@ -284,14 +293,18 @@ python::object eval_asarray(PairQuantity& obj, const python::object& a)
     return rv;
 }
 
+// support for the evaluatortype property
+
+const char* evtp_NONE = "NONE";
 const char* evtp_BASIC = "BASIC";
 const char* evtp_OPTIMIZED = "OPTIMIZED";
 
-// support for the evaluatortype property
-std::string getevaluatortype(const PairQuantity& obj)
+std::string stringevaluatortype(PQEvaluatorType tp)
 {
-    switch (obj.getEvaluatorType())
+    switch (tp)
     {
+        case NONE:
+            return evtp_NONE;
         case BASIC:
             return evtp_BASIC;
         case OPTIMIZED:
@@ -299,6 +312,12 @@ std::string getevaluatortype(const PairQuantity& obj)
     }
     std::string emsg = "Unknown internal value of PQEvaluatorType.";
     throw std::out_of_range(emsg);
+}
+
+
+std::string getevaluatortype(const PairQuantity& obj)
+{
+    return stringevaluatortype(obj.getEvaluatorType());
 }
 
 
@@ -310,6 +329,13 @@ void setevaluatortype(PairQuantity& pq, const std::string& tp)
             python::make_tuple(evtp_BASIC, evtp_OPTIMIZED));
     PyErr_SetObject(PyExc_ValueError, emsg.ptr());
     throw_error_already_set();
+}
+
+// support for the evaluatortypeused read-only property
+
+std::string getevaluatortypeused(const PairQuantity& obj)
+{
+    return stringevaluatortype(obj.getEvaluatorTypeUsed());
 }
 
 // support "all", "ALL" and integer iterables in setPairMask
@@ -623,6 +649,9 @@ void wrap_PairQuantity()
         .add_property("evaluatortype",
                 getevaluatortype, setevaluatortype,
                 doc_BasePairQuantity_evaluatortype)
+        .add_property("evaluatortypeused",
+                getevaluatortypeused,
+                doc_BasePairQuantity_evaluatortypeused)
         .def("maskAllPairs", mask_all_pairs,
                 python::arg("mask"),
                 doc_BasePairQuantity_maskAllPairs)
