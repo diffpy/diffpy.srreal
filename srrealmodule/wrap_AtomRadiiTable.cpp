@@ -32,15 +32,54 @@ using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
 
-const char* doc_AtomRadiiTable_create = "FIXME";
-const char* doc_AtomRadiiTable_clone = "FIXME";
-const char* doc_AtomRadiiTable_type = "FIXME";
-const char* doc_AtomRadiiTable__registerThisType = "FIXME";
-const char* doc_AtomRadiiTable_createByType = "FIXME";
-const char* doc_AtomRadiiTable_getRegisteredTypes = "FIXME";
-
 const char* doc_AtomRadiiTable = "\
-Lookup table for empirical atom radii.\n\
+Base class for looking up empirical atom radii.\n\
+This class has virtual methods and cannot be used as is.\n\
+\n\
+A derived class has to overload the following methods:\n\
+\n\
+    create(self)\n\
+    clone(self)\n\
+    type(self)\n\
+    _standardLookup(self, smbl)\n\
+\n\
+Derived class can be added to the global registry of AtomRadiiTable\n\
+types by calling the _registerThisType method with any instance.\n\
+";
+
+const char* doc_AtomRadiiTable_create = "\
+Return a new instance of the same type as this AtomRadiiTable object.\n\
+This method must be overloaded in a derived class.\n\
+";
+
+const char* doc_AtomRadiiTable_clone = "\
+Return a duplicate of this AtomRadiiTable instance.\n\
+This method must be overloaded in a derived class.\n\
+";
+
+const char* doc_AtomRadiiTable_type = "\
+Return a unique string name for this AtomRadiiTable class.\n\
+This method must be overloaded in a derived class.\n\
+";
+
+const char* doc_AtomRadiiTable__registerThisType = "\
+Add this instance to the global registry of AtomRadiiTable types.\n\
+\n\
+No return value.  Cannot be overloaded in Python.\n\
+";
+
+const char* doc_AtomRadiiTable_createByType = "\
+Create a new AtomRadiiTable object of the specified type.\n\
+\n\
+tp   -- string identifier for a registered AtomRadiiTable class.\n\
+        Use getRegisteredTypes for a set of allowed values.\n\
+\n\
+Return new AtomRadiiTable instance.\n\
+";
+
+const char* doc_AtomRadiiTable_getRegisteredTypes = "\
+Return a set of string names for the registered AtomRadiiTable\n\
+types.  These are the supported arguments for the createByType method.\n\
 ";
 
 const char* doc_AtomRadiiTable_lookup = "\
@@ -49,23 +88,24 @@ Return empirical radius of an atom in Angstroms.\n\
 smbl -- string symbol for atom, ion or isotope\n\
 \n\
 Return atom radius in Angstroms.\n\
+This method cannot be overloaded in Python.\n\
 ";
 
 const char* doc_AtomRadiiTable__tableLookup = "\
 Standard lookup of empirical atom radius.\n\
-This method can be overloaded in a derived class.\n\
-This returns zero for the base-class _tableLookup method.\n\
 \n\
 smbl -- string symbol for atom, ion or isotope\n\
 \n\
 Return atom radius in Angstroms.\n\
+Raise ValueError for unknown atom symbol.\n\
+This method must be overloaded in a derived class.\n\
 ";
 
 const char* doc_AtomRadiiTable_setCustom = "\
 Define custom radius for a specified atom type.\n\
 \n\
 smbl     -- string symbol for atom, ion or isotope\n\
-radius   -- custon radius that will be returned by the lookup method\n\
+radius   -- custom radius that will be returned by the lookup method\n\
 \n\
 No return value.\n\
 ";
@@ -73,7 +113,7 @@ No return value.\n\
 const char* doc_AtomRadiiTable_fromString = "\
 Define custom radius for one or more atom types from string.\n\
 \n\
-s    -- string with custom atom radii in (A1:r1, A2:r2, ...) format.\n\
+s    -- string with custom atom radii in 'A1:r1, A2:r2, ...' format.\n\
 \n\
 No return value.\n\
 Raise ValueError for an invalid string format.\n\
@@ -96,23 +136,50 @@ Return a dictionary of all custom atom radii defined in this table.\n\
 ";
 
 const char* doc_AtomRadiiTable_toString = "\
-Return string of all custom atom radii in (A1:r1, A2:r2, ...) format.\n\
+Return string of all custom atom radii in 'A1:r1, A2:r2, ...' format.\n\
 \n\
 separator    -- string separator between 'A1:r1' entries, by default ','\n\
 \n\
 Return string.\n\
 ";
 
-const char* doc_ConstantRadiiTable = "FIXME";
-const char* doc_ConstantRadiiTable_setDefault = "FIXME";
-const char* doc_ConstantRadiiTable_getDefault = "FIXME";
+const char* doc_ConstantRadiiTable = "\
+Atom radii table with the same radius for all atoms, by default 0.\n\
+\n\
+See setDefault() for changing the default radius or setCustom()\n\
+and fromString() for setting a special radius for selected atoms.\n\
+";
+
+const char* doc_ConstantRadiiTable_create = "\
+Return a new instance of ConstantRadiiTable.\n\
+";
+
+const char* doc_ConstantRadiiTable_clone = "\
+Return a duplicate of this ConstantRadiiTable object\n\
+";
+
+const char* doc_ConstantRadiiTable__tableLookup = "\
+Return empirical radius of the given atom in Angstroms.\n\
+\n\
+smbl -- string symbol for atom, ion or isotope\n\
+\n\
+Return atom radius in Angstroms.\n\
+This method cannot be overloaded in Python.\n\
+";
+
+const char* doc_ConstantRadiiTable_setDefault = "\
+Set radius that is by default returned for all atoms.\n\
+";
+
+const char* doc_ConstantRadiiTable_getDefault = "\
+Return the value of the default atom radius.\n\
+";
 
 // wrappers ------------------------------------------------------------------
 
 DECLARE_PYDICT_METHOD_WRAPPER(getAllCustom, getAllCustom_asdict)
 DECLARE_PYSET_FUNCTION_WRAPPER(AtomRadiiTable::getRegisteredTypes,
         getAtomRadiiTableTypes_asset)
-
 
 // Helper class for overloads of AtomRadiiTable methods from Python
 
@@ -223,6 +290,15 @@ void wrap_AtomRadiiTable()
 
     class_<ConstantRadiiTable, bases<AtomRadiiTable> >(
             "ConstantRadiiTable", doc_ConstantRadiiTable)
+        // docstring updates
+        .def("create", &ConstantRadiiTable::create,
+                doc_ConstantRadiiTable_create)
+        .def("clone", &ConstantRadiiTable::clone,
+                doc_ConstantRadiiTable_clone)
+        .def("_tableLookup",
+                &ConstantRadiiTable::tableLookup,
+                arg("smbl"), doc_ConstantRadiiTable__tableLookup)
+        // own methods
         .def("setDefault",
                 &ConstantRadiiTable::setDefault,
                 arg("radius"),
