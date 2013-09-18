@@ -91,7 +91,7 @@ Return atom radius in Angstroms.\n\
 This method cannot be overloaded in Python.\n\
 ";
 
-const char* doc_AtomRadiiTable__tableLookup = "\
+const char* doc_AtomRadiiTable__standardLookup = "\
 Standard lookup of empirical atom radius.\n\
 \n\
 smbl -- string symbol for atom, ion or isotope\n\
@@ -158,7 +158,7 @@ const char* doc_ConstantRadiiTable_clone = "\
 Return a duplicate of this ConstantRadiiTable object\n\
 ";
 
-const char* doc_ConstantRadiiTable__tableLookup = "\
+const char* doc_ConstantRadiiTable__standardLookup = "\
 Return empirical radius of the given atom in Angstroms.\n\
 \n\
 smbl -- string symbol for atom, ion or isotope\n\
@@ -211,9 +211,9 @@ class AtomRadiiTableWrap :
 
         // own methods
 
-        double tableLookup(const std::string& smbl) const
+        double standardLookup(const std::string& smbl) const
         {
-            return this->get_pure_virtual_override("_tableLookup")(smbl);
+            return this->get_pure_virtual_override("_standardLookup")(smbl);
         }
 
     protected:
@@ -261,9 +261,9 @@ void wrap_AtomRadiiTable()
         .def("lookup",
                 &AtomRadiiTable::lookup, arg("smbl"),
                 doc_AtomRadiiTable_lookup)
-        .def("_tableLookup",
-                &AtomRadiiTable::tableLookup,
-                arg("smbl"), doc_AtomRadiiTable__tableLookup)
+        .def("_standardLookup",
+                &AtomRadiiTable::standardLookup,
+                arg("smbl"), doc_AtomRadiiTable__standardLookup)
         .def("setCustom",
                 &AtomRadiiTable::setCustom,
                 (arg("smbl"), arg("radius")),
@@ -295,9 +295,9 @@ void wrap_AtomRadiiTable()
                 doc_ConstantRadiiTable_create)
         .def("clone", &ConstantRadiiTable::clone,
                 doc_ConstantRadiiTable_clone)
-        .def("_tableLookup",
-                &ConstantRadiiTable::tableLookup,
-                arg("smbl"), doc_ConstantRadiiTable__tableLookup)
+        .def("_standardLookup",
+                &ConstantRadiiTable::standardLookup,
+                arg("smbl"), doc_ConstantRadiiTable__standardLookup)
         // own methods
         .def("setDefault",
                 &ConstantRadiiTable::setDefault,

@@ -33,7 +33,7 @@ class CovalentRadiiTable(AtomRadiiTable):
     # class variable that holds the periodictable.elements object
     _elements = None
 
-    def _tableLookup(self, smbl):
+    def _standardLookup(self, smbl):
         '''Return covalent atom radius in Angstroms.
 
         smbl -- string symbol of an element

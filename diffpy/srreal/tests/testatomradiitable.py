@@ -36,14 +36,14 @@ class TestAtomRadiiTable(unittest.TestCase):
         self.assertEqual(3.7, ctb2.getDefault())
         return
 
-    def test__tableLookup(self):
-        """check AtomRadiiTable._tableLookup()
+    def test__standardLookup(self):
+        """check AtomRadiiTable._standardLookup()
         """
-        self.assertRaises(RuntimeError, self.rtb._tableLookup,
+        self.assertRaises(RuntimeError, self.rtb._standardLookup,
                 'anything')
-        self.assertEqual(0.0, self.ctb._tableLookup('anything'))
+        self.assertEqual(0.0, self.ctb._standardLookup('anything'))
         self.ctb.setDefault(7.3)
-        self.assertEqual(7.3, self.ctb._tableLookup('anything'))
+        self.assertEqual(7.3, self.ctb._standardLookup('anything'))
         return
 
     def test_fromString(self):
@@ -131,10 +131,10 @@ class TestCovalentRadiiTable(unittest.TestCase):
         self.assertEqual('foo', rtb2.foobar)
         return
 
-    def test__tableLookup(self):
-        """check CovalentRadiiTable._tableLookup()
+    def test__standardLookup(self):
+        """check CovalentRadiiTable._standardLookup()
         """
-        self.assertEqual(1.22, self.rtb._tableLookup('Ga'))
+        self.assertEqual(1.22, self.rtb._standardLookup('Ga'))
         return
 
     def test_fromString(self):
