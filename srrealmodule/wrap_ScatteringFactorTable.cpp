@@ -99,6 +99,7 @@ smbl -- string symbol for atom, ion or isotope\n\
 q    -- scattering vector amplitude in 1/A\n\
 \n\
 Return float.\n\
+Raise ValueError for unknown atom symbol.\n\
 This method must be overloaded in a derived class.\n\
 ";
 
