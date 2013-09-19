@@ -34,8 +34,6 @@ using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
 
-// FIXME merge in all unused ByType docstrings...
-
 const char* doc_PDFCommon_pdf = "\
 An array of PDF values in the form of G = 4*pi*r(rho - rho0) in A**-2.\n\
 ";
@@ -71,49 +69,32 @@ const char* doc_PDFCommon_addEnvelope = "\
 Add a PDFEnvelope object as another scaling function.\n\
 This replaces any existing PDFEnvelope of the same string type.\n\
 \n\
-envlp    -- instance of PDFEnvelope that defines the scaling function.\n\
-\n\
-No return value.\n\
-";
-
-const char* doc_PDFCommon_addEnvelopeByType = "\
-Add a scaling PDFEnvelope object of the specified string type.\n\
-This replaces any existing PDFEnvelope of the same type.\n\
-\n\
-tp       -- string identifier of a registered PDFEnvelope type.\n\
-            Use PDFEnvelope.getRegisteredTypes for the allowed values.\n\
+envlp    -- instance of PDFEnvelope that defines the scaling function or\n\
+            a string type for a registered PDFEnvelope class.\n\
+            Use PDFEnvelope.getRegisteredTypes for the available\n\
+            string values.\n\
 \n\
 No return value.\n\
 ";
 
 const char* doc_PDFCommon_popEnvelope = "\
-Remove a PDFEnvelope object from an internal list of scaling functions.\n\
+Remove PDFEnvelope object from an internal list of scaling functions.\n\
 \n\
-envlp    -- instance of PDFEnvelope object to be removed.\n\
-            No action if envlp is not present in the calculator.\n\
-            See the 'envelopes' attribute for a list of active\n\
-            PDFEnvelope instances.\n\
-\n\
-No return value.\n\
-";
-
-const char* doc_PDFCommon_popEnvelopeByType = "\
-Remove a PDFEnvelope of the specified type from the internal list\n\
-of scaling functions.\n\
-\n\
-tp       -- string identifier of a registered PDFEnvelope type.\n\
-            No action if the envelope type tp does not exist.\n\
-            See the 'usedenvelopetypes' attribute for a list\n\
-            of active PDFEnvelope types.\n\
+envlp    -- instance of PDFEnvelope object or a string type of a registered\n\
+            PDFEnvelope class to be removed.  No action if envlp is not\n\
+            present in the calculator.  See the 'envelopes' attribute for a\n\
+            tuple of active PDFEnvelope instances or the 'usedenvelopetypes'\n\
+            attribute for the corresponding string types.\n\
 \n\
 No return value.\n\
 ";
 
-const char* doc_PDFCommon_getEnvelopeByType = "\
+const char* doc_PDFCommon_getEnvelope = "\
 Retrieve an active PDFEnvelope object by its string type.\n\
 \n\
-tp       -- string type of a PDFEnvelope object that is present\n\
-            in the calculator.\n\
+tp   -- string type of a PDFEnvelope object that is present in\n\
+        the calculator.  See the 'usedenvelopetypes' attribute\n\
+        for the present string types.\n\
 \n\
 Return a PDFEnvelope instance.\n\
 Raise ValueError it type tp is not present.\n\
@@ -145,29 +126,16 @@ Calculate PDF using the real-space summation of PeakProfile functions.\n\
 
 const char* doc_PDFCalculator_peakprofile = "\
 Instance of PeakProfile that calculates the real-space profile for\n\
-a single atom-pair contribution.\n\
-";
-
-const char* doc_PDFCalculator_setPeakProfileByType = "\
-Set the PeakProfile object according to the specified string type.\n\
-\n\
-tp   -- string identifier of a registered PeakProfile class.\n\
-        Use PeakProfile.getRegisteredTypes for the allowed values.\n\
-\n\
-No return value.\n\
+a single atom-pair contribution.  This can be assigned either a\n\
+PeakProfile-derived object or a string type of a registered PeakProfile\n\
+class.  Use PeakProfile.getRegisteredTypes() for the allowed values.\n\
 ";
 
 const char* doc_PDFCalculator_baseline = "\
 Instance of PDFBaseline that calculates unscaled baseline at r.\n\
-";
-
-const char* doc_PDFCalculator_setBaselineByType = "\
-Set the PDFBaseline object according to the specified string type.\n\
-\n\
-tp   -- string identifier of a registered PDFBaseline class.\n\
-        Use PDFBaseline.getRegisteredTypes for the allowed values.\n\
-\n\
-No return value.\n\
+The baseline property can be assigned either a PDFBaseline-derived\n\
+object or a string type of a registered PDFBaseline class.\n\
+Use PDFBaseline.getRegisteredTypes() for the set of allowed values.\n\
 ";
 
 const char* doc_fftftog = "\
@@ -327,7 +295,7 @@ C& wrap_PDFCommon(C& boostpythonclass)
         .def("popEnvelope", popenvelope<W>,
                 doc_PDFCommon_popEnvelope)
         .def("getEnvelope", getoneenvelope<W>,
-                bp::arg("tp"), doc_PDFCommon_getEnvelopeByType)
+                bp::arg("tp"), doc_PDFCommon_getEnvelope)
         .def("clearEnvelopes", &W::clearEnvelopes,
                 doc_PDFCommon_clearEnvelopes)
         ;
