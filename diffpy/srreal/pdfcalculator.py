@@ -29,7 +29,8 @@ __all__ = '''DebyePDFCalculator PDFCalculator
 from diffpy.srreal.srreal_ext import DebyePDFCalculator
 from diffpy.srreal.srreal_ext import PDFCalculator
 from diffpy.srreal.srreal_ext import fftftog, fftgtof
-from diffpy.srreal.srreal_ext import PDFBaseline, PDFEnvelope
+from diffpy.srreal.srreal_ext import PDFBaseline, ZeroBaseline, LinearBaseline
+from diffpy.srreal.srreal_ext import PDFEnvelope
 from diffpy.srreal.srreal_ext import PeakProfile, PeakWidthModel
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
 from diffpy.srreal.wraputils import setattrFromKeywordArguments
@@ -255,6 +256,20 @@ def _baseline_create(s):
 PDFBaseline.__getstate__ = _baseline_getstate
 PDFBaseline.__setstate__ = _baseline_setstate
 PDFBaseline.__reduce__ = _baseline_reduce
+
+ZeroBaseline.__getstate__ = _baseline_getstate
+ZeroBaseline.__setstate__ = _baseline_setstate
+ZeroBaseline.__reduce__ = _baseline_reduce
+
+LinearBaseline.__getstate__ = _baseline_getstate
+LinearBaseline.__setstate__ = _baseline_setstate
+LinearBaseline.__reduce__ = _baseline_reduce
+
+# attribute wrapper
+
+LinearBaseline.slope = propertyFromExtDoubleAttr('slope',
+    '''Slope of an unscaled linear baseline.  For crystal structures it
+    is preset to (-4 * pi * rho0).''')
 
 # Python functions wrapper
 

@@ -20,6 +20,8 @@
 #include <boost/python.hpp>
 
 #include <diffpy/srreal/PDFBaseline.hpp>
+#include <diffpy/srreal/ZeroBaseline.hpp>
+#include <diffpy/srreal/LinearBaseline.hpp>
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
@@ -84,6 +86,14 @@ Return a new instance of the PDFBaseline-derived class.\n\
 const char* doc_PDFBaseline_getRegisteredTypes = "\
 Return a set of string types of the registered PDFBaseline classes.\n\
 These are the allowed arguments for the createByType factory.\n\
+";
+
+const char* doc_ZeroBaseline = "\
+Trivial baseline function that is always zero, no baseline.\n\
+";
+
+const char* doc_LinearBaseline = "\
+PDF baseline function equal to (slope * r).\n\
 ";
 
 // wrappers ------------------------------------------------------------------
@@ -189,6 +199,11 @@ void wrap_PDFBaseline()
         ;
 
     register_ptr_to_python<PDFBaselinePtr>();
+
+    class_<ZeroBaseline, bases<PDFBaseline> >(
+            "ZeroBaseline", doc_ZeroBaseline);
+    class_<LinearBaseline, bases<PDFBaseline> >(
+            "LinearBaseline", doc_ZeroBaseline);
 
     // pickling support functions
     def("_PDFBaseline_tostring", baseline_tostring);

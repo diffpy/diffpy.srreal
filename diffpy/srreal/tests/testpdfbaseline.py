@@ -9,6 +9,7 @@ import unittest
 import cPickle
 
 from diffpy.srreal.pdfcalculator import PDFBaseline, makePDFBaseline
+from diffpy.srreal.pdfcalculator import ZeroBaseline, LinearBaseline
 
 ##############################################################################
 class TestPDFBaseline(unittest.TestCase):
@@ -79,6 +80,8 @@ class TestPDFBaseline(unittest.TestCase):
         self.assertRaises(RuntimeError, PDFBaseline().type)
         self.assertEqual('linear', self.linear.type())
         self.assertEqual('zero', self.zero.type())
+        self.assertTrue(type(self.linear) is LinearBaseline)
+        self.assertTrue(type(self.zero) is ZeroBaseline)
         return
 
 
