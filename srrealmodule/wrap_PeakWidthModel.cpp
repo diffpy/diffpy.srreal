@@ -33,8 +33,6 @@ using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
 
-// FIXME merge in all unused ByType docstrings...
-
 const char* doc_PeakWidthModel = "\
 Base class for functors that calculate the PDF peak widths.\n\
 Peak width is defined as full width at half maximum (FWHM).\n\
@@ -92,7 +90,7 @@ Return new PeakWidthModel instance.\n\
 const char* doc_PeakWidthModel_getRegisteredTypes = "\
 Set of string identifiers for registered PeakWidthModel classes.\n\
 These are the allowed arguments for the createByType method and\n\
-setPeakWidthModelByType methods in the PDF calculator classes.\n\
+peakwidthmodel attribute in the PDF calculator classes.\n\
 ";
 
 const char* doc_PeakWidthModelOwner = "\
@@ -101,18 +99,10 @@ Base class for classes that own PeakWidthModel instance.\n\
 
 const char* doc_PeakWidthModelOwner_peakwidthmodel = "\
 PeakWidthModel object used for calculating the FWHM of the PDF peaks.\n\
-This can be also set with the setPeakWidthModelByType method.\n\
+This attribute can be assigned either a PeakWidthModel-derived object\n\
+or a string name of a registered PeakWidthModel class.\n\
+Use PeakWidthModel.getRegisteredTypes() for a set of registered names.\n\
 ";
-
-const char* doc_PeakWidthModelOwner_setPeakWidthModelByType = "\
-Set the peakwidthmodel attribute according to specified string type.\n\
-\n\
-tp   -- string identifier of a registered PeakWidthModel type.\n\
-        Use PeakWidthModel.getRegisteredTypes for the allowed values.\n\
-\n\
-No return value.\n\
-";
-
 
 // wrappers ------------------------------------------------------------------
 
