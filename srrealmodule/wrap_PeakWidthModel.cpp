@@ -72,6 +72,8 @@ rmax -- upper bound for the PDF calculation\n\
 Return float.\n\
 ";
 
+const char* doc_PeakWidthModel_ticker = "FIXME";
+
 const char* doc_PeakWidthModel__registerThisType = "\
 Add this instance to the global registry of PeakWidthModel types.\n\
 \n\
@@ -160,6 +162,20 @@ class PeakWidthModelWrap :
             return f(stru, rmin, rmax);
         }
 
+        // Make the ticker method overloadable from Python
+
+        diffpy::eventticker::EventTicker& ticker() const
+        {
+            override f = this->get_override("ticker");
+            if (f)  return f();
+            return this->default_ticker();
+        }
+
+        diffpy::eventticker::EventTicker& default_ticker() const
+        {
+            return this->PeakWidthModel::ticker();
+        }
+
     protected:
 
         // HasClassRegistry method
@@ -201,6 +217,10 @@ void wrap_PeakWidthModel()
                 &PeakWidthModel::maxWidth,
                 (bp::arg("stru"), bp::arg("rmin"), bp::arg("rmax")),
                 doc_PeakWidthModel_maxWidth)
+        .def("ticker",
+                &PeakWidthModel::ticker,
+                return_internal_reference<>(),
+                doc_PeakWidthModel_ticker)
         .def("_registerThisType", &PeakWidthModel::registerThisType,
                 doc_PeakWidthModel__registerThisType)
         .def("createByType", &PeakWidthModel::createByType,
