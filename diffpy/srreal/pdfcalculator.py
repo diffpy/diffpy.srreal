@@ -25,7 +25,7 @@ __all__ = '''DebyePDFCalculator PDFCalculator
     PDFBaseline makePDFBaseline ZeroBaseline LinearBaseline
     PDFEnvelope makePDFEnvelope
     PeakProfile
-    PeakWidthModel
+    PeakWidthModel ConstantPeakWidth DebyeWallerPeakWidth JeongPeakWidth
     fftftog fftgtof
     '''.split()
 
@@ -34,7 +34,9 @@ from diffpy.srreal.srreal_ext import PDFCalculator
 from diffpy.srreal.srreal_ext import fftftog, fftgtof
 from diffpy.srreal.srreal_ext import PDFBaseline, ZeroBaseline, LinearBaseline
 from diffpy.srreal.srreal_ext import PDFEnvelope
-from diffpy.srreal.srreal_ext import PeakProfile, PeakWidthModel
+from diffpy.srreal.srreal_ext import PeakProfile
+from diffpy.srreal.srreal_ext import PeakWidthModel, ConstantPeakWidth
+from diffpy.srreal.srreal_ext import DebyeWallerPeakWidth, JeongPeakWidth
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
 from diffpy.srreal.wraputils import setattrFromKeywordArguments
 

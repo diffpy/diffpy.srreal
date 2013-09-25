@@ -21,6 +21,9 @@
 #include <string>
 
 #include <diffpy/srreal/PeakWidthModel.hpp>
+#include <diffpy/srreal/ConstantPeakWidth.hpp>
+#include <diffpy/srreal/DebyeWallerPeakWidth.hpp>
+#include <diffpy/srreal/JeongPeakWidth.hpp>
 
 #include "srreal_converters.hpp"
 
@@ -94,6 +97,10 @@ Set of string identifiers for registered PeakWidthModel classes.\n\
 These are the allowed arguments for the createByType method and\n\
 peakwidthmodel attribute in the PDF calculator classes.\n\
 ";
+
+const char* doc_ConstantPeakWidth = "FIXME";
+const char* doc_DebyeWallerPeakWidth = "FIXME";
+const char* doc_JeongPeakWidth = "FIXME";
 
 const char* doc_PeakWidthModelOwner = "\
 Base class for classes that own PeakWidthModel instance.\n\
@@ -232,6 +239,18 @@ void wrap_PeakWidthModel()
         ;
 
     register_ptr_to_python<PeakWidthModelPtr>();
+
+    class_<ConstantPeakWidth, bases<PeakWidthModel> >(
+            "ConstantPeakWidth", doc_ConstantPeakWidth)
+        ;
+
+    class_<DebyeWallerPeakWidth, bases<PeakWidthModel> >(
+            "DebyeWallerPeakWidth", doc_DebyeWallerPeakWidth)
+        ;
+
+    class_<JeongPeakWidth, bases<PeakWidthModel> >(
+            "JeongPeakWidth", doc_JeongPeakWidth)
+        ;
 
     class_<PeakWidthModelOwner>("PeakWidthModelOwner", doc_PeakWidthModelOwner)
         .add_property("peakwidthmodel",
