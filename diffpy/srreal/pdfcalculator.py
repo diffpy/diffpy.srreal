@@ -22,8 +22,11 @@ class PDFCalculator      -- PDF calculator in real space
 
 # exported items
 __all__ = '''DebyePDFCalculator PDFCalculator
-    PDFBaseline PDFEnvelope PeakProfile PeakWidthModel
-    makePDFBaseline makePDFEnvelope fftftog fftgtof
+    PDFBaseline makePDFBaseline ZeroBaseline LinearBaseline
+    PDFEnvelope makePDFEnvelope
+    PeakProfile
+    PeakWidthModel
+    fftftog fftgtof
     '''.split()
 
 from diffpy.srreal.srreal_ext import DebyePDFCalculator
