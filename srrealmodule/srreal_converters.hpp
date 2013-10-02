@@ -227,8 +227,7 @@ convertToNumPyArray(Iter first, Iter last)
 inline ::boost::python::object
 convertToNumPyArray(const ::diffpy::srreal::R3::Vector& value)
 {
-    using diffpy::srreal::R3::Ndim;
-    return convertToNumPyArray(&(value[0]), &(value[Ndim]));
+    return convertToNumPyArray(value.begin(), value.end());
 }
 
 
