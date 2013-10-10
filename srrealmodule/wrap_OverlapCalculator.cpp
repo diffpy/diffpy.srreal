@@ -1,3 +1,4 @@
+#include "/Users/pjuhas/arch/x86_64/include/dbprint.h"
 /*****************************************************************************
 *
 * diffpy.srreal     by DANSE Diffraction group
@@ -158,7 +159,7 @@ DECLARE_BYTYPE_SETTER_WRAPPER(setAtomRadiiTable, setatomradiitable)
 
 
 class OverlapCalculatorPickleSuite :
-    public SerializationPickleSuite<OverlapCalculator>
+    public SerializationPickleSuite<OverlapCalculator, DICT_IGNORE>
 {
     private:
 
@@ -168,8 +169,12 @@ class OverlapCalculatorPickleSuite :
 
         static boost::python::tuple getstate(boost::python::object obj)
         {
+            const OverlapCalculator& oc = extract<const OverlapCalculator&>(obj);
+            OverlapCalculator oc2;
+            std::string content = serialization_tostring(oc2);
+DBPRINT(content.size());
             boost::python::tuple rv = boost::python::make_tuple(
-                    Super::getstate(obj), obj.attr("atomradiitable"));
+                    content, obj.attr("atomradiitable"));
             return rv;
         }
 
