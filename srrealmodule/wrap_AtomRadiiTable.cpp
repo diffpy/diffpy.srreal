@@ -17,6 +17,7 @@
 *****************************************************************************/
 
 #include <boost/python.hpp>
+#include <boost/serialization/export.hpp>
 
 #include <diffpy/srreal/AtomRadiiTable.hpp>
 #include <diffpy/srreal/ConstantRadiiTable.hpp>
@@ -230,6 +231,15 @@ class AtomRadiiTableWrap :
         mutable std::string mtype;
         wrapper_registry_configurator<AtomRadiiTable> mconfigurator;
 
+        // serialization
+        friend class boost::serialization::access;
+        template<class Archive>
+            void serialize(Archive& ar, const unsigned int version)
+        {
+            using boost::serialization::base_object;
+            ar & base_object<AtomRadiiTable>(*this);
+        }
+
 };  // class AtomRadiiTableWrap
 
 }   // namespace nswrap_AtomRadiiTable
@@ -312,5 +322,11 @@ void wrap_AtomRadiiTable()
 }
 
 }   // namespace srrealmodule
+
+// Serialization -------------------------------------------------------------
+
+BOOST_CLASS_EXPORT(diffpy::srreal::ConstantRadiiTable)
+BOOST_CLASS_EXPORT(srrealmodule::nswrap_AtomRadiiTable::AtomRadiiTableWrap)
+DIFFPY_INSTANTIATE_SERIALIZE(srrealmodule::nswrap_AtomRadiiTable::AtomRadiiTableWrap)
 
 // End of file
