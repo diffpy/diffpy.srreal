@@ -154,10 +154,7 @@ AtomRadiiTablePtr getatomradiitable(OverlapCalculator& obj)
     return obj.getAtomRadiiTable();
 }
 
-void setatomradiitable(OverlapCalculator& obj, AtomRadiiTablePtr rtb)
-{
-    obj.setAtomRadiiTable(rtb);
-}
+DECLARE_BYTYPE_SETTER_WRAPPER(setAtomRadiiTable, setatomradiitable)
 
 
 class OverlapCalculatorPickleSuite :
@@ -255,7 +252,8 @@ void wrap_OverlapCalculator()
                 neighborhoods_aslistset<OverlapCalculator>,
                 doc_OverlapCalculator_neighborhoods)
         .add_property("atomradiitable",
-                getatomradiitable, setatomradiitable,
+                getatomradiitable,
+                setatomradiitable<OverlapCalculator,AtomRadiiTable>,
                 doc_OverlapCalculator_atomradiitable)
         .def_pickle(OverlapCalculatorPickleSuite())
         ;
