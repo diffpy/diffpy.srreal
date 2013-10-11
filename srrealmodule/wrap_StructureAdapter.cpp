@@ -324,7 +324,7 @@ StructureAdapterPtr
 createStructureAdapterFromString(const std::string& content)
 {
     StructureAdapterPtr adpt;
-    serialization_fromstring(adpt, content);
+    diffpy::serialization_fromstring(adpt, content);
     return adpt;
 }
 
@@ -335,7 +335,7 @@ class StructureAdapterPickleSuite : public pickle_suite
 
         static python::tuple getinitargs(StructureAdapterPtr adpt)
         {
-            std::string content = serialization_tostring(adpt);
+            std::string content = diffpy::serialization_tostring(adpt);
             return python::make_tuple(content);
         }
 

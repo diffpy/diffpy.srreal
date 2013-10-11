@@ -27,27 +27,6 @@
 
 namespace srrealmodule {
 
-template <class T>
-std::string serialization_tostring(const T& tobj)
-{
-    using namespace std;
-    ostringstream storage(ios::binary);
-    diffpy::serialization::oarchive oa(storage, ios::binary);
-    oa << tobj;
-    return storage.str();
-}
-
-
-template <class T>
-void serialization_fromstring(T& tobj, const std::string& s)
-{
-    using namespace std;
-    istringstream storage(s, ios::binary);
-    diffpy::serialization::iarchive ia(storage, ios::binary);
-    ia >> tobj;
-}
-
-
 inline
 void ensure_tuple_length(boost::python::tuple state, const int statelen)
 {
@@ -70,7 +49,7 @@ class SerializationPickleSuite : public boost::python::pickle_suite
         {
             using namespace std;
             const T& tobj = boost::python::extract<const T&>(obj);
-            string content = serialization_tostring(tobj);
+            string content = diffpy::serialization_tostring(tobj);
             boost::python::tuple rv = pickledict ?
                 boost::python::make_tuple(content, obj.attr("__dict__")) :
                 boost::python::make_tuple(content);
@@ -88,7 +67,7 @@ class SerializationPickleSuite : public boost::python::pickle_suite
             ensure_tuple_length(state, statelen);
             // load the C++ object
             string content = extract<string>(state[0]);
-            serialization_fromstring(tobj, content);
+            diffpy::serialization_fromstring(tobj, content);
             // restore the object's __dict__
             if (pickledict)
             {

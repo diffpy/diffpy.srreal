@@ -145,14 +145,14 @@ class PDFEnvelopeWrap :
 
 std::string envelope_tostring(PDFEnvelopePtr obj)
 {
-    return serialization_tostring(obj);
+    return diffpy::serialization_tostring(obj);
 }
 
 
 PDFEnvelopePtr envelope_fromstring(std::string content)
 {
     PDFEnvelopePtr rv;
-    serialization_fromstring(rv, content);
+    diffpy::serialization_fromstring(rv, content);
     return rv;
 }
 

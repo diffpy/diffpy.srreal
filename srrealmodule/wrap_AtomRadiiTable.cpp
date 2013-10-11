@@ -325,8 +325,6 @@ void wrap_AtomRadiiTable()
 
 // Serialization -------------------------------------------------------------
 
-BOOST_CLASS_EXPORT(diffpy::srreal::ConstantRadiiTable)
 BOOST_CLASS_EXPORT(srrealmodule::nswrap_AtomRadiiTable::AtomRadiiTableWrap)
-DIFFPY_INSTANTIATE_SERIALIZE(srrealmodule::nswrap_AtomRadiiTable::AtomRadiiTableWrap)
 
 // End of file

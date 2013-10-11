@@ -155,14 +155,14 @@ class PDFBaselineWrap :
 
 std::string baseline_tostring(PDFBaselinePtr obj)
 {
-    return serialization_tostring(obj);
+    return diffpy::serialization_tostring(obj);
 }
 
 
 PDFBaselinePtr baseline_fromstring(std::string content)
 {
     PDFBaselinePtr rv;
-    serialization_fromstring(rv, content);
+    diffpy::serialization_fromstring(rv, content);
     return rv;
 }
 
