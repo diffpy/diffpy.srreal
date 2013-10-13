@@ -316,7 +316,7 @@ void wrap_AtomRadiiTable()
         .def("getDefault",
                 &ConstantRadiiTable::getDefault,
                 doc_ConstantRadiiTable_getDefault)
-        .def_pickle(SerializationPickleSuite<ConstantRadiiTable,DICT_PICKLE>())
+        .def_pickle(SerializationPickleSuite<ConstantRadiiTable,DICT_IGNORE>())
         ;
 
 }

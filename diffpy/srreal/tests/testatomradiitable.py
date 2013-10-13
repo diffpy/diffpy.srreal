@@ -32,7 +32,7 @@ class TestAtomRadiiTable(unittest.TestCase):
         self.ctb.setDefault(3.7)
         ctb2 = cPickle.loads(cPickle.dumps(self.ctb))
         self.assertEqual({'Na' : 1.3}, ctb2.getAllCustom())
-        self.assertEqual('foo', ctb2.foobar)
+        self.assertFalse(hasattr(ctb2, 'foobar'))
         self.assertEqual(3.7, ctb2.getDefault())
         return
 

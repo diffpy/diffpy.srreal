@@ -84,6 +84,26 @@ class TestOverlapCalculator(unittest.TestCase):
             olc.sitesquareoverlaps, olc1.sitesquareoverlaps))
         return
 
+    def test_pickling_artb(self):
+        '''check pickling and unpickling of OverlapCalculator.atomradiitable.
+        '''
+        from diffpy.srreal.atomradiitable import CovalentRadiiTable
+        olc = self.olc
+        olc.atomradiitable.setDefault(1.3)
+        spkl = cPickle.dumps(olc)
+        olc1 = cPickle.loads(spkl)
+        self.assertFalse(olc is olc1)
+        self.assertEqual(1.3, olc1.atomradiitable.getDefault())
+        olc.atomradiitable = CovalentRadiiTable()
+        olc.atomradiitable.setCustom('Na', 2)
+        olc.atomradiitable.foo = 123
+        spkl2 = cPickle.dumps(olc)
+        olc2 = cPickle.loads(spkl2)
+        self.assertEqual(2, olc2.atomradiitable.lookup('Na'))
+        self.assertEqual(1, len(olc2.atomradiitable.getAllCustom()))
+        self.assertEqual(123, olc2.atomradiitable.foo)
+        return
+
     def test_parallel(self):
         """check parallel run of OverlapCalculator
         """
