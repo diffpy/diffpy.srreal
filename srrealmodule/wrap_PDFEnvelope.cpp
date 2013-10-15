@@ -20,6 +20,10 @@
 #include <boost/python.hpp>
 
 #include <diffpy/srreal/PDFEnvelope.hpp>
+#include <diffpy/srreal/QResolutionEnvelope.hpp>
+#include <diffpy/srreal/ScaleEnvelope.hpp>
+#include <diffpy/srreal/SphericalShapeEnvelope.hpp>
+#include <diffpy/srreal/StepCutEnvelope.hpp>
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
@@ -85,6 +89,14 @@ const char* doc_PDFEnvelope_getRegisteredTypes = "\
 Return a set of string types of the registered PDFEnvelope classes.\n\
 These are the allowed arguments for the createByType factory.\n\
 ";
+
+const char* doc_QResolutionEnvelope = "FIXME";
+
+const char* doc_ScaleEnvelope = "FIXME";
+
+const char* doc_SphericalShapeEnvelope = "FIXME";
+
+const char* doc_StepCutEnvelope = "FIXME";
 
 // wrappers ------------------------------------------------------------------
 
@@ -189,6 +201,15 @@ void wrap_PDFEnvelope()
         ;
 
     register_ptr_to_python<PDFEnvelopePtr>();
+
+    class_<QResolutionEnvelope, bases<PDFEnvelope> >(
+            "QResolutionEnvelope", doc_QResolutionEnvelope);
+    class_<ScaleEnvelope, bases<PDFEnvelope> >(
+            "ScaleEnvelope", doc_ScaleEnvelope);
+    class_<SphericalShapeEnvelope, bases<PDFEnvelope> >(
+            "SphericalShapeEnvelope", doc_SphericalShapeEnvelope);
+    class_<StepCutEnvelope, bases<PDFEnvelope> >(
+            "StepCutEnvelope", doc_StepCutEnvelope);
 
     // pickling support functions
     def("_PDFEnvelope_tostring", envelope_tostring);

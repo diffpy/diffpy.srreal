@@ -23,7 +23,8 @@ class PDFCalculator      -- PDF calculator in real space
 # exported items
 __all__ = '''DebyePDFCalculator PDFCalculator
     PDFBaseline makePDFBaseline ZeroBaseline LinearBaseline
-    PDFEnvelope makePDFEnvelope
+    PDFEnvelope makePDFEnvelope QResolutionEnvelope ScaleEnvelope
+    SphericalShapeEnvelope StepCutEnvelope
     PeakProfile
     PeakWidthModel ConstantPeakWidth DebyeWallerPeakWidth JeongPeakWidth
     fftftog fftgtof
@@ -34,6 +35,9 @@ from diffpy.srreal.srreal_ext import PDFCalculator
 from diffpy.srreal.srreal_ext import fftftog, fftgtof
 from diffpy.srreal.srreal_ext import PDFBaseline, ZeroBaseline, LinearBaseline
 from diffpy.srreal.srreal_ext import PDFEnvelope
+from diffpy.srreal.srreal_ext import QResolutionEnvelope, ScaleEnvelope
+from diffpy.srreal.srreal_ext import SphericalShapeEnvelope, StepCutEnvelope
+from diffpy.srreal.srreal_ext import ScaleEnvelope, SphericalShapeEnvelope
 from diffpy.srreal.srreal_ext import PeakProfile
 from diffpy.srreal.srreal_ext import PeakWidthModel, ConstantPeakWidth
 from diffpy.srreal.srreal_ext import DebyeWallerPeakWidth, JeongPeakWidth
@@ -318,8 +322,22 @@ def makePDFBaseline(name, fnc, **dbattrs):
 
 # pickling support
 
+def _envelope_create(s):
+    from diffpy.srreal.srreal_ext import _PDFEnvelope_fromstring
+    return _PDFEnvelope_fromstring(s)
+
+def _envelope_reduce(self):
+    from diffpy.srreal.srreal_ext import _PDFEnvelope_tostring
+    args = (_PDFEnvelope_tostring(self),)
+    rv = (_envelope_create, args)
+    return rv
+
+def _envelope_reduce_with_state(self):
+    rv = _envelope_reduce(self) + (self.__getstate__(),)
+    return rv
+
 def _envelope_getstate(self):
-    state = (self.__dict__, )
+    state = (self.__dict__,)
     return state
 
 def _envelope_setstate(self, state):
@@ -330,21 +348,34 @@ def _envelope_setstate(self, state):
     self.__dict__.update(state[0])
     return
 
-def _envelope_reduce(self):
-    from diffpy.srreal.srreal_ext import _PDFEnvelope_tostring
-    args = (_PDFEnvelope_tostring(self),)
-    rv = (_envelope_create, args, self.__getstate__())
-    return rv
-
-def _envelope_create(s):
-    from diffpy.srreal.srreal_ext import _PDFEnvelope_fromstring
-    return _PDFEnvelope_fromstring(s)
-
 # inject pickle methods
 
+PDFEnvelope.__reduce__ = _envelope_reduce_with_state
 PDFEnvelope.__getstate__ = _envelope_getstate
 PDFEnvelope.__setstate__ = _envelope_setstate
-PDFEnvelope.__reduce__ = _envelope_reduce
+
+QResolutionEnvelope.__reduce__ = _envelope_reduce
+ScaleEnvelope.__reduce__ = _envelope_reduce
+SphericalShapeEnvelope.__reduce__ = _envelope_reduce
+StepCutEnvelope.__reduce__ = _envelope_reduce
+
+# attribute wrappers
+
+QResolutionEnvelope.qdamp = propertyFromExtDoubleAttr('qdamp',
+    '''FIXME
+    ''')
+
+ScaleEnvelope.scale = propertyFromExtDoubleAttr('scale',
+    '''FIXME
+    ''')
+
+SphericalShapeEnvelope.spdiameter = propertyFromExtDoubleAttr('spdiameter',
+    '''FIXME
+    ''')
+
+StepCutEnvelope.stepcut = propertyFromExtDoubleAttr('stepcut',
+    '''FIXME
+    ''')
 
 # Python functions wrapper
 

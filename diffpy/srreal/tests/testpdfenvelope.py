@@ -9,6 +9,9 @@ import unittest
 import cPickle
 
 from diffpy.srreal.pdfcalculator import PDFEnvelope, makePDFEnvelope
+from diffpy.srreal.pdfcalculator import PDFCalculator
+from diffpy.srreal.pdfcalculator import QResolutionEnvelope, ScaleEnvelope
+from diffpy.srreal.pdfcalculator import SphericalShapeEnvelope, StepCutEnvelope
 
 ##############################################################################
 class TestPDFEnvelope(unittest.TestCase):
@@ -103,13 +106,11 @@ class TestPDFEnvelope(unittest.TestCase):
         '''check pickling and unpickling of PDFEnvelope.
         '''
         stp = self.fstepcut
-        stp.foo = "qwer"
         stp.stepcut = 11
         stp2 = cPickle.loads(cPickle.dumps(stp))
         self.assertEqual('stepcut', stp2.type())
         self.assertEqual(11, stp2.stepcut)
         self.assertEqual(11, stp2._getDoubleAttr('stepcut'))
-        self.assertEqual("qwer", stp2.foo)
         return
 
 
@@ -132,13 +133,113 @@ class TestPDFEnvelope(unittest.TestCase):
         self.assertEqual(1, pbl3.a)
         self.assertEqual(2, pbl3.b)
         self.assertEqual(3, pbl3.c)
+        pbl3.a = 0
+        pbl3.foo = 'asdf'
+        pbl3cp = cPickle.loads(cPickle.dumps(pbl3))
+        self.assertEqual(0, pbl3cp.a)
+        self.assertEqual('asdf', pbl3cp.foo)
+        pc = PDFCalculator()
+        pc.envelopes = (pbl2,)
+        pc2 = cPickle.loads(cPickle.dumps(pc))
+        pbl2cp = pc2.envelopes[0]
+        self.assertEqual('parabolaenvelope', pbl2cp.type())
+        self.assertEqual(1, pbl2cp.a)
+        self.assertEqual(0, pbl2cp.b)
+        self.assertEqual(3, pbl2cp.c)
         return
 
-# End of class TestPDFEnvelope
+# ----------------------------------------------------------------------------
 
-# function for wrapping by makePDFEnvelope
+class TestQResolutionEnvelope(unittest.TestCase):
+
+    def setUp(self):
+        self.evlp = QResolutionEnvelope()
+
+
+    def test_type(self):
+        self.assertEqual('qresolution', self.evlp.type())
+        self.assertTrue(hasattr(self.evlp, 'qdamp'))
+        return
+
+
+    def test_pickling(self):
+        evlp = self.evlp
+        evlp.qdamp = 3
+        evlp2 = cPickle.loads(cPickle.dumps(evlp))
+        self.assertEqual(QResolutionEnvelope, type(evlp2))
+        self.assertEqual(3, evlp2.qdamp)
+        return
+
+# ----------------------------------------------------------------------------
+
+class TestScaleEnvelope(unittest.TestCase):
+
+    def setUp(self):
+        self.evlp = ScaleEnvelope()
+
+
+    def test_type(self):
+        self.assertEqual('scale', self.evlp.type())
+        self.assertTrue(hasattr(self.evlp, 'scale'))
+        return
+
+
+    def test_pickling(self):
+        evlp = self.evlp
+        evlp.scale = 3
+        evlp2 = cPickle.loads(cPickle.dumps(evlp))
+        self.assertEqual(ScaleEnvelope, type(evlp2))
+        self.assertEqual(3, evlp2.scale)
+        return
+
+# ----------------------------------------------------------------------------
+
+class TestSphericalShapeEnvelope(unittest.TestCase):
+
+    def setUp(self):
+        self.evlp = SphericalShapeEnvelope()
+
+
+    def test_type(self):
+        self.assertEqual('sphericalshape', self.evlp.type())
+        self.assertTrue(hasattr(self.evlp, 'spdiameter'))
+        return
+
+
+    def test_pickling(self):
+        evlp = self.evlp
+        evlp.spdiameter = 3
+        evlp2 = cPickle.loads(cPickle.dumps(evlp))
+        self.assertEqual(SphericalShapeEnvelope, type(evlp2))
+        self.assertEqual(3, evlp2.spdiameter)
+        return
+
+# ----------------------------------------------------------------------------
+
+class TestStepCutEnvelope(unittest.TestCase):
+
+    def setUp(self):
+        self.evlp = StepCutEnvelope()
+
+
+    def test_type(self):
+        self.assertEqual('stepcut', self.evlp.type())
+        self.assertTrue(hasattr(self.evlp, 'stepcut'))
+        return
+
+
+    def test_pickling(self):
+        evlp = self.evlp
+        evlp.stepcut = 3
+        evlp2 = cPickle.loads(cPickle.dumps(evlp))
+        self.assertEqual(StepCutEnvelope, type(evlp2))
+        self.assertEqual(3, evlp2.stepcut)
+        return
+
+# ----------------------------------------------------------------------------
 
 def parabola_envelope(x, a, b, c):
+    'parabola function for wrapping by makePDFEnvelope'
     return a * x**2 + b * x + c
 
 if __name__ == '__main__':
