@@ -31,17 +31,36 @@ using diffpy::eventticker::EventTicker;
 // docstrings ----------------------------------------------------------------
 
 const char* doc_EventTicker = "\
-FIXME.\n\
+Class for storing modification 'times' of dependent objects\n\
+The default EventTicker object is initialized to a zero time.\n\
 ";
 
-const char* doc_EventTicker_cp = "FIXME";
+const char* doc_EventTicker_cp = "\
+Constructor EventTicker at the same modification time as the source.\n\
+";
+
 const char* doc_EventTicker___repr__ = "\
 String representation of the EventTicker object\n\
 ";
 
-const char* doc_EventTicker_click = "FIXME";
-const char* doc_EventTicker_updateFrom = "FIXME";
-const char* doc_EventTicker__value = "FIXME";
+const char* doc_EventTicker_click = "\
+Increment ticker value to the latest unique time.\n\
+";
+
+const char* doc_EventTicker_updateFrom = "\
+Update ticker time to the value of other, newer ticker.\n\
+Keep original value if the other ticker is older.\n\
+\n\
+other    -- instance of another EventTicker object\n\
+\n\
+No return value.\n\
+";
+
+const char* doc_EventTicker__value = "\
+Return the internal time for this ticker.  This is a tuple of 2 integers,\n\
+where the latter is the total number of click calls at the last update\n\
+and the first one is zero unless there was an integer overflow.\n\
+";
 
 // wrappers ------------------------------------------------------------------
 
@@ -78,6 +97,7 @@ void wrap_EventTicker()
         .def(self > self)
         .def(self >= self)
         .def(self == self)
+        .def(self != self)
         .def("click", &EventTicker::click,
                 doc_EventTicker_click)
         .def("updateFrom", &EventTicker::updateFrom,

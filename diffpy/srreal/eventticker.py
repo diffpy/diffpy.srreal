@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 ##############################################################################
 #
-# diffpy.srreal     by DANSE Diffraction group
-#                   Simon J. L. Billinge
-#                   (c) 2010 Trustees of the Columbia University
-#                   in the City of New York.  All rights reserved.
+# diffpy.srreal     Complex Modeling Initiative
+#                   Pavol Juhas
+#                   (c) 2013 Brookhaven National Laboratory,
+#                   Upton, New York.  All rights reserved.
 #
 # File coded by:    Pavol Juhas
 #
@@ -15,13 +15,13 @@
 
 
 """\
-class PairQuantity    -- base class for Python defined calculators.
+class EventTicker -- storage of modification times of dependent objects
 """
 
 
 # exported items
-__all__ = ['PairQuantity']
+__all__ = ['EventTicker']
 
-from diffpy.srreal.srreal_ext import PairQuantity
+from diffpy.srreal.srreal_ext import EventTicker
 
 # End of file
