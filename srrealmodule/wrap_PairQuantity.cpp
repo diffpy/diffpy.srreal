@@ -188,7 +188,12 @@ Return boolean mask.  The value is meaningless for index-based\n\
 masking.  Use getTypeMask('', '') to get the default pair mask.\n\
 ";
 
-const char* doc_BasePairQuantity_ticker = "FIXME";
+const char* doc_BasePairQuantity_ticker = "\
+Return EventTicker object with the last configuration change time.\n\
+\n\
+The ticker should be clicked on every configuration change that\n\
+requires reevaluation of the PairQuantity even for constant structure.\n\
+";
 
 const char* doc_BasePairQuantity_copy = "\
 Return a deep copy of this PairQuantity object.\n\
@@ -200,7 +205,14 @@ No action by default.  Concrete calculators must overload the\n\
 _addPairContribution method to get some results.\n\
 ";
 
-const char* doc_PairQuantity_ticker = "FIXME";
+const char* doc_PairQuantity_ticker = "\
+Return EventTicker object with the last configuration change time.\n\
+\n\
+The ticker should be clicked on every configuration change that\n\
+requires reevaluation of the PairQuantity even for constant structure.\n\
+\n\
+This method can be overloaded in the derived class.\n\
+";
 
 const char* doc_PairQuantity__getParallelData = "\
 Return raw results string from a parallel job.\n\
