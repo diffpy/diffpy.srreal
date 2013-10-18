@@ -149,6 +149,20 @@ class TestBVSCalculator(unittest.TestCase):
         return
 
 
+    def test_table_pickling(self):
+        '''Check if bvparamtable gets correctly pickled and restored.
+        '''
+        self.bvc.bvparamtable.setCustom('A', 1, 'B', -2, 7, 8)
+        bvc1 = cPickle.loads(cPickle.dumps(self.bvc))
+        bpab = bvc1.bvparamtable.lookup('A+', 'B2-')
+        self.assertEqual("A", bpab.atom0)
+        self.assertEqual(1, bpab.valence0)
+        self.assertEqual("B", bpab.atom1)
+        self.assertEqual(-2, bpab.valence1)
+        self.assertEqual(7, bpab.Ro)
+        self.assertEqual(8, bpab.B)
+        return
+
 # End of class TestBVSCalculator
 
 if __name__ == '__main__':

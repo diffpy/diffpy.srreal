@@ -112,6 +112,17 @@ Return a BVParam object with the looked up data.\n\
 Return BVParametersTable.none() if bond valence data do not exist.\n\
 ";
 
+const char* doc_BVParametersTable_lookup2 = "\
+Lookup bond valence parameters by cation-anion pair.\n\
+The cation-anion order may be flipped.\n\
+\n\
+smbl0    -- symbol of the first ion with charge, e.g., \"Na+\"\n\
+smbl1    -- symbol of the second ion with charge, e.g., \"O2-\"\n\
+\n\
+Return a BVParam object with the looked up data.\n\
+Return BVParametersTable.none() if bond valence data do not exist.\n\
+";
+
 const char* doc_BVParametersTable_lookup4 = "\
 Lookup bond valence parameters by cation-anion pair.\n\
 The cation-anion order may be flipped.\n\
@@ -232,6 +243,8 @@ void wrap_BVParametersTable()
 
     typedef const BVParam&(BVParametersTable::*bptb_bvparam_1)(
             const BVParam&) const;
+    typedef const BVParam&(BVParametersTable::*bptb_bvparam_2)(
+            const string&, const string&) const;
     typedef const BVParam&(BVParametersTable::*bptb_bvparam_4)(
             const string&, int, const string&, int) const;
     typedef void(BVParametersTable::*bptb_void_1)(
@@ -244,6 +257,10 @@ void wrap_BVParametersTable()
         .staticmethod("none")
         .def("lookup", bptb_bvparam_1(&BVParametersTable::lookup),
                 arg("bvparam"), doc_BVParametersTable_lookup1,
+                return_value_policy<copy_const_reference>())
+        .def("lookup", bptb_bvparam_2(&BVParametersTable::lookup),
+                (arg("smbl0"), arg("smbl1")),
+                doc_BVParametersTable_lookup2,
                 return_value_policy<copy_const_reference>())
         .def("lookup", bptb_bvparam_4(&BVParametersTable::lookup),
                 (arg("atom0"), arg("valence0"), arg("atom1"), arg("valence1")),
