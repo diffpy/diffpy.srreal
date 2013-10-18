@@ -225,6 +225,7 @@ void wrap_BVParametersTable()
                     arg("ref_id")="")))
         .def("__repr__", repr_BVParam, doc_BVParam___repr__)
         .def(self == self)
+        .def(self != self)
         .def("bondvalence", &BVParam::bondvalence,
                 arg("distance"), doc_BVParam_bondvalence)
         .def("bondvalenceToDistance", &BVParam::bondvalenceToDistance,
