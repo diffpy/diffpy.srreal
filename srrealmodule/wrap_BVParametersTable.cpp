@@ -204,8 +204,15 @@ object repr_BVParam(const BVParam& bp)
 
 object singleton_none()
 {
-    static object rv(BVParametersTable::none());
-    return rv;
+    const char* nameofnone = "__BVParam_singleton_none";
+    object mod = import("diffpy.srreal.srreal_ext");
+    static bool noneassigned = false;
+    if (!noneassigned)
+    {
+        mod.attr(nameofnone) = object(BVParametersTable::none());
+        noneassigned = true;
+    }
+    return mod.attr(nameofnone);
 }
 
 }   // namespace nswrap_BVParametersTable

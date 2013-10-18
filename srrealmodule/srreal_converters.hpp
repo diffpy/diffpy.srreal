@@ -376,7 +376,7 @@ class wrapper_registry_configurator
 
         /// the setup function should be executed just once from the
         /// HasClassRegistry::setupRegisteredObject method in the wrapper
-        /// class.  This insures the Python object in a prototype factory
+        /// class.  This ensures the Python object in a prototype factory
         /// stays alive when the process is shut down.
         void setup(TSharedPtr ptr) const
         {
