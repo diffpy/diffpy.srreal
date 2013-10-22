@@ -41,3 +41,6 @@ nosetests.xml
 .pydevproject
 setup.cfg
 .gdb_history
+
+# Documentation
+doc/manual/_build
