@@ -48,7 +48,7 @@ copyright = u'2013, Pavol Juhás, Christopher L. Farrow'
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
-pkginfopath = os.path.normpath('../../diffpy.srreal.egg-info/PKG-INFO')
+pkginfopath = os.path.normpath('../../../diffpy.srreal.egg-info/PKG-INFO')
 versionline = [line for line in open(pkginfopath)
         if line.startswith('Version:')][0]
 fullversion = versionline.split()[-1]
@@ -74,7 +74,7 @@ copyright = copyright.replace('%Y', year)
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build']
+exclude_patterns = []
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
