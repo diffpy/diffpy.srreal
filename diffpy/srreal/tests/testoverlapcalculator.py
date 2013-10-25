@@ -239,6 +239,8 @@ class TestOverlapCalculator(unittest.TestCase):
         fdt02 = olc2.totalsquareoverlap - tso0
         self.assertTrue(fdt02 > 0.01)
         self.assertAlmostEqual(fdt02, olc.flipDiffTotal(0, 2))
+        n02 = numpy.array([0, 2], dtype=int)
+        self.assertAlmostEqual(fdt02, olc.flipDiffTotal(*n02))
         return
 
     def test_getNeighborSites(self):
@@ -254,6 +256,8 @@ class TestOverlapCalculator(unittest.TestCase):
         self.assertEqual(set([1] + range(2, 6)), olc.getNeighborSites(1))
         self.assertEqual(set(range(2)), olc.getNeighborSites(2))
         self.assertEqual(set(range(2)), olc.getNeighborSites(5))
+        n5, = numpy.array([5], dtype=int)
+        self.assertEqual(set(range(2)), olc.getNeighborSites(n5))
         return
 
     def test_coordinations(self):
@@ -377,6 +381,8 @@ class TestOverlapCalculatorObjCryst(TestCaseObjCrystOptional):
         fdm01 = olc2.meansquareoverlap - mso0
         self.assertAlmostEqual(fdm01, olc.flipDiffMean(0, 1))
         self.assertAlmostEqual(fdm01, olc.flipDiffTotal(0, 1) / 6)
+        n01 = numpy.array([0, 1], dtype=int)
+        self.assertAlmostEqual(fdm01, olc.flipDiffMean(*n01))
         return
 
     def test_getNeighborSites(self):

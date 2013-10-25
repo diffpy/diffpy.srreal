@@ -144,7 +144,6 @@ AtomRadiiTable object used for radius lookup.\n\
 DECLARE_PYARRAY_METHOD_WRAPPER(overlaps, overlaps_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(siteSquareOverlaps, siteSquareOverlaps_asarray)
 DECLARE_PYARRAY_METHOD_WRAPPER(gradients, gradients_asarray)
-DECLARE_PYSET_METHOD_WRAPPER1(getNeighborSites, getNeighborSites_asset)
 DECLARE_PYARRAY_METHOD_WRAPPER(coordinations, coordinations_asarray)
 DECLARE_PYDICT_METHOD_WRAPPER1(coordinationByTypes, coordinationByTypes_asdict)
 DECLARE_PYLISTSET_METHOD_WRAPPER(neighborhoods, neighborhoods_aslistset)
@@ -155,6 +154,30 @@ AtomRadiiTablePtr getatomradiitable(OverlapCalculator& obj)
 }
 
 DECLARE_BYTYPE_SETTER_WRAPPER(setAtomRadiiTable, setatomradiitable)
+
+
+double flip_diff_total(const OverlapCalculator& obj, object i, object j)
+{
+    int i1 = extractint(i);
+    int j1 = extractint(j);
+    return obj.flipDiffTotal(i1, j1);
+}
+
+
+double flip_diff_mean(const OverlapCalculator& obj, object i, object j)
+{
+    int i1 = extractint(i);
+    int j1 = extractint(j);
+    return obj.flipDiffMean(i1, j1);
+}
+
+
+object get_neighbor_sites(const OverlapCalculator& obj, object i)
+{
+    int i1 = extractint(i);
+    object rv = convertToPythonSet(obj.getNeighborSites(i1));
+    return rv;
+}
 
 
 class OverlapCalculatorPickleSuite :
@@ -228,17 +251,17 @@ void wrap_OverlapCalculator()
                 &OverlapCalculator::meanSquareOverlap,
                 doc_OverlapCalculator_meansquareoverlap)
         .def("flipDiffTotal",
-                &OverlapCalculator::flipDiffTotal,
+                flip_diff_total,
                 (arg("i"), arg("j")),
                 doc_OverlapCalculator_flipDiffTotal)
         .def("flipDiffMean",
-                &OverlapCalculator::flipDiffMean,
+                flip_diff_mean,
                 doc_OverlapCalculator_flipDiffMean)
         .add_property("gradients",
                 gradients_asarray<OverlapCalculator>,
                 doc_OverlapCalculator_gradients)
         .def("getNeighborSites",
-                getNeighborSites_asset<OverlapCalculator,int>,
+                get_neighbor_sites,
                 arg("i"),
                 doc_OverlapCalculator_getNeighborSites)
         .add_property("coordinations",

@@ -37,7 +37,8 @@ namespace srrealmodule {
     template <class T, class V> \
     void wrapper(T& obj, ::boost::python::object value) \
     { \
-        ::boost::python::extract<std::string> tp(value); \
+        using ::boost::python::extract; \
+        extract<std::string> tp(value); \
         if (tp.check())  obj.method##ByType(tp()); \
         else \
         { \
