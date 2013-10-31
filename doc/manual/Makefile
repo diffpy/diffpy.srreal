@@ -14,7 +14,7 @@ ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) sou
 # the i18n builder cannot share the environment and doctrees with the others
 I18NSPHINXOPTS  = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) source
 
-.PHONY: help clean html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest gettext
+.PHONY: help clean html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest gettext publish publish-prepare publish-push
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
@@ -151,3 +151,28 @@ doctest:
 	$(SPHINXBUILD) -b doctest $(ALLSPHINXOPTS) $(BUILDDIR)/doctest
 	@echo "Testing of doctests in the sources finished, look at the " \
 	      "results in $(BUILDDIR)/doctest/output.txt."
+
+# Manual publishing to the gh-pages branch
+
+GITREPOPATH = $(shell git rev-parse --git-dir)
+GITREMOTE = origin
+GITREMOTEURL = $(shell git config --get remote.$(GITREMOTE).url)
+GITLASTCOMMIT = $(shell git log -1 --format='%h')
+
+publish: publish-prepare publish-push
+
+publish-prepare:
+	test -d build/gh-pages || ( \
+	    git clone -b gh-pages $(GITREPOPATH) build/gh-pages && \
+	    git --git-dir=build/gh-pages/.git remote set-url origin $(GITREMOTEURL) \
+	    )
+	cd build/gh-pages && \
+	    git pull origin gh-pages:gh-pages
+	rsync -acv --delete --exclude=.nojekyll --exclude=.git \
+	    --link-dest=$(PWD)/build/html build/html/ build/gh-pages/
+	cd build/gh-pages && \
+	    git add --all . && \
+	    git commit -m "Synced with the source at $(GITLASTCOMMIT)."
+
+publish-push:
+	git --git-dir=build/gh-pages/.git push origin gh-pages:gh-pages
