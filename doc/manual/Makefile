@@ -171,7 +171,7 @@ publish-prepare:
 	cd build/gh-pages && \
 	    git add --all . && \
 	    git diff --cached --quiet || \
-	    git commit -m "Synced with the source at $(GITLASTCOMMIT) ."
+	    git commit -m "Synced with the source at $(GITLASTCOMMIT)."
 	git fetch $(PWD)/build/gh-pages gh-pages:gh-pages
 
 publish-push:
