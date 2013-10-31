@@ -157,7 +157,7 @@ doctest:
 GITREPOPATH = $(shell git rev-parse --git-dir)
 GITREMOTE = origin
 GITREMOTEURL = $(shell git config --get remote.$(GITREMOTE).url)
-GITLASTCOMMIT = $(shell git log -1 --format='%h')
+GITLASTCOMMIT = $(shell git rev-parse HEAD)
 
 publish: publish-prepare publish-push
 
