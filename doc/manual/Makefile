@@ -162,17 +162,17 @@ GITLASTCOMMIT = $(shell git log -1 --format='%h')
 publish: publish-prepare publish-push
 
 publish-prepare:
-	test -d build/gh-pages || ( \
-	    git clone -b gh-pages $(GITREPOPATH) build/gh-pages && \
-	    git --git-dir=build/gh-pages/.git remote set-url origin $(GITREMOTEURL) \
-	    )
+	test -d build/gh-pages || \
+	    git clone -b gh-pages $(GITREPOPATH) build/gh-pages
 	cd build/gh-pages && \
-	    git pull origin gh-pages:gh-pages
+	    git pull $(GITREMOTEURL) gh-pages:gh-pages
 	rsync -acv --delete --exclude=.nojekyll --exclude=.git \
 	    --link-dest=$(PWD)/build/html build/html/ build/gh-pages/
 	cd build/gh-pages && \
 	    git add --all . && \
-	    git commit -m "Synced with the source at $(GITLASTCOMMIT)."
+	    git diff --cached --quiet || \
+	    git commit -m "Synced with the source at $(GITLASTCOMMIT) ."
+	git fetch $(PWD)/build/gh-pages gh-pages:gh-pages
 
 publish-push:
-	git --git-dir=build/gh-pages/.git push origin gh-pages:gh-pages
+	git push origin gh-pages:gh-pages
