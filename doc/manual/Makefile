@@ -162,17 +162,21 @@ GITLASTCOMMIT = $(shell git rev-parse HEAD)
 publish: publish-prepare publish-push
 
 publish-prepare:
+	@test -d build/html || \
+	    ( echo >&2 "Run 'make html' first!"; false )
 	test -d build/gh-pages || \
 	    git clone -b gh-pages $(GITREPOPATH) build/gh-pages
 	cd build/gh-pages && \
-	    git pull $(GITREMOTEURL) gh-pages:gh-pages
-	rsync -acv --delete --exclude=.nojekyll --exclude=.git \
+	    git pull $(GITREMOTEURL) gh-pages
+	rsync -acv --delete --exclude=.git --exclude=.rsync-exclude \
+	    --exclude-from=build/gh-pages/.rsync-exclude \
 	    --link-dest=$(PWD)/build/html build/html/ build/gh-pages/
 	cd build/gh-pages && \
 	    git add --all . && \
 	    git diff --cached --quiet || \
 	    git commit -m "Synced with the source at $(GITLASTCOMMIT)."
-	git fetch $(PWD)/build/gh-pages gh-pages:gh-pages
+	cd build/gh-pages && \
+	    git push $(GITREPOPATH) gh-pages
 
 publish-push:
-	git push origin gh-pages:gh-pages
+	git push $(GITREMOTE) gh-pages
