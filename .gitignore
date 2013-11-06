@@ -39,5 +39,8 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
-setup.cfg
 .gdb_history
+
+# version information
+setup.cfg
+/diffpy/srreal/version.cfg
