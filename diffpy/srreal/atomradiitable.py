@@ -72,7 +72,7 @@ class CovalentRadiiTable(AtomRadiiTable):
 
         Return string.
         '''
-        return "covalentradii"
+        return "covalent"
 
 # End of class CovalentRadiiTable
 CovalentRadiiTable()._registerThisType()
