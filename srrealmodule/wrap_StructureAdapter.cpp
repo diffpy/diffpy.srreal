@@ -159,6 +159,12 @@ Return a StructureAdapter instance.\n\
 Raise TypeError if stru cannot be converted to StructureAdapter.\n\
 ";
 
+const char* doc__emptyStructureAdapter = "\
+Factory for an empty structure singleton.\n\
+\n\
+Return a singleton instance of empty StructureAdapter.\n\
+";
+
 // wrappers ------------------------------------------------------------------
 
 DECLARE_PYARRAY_METHOD_WRAPPER1(siteCartesianPosition,
@@ -400,6 +406,8 @@ void wrap_StructureAdapter()
     def("nosymmetry", nosymmetry<object>, doc_nosymmetry);
     def("createStructureAdapter", createStructureAdapter,
             doc_createStructureAdapter);
+    def("_emptyStructureAdapter", emptyStructureAdapter,
+            doc__emptyStructureAdapter);
 }
 
 }   // namespace srrealmodule

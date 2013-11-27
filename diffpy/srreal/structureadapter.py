@@ -24,10 +24,17 @@ nometa       -- create StructureAdapter with disabled _customPQConfig method
                 this prevents copying of diffpy.Structure pdffit metadata
                 to PDFCalculator object
 nosymmetry   -- create StructureAdapter with disabled symmetry expansion.
+
+Constants:
+
+EMPTY        -- singleton instance of an empty structure.
 """
 
 
 from diffpy.srreal.srreal_ext import StructureAdapter, createStructureAdapter
 from diffpy.srreal.srreal_ext import nometa, nosymmetry
+from diffpy.srreal.srreal_ext import _emptyStructureAdapter
+
+EMPTY = _emptyStructureAdapter()
 
 # End of file
