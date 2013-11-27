@@ -309,6 +309,16 @@ python::object eval_asarray(PairQuantity& obj, const python::object& a)
     return rv;
 }
 
+// PairQuantity::getStructure returns StructureAdapterConstPtr, which cannot
+// be converted to Python object.  Let's remove the constness here.
+
+StructureAdapterPtr getpqstructure(const PairQuantity& obj)
+{
+    StructureAdapterPtr rv =
+        const_pointer_cast<StructureAdapter>(obj.getStructure());
+    return rv;
+}
+
 // support for the evaluatortype property
 
 const char* evtp_NONE = "NONE";
@@ -670,8 +680,7 @@ void wrap_PairQuantity()
         .def("setStructure", &PairQuantity::setStructure<object>,
                 python::arg("stru"),
                 doc_BasePairQuantity_setStructure)
-        .def("getStructure", &PairQuantity::getStructure,
-                return_value_policy<copy_const_reference>(),
+        .def("getStructure", getpqstructure,
                 doc_BasePairQuantity_getStructure)
         .def("_setupParallelRun", &PairQuantity::setupParallelRun,
                 (python::arg("cpuindex"), python::arg("ncpu")),
