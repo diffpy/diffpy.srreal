@@ -426,4 +426,11 @@ def makePDFEnvelope(name, fnc, **dbattrs):
     from diffpy.srreal.wraputils import _wrapAsRegisteredUnaryFunction
     return _wrapAsRegisteredUnaryFunction(PDFEnvelope, name, fnc, **dbattrs)
 
+# class PeakProfile ----------------------------------------------------------
+
+PeakProfile.peakprecision = propertyFromExtDoubleAttr('peakprecision',
+    '''Profile amplitude relative to the peak maximum for evaluating peak
+    bounds xboundlo and xboundhi. [3.33e-6 unitless]
+    ''')
+
 # End of file
