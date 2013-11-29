@@ -15,8 +15,22 @@
 
 
 """\
-class DebyePDFCalculator -- PDF calculator that uses Debye Formula
-class PDFCalculator      -- PDF calculator in real space
+Top-level classes for PDF calculation:
+    DebyePDFCalculator -- simulate PDF by evaluating Debye sum in Q-space
+    PDFCalculator      -- calculate PDF by peak summation in real space
+
+Classes for configuring PDF baseline:
+    PDFBaseline, ZeroBaseline, LinearBaseline
+
+Classes for configuring PDF scaling envelope:
+    PDFEnvelope, ScaleEnvelope, QResolutionEnvelope,
+    SphericalShapeEnvelope, StepCutEnvelope 
+
+Class for configuring PDF profile function:
+    PeakProfile
+
+Classes for configuring peak width evaluation in PDF calculations:
+    PeakWidthModel, ConstantPeakWidth, DebyeWallerPeakWidth, JeongPeakWidth
 """
 
 
@@ -35,9 +49,8 @@ from diffpy.srreal.srreal_ext import PDFCalculator
 from diffpy.srreal.srreal_ext import fftftog, fftgtof
 from diffpy.srreal.srreal_ext import PDFBaseline, ZeroBaseline, LinearBaseline
 from diffpy.srreal.srreal_ext import PDFEnvelope
-from diffpy.srreal.srreal_ext import QResolutionEnvelope, ScaleEnvelope
+from diffpy.srreal.srreal_ext import ScaleEnvelope, QResolutionEnvelope
 from diffpy.srreal.srreal_ext import SphericalShapeEnvelope, StepCutEnvelope
-from diffpy.srreal.srreal_ext import ScaleEnvelope, SphericalShapeEnvelope
 from diffpy.srreal.srreal_ext import PeakProfile
 from diffpy.srreal.srreal_ext import PeakWidthModel, ConstantPeakWidth
 from diffpy.srreal.srreal_ext import DebyeWallerPeakWidth, JeongPeakWidth
