@@ -49,7 +49,7 @@ const char* doc_PeakProfile_type = "\
 FIXME\n\
 ";
 
-const char* doc_PeakProfile_yvalue = "\
+const char* doc_PeakProfile___call__ = "\
 FIXME\n\
 ";
 
@@ -110,9 +110,9 @@ class PeakProfileWrap :
 
         // own methods
 
-        double yvalue(double x, double fwhm) const
+        double operator()(double x, double fwhm) const
         {
-            return this->get_pure_virtual_override("yvalue")(x, fwhm);
+            return this->get_pure_virtual_override("__call__")(x, fwhm);
         }
 
         double xboundlo(double fwhm) const
@@ -149,6 +149,7 @@ void wrap_PeakProfile()
 {
     using namespace nswrap_PeakProfile;
     using diffpy::Attributes;
+    namespace bp = boost::python;
 
     class_<PeakProfileWrap, bases<Attributes>,
         noncopyable>("PeakProfile", doc_PeakProfile)
@@ -157,13 +158,16 @@ void wrap_PeakProfile()
         .def("type", &PeakProfile::type,
                 return_value_policy<copy_const_reference>(),
                 doc_PeakProfile_type)
-        .def("yvalue", &PeakProfile::yvalue, doc_PeakProfile_yvalue)
-        .def("xboundlo", &PeakProfile::xboundlo, doc_PeakProfile_xboundlo)
-        .def("xboundhi", &PeakProfile::xboundhi, doc_PeakProfile_xboundhi)
+        .def("__call__", &PeakProfile::operator(),
+                (bp::arg("x"), bp::arg("fwhm")), doc_PeakProfile___call__)
+        .def("xboundlo", &PeakProfile::xboundlo,
+                bp::arg("fwhm"), doc_PeakProfile_xboundlo)
+        .def("xboundhi", &PeakProfile::xboundhi,
+                bp::arg("fwhm"), doc_PeakProfile_xboundhi)
         .def("_registerThisType", &PeakProfile::registerThisType,
                 doc_PeakProfile__registerThisType)
         .def("createByType", &PeakProfile::createByType,
-                doc_PeakProfile_createByType)
+                bp::arg("tp"), doc_PeakProfile_createByType)
         .staticmethod("createByType")
         .def("getRegisteredTypes", getPeakProfileTypes_asset,
                 doc_PeakProfile_getRegisteredTypes)
