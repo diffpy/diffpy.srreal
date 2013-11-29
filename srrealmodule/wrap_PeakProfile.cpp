@@ -90,6 +90,16 @@ fwhm -- Full Width at Half Maximum of the profile function\n\
 Return float.  See also the peakprecision property.\n\
 ";
 
+const char* doc_PeakProfile_ticker = "\
+Return EventTicker that marks last modification time of this object.\n\
+This ticker object is used in fast PDF update, to check if PeakProfile\n\
+has changed since the last calculation.  The ticker.click() method needs\n\
+to be therefore called after every change in PeakProfile configuration.\n\
+\n\
+Return EventTicker object.\n\
+This method may be overloaded in a Python derived class.\n\
+";
+
 const char* doc_PeakProfile__registerThisType = "\
 Add this class to the global registry of PeakProfile types.\n\
 \n\
@@ -162,6 +172,20 @@ class PeakProfileWrap :
             return this->get_pure_virtual_override("xboundhi")(fwhm);
         }
 
+        // Make the ticker method overloadable from Python
+
+        diffpy::eventticker::EventTicker& ticker() const
+        {
+            override f = this->get_override("ticker");
+            if (f)  return f();
+            return this->default_ticker();
+        }
+
+        diffpy::eventticker::EventTicker& default_ticker() const
+        {
+            return this->PeakProfile::ticker();
+        }
+
     protected:
 
         // HasClassRegistry method
@@ -201,6 +225,10 @@ void wrap_PeakProfile()
                 bp::arg("fwhm"), doc_PeakProfile_xboundlo)
         .def("xboundhi", &PeakProfile::xboundhi,
                 bp::arg("fwhm"), doc_PeakProfile_xboundhi)
+        .def("ticker",
+                &PeakProfile::ticker,
+                return_internal_reference<>(),
+                doc_PeakProfile_ticker)
         .def("_registerThisType", &PeakProfile::registerThisType,
                 doc_PeakProfile__registerThisType)
         .def("createByType", &PeakProfile::createByType,
