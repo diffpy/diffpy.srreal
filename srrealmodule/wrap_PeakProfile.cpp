@@ -34,39 +34,76 @@ using namespace diffpy::srreal;
 // docstrings ----------------------------------------------------------------
 
 const char* doc_PeakProfile = "\
-FIXME\n\
+Base class and registry for PDF peak profile functions.\n\
+The peak profile functions must be centered at 0 and their integrated\n\
+area must be 1.\n\
 ";
 
 const char* doc_PeakProfile_create = "\
-FIXME\n\
+Return a new default instance of the same type as self.\n\
+\n\
+This method must be overloaded in a derived class.\n\
 ";
 
 const char* doc_PeakProfile_clone = "\
-FIXME\n\
+Return a new instance that is a copy of self.\n\
+\n\
+This method must be overloaded in a derived class.\n\
 ";
 
 const char* doc_PeakProfile_type = "\
-FIXME\n\
+Return a unique string type that identifies a PeakProfile-derived class.\n\
+The string type is used for class registration and in the createByType\n\
+function.\n\
+\n\
+This method must be overloaded in a derived class.\n\
 ";
 
 const char* doc_PeakProfile___call__ = "\
-FIXME\n\
+Evaluate peak profile function for a given position and peak width.\n\
+\n\
+x    -- coordinate where the profile function is evaluated.\n\
+        x is always relative to the peak center, i.e., the profile function\n\
+        must be centered at 0.\n\
+fwhm -- Full Width at Half Maximum of the profile function.\n\
+\n\
+Return float.\n\
 ";
 
 const char* doc_PeakProfile_xboundlo = "\
-FIXME\n\
+Lower x-bound where profile function becomes smaller than precision.\n\
+The bound is evaluated relative to profile maximum, i.e., for each x below\n\
+xboundlo the profile function must be smaller than (peakprecision * maximum).\n\
+\n\
+fwhm -- Full Width at Half Maximum of the profile function\n\
+\n\
+Return float.  See also the peakprecision property.\n\
 ";
 
 const char* doc_PeakProfile_xboundhi = "\
-FIXME\n\
+Upper x-bound where profile function becomes smaller than precision.\n\
+The bound is evaluated relative to profile maximum, i.e., for each x above\n\
+xboundhi the profile function must be smaller than (peakprecision * maximum).\n\
+\n\
+fwhm -- Full Width at Half Maximum of the profile function\n\
+\n\
+Return float.  See also the peakprecision property.\n\
 ";
 
 const char* doc_PeakProfile__registerThisType = "\
-FIXME\n\
+Add this class to the global registry of PeakProfile types.\n\
+\n\
+This method must be called once after definition of the derived\n\
+class to support pickling and the createByType factory.\n\
 ";
 
 const char* doc_PeakProfile_createByType = "\
-FIXME\n\
+Return a new PeakProfile instance of the specified string type.\n\
+\n\
+tp   -- string type identifying a registered PeakProfile class\n\
+        See getRegisteredTypes for the allowed values.\n\
+\n\
+Return a new instance of the PeakProfile-derived class.\n\
 ";
 
 const char* doc_PeakProfile_getRegisteredTypes = "\
