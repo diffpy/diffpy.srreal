@@ -75,7 +75,15 @@ rmax -- upper bound for the PDF calculation\n\
 Return float.\n\
 ";
 
-const char* doc_PeakWidthModel_ticker = "FIXME";
+const char* doc_PeakWidthModel_ticker = "\
+Return EventTicker that marks last modification time of this object.\n\
+This ticker object is used in fast PDF update, to check if PeakWidthModel\n\
+has changed since the last calculation.  The ticker.click() method needs\n\
+to be therefore called after every change in PeakWidthModel configuration.\n\
+\n\
+Return EventTicker object.\n\
+This method may be overloaded in a Python derived class.\n\
+";
 
 const char* doc_PeakWidthModel__registerThisType = "\
 Add this instance to the global registry of PeakWidthModel types.\n\
