@@ -57,7 +57,7 @@ This method must be overloaded in a derived class.\n\
 ";
 
 const char* doc_PeakWidthModel_calculate = "\
-Calculate the peak width for the specified bond.\n\
+Calculate the FWHM peak width for the specified bond.\n\
 \n\
 bnds -- instance of BaseBondGenerator with the current bond data.\n\
 \n\
@@ -106,9 +106,22 @@ These are the allowed arguments for the createByType method and\n\
 peakwidthmodel attribute in the PDF calculator classes.\n\
 ";
 
-const char* doc_ConstantPeakWidth = "FIXME";
-const char* doc_DebyeWallerPeakWidth = "FIXME";
-const char* doc_JeongPeakWidth = "FIXME";
+const char* doc_ConstantPeakWidth = "\
+Peak width model returning constant width.\n\
+";
+
+const char* doc_DebyeWallerPeakWidth = "\
+Calculate PDF peak width from a Debye-Waller model of atom vibrations.\n\
+This returns mean-square displacement of atoms in the pair along their\n\
+bond scaled as FWHM.  The atom displacements are assumed independent.\n\
+";
+
+const char* doc_JeongPeakWidth = "\
+Calculate PDF peak width assuming I.-K. Jeong model of correlated motion.\n\
+This returns mean-square displacement of atoms in the pair along their\n\
+bond corrected for correlated motion and data noise at high-Q by a scaling\n\
+factor  sqrt(1 - delta1/r - delta2/r**2 + (qbroad * r)**2).\n\
+";
 
 const char* doc_PeakWidthModelOwner = "\
 Base class for classes that own PeakWidthModel instance.\n\

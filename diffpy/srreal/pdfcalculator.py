@@ -446,4 +446,19 @@ PeakProfile.peakprecision = propertyFromExtDoubleAttr('peakprecision',
     bounds xboundlo and xboundhi. [3.33e-6 unitless]
     ''')
 
+# class PeakWidthModel -------------------------------------------------------
+
+ConstantPeakWidth.width = propertyFromExtDoubleAttr('width',
+    '''Constant FWHM value returned by this model.
+    ''')
+
+JeongPeakWidth.delta1 = propertyFromExtDoubleAttr('delta1',
+        'Coefficient for (1/r) contribution to the peak sharpening.')
+
+JeongPeakWidth.delta2 = propertyFromExtDoubleAttr('delta2',
+        'Coefficient for (1/r**2) contribution to the peak sharpening.')
+
+JeongPeakWidth.qbroad = propertyFromExtDoubleAttr('qbroad',
+        'PDF peak broadening from increased intensity noise at high Q.')
+
 # End of file
