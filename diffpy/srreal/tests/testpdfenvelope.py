@@ -154,6 +154,7 @@ class TestQResolutionEnvelope(unittest.TestCase):
 
     def setUp(self):
         self.evlp = QResolutionEnvelope()
+        return
 
 
     def test_type(self):
@@ -176,6 +177,7 @@ class TestScaleEnvelope(unittest.TestCase):
 
     def setUp(self):
         self.evlp = ScaleEnvelope()
+        return
 
 
     def test_type(self):
@@ -198,6 +200,7 @@ class TestSphericalShapeEnvelope(unittest.TestCase):
 
     def setUp(self):
         self.evlp = SphericalShapeEnvelope()
+        return
 
 
     def test_type(self):
@@ -220,6 +223,7 @@ class TestStepCutEnvelope(unittest.TestCase):
 
     def setUp(self):
         self.evlp = StepCutEnvelope()
+        return
 
 
     def test_type(self):
