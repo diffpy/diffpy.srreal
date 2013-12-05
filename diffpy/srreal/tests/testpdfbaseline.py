@@ -106,13 +106,11 @@ class TestPDFBaseline(unittest.TestCase):
         '''check pickling and unpickling of PDFBaseline.
         '''
         linear = self.linear
-        linear.foo = "qwer"
         linear.slope = 11
         linear2 = cPickle.loads(cPickle.dumps(linear))
         self.assertEqual('linear', linear2.type())
         self.assertEqual(11, linear2.slope)
         self.assertEqual(11, linear2._getDoubleAttr('slope'))
-        self.assertEqual("qwer", linear2.foo)
         return
 
 

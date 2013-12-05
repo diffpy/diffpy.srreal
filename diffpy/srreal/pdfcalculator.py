@@ -252,40 +252,27 @@ PDFCalculator.__init__ = _init_kwargs1
 
 # pickling support
 
-def _baseline_getstate(self):
-    state = (self.__dict__, )
-    return state
-
-def _baseline_setstate(self, state):
-    if len(state) != 1:
-        emsg = ("expected 1-item tuple in call to __setstate__, got " +
-                repr(state))
-        raise ValueError(emsg)
-    self.__dict__.update(state[0])
-    return
-
-def _baseline_reduce(self):
-    from diffpy.srreal.srreal_ext import _PDFBaseline_tostring
-    args = (_PDFBaseline_tostring(self),)
-    rv = (_baseline_create, args, self.__getstate__())
-    return rv
-
 def _baseline_create(s):
     from diffpy.srreal.srreal_ext import _PDFBaseline_fromstring
     return _PDFBaseline_fromstring(s)
 
+def _baseline_reduce(self):
+    from diffpy.srreal.srreal_ext import _PDFBaseline_tostring
+    args = (_PDFBaseline_tostring(self),)
+    rv = (_baseline_create, args)
+    return rv
+
+def _baseline_reduce_with_state(self):
+    rv = _baseline_reduce(self) + (self.__getstate__(),)
+    return rv
+
 # inject pickle methods
 
-PDFBaseline.__getstate__ = _baseline_getstate
-PDFBaseline.__setstate__ = _baseline_setstate
-PDFBaseline.__reduce__ = _baseline_reduce
+PDFBaseline.__reduce__ = _baseline_reduce_with_state
+PDFBaseline.__getstate__ = _pickle_getstate
+PDFBaseline.__setstate__ = _pickle_setstate
 
-ZeroBaseline.__getstate__ = _baseline_getstate
-ZeroBaseline.__setstate__ = _baseline_setstate
 ZeroBaseline.__reduce__ = _baseline_reduce
-
-LinearBaseline.__getstate__ = _baseline_getstate
-LinearBaseline.__setstate__ = _baseline_setstate
 LinearBaseline.__reduce__ = _baseline_reduce
 
 # attribute wrapper
