@@ -183,7 +183,7 @@ class PeakWidthModelWrap :
             return this->get_pure_virtual_override("calculate")(ptr(&bnds));
         }
 
-        double maxWidth(StructureAdapterConstPtr stru,
+        double maxWidth(StructureAdapterPtr stru,
                 double rmin, double rmax) const
         {
             override f = this->get_pure_virtual_override("maxWidth");
