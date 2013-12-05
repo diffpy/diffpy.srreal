@@ -50,4 +50,14 @@ def __setattr__(self, name, value):
 
 Attributes.__setattr__ = __setattr__
 
+# Helper accessor functions used by the _registerDoubleAttribute method
+
+def _pyattrgetter(name):
+    f = lambda obj: object.__getattribute__(obj, name)
+    return f
+
+def _pyattrsetter(name):
+    f = lambda obj, value: object.__setattr__(obj, name, value)
+    return f
+
 # End of file

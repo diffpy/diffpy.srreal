@@ -159,14 +159,9 @@ void registerPythonDoubleAttribute(python::object owner,
     // make it use normal python attribute access
     if (g.ptr() == Py_None && s.ptr() == Py_None)
     {
-        python::object globals = python::import("__main__").attr("__dict__");
-        python::dict locals;
-        std::ostringstream gcode;
-        gcode << "lambda obj : object.__getattribute__(obj, '" << name << "')";
-        g = python::eval(gcode.str().c_str(), globals, locals);
-        std::ostringstream scode;
-        scode << "lambda obj, v : object.__setattr__(obj, '" << name << "', v)";
-        s = python::eval(scode.str().c_str(), globals, locals);
+        python::object mod = python::import("diffpy.srreal.attributes");
+        g = mod.attr("_pyattrgetter")(name);
+        s = mod.attr("_pyattrsetter")(name);
     }
     Attributes* cowner = python::extract<Attributes*>(owner);
     BaseDoubleAttribute* pa = new PythonDoubleAttribute(owner, g, s);
