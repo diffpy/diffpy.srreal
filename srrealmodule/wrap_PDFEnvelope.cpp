@@ -90,13 +90,32 @@ Return a set of string types of the registered PDFEnvelope classes.\n\
 These are the allowed arguments for the createByType factory.\n\
 ";
 
-const char* doc_QResolutionEnvelope = "FIXME";
+const char* doc_QResolutionEnvelope = "\
+Gaussian dampening envelope function due to limited Q-resolution.\n\
+\n\
+Returns   exp(-qdamp * x**2).\n\
+Returns   1  when qdamp is zero or negative.\n\
+";
 
-const char* doc_ScaleEnvelope = "FIXME";
+const char* doc_ScaleEnvelope = "\
+Uniform scaling envelope function.\n\
+\n\
+Returns   scale.\n\
+";
 
-const char* doc_SphericalShapeEnvelope = "FIXME";
+const char* doc_SphericalShapeEnvelope = "\
+Dampening PDF envelope due to finite spherical particle shape.\n\
+\n\
+Returns   (1 - 1.5*tau + 0.5*tau**3), where tau = x/spdiameter.\n\
+Returns   1 when spdiameter <= 0.\n\
+";
 
-const char* doc_StepCutEnvelope = "FIXME";
+const char* doc_StepCutEnvelope = "\n\
+Step function damping envelope.\n\
+\n\
+Returns   1 when x <= stepcut or if stepcut <= 0.\n\
+Returns   0 when x > stepcut.\n\
+";
 
 // wrappers ------------------------------------------------------------------
 

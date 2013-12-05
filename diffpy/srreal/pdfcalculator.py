@@ -351,10 +351,7 @@ StepCutEnvelope.__reduce__ = _envelope_reduce
 # attribute wrappers
 
 QResolutionEnvelope.qdamp = propertyFromExtDoubleAttr('qdamp',
-    '''PDF Gaussian dampening factor due to limited Q-resolution.
-
-    This parameter controls scaling envelope function exp(-qdamp * r**2).
-    The scaling is not applied when qdamp is zero or negative.
+    '''Dampening parameter in the Gaussian envelope function.
     ''')
 
 ScaleEnvelope.scale = propertyFromExtDoubleAttr('scale',
@@ -363,17 +360,10 @@ ScaleEnvelope.scale = propertyFromExtDoubleAttr('scale',
 
 SphericalShapeEnvelope.spdiameter = propertyFromExtDoubleAttr('spdiameter',
     '''Particle diameter in Angstroms for a spherical shape damping.
-
-    This parameter controls PDF damping due to finite size of a spherical
-    particle.  The damping function equals (1 - 1.5*x + 0.5*x**3), where
-    x=r/spdiameter.  Damping is not applied when spdiameter <= 0.
     ''')
 
 StepCutEnvelope.stepcut = propertyFromExtDoubleAttr('stepcut',
-    '''r-cutoff for a step-function envelope.
-
-    The step-function is 1 when r <= stepcut and 0 everywhere else.
-    Step damping is not applied when stepcut is zero or negative.
+    '''Cutoff for a step-function envelope.
     ''')
 
 # Python functions wrapper
