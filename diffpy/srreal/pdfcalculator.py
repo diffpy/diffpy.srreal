@@ -58,6 +58,10 @@ from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
 from diffpy.srreal.wraputils import setattrFromKeywordArguments
 from diffpy.srreal.wraputils import _pickle_getstate, _pickle_setstate
 
+# activate pickling in PDFCalculator-owned classes
+
+import diffpy.srreal.scatteringfactortable
+
 # ----------------------------------------------------------------------------
 
 def _defineCommonInterface(cls):

@@ -37,13 +37,11 @@ class TestScatteringFactorTable(unittest.TestCase):
         self.assertEqual(0, len(self.sftx.getCustomSymbols()))
         self.sftx.setCustomAs('Na', 'Na', 123)
         self.sftx.setCustomAs('Calias', 'C')
-        self.sftx.foobar = 'asdf'
         self.assertEqual(2, len(self.sftx.getCustomSymbols()))
         sftx1 = cPickle.loads(cPickle.dumps(self.sftx))
         self.assertEqual(2, len(sftx1.getCustomSymbols()))
         self.assertAlmostEqual(123, sftx1.lookup('Na'), 12)
         self.assertEqual(self.sftx.lookup('C'), sftx1.lookup('Calias'))
-        self.assertEqual('asdf', sftx1.foobar)
         self.assertEqual(self.sftx.type(), sftx1.type())
         return
 

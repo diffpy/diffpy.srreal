@@ -378,9 +378,6 @@ void wrap_ScatteringFactorTable()
     class_<SFTElectronNumber, bases<ScatteringFactorTable> >(
             "SFTElectronNumber", doc_SFTElectronNumber);
 
-    // inject pickling methods
-    import("diffpy.srreal.scatteringfactortable");
-
     class_<ScatteringFactorTableOwner>("ScatteringFactorTableOwner",
             doc_ScatteringFactorTableOwner)
         .add_property("scatteringfactortable",
