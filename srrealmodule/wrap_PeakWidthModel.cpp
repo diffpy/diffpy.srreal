@@ -24,6 +24,8 @@
 #include <diffpy/srreal/ConstantPeakWidth.hpp>
 #include <diffpy/srreal/DebyeWallerPeakWidth.hpp>
 #include <diffpy/srreal/JeongPeakWidth.hpp>
+#include <diffpy/srreal/PythonStructureAdapter.hpp>
+#include <diffpy/serialization.hpp>
 
 #include "srreal_converters.hpp"
 
@@ -43,16 +45,19 @@ Peak width is defined as full width at half maximum (FWHM).\n\
 
 const char* doc_PeakWidthModel_create = "\
 Return a new instance of the same PeakWidthModel type.\n\
+\n\
 This method must be overloaded in a derived class.\n\
 ";
 
 const char* doc_PeakWidthModel_clone = "\
 Return a duplicate of this PeakWidthModel instance.\n\
+\n\
 This method must be overloaded in a derived class.\n\
 ";
 
 const char* doc_PeakWidthModel_type = "\
 Return a unique string name for this PeakWidthModel class.\n\
+\n\
 This method must be overloaded in a derived class.\n\
 ";
 
@@ -62,6 +67,7 @@ Calculate the FWHM peak width for the specified bond.\n\
 bnds -- instance of BaseBondGenerator with the current bond data.\n\
 \n\
 Return float.\n\
+This method must be overloaded in a derived class.\n\
 ";
 
 const char* doc_PeakWidthModel_maxWidth = "\
@@ -87,6 +93,9 @@ This method may be overloaded in a Python derived class.\n\
 
 const char* doc_PeakWidthModel__registerThisType = "\
 Add this instance to the global registry of PeakWidthModel types.\n\
+\n\
+This method must be called once after definition of the derived\n\
+class to support pickling and the createByType factory.\n\
 \n\
 No return value.  Cannot be overloaded in Python.\n\
 ";
@@ -138,6 +147,14 @@ Use PeakWidthModel.getRegisteredTypes() for a set of registered names.\n\
 
 DECLARE_PYSET_FUNCTION_WRAPPER(PeakWidthModel::getRegisteredTypes,
         getPeakWidthModelTypes_asset)
+
+double maxwidthwithpystructure(const PeakWidthModel& pwm,
+        python::object stru, double rmin, double rmax)
+{
+    StructureAdapterPtr adpt = createStructureAdapter(stru);
+    double rv = pwm.maxWidth(adpt, rmin, rmax);
+    return rv;
+}
 
 // wrappers for the peakwidthmodel property
 
@@ -220,6 +237,21 @@ class PeakWidthModelWrap :
 
 };  // class PeakWidthModelWrap
 
+
+std::string peakwidthmodel_tostring(PeakWidthModelPtr obj)
+{
+    return diffpy::serialization_tostring(obj);
+}
+
+
+PeakWidthModelPtr peakwidthmodel_fromstring(const std::string& content)
+{
+    PeakWidthModelPtr rv;
+    diffpy::serialization_fromstring(rv, content);
+    return rv;
+}
+
+
 }   // namespace nswrap_PeakWidthModel
 
 // Wrapper definition --------------------------------------------------------
@@ -245,6 +277,13 @@ void wrap_PeakWidthModel()
                 &PeakWidthModel::maxWidth,
                 (bp::arg("stru"), bp::arg("rmin"), bp::arg("rmax")),
                 doc_PeakWidthModel_maxWidth)
+        .def("maxWidth",
+                maxwidthwithpystructure,
+                (bp::arg("stru"), bp::arg("rmin"), bp::arg("rmax")))
+        .def("maxWidth",
+                &PeakWidthModel::maxWidth,
+                (bp::arg("stru"), bp::arg("rmin"), bp::arg("rmax")),
+                doc_PeakWidthModel_maxWidth)
         .def("ticker",
                 &PeakWidthModel::ticker,
                 return_internal_reference<>(),
@@ -257,6 +296,7 @@ void wrap_PeakWidthModel()
         .def("getRegisteredTypes", getPeakWidthModelTypes_asset,
                 doc_PeakWidthModel_getRegisteredTypes)
         .staticmethod("getRegisteredTypes")
+        .enable_pickling()
         ;
 
     register_ptr_to_python<PeakWidthModelPtr>();
@@ -272,6 +312,10 @@ void wrap_PeakWidthModel()
     class_<JeongPeakWidth, bases<PeakWidthModel> >(
             "JeongPeakWidth", doc_JeongPeakWidth)
         ;
+
+    // pickling support functions
+    def("_PeakWidthModel_tostring", peakwidthmodel_tostring);
+    def("_PeakWidthModel_fromstring", peakwidthmodel_fromstring);
 
     class_<PeakWidthModelOwner>("PeakWidthModelOwner", doc_PeakWidthModelOwner)
         .add_property("peakwidthmodel",

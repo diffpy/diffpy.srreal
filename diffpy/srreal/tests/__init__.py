@@ -37,6 +37,7 @@ def testsuite():
         diffpy.srreal.tests.testpdfcalcobjcryst
         diffpy.srreal.tests.testpdfcalculator
         diffpy.srreal.tests.testpdfenvelope
+        diffpy.srreal.tests.testpeakwidthmodel
         diffpy.srreal.tests.testscatteringfactortable
         diffpy.srreal.tests.teststructureadapter
     '''.split()
