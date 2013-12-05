@@ -123,4 +123,18 @@ def _wrapAsRegisteredUnaryFunction(cls, regname, fnc, **dbattrs):
     assert type(rv) is RegisteredUnaryFunction
     return rv
 
+# pickling support functions
+
+def _pickle_getstate(self):
+    state = (self.__dict__,)
+    return state
+
+def _pickle_setstate(self, state):
+    if len(state) != 1:
+        emsg = ("expected 1-item tuple in call to __setstate__, got " +
+                repr(state))
+        raise ValueError(emsg)
+    self.__dict__.update(state[0])
+    return
+
 # End of file

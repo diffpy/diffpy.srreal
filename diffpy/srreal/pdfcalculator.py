@@ -56,6 +56,7 @@ from diffpy.srreal.srreal_ext import PeakWidthModel, ConstantPeakWidth
 from diffpy.srreal.srreal_ext import DebyeWallerPeakWidth, JeongPeakWidth
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
 from diffpy.srreal.wraputils import setattrFromKeywordArguments
+from diffpy.srreal.wraputils import _pickle_getstate, _pickle_setstate
 
 # ----------------------------------------------------------------------------
 
@@ -349,23 +350,11 @@ def _envelope_reduce_with_state(self):
     rv = _envelope_reduce(self) + (self.__getstate__(),)
     return rv
 
-def _envelope_getstate(self):
-    state = (self.__dict__,)
-    return state
-
-def _envelope_setstate(self, state):
-    if len(state) != 1:
-        emsg = ("expected 1-item tuple in call to __setstate__, got " +
-                repr(state))
-        raise ValueError(emsg)
-    self.__dict__.update(state[0])
-    return
-
 # inject pickle methods
 
 PDFEnvelope.__reduce__ = _envelope_reduce_with_state
-PDFEnvelope.__getstate__ = _envelope_getstate
-PDFEnvelope.__setstate__ = _envelope_setstate
+PDFEnvelope.__getstate__ = _pickle_getstate
+PDFEnvelope.__setstate__ = _pickle_setstate
 
 QResolutionEnvelope.__reduce__ = _envelope_reduce
 ScaleEnvelope.__reduce__ = _envelope_reduce
