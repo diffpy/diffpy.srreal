@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Unit tests for the PeakWidthModel classes from diffpy.srreal.pdfcalculator
+"""Unit tests for the PeakWidthModel classes from diffpy.srreal.peakwidthmodel
 """
 
 
@@ -8,7 +8,7 @@ import os
 import unittest
 import cPickle
 
-from diffpy.srreal.pdfcalculator import PeakWidthModel, \
+from diffpy.srreal.peakwidthmodel import PeakWidthModel, \
         ConstantPeakWidth, DebyeWallerPeakWidth, JeongPeakWidth
 from diffpy.srreal.pdfcalculator import PDFCalculator
 from diffpy.srreal.structureadapter import createStructureAdapter
