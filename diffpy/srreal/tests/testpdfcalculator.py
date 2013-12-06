@@ -294,7 +294,7 @@ class TestPDFCalculator(unittest.TestCase):
     def test_envelopes(self):
         '''Check the envelopes property.
         '''
-        from diffpy.srreal.pdfcalculator import PDFEnvelope
+        from diffpy.srreal.pdfenvelope import PDFEnvelope
         pc = self.pdfcalc
         self.failUnless(len(pc.envelopes) > 0)
         pc.clearEnvelopes()

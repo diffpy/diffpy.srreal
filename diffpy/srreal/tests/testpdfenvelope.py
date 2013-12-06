@@ -8,10 +8,10 @@ import os
 import unittest
 import cPickle
 
-from diffpy.srreal.pdfcalculator import PDFEnvelope, makePDFEnvelope
+from diffpy.srreal.pdfenvelope import PDFEnvelope, makePDFEnvelope
+from diffpy.srreal.pdfenvelope import QResolutionEnvelope, ScaleEnvelope
+from diffpy.srreal.pdfenvelope import SphericalShapeEnvelope, StepCutEnvelope
 from diffpy.srreal.pdfcalculator import PDFCalculator
-from diffpy.srreal.pdfcalculator import QResolutionEnvelope, ScaleEnvelope
-from diffpy.srreal.pdfcalculator import SphericalShapeEnvelope, StepCutEnvelope
 
 ##############################################################################
 class TestPDFEnvelope(unittest.TestCase):

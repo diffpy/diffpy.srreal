@@ -22,10 +22,6 @@ Top-level classes for PDF calculation:
 Classes for configuring PDF baseline:
     PDFBaseline, ZeroBaseline, LinearBaseline
 
-Classes for configuring PDF scaling envelope:
-    PDFEnvelope, ScaleEnvelope, QResolutionEnvelope,
-    SphericalShapeEnvelope, StepCutEnvelope
-
 Class for configuring PDF profile function:
     PeakProfile
 
@@ -37,8 +33,6 @@ Classes for configuring peak width evaluation in PDF calculations:
 # exported items
 __all__ = '''DebyePDFCalculator PDFCalculator
     PDFBaseline makePDFBaseline ZeroBaseline LinearBaseline
-    PDFEnvelope makePDFEnvelope QResolutionEnvelope ScaleEnvelope
-    SphericalShapeEnvelope StepCutEnvelope
     PeakProfile
     PeakWidthModel ConstantPeakWidth DebyeWallerPeakWidth JeongPeakWidth
     fftftog fftgtof
@@ -48,15 +42,17 @@ from diffpy.srreal.srreal_ext import DebyePDFCalculator
 from diffpy.srreal.srreal_ext import PDFCalculator
 from diffpy.srreal.srreal_ext import fftftog, fftgtof
 from diffpy.srreal.srreal_ext import PDFBaseline, ZeroBaseline, LinearBaseline
-from diffpy.srreal.srreal_ext import PDFEnvelope
-from diffpy.srreal.srreal_ext import ScaleEnvelope, QResolutionEnvelope
-from diffpy.srreal.srreal_ext import SphericalShapeEnvelope, StepCutEnvelope
 from diffpy.srreal.srreal_ext import PeakProfile
 from diffpy.srreal.srreal_ext import PeakWidthModel, ConstantPeakWidth
 from diffpy.srreal.srreal_ext import DebyeWallerPeakWidth, JeongPeakWidth
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
 from diffpy.srreal.wraputils import setattrFromKeywordArguments
 from diffpy.srreal.wraputils import _pickle_getstate, _pickle_setstate
+
+# import for backward compatibility
+from diffpy.srreal.pdfenvelope import PDFEnvelope, makePDFEnvelope
+from diffpy.srreal.pdfenvelope import QResolutionEnvelope, ScaleEnvelope
+from diffpy.srreal.pdfenvelope import SphericalShapeEnvelope, StepCutEnvelope
 
 # activate pickling in PDFCalculator-owned classes
 
@@ -322,92 +318,6 @@ def makePDFBaseline(name, fnc, **dbattrs):
     '''
     from diffpy.srreal.wraputils import _wrapAsRegisteredUnaryFunction
     return _wrapAsRegisteredUnaryFunction(PDFBaseline, name, fnc, **dbattrs)
-
-# class PDFEnvelope ----------------------------------------------------------
-
-# pickling support
-
-def _envelope_create(s):
-    from diffpy.srreal.srreal_ext import _PDFEnvelope_fromstring
-    return _PDFEnvelope_fromstring(s)
-
-def _envelope_reduce(self):
-    from diffpy.srreal.srreal_ext import _PDFEnvelope_tostring
-    args = (_PDFEnvelope_tostring(self),)
-    rv = (_envelope_create, args)
-    return rv
-
-def _envelope_reduce_with_state(self):
-    rv = _envelope_reduce(self) + (self.__getstate__(),)
-    return rv
-
-# inject pickle methods
-
-PDFEnvelope.__reduce__ = _envelope_reduce_with_state
-PDFEnvelope.__getstate__ = _pickle_getstate
-PDFEnvelope.__setstate__ = _pickle_setstate
-
-QResolutionEnvelope.__reduce__ = _envelope_reduce
-ScaleEnvelope.__reduce__ = _envelope_reduce
-SphericalShapeEnvelope.__reduce__ = _envelope_reduce
-StepCutEnvelope.__reduce__ = _envelope_reduce
-
-# attribute wrappers
-
-QResolutionEnvelope.qdamp = propertyFromExtDoubleAttr('qdamp',
-    '''Dampening parameter in the Gaussian envelope function.
-    ''')
-
-ScaleEnvelope.scale = propertyFromExtDoubleAttr('scale',
-    '''Overall scale for a uniform scaling envelope.
-    ''')
-
-SphericalShapeEnvelope.spdiameter = propertyFromExtDoubleAttr('spdiameter',
-    '''Particle diameter in Angstroms for a spherical shape damping.
-    ''')
-
-StepCutEnvelope.stepcut = propertyFromExtDoubleAttr('stepcut',
-    '''Cutoff for a step-function envelope.
-    ''')
-
-# Python functions wrapper
-
-def makePDFEnvelope(name, fnc, **dbattrs):
-    '''Helper function for registering Python function as a PDFEnvelope.
-    This is required for using Python function as PDFCalculator envelope.
-
-    name     -- unique string name for registering Python function in the
-                global registry of PDFEnvelope types.  This will be the
-                string identifier for the createByType factory.
-    fnc      -- Python function of a floating point argument and optional
-                float parameters.  The parameters need to be registered as
-                double attributes in the functor class.  The function fnc
-                must be picklable and it must return a float.
-    dbattrs  -- optional float parameters of the wrapped function.
-                These will be registered as double attributes in the
-                functor class.  The wrapped function must be callable as
-                fnc(x, **dbattrs).  Make sure to pick attribute names that
-                do not conflict with other PDFCalculator attributes.
-
-    Return an instance of the new PDFEnvelope class.
-
-    Example:
-
-        # Python envelope function
-        def fexpdecay(x, expscale, exptail):
-            from math import exp
-            return expscale * exp(-x / exptail)
-        # wrap it as a PDFEnvelope and register as a "expdecay" type
-        makePDFEnvelope("expdecay", fexpdecay, expscale=5, exptail=4)
-        envelope = PDFEnvelope.createByType("expdecay")
-        print map(envelope, range(9))
-        # use it in PDFCalculator
-        pdfc = PDFCalculator()
-        pdfc.addEnvelope(envelope)
-        # or pdfc.addEnvelope("expdecay")
-    '''
-    from diffpy.srreal.wraputils import _wrapAsRegisteredUnaryFunction
-    return _wrapAsRegisteredUnaryFunction(PDFEnvelope, name, fnc, **dbattrs)
 
 # class PeakProfile ----------------------------------------------------------
 
