@@ -8,8 +8,8 @@ import os
 import unittest
 import cPickle
 
-from diffpy.srreal.pdfcalculator import PDFBaseline, makePDFBaseline
-from diffpy.srreal.pdfcalculator import ZeroBaseline, LinearBaseline
+from diffpy.srreal.pdfbaseline import PDFBaseline, makePDFBaseline
+from diffpy.srreal.pdfbaseline import ZeroBaseline, LinearBaseline
 
 ##############################################################################
 class TestPDFBaseline(unittest.TestCase):
