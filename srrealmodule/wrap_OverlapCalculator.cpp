@@ -281,9 +281,6 @@ void wrap_OverlapCalculator()
         .def_pickle(OverlapCalculatorPickleSuite())
         ;
 
-    // Inject __init__ and __call__ methods with support for keyword arguments.
-    // Add properties for the OverlapCalculator double attributes.
-    import("diffpy.srreal.overlapcalculator");
 }
 
 }   // namespace srrealmodule

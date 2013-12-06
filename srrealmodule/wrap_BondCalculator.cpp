@@ -134,9 +134,6 @@ void wrap_BondCalculator()
         .def_pickle(SerializationPickleSuite<BondCalculator>())
         ;
 
-    // Inject __init__ and __call__ methods with support for keyword arguments
-    // and add the rmin and rmax properties.
-    import("diffpy.srreal.bondcalculator");
 }
 
 }   // namespace srrealmodule

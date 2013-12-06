@@ -374,8 +374,6 @@ void wrap_PDFCalculators()
             (bp::arg("g"), bp::arg("rstep"), bp::arg("rmin")=0.0),
             doc_fftgtof);
 
-    // inject pickling methods for PDFBaseline and PDFEnvelope classes
-    import("diffpy.srreal.pdfcalculator");
 }
 
 }   // namespace srrealmodule

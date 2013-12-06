@@ -102,9 +102,6 @@ void wrap_BVSCalculator()
         .def_pickle(SerializationPickleSuite<BVSCalculator>())
         ;
 
-    // Inject __init__ and __call__ methods with support for keyword arguments.
-    // Add properties for the BVSCalculator double attributes.
-    import("diffpy.srreal.bvscalculator");
 }
 
 }   // namespace srrealmodule
