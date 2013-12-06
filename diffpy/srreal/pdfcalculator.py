@@ -18,23 +18,18 @@
 Top-level classes for PDF calculation:
     DebyePDFCalculator -- simulate PDF by evaluating Debye sum in Q-space
     PDFCalculator      -- calculate PDF by peak summation in real space
-
-Class for configuring PDF profile function:
-    PeakProfile
 """
 
 
 # exported items
 __all__ = '''
     DebyePDFCalculator PDFCalculator
-    PeakProfile
     fftftog fftgtof
     '''.split()
 
 from diffpy.srreal.srreal_ext import DebyePDFCalculator
 from diffpy.srreal.srreal_ext import PDFCalculator
 from diffpy.srreal.srreal_ext import fftftog, fftgtof
-from diffpy.srreal.srreal_ext import PeakProfile
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
 from diffpy.srreal.wraputils import setattrFromKeywordArguments
 
@@ -44,6 +39,7 @@ from diffpy.srreal.pdfbaseline import (PDFBaseline, makePDFBaseline,
 from diffpy.srreal.pdfenvelope import (PDFEnvelope, makePDFEnvelope,
         QResolutionEnvelope, ScaleEnvelope,
         SphericalShapeEnvelope, StepCutEnvelope)
+from diffpy.srreal.peakprofile import PeakProfile
 from diffpy.srreal.peakwidthmodel import (PeakWidthModel,
         ConstantPeakWidth, DebyeWallerPeakWidth, JeongPeakWidth)
 
@@ -240,12 +236,5 @@ PDFCalculator.__boostpython__init = PDFCalculator.__init__
 PDFCalculator.__init__ = _init_kwargs1
 
 # End of class PDFCalculator
-
-# class PeakProfile ----------------------------------------------------------
-
-PeakProfile.peakprecision = propertyFromExtDoubleAttr('peakprecision',
-    '''Profile amplitude relative to the peak maximum for evaluating peak
-    bounds xboundlo and xboundhi. [3.33e-6 unitless]
-    ''')
 
 # End of file
