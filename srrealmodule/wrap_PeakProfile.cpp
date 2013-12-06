@@ -21,8 +21,11 @@
 #include <string>
 
 #include <diffpy/srreal/PeakProfile.hpp>
+#include <diffpy/srreal/GaussianProfile.hpp>
+#include <diffpy/srreal/CroppedGaussianProfile.hpp>
 
 #include "srreal_converters.hpp"
+#include "srreal_pickling.hpp"
 
 namespace srrealmodule {
 namespace nswrap_PeakProfile {
@@ -121,6 +124,9 @@ Set of string identifiers for registered PeakProfile classes.\n\
 These are allowed arguments for the createByType static method.\n\
 ";
 
+const char* doc_GaussianProfile = "FIXME";
+const char* doc_CroppedGaussianProfile = "FIXME";
+
 // wrappers ------------------------------------------------------------------
 
 DECLARE_PYSET_FUNCTION_WRAPPER(PeakProfile::getRegisteredTypes,
@@ -202,6 +208,20 @@ class PeakProfileWrap :
 
 };  // class PeakProfileWrap
 
+std::string peakprofile_tostring(PeakProfilePtr obj)
+{
+    return diffpy::serialization_tostring(obj);
+}
+
+
+PeakProfilePtr peakprofile_fromstring(const std::string& content)
+{
+    PeakProfilePtr rv;
+    diffpy::serialization_fromstring(rv, content);
+    return rv;
+}
+
+
 }   // namespace nswrap_PeakProfile
 
 // Wrapper definition --------------------------------------------------------
@@ -237,9 +257,23 @@ void wrap_PeakProfile()
         .def("getRegisteredTypes", getPeakProfileTypes_asset,
                 doc_PeakProfile_getRegisteredTypes)
         .staticmethod("getRegisteredTypes")
+        .enable_pickling()
         ;
 
     register_ptr_to_python<PeakProfilePtr>();
+
+    class_<GaussianProfile, bases<PeakProfile> >(
+            "GaussianProfile", doc_GaussianProfile)
+        ;
+
+    class_<CroppedGaussianProfile, bases<PeakProfile> >(
+            "CroppedGaussianProfile", doc_CroppedGaussianProfile)
+        ;
+
+    // pickling support functions
+    def("_PeakProfile_tostring", peakprofile_tostring);
+    def("_PeakProfile_fromstring", peakprofile_fromstring);
+
 }
 
 }   // namespace srrealmodule
