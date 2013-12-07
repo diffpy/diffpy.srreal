@@ -14,7 +14,7 @@ ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) sou
 # the i18n builder cannot share the environment and doctrees with the others
 I18NSPHINXOPTS  = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) source
 
-.PHONY: help clean html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest gettext publish publish-prepare publish-push
+.PHONY: help clean html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest gettext publish
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
@@ -154,14 +154,12 @@ doctest:
 
 # Manual publishing to the gh-pages branch
 
-GITREPOPATH = $(shell git rev-parse --git-dir)
+GITREPOPATH = $(shell cd $(CURDIR) && git rev-parse --git-dir)
 GITREMOTE = origin
 GITREMOTEURL = $(shell git config --get remote.$(GITREMOTE).url)
 GITLASTCOMMIT = $(shell git rev-parse HEAD)
 
-publish: publish-prepare publish-push
-
-publish-prepare:
+publish:
 	@test -d build/html || \
 	    ( echo >&2 "Run 'make html' first!"; false )
 	test -d build/gh-pages || \
@@ -170,13 +168,10 @@ publish-prepare:
 	    git pull $(GITREMOTEURL) gh-pages
 	rsync -acv --delete --exclude=.git --exclude=.rsync-exclude \
 	    --exclude-from=build/gh-pages/.rsync-exclude \
-	    --link-dest=$(PWD)/build/html build/html/ build/gh-pages/
+	    --link-dest=$(CURDIR)/build/html build/html/ build/gh-pages/
 	cd build/gh-pages && \
 	    git add --all . && \
 	    git diff --cached --quiet || \
 	    git commit -m "Synced with the source at $(GITLASTCOMMIT)."
 	cd build/gh-pages && \
-	    git push $(GITREPOPATH) gh-pages
-
-publish-push:
-	git push $(GITREMOTE) gh-pages
+	    git push origin gh-pages
