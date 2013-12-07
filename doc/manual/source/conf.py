@@ -19,6 +19,7 @@ import time
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('../../..'))
 
 # -- General configuration -----------------------------------------------------
 
@@ -48,10 +49,8 @@ copyright = u'2013, Pavol Juhás, Christopher L. Farrow'
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
-pkginfopath = os.path.normpath('../../../diffpy.srreal.egg-info/PKG-INFO')
-versionline = [line for line in open(pkginfopath)
-        if line.startswith('Version:')][0]
-fullversion = versionline.split()[-1]
+from setup import versiondata
+fullversion = versiondata.get('DEFAULT', 'version')
 # The short X.Y version.
 version = '.'.join(fullversion.split('.')[:2])
 # The full version, including alpha/beta/rc tags.
@@ -64,7 +63,8 @@ release = fullversion
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
 #today = ''
-today_seconds = time.strptime(fullversion[-8:], '%Y%m%d')
+fulldate = versiondata.get('DEFAULT', 'date')
+today_seconds = time.strptime(fulldate.split()[0], '%Y-%m-%d')
 today = time.strftime('%B %d, %Y', today_seconds)
 year = today.split()[-1]
 # Else, today_fmt is used as the format for a strftime call.
@@ -253,3 +253,7 @@ texinfo_documents = [
 
 # How to display URL addresses: 'footnote', 'no', or 'inline'.
 #texinfo_show_urls = 'footnote'
+
+
+# Example configuration for intersphinx: refer to the Python standard library.
+# intersphinx_mapping = {'http://docs.python.org/': None}
