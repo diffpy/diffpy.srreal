@@ -124,8 +124,15 @@ Set of string identifiers for registered PeakProfile classes.\n\
 These are allowed arguments for the createByType static method.\n\
 ";
 
-const char* doc_GaussianProfile = "FIXME";
-const char* doc_CroppedGaussianProfile = "FIXME";
+const char* doc_GaussianProfile = "\
+Gaussian profile function.\n\
+";
+
+const char* doc_CroppedGaussianProfile = "\
+Gaussian function cropped to zero at its crossing with peakprecision.\n\
+\n\
+The profile is also rescaled to keep the integrated area of 1.\n\
+";
 
 // wrappers ------------------------------------------------------------------
 
