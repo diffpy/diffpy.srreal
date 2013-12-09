@@ -96,7 +96,7 @@ class TestPeakWidthModel(unittest.TestCase):
 
 
     def test_ticker(self):
-        """check PeakWidthModel.maxWidth()
+        """check PeakWidthModel.ticker()
         """
         from diffpy.srreal.eventticker import EventTicker
         et0 = EventTicker(self.pwconst.ticker())
