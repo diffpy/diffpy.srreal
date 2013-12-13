@@ -652,6 +652,8 @@ void wrap_PairQuantity()
     using diffpy::Attributes;
     const python::object None;
 
+    typedef StructureAdapterPtr&(PairQuantity::*getstru)();
+
     class_<QuantityType>("QuantityType")
         .def(vector_indexing_suite<QuantityType>())
         .def("__repr__", repr_QuantityType)
@@ -670,8 +672,8 @@ void wrap_PairQuantity()
         .def("setStructure", &PairQuantity::setStructure<object>,
                 python::arg("stru"),
                 doc_BasePairQuantity_setStructure)
-        .def("getStructure", &PairQuantity::getStructure,
-                return_value_policy<copy_const_reference>(),
+        .def("getStructure", getstru(&PairQuantity::getStructure),
+                return_value_policy<copy_non_const_reference>(),
                 doc_BasePairQuantity_getStructure)
         .def("_setupParallelRun", &PairQuantity::setupParallelRun,
                 (python::arg("cpuindex"), python::arg("ncpu")),
