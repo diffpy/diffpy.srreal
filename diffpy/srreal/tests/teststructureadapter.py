@@ -102,6 +102,13 @@ class TestNoMeta(unittest.TestCase):
         self.failUnless(numpy.array_equal(g0, g1nm))
         return
 
+    def test_nometa_twice(self):
+        '''check that second call of nometa returns the same object.
+        '''
+        adpt1 = nometa(nickel)
+        adpt2 = nometa(adpt1)
+        self.assertIs(adpt1, adpt2)
+
 # End of class TestNoMeta
 
 
@@ -132,6 +139,13 @@ class TestNoSymmetry(unittest.TestCase):
         self.failUnless(numpy.array_equal(r0, ra2))
         self.failUnless(numpy.allclose(g1, ga2))
         return
+
+    def test_nosymmetry_twice(self):
+        '''check that second call of nosymmetry returns the same object.
+        '''
+        adpt1 = nosymmetry(nickel)
+        adpt2 = nosymmetry(adpt1)
+        self.assertIs(adpt1, adpt2)
 
     def test_nosymmetry_pickling(self):
         '''check pickling of the NoSymmetryStructureAdapter wrapper.
