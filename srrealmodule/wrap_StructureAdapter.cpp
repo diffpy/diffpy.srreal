@@ -48,6 +48,12 @@ Construct StructureAdapter object from a string.  This is used\n\
 internally by the pickle protocol and should not be called directly.\n\
 ";
 
+const char* doc_StructureAdapter_clone = "\
+Return a deep copy of this StructureAdapter instance.\n\
+\n\
+This method must be overloaded in a derived class.\n\
+";
+
 const char* doc_StructureAdapter_createBondGenerator = "\
 Create a bond generator instance linked to this structure adapter\n\
 \n\
@@ -179,6 +185,12 @@ class StructureAdapterWrap :
     public wrapper_srreal<StructureAdapter>
 {
     public:
+
+        StructureAdapterPtr clone() const
+        {
+            return this->get_pure_virtual_override("clone")();
+        }
+
 
         BaseBondGeneratorPtr createBondGenerator() const
         {
@@ -359,6 +371,9 @@ void wrap_StructureAdapter()
             "StructureAdapter", doc_StructureAdapter)
         .def("__init__", make_constructor(createStructureAdapterFromString),
                 doc_StructureAdapter___init__)
+        .def("clone",
+                &StructureAdapter::clone,
+                doc_StructureAdapter_clone)
         .def("createBondGenerator",
                 &StructureAdapter::createBondGenerator,
                 doc_StructureAdapter_createBondGenerator)
