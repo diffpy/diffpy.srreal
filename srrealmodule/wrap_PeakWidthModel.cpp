@@ -309,7 +309,7 @@ void wrap_PeakWidthModel()
             "DebyeWallerPeakWidth", doc_DebyeWallerPeakWidth)
         ;
 
-    class_<JeongPeakWidth, bases<PeakWidthModel> >(
+    class_<JeongPeakWidth, bases<DebyeWallerPeakWidth> >(
             "JeongPeakWidth", doc_JeongPeakWidth)
         ;
 

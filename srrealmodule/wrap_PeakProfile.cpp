@@ -273,7 +273,7 @@ void wrap_PeakProfile()
             "GaussianProfile", doc_GaussianProfile)
         ;
 
-    class_<CroppedGaussianProfile, bases<PeakProfile> >(
+    class_<CroppedGaussianProfile, bases<GaussianProfile> >(
             "CroppedGaussianProfile", doc_CroppedGaussianProfile)
         ;
 
