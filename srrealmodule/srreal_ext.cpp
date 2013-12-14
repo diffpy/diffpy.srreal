@@ -28,6 +28,7 @@ void wrap_exceptions();
 void wrap_EventTicker();
 void wrap_Attributes();
 void wrap_StructureAdapter();
+void wrap_AtomicStructureAdapter();
 void wrap_BaseBondGenerator();
 void wrap_PairQuantity();
 void wrap_PeakWidthModel();
@@ -56,6 +57,7 @@ BOOST_PYTHON_MODULE(srreal_ext)
     wrap_EventTicker();
     wrap_Attributes();
     wrap_StructureAdapter();
+    wrap_AtomicStructureAdapter();
     wrap_BaseBondGenerator();
     wrap_PairQuantity();
     wrap_PeakWidthModel();
