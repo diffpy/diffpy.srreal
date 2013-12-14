@@ -102,6 +102,47 @@ NumPyArray_DoublePtr createNumPyDoubleArray(int dim, const int* sz)
 }
 
 
+/// helper for creating a numpy array view on a double array
+boost::python::object
+createNumPyDoubleView(double* data, int dim, const int* sz)
+{
+    using namespace std;
+    using namespace boost;
+    valarray<npy_intp> npsza(dim);
+    npy_intp* npsz = &(npsza[0]);
+    copy(sz, sz + dim, npsz);
+    python::object rv(
+            python::handle<>(
+                PyArray_SimpleNewFromData(dim, npsz, PyArray_DOUBLE, data)));
+    return rv;
+}
+
+
+/// NumPy array view specializations for R3::Vector
+boost::python::object viewAsNumPyArray(::diffpy::srreal::R3::Vector& v)
+{
+    using namespace diffpy::srreal;
+    double* data = &(v[0]);
+    int sz = R3::Ndim;
+    return createNumPyDoubleView(data, 1, &sz);
+}
+
+
+/// NumPy array view specializations for R3::Matrix
+boost::python::object viewAsNumPyArray(::diffpy::srreal::R3::Matrix& mx)
+{
+    using namespace diffpy::srreal;
+    double* data = &(mx(0, 0));
+    int sz[2] = {R3::Ndim, R3::Ndim};
+    return createNumPyDoubleView(data, 2, sz);
+}
+
+
+/// helper for creating a 2D numpy array view on a 2D double buffer
+boost::python::object
+viewAs2DNumPyDoubleArray(double* data, int rows, int cols);
+
+
 /// helper for creating numpy array of integers
 NumPyArray_IntPtr createNumPyIntArray(int dim, const int* sz)
 {
