@@ -46,13 +46,13 @@ Data for one atom site in AtomicStructureAdapter.\n\
 Instance data:\n\
 \n\
 atomtype     -- string symbol for element, ion or isotope\n\
-cartesianposition -- cartesian coordinates viewed as NumPy array\n\
+xyz_cartn    -- Cartesian coordinates viewed as NumPy array\n\
 occupancy    -- fractional occupancy of this atom site\n\
 anisotropy   -- boolean flag for anisotropic displacements at this site\n\
-cartesianuij -- matrix of anisotropic displacements parameters viewed\n\
+uij_cartn    -- matrix of anisotropic displacements parameters viewed\n\
                 as NumPy array\n\
 \n\
-Note cartesianposition and cartesianuij are NumPy arrays with a direct\n\
+Note xyz_cartn and uij_cartn are NumPy arrays with a direct\n\
 view to the data in C++ class.  Do not resize or reshape.\n\
 ";
 
@@ -66,26 +66,26 @@ const char* doc_AtomicStructureAdapter_reserve = "FIXME";
 
 // Wrapper helpers for the class Atom
 
-object get_cartesianposition(Atom& a)
+object get_xyz_cartn(Atom& a)
 {
-    return viewAsNumPyArray(a.cartesianposition);
+    return viewAsNumPyArray(a.xyz_cartn);
 }
 
-void set_cartesianposition(Atom& a, object value)
+void set_xyz_cartn(Atom& a, object value)
 {
-    object xyzc = get_cartesianposition(a);
+    object xyzc = get_xyz_cartn(a);
     xyzc[slice()] = value;
 }
 
 
-object get_cartesianuij(Atom& a)
+object get_uij_cartn(Atom& a)
 {
-    return viewAsNumPyArray(a.cartesianuij);
+    return viewAsNumPyArray(a.uij_cartn);
 }
 
-void set_cartesianuij(Atom& a, object value)
+void set_uij_cartn(Atom& a, object value)
 {
-    object uijc = get_cartesianuij(a);
+    object uijc = get_uij_cartn(a);
     uijc[slice()] = value;
 }
 
@@ -162,24 +162,24 @@ void wrap_AtomicStructureAdapter()
     class_<Atom> atom_class("Atom", doc_Atom);
     // first define the property helper methods
     atom_class
-        .def("_get_cartesianposition",
-                get_cartesianposition,
+        .def("_get_xyz_cartn",
+                get_xyz_cartn,
                 with_custodian_and_ward_postcall<0,1>())
-        .def("_get_cartesianuij",
-                get_cartesianuij,
+        .def("_get_uij_cartn",
+                get_uij_cartn,
                 with_custodian_and_ward_postcall<0,1>())
         ;
     // now we can finalize the Atom class interface
     atom_class
         .def_readwrite("atomtype", &Atom::atomtype)
-        .add_property("cartesianposition",
-                atom_class.attr("_get_cartesianposition"),
-                set_cartesianposition)
+        .add_property("xyz_cartn",
+                atom_class.attr("_get_xyz_cartn"),
+                set_xyz_cartn)
         .def_readwrite("occupancy", &Atom::occupancy)
         .def_readwrite("anisotropy", &Atom::anisotropy)
-        .add_property("cartesianuij",
-                atom_class.attr("_get_cartesianuij"),
-                set_cartesianuij)
+        .add_property("uij_cartn",
+                atom_class.attr("_get_uij_cartn"),
+                set_uij_cartn)
         ;
 
     // class AtomicStructureAdapter
