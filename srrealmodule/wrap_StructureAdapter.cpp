@@ -43,11 +43,6 @@ This class provides a uniform interface to structure data that is\n\
 understood by all PairQuantity calculators.\n\
 ";
 
-const char* doc_StructureAdapter___init__ = "\
-Construct StructureAdapter object from a string.  This is used\n\
-internally by the pickle protocol and should not be called directly.\n\
-";
-
 const char* doc_StructureAdapter_clone = "\
 Return a deep copy of this StructureAdapter instance.\n\
 \n\
@@ -336,28 +331,6 @@ class StructureAdapterWrap :
 
 };  // class StructureAdapterWrap
 
-// pickle support
-
-StructureAdapterPtr
-createStructureAdapterFromString(const std::string& content)
-{
-    StructureAdapterPtr adpt;
-    diffpy::serialization_fromstring(adpt, content);
-    return adpt;
-}
-
-
-class StructureAdapterPickleSuite : public pickle_suite
-{
-    public:
-
-        static python::tuple getinitargs(StructureAdapterPtr adpt)
-        {
-            std::string content = diffpy::serialization_tostring(adpt);
-            return python::make_tuple(content);
-        }
-
-};  // class StructureAdapterPickleSuite
 
 }   // namespace nswrap_StructureAdapter
 
@@ -369,8 +342,8 @@ void wrap_StructureAdapter()
 
     class_<StructureAdapterWrap, noncopyable>(
             "StructureAdapter", doc_StructureAdapter)
-        .def("__init__", make_constructor(createStructureAdapterFromString),
-                doc_StructureAdapter___init__)
+        .def("__init__", StructureAdapterPickleSuite::constructor(),
+                doc_StructureAdapter___init__fromstring)
         .def("clone",
                 &StructureAdapter::clone,
                 doc_StructureAdapter_clone)

@@ -24,6 +24,7 @@
 #include <sstream>
 
 #include <diffpy/serialization.hpp>
+#include <diffpy/srreal/forwardtypes.hpp>
 
 namespace srrealmodule {
 
@@ -79,6 +80,20 @@ class SerializationPickleSuite : public boost::python::pickle_suite
         static bool getstate_manages_dict()  { return pickledict; }
 
 };  // class SerializationPickleSuite
+
+
+class StructureAdapterPickleSuite : public boost::python::pickle_suite
+{
+    public:
+
+        static boost::python::tuple getinitargs(
+                diffpy::srreal::StructureAdapterPtr);
+        static boost::python::object constructor();
+
+};  // class StructureAdapterPickleSuite
+
+extern
+const char* doc_StructureAdapter___init__fromstring;
 
 }   // namespace srrealmodule
 

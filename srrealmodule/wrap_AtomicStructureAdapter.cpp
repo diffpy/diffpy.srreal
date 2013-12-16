@@ -337,6 +337,7 @@ void wrap_AtomicStructureAdapter()
         .add_property("uc12", get_uc12, set_uc12, doc_Atom_uijc)
         .add_property("uc13", get_uc13, set_uc13, doc_Atom_uijc)
         .add_property("uc23", get_uc23, set_uc23, doc_Atom_uijc)
+        .def_pickle(SerializationPickleSuite<Atom,DICT_IGNORE>())
         ;
 
     // class AtomicStructureAdapter
@@ -348,6 +349,8 @@ void wrap_AtomicStructureAdapter()
         .def("__init__", make_constructor(atomadapter_create))
         .def("__init__", make_constructor(atomadapter_copy),
                 doc_AtomicStructureAdapter_init_copy)
+        .def("__init__", StructureAdapterPickleSuite::constructor(),
+                doc_StructureAdapter___init__fromstring)
         .def(atomadapter_indexing())
         .def(self == self)
         .def(self != self)
@@ -360,6 +363,7 @@ void wrap_AtomicStructureAdapter()
                 bp::arg("index"), doc_AtomicStructureAdapter_pop)
         .def("reserve", atomadapter_reserve,
                 bp::arg("sz"), doc_AtomicStructureAdapter_reserve)
+        .def_pickle(StructureAdapterPickleSuite())
         ;
 
     // class PeriodicStructureAdapter
@@ -368,6 +372,8 @@ void wrap_AtomicStructureAdapter()
         .def("__init__", make_constructor(periodicadapter_create))
         .def("__init__", make_constructor(periodicadapter_copy),
                 doc_PeriodicStructureAdapter_init_copy)
+        .def("__init__", StructureAdapterPickleSuite::constructor(),
+                doc_StructureAdapter___init__fromstring)
         .def(self == self)
         .def(self != self)
         .def("getLatPar", periodicadapter_getlatpar,
@@ -380,6 +386,7 @@ void wrap_AtomicStructureAdapter()
                 bp::arg("atom"), doc_PeriodicStructureAdapter_toCartesian)
         .def("toFractional", &PeriodicStructureAdapter::toFractional,
                 bp::arg("atom"), doc_PeriodicStructureAdapter_toFractional)
+        .def_pickle(StructureAdapterPickleSuite())
         ;
 
     // class CrystalStructureAdapter
@@ -388,6 +395,8 @@ void wrap_AtomicStructureAdapter()
         .def("__init__", make_constructor(crystaladapter_create))
         .def("__init__", make_constructor(crystaladapter_copy),
                 doc_CrystalStructureAdapter_init_copy)
+        .def("__init__", StructureAdapterPickleSuite::constructor(),
+                doc_StructureAdapter___init__fromstring)
         .def(self == self)
         .def(self != self)
         .def("countSymOps", &CrystalStructureAdapter::countSymOps,
@@ -408,6 +417,7 @@ void wrap_AtomicStructureAdapter()
         .def("updateSymmetryPositions",
                 &CrystalStructureAdapter::updateSymmetryPositions,
                 doc_CrystalStructureAdapter_updateSymmetryPositions)
+        .def_pickle(StructureAdapterPickleSuite())
         ;
 
 }
