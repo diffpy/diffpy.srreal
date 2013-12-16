@@ -61,6 +61,7 @@ Make a deep copy of an existing Atom.\n\
 ";
 
 const char* doc_AtomicStructureAdapter = "";
+const char* doc_AtomicStructureAdapter_init_copy = "FIXME";
 const char* doc_AtomicStructureAdapter_insert = "FIXME";
 const char* doc_AtomicStructureAdapter_append = "FIXME";
 const char* doc_AtomicStructureAdapter_pop = "FIXME";
@@ -98,6 +99,12 @@ void set_uij_cartn(Atom& a, object value)
 AtomicStructureAdapterPtr atomadapter_create()
 {
     return AtomicStructureAdapterPtr(new AtomicStructureAdapter);
+}
+
+
+AtomicStructureAdapterPtr atomadapter_copy(const AtomicStructureAdapter& adpt)
+{
+    return AtomicStructureAdapterPtr(new AtomicStructureAdapter(adpt));
 }
 
 
@@ -196,7 +203,11 @@ void wrap_AtomicStructureAdapter()
         // when calling shared_from_this, but it seems to work well
         // if constructed with a factory function.
         .def("__init__", make_constructor(atomadapter_create))
+        .def("__init__", make_constructor(atomadapter_copy),
+                doc_AtomicStructureAdapter_init_copy)
         .def(atomadapter_indexing())
+        .def(self == self)
+        .def(self != self)
         .def("insert", atomadapter_insert,
                 (bp::arg("index"), bp::arg("atom")),
                 doc_AtomicStructureAdapter_insert)
