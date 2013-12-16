@@ -59,6 +59,8 @@ view to the data in C++ class.  Do not resize or reshape.\n\
 const char* doc_Atom_init_copy = "\
 Make a deep copy of an existing Atom.\n\
 ";
+const char* doc_Atom_xic = "Vector element in xyz_cartn";
+const char* doc_Atom_uijc = "Matrix element in uij_cartn";
 
 const char* doc_AtomicStructureAdapter = "";
 const char* doc_AtomicStructureAdapter_init_copy = "FIXME";
@@ -93,6 +95,31 @@ void set_uij_cartn(Atom& a, object value)
     object uijc = get_uij_cartn(a);
     uijc[slice()] = value;
 }
+
+
+double get_xc(const Atom& a)  { return a.xyz_cartn[0]; }
+void set_xc(Atom& a, double value)  { a.xyz_cartn[0] = value; }
+double get_yc(const Atom& a)  { return a.xyz_cartn[1]; }
+void set_yc(Atom& a, double value)  { a.xyz_cartn[1] = value; }
+double get_zc(const Atom& a)  { return a.xyz_cartn[2]; }
+void set_zc(Atom& a, double value)  { a.xyz_cartn[2] = value; }
+
+double get_uc11(const Atom& a)  { return a.uij_cartn(0, 0); }
+void set_uc11(Atom& a, double value)  { a.uij_cartn(0, 0) = value; }
+double get_uc22(const Atom& a)  { return a.uij_cartn(1, 1); }
+void set_uc22(Atom& a, double value)  { a.uij_cartn(1, 1) = value; }
+double get_uc33(const Atom& a)  { return a.uij_cartn(2, 2); }
+void set_uc33(Atom& a, double value)  { a.uij_cartn(2, 2) = value; }
+double get_uc12(const Atom& a)  { return a.uij_cartn(0, 1); }
+void set_uc12(Atom& a, double value) {
+    a.uij_cartn(0, 1) = a.uij_cartn(1, 0) = value; }
+double get_uc13(const Atom& a)  { return a.uij_cartn(0, 2); }
+void set_uc13(Atom& a, double value) {
+    a.uij_cartn(0, 2) = a.uij_cartn(2, 0) = value; }
+double get_uc23(const Atom& a)  { return a.uij_cartn(1, 2); }
+void set_uc23(Atom& a, double value) {
+    a.uij_cartn(1, 2) = a.uij_cartn(2, 1) = value; }
+
 
 // Wrapper helpers for class AtomicStructureAdapter
 
@@ -189,11 +216,20 @@ void wrap_AtomicStructureAdapter()
         .add_property("xyz_cartn",
                 atom_class.attr("_get_xyz_cartn"),
                 set_xyz_cartn)
+        .add_property("xc", get_xc, set_xc, doc_Atom_xic)
+        .add_property("yc", get_yc, set_yc, doc_Atom_xic)
+        .add_property("zc", get_zc, set_zc, doc_Atom_xic)
         .def_readwrite("occupancy", &Atom::occupancy)
         .def_readwrite("anisotropy", &Atom::anisotropy)
         .add_property("uij_cartn",
                 atom_class.attr("_get_uij_cartn"),
                 set_uij_cartn)
+        .add_property("uc11", get_uc11, set_uc11, doc_Atom_uijc)
+        .add_property("uc22", get_uc22, set_uc22, doc_Atom_uijc)
+        .add_property("uc33", get_uc33, set_uc33, doc_Atom_uijc)
+        .add_property("uc12", get_uc12, set_uc12, doc_Atom_uijc)
+        .add_property("uc13", get_uc13, set_uc13, doc_Atom_uijc)
+        .add_property("uc23", get_uc23, set_uc23, doc_Atom_uijc)
         ;
 
     // class AtomicStructureAdapter
