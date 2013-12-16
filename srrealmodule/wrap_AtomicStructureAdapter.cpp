@@ -25,6 +25,7 @@
 
 #include <diffpy/srreal/AtomicStructureAdapter.hpp>
 #include <diffpy/srreal/PeriodicStructureAdapter.hpp>
+#include <diffpy/srreal/CrystalStructureAdapter.hpp>
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
@@ -80,6 +81,18 @@ const char* doc_PeriodicStructureAdapter_getLatPar = "FIXME";
 const char* doc_PeriodicStructureAdapter_setLatPar = "FIXME";
 const char* doc_PeriodicStructureAdapter_toCartesian = "FIXME";
 const char* doc_PeriodicStructureAdapter_toFractional = "FIXME";
+
+// class CrystalStructureAdapter
+
+const char* doc_CrystalStructureAdapter = "FIXME";
+const char* doc_CrystalStructureAdapter_init_copy = "FIXME";
+const char* doc_CrystalStructureAdapter_countSymOps = "FIXME";
+const char* doc_CrystalStructureAdapter_clearSymOps = "FIXME";
+const char* doc_CrystalStructureAdapter_addSymOp = "FIXME";
+const char* doc_CrystalStructureAdapter_getSymOp = "FIXME";
+const char* doc_CrystalStructureAdapter_getEquivalentAtoms = "FIXME";
+const char* doc_CrystalStructureAdapter_expandLatticeAtom = "FIXME";
+const char* doc_CrystalStructureAdapter_updateSymmetryPositions = "FIXME";
 
 // wrappers ------------------------------------------------------------------
 
@@ -221,6 +234,65 @@ python::tuple periodicadapter_getlatpar(const PeriodicStructureAdapter& adpt)
     return rv;
 }
 
+// Wrapper helpers for class CrystalStructureAdapter
+
+
+CrystalStructureAdapterPtr crystaladapter_create()
+{
+    return CrystalStructureAdapterPtr(new CrystalStructureAdapter);
+}
+
+
+CrystalStructureAdapterPtr
+crystaladapter_copy(const CrystalStructureAdapter& adpt)
+{
+    return CrystalStructureAdapterPtr(new CrystalStructureAdapter(adpt));
+}
+
+
+void crystaladapter_addsymop(CrystalStructureAdapter& adpt,
+        python::object R, python::object t)
+{
+    static SymOpRotTrans op;
+    object Rview = viewAsNumPyArray(op.R);
+    Rview[slice()] = R;
+    object tview = viewAsNumPyArray(op.t);
+    tview[slice()] = t;
+    adpt.addSymOp(op);
+}
+
+
+python::tuple
+crystaladapter_getsymop(const CrystalStructureAdapter& adpt, int idx)
+{
+    ensure_index_bounds(idx, 0, adpt.countSymOps());
+    const SymOpRotTrans& op = adpt.getSymOp(idx);
+    python::tuple rv = python::make_tuple(
+            convertToNumPyArray(op.R), convertToNumPyArray(op.t));
+    return rv;
+}
+
+
+AtomicStructureAdapterPtr
+crystaladapter_getequivalentatoms(const CrystalStructureAdapter& adpt, int idx)
+{
+    ensure_index_bounds(idx, 0, adpt.countSymOps());
+    const CrystalStructureAdapter::AtomVector& av =
+        adpt.getEquivalentAtoms(idx);
+    AtomicStructureAdapterPtr rv = atomadapter_create();
+    rv->assign(av.begin(), av.end());
+    return rv;
+}
+
+
+AtomicStructureAdapterPtr crystaladapter_expandlatticeatom(
+        const CrystalStructureAdapter& adpt, const Atom& a)
+{
+    CrystalStructureAdapter::AtomVector av = adpt.expandLatticeAtom(a);
+    AtomicStructureAdapterPtr rv = atomadapter_create();
+    rv->assign(av.begin(), av.end());
+    return rv;
+}
 
 }   // namespace nswrap_AtomicStructureAdapter
 
@@ -308,6 +380,34 @@ void wrap_AtomicStructureAdapter()
                 bp::arg("atom"), doc_PeriodicStructureAdapter_toCartesian)
         .def("toFractional", &PeriodicStructureAdapter::toFractional,
                 bp::arg("atom"), doc_PeriodicStructureAdapter_toFractional)
+        ;
+
+    // class CrystalStructureAdapter
+    class_<CrystalStructureAdapter, bases<PeriodicStructureAdapter> >(
+            "CrystalStructureAdapter", doc_CrystalStructureAdapter)
+        .def("__init__", make_constructor(crystaladapter_create))
+        .def("__init__", make_constructor(crystaladapter_copy),
+                doc_CrystalStructureAdapter_init_copy)
+        .def(self == self)
+        .def(self != self)
+        .def("countSymOps", &CrystalStructureAdapter::countSymOps,
+                doc_CrystalStructureAdapter_countSymOps)
+        .def("clearSymOps", &CrystalStructureAdapter::clearSymOps,
+                doc_CrystalStructureAdapter_clearSymOps)
+        .def("addSymOp", crystaladapter_addsymop,
+                (bp::arg("R"), bp::arg("t")),
+                doc_CrystalStructureAdapter_addSymOp)
+        .def("getSymOp", crystaladapter_getsymop, bp::arg("index"),
+                doc_CrystalStructureAdapter_getSymOp)
+        .def("getEquivalentAtoms",
+                crystaladapter_getequivalentatoms, bp::arg("index"),
+                doc_CrystalStructureAdapter_getEquivalentAtoms)
+        .def("expandLatticeAtom",
+                crystaladapter_expandlatticeatom, bp::arg("atom"),
+                doc_CrystalStructureAdapter_expandLatticeAtom)
+        .def("updateSymmetryPositions",
+                &CrystalStructureAdapter::updateSymmetryPositions,
+                doc_CrystalStructureAdapter_updateSymmetryPositions)
         ;
 
 }
