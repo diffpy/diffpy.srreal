@@ -56,6 +56,10 @@ Note xyz_cartn and uij_cartn are NumPy arrays with a direct\n\
 view to the data in C++ class.  Do not resize or reshape.\n\
 ";
 
+const char* doc_Atom_init_copy = "\
+Make a deep copy of an existing Atom.\n\
+";
+
 const char* doc_AtomicStructureAdapter = "";
 const char* doc_AtomicStructureAdapter_insert = "FIXME";
 const char* doc_AtomicStructureAdapter_append = "FIXME";
@@ -160,8 +164,11 @@ void wrap_AtomicStructureAdapter()
 
     // class Atom
     class_<Atom> atom_class("Atom", doc_Atom);
-    // first define the property helper methods
+    // first define copy constructor and property helper methods
     atom_class
+        .def(init<const Atom&>(bp::arg("atom"), doc_Atom_init_copy))
+        .def(self == self)
+        .def(self != self)
         .def("_get_xyz_cartn",
                 get_xyz_cartn,
                 with_custodian_and_ward_postcall<0,1>())
