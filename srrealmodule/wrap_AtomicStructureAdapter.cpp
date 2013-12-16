@@ -24,6 +24,7 @@
 #include <boost/python/slice.hpp>
 
 #include <diffpy/srreal/AtomicStructureAdapter.hpp>
+#include <diffpy/srreal/PeriodicStructureAdapter.hpp>
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
@@ -62,12 +63,23 @@ Make a deep copy of an existing Atom.\n\
 const char* doc_Atom_xic = "Vector element in xyz_cartn";
 const char* doc_Atom_uijc = "Matrix element in uij_cartn";
 
+// class AtomicStructureAdapter
+
 const char* doc_AtomicStructureAdapter = "";
 const char* doc_AtomicStructureAdapter_init_copy = "FIXME";
 const char* doc_AtomicStructureAdapter_insert = "FIXME";
 const char* doc_AtomicStructureAdapter_append = "FIXME";
 const char* doc_AtomicStructureAdapter_pop = "FIXME";
 const char* doc_AtomicStructureAdapter_reserve = "FIXME";
+
+// class PeriodicStructureAdapter
+
+const char* doc_PeriodicStructureAdapter = "FIXME";
+const char* doc_PeriodicStructureAdapter_init_copy = "FIXME";
+const char* doc_PeriodicStructureAdapter_getLatPar = "FIXME";
+const char* doc_PeriodicStructureAdapter_setLatPar = "FIXME";
+const char* doc_PeriodicStructureAdapter_toCartesian = "FIXME";
+const char* doc_PeriodicStructureAdapter_toFractional = "FIXME";
 
 // wrappers ------------------------------------------------------------------
 
@@ -119,7 +131,6 @@ void set_uc13(Atom& a, double value) {
 double get_uc23(const Atom& a)  { return a.uij_cartn(1, 2); }
 void set_uc23(Atom& a, double value) {
     a.uij_cartn(1, 2) = a.uij_cartn(2, 1) = value; }
-
 
 // Wrapper helpers for class AtomicStructureAdapter
 
@@ -187,6 +198,30 @@ void atomadapter_reserve(AtomicStructureAdapter& adpt, int sz)
     adpt.reserve(sz);
 }
 
+// Wrapper helpers for class PeriodicStructureAdapter
+
+PeriodicStructureAdapterPtr periodicadapter_create()
+{
+    return PeriodicStructureAdapterPtr(new PeriodicStructureAdapter);
+}
+
+
+PeriodicStructureAdapterPtr
+periodicadapter_copy(const PeriodicStructureAdapter& adpt)
+{
+    return PeriodicStructureAdapterPtr(new PeriodicStructureAdapter(adpt));
+}
+
+
+python::tuple periodicadapter_getlatpar(const PeriodicStructureAdapter& adpt)
+{
+    const Lattice& L = adpt.getLattice();
+    python::tuple rv = python::make_tuple(
+            L.a(), L.b(), L.c(), L.alpha(), L.beta(), L.gamma());
+    return rv;
+}
+
+
 }   // namespace nswrap_AtomicStructureAdapter
 
 // Wrapper definitions -------------------------------------------------------
@@ -253,6 +288,26 @@ void wrap_AtomicStructureAdapter()
                 bp::arg("index"), doc_AtomicStructureAdapter_pop)
         .def("reserve", atomadapter_reserve,
                 bp::arg("sz"), doc_AtomicStructureAdapter_reserve)
+        ;
+
+    // class PeriodicStructureAdapter
+    class_<PeriodicStructureAdapter, bases<AtomicStructureAdapter> >(
+            "PeriodicStructureAdapter", doc_PeriodicStructureAdapter)
+        .def("__init__", make_constructor(periodicadapter_create))
+        .def("__init__", make_constructor(periodicadapter_copy),
+                doc_PeriodicStructureAdapter_init_copy)
+        .def(self == self)
+        .def(self != self)
+        .def("getLatPar", periodicadapter_getlatpar,
+                doc_PeriodicStructureAdapter_getLatPar)
+        .def("setLatPar", &PeriodicStructureAdapter::setLatPar,
+                (bp::arg("a"), bp::arg("b"), bp::arg("c"),
+                 bp::arg("alphadeg"), bp::arg("betadeg"), bp::arg("gammadeg")),
+                doc_PeriodicStructureAdapter_setLatPar)
+        .def("toCartesian", &PeriodicStructureAdapter::toCartesian,
+                bp::arg("atom"), doc_PeriodicStructureAdapter_toCartesian)
+        .def("toFractional", &PeriodicStructureAdapter::toFractional,
+                bp::arg("atom"), doc_PeriodicStructureAdapter_toFractional)
         ;
 
 }
