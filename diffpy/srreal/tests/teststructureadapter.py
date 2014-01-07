@@ -276,6 +276,75 @@ class TestPyObjCrystAdapter(TestCaseObjCrystOptional):
 
 # End of class TestStructureAdapter
 
+##############################################################################
+class TestAtom(unittest.TestCase):
+
+    def setUp(self):
+        self.a = Atom()
+        return
+
+    def test___init__copy(self):
+        '''check Atom copy constructor.
+        '''
+        self.a.xyz_cartn = (1, 2, 3)
+        a1 = Atom(self.a)
+        self.assertEqual(self.a, a1)
+        self.assertNotEqual(self.a, Atom())
+        return
+
+    def test_equality(self):
+        '''check Atom equal and not equal operators.
+        '''
+        self.assertEqual(self.a, Atom())
+        self.assertFalse(self.a != Atom())
+        a1 = Atom()
+        a1.atomtype = 'Na'
+        self.assertNotEqual(self.a, a1)
+        return
+
+    def test_pickling(self):
+        '''check pickling of Atom instances.
+        '''
+        self.a.atomtype = "Na"
+        a1 = cPickle.loads(cPickle.dumps(self.a))
+        self.assertEqual("Na", a1.atomtype)
+        self.assertEqual(self.a, a1)
+        self.failIf(self.a is a1)
+        return
+
+    def test_xyz_cartn(self):
+        '''check Atom.xyz_cartn.
+        '''
+        a = self.a
+        a.xyz_cartn = 4, 5, 6
+        self.assertTrue(numpy.array_equal([4, 5, 6], a.xyz_cartn))
+        self.assertEqual(4.0, a.xc)
+        self.assertEqual(5.0, a.yc)
+        self.assertEqual(6.0, a.zc)
+        return
+
+    def test_uij_cartn(self):
+        '''check Atom.uij_cartn
+        '''
+        a = self.a
+        a.uij_cartn = numpy.identity(3) * 0.01
+        a.uc12 = 0.012
+        a.uc13 = 0.013
+        a.uc23 = 0.023
+        self.assertTrue(numpy.array_equal(a.uij_cartn, [
+            [0.01, 0.012, 0.013],
+            [0.012, 0.01, 0.023],
+            [0.013, 0.023, 0.01]]))
+        self.assertEqual(0.01, a.uc11)
+        self.assertEqual(0.01, a.uc22)
+        self.assertEqual(0.01, a.uc33)
+        self.assertEqual(0.012, a.uc12)
+        self.assertEqual(0.013, a.uc13)
+        self.assertEqual(0.023, a.uc23)
+        return
+
+# End of class TestAtom
+
 if __name__ == '__main__':
     unittest.main()
 
