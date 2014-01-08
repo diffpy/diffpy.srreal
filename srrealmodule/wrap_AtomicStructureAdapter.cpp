@@ -66,33 +66,117 @@ const char* doc_Atom_uijc = "Matrix element in uij_cartn";
 
 // class AtomicStructureAdapter
 
-const char* doc_AtomicStructureAdapter = "";
-const char* doc_AtomicStructureAdapter_init_copy = "FIXME";
-const char* doc_AtomicStructureAdapter_insert = "FIXME";
-const char* doc_AtomicStructureAdapter_append = "FIXME";
-const char* doc_AtomicStructureAdapter_pop = "FIXME";
-const char* doc_AtomicStructureAdapter_reserve = "FIXME";
+const char* doc_AtomicStructureAdapter = "\
+Structure adapter for a non-periodic group of atoms.\n\
+\n\
+This class supports indexing and iteration similar to Python list.\n\
+";
+
+const char* doc_AtomicStructureAdapter_init_copy = "\
+Make a deep copy of an existing AtomicStructureAdapter.\n\
+";
+
+const char* doc_AtomicStructureAdapter_insert = "\
+Insert atom at a specified site index in this adapter.\n\
+\n\
+index    -- integer index for adding the new atom.  May be negative\n\
+            as per Python indexing conventions.\n\
+atom     -- Atom object to be inserted.\n\
+\n\
+No return value.\n\
+";
+
+const char* doc_AtomicStructureAdapter_append = "\
+Add atom to the end of this adapter.\n\
+\n\
+atom     -- Atom object to be inserted.\n\
+\n\
+No return value.\n\
+";
+
+const char* doc_AtomicStructureAdapter_pop = "\
+Remove and return Atom at the specified site index.\n\
+\n\
+index    -- integer index of the removed atom.  May be negative\n\
+            as per Python indexing conventions.\n\
+\n\
+Return the removed Atom.\n\
+";
+
+const char* doc_AtomicStructureAdapter_reserve = "\
+Reserve memory for a specified number of atoms.\n\
+Although not required, calling this method can save memory and\n\
+avoid reallocation of Atom instances.\n\
+\n\
+sz   -- expected number of atoms in this adapter\n\
+\n\
+No return value.\n\
+";
 
 // class PeriodicStructureAdapter
 
-const char* doc_PeriodicStructureAdapter = "FIXME";
-const char* doc_PeriodicStructureAdapter_init_copy = "FIXME";
-const char* doc_PeriodicStructureAdapter_getLatPar = "FIXME";
-const char* doc_PeriodicStructureAdapter_setLatPar = "FIXME";
-const char* doc_PeriodicStructureAdapter_toCartesian = "FIXME";
-const char* doc_PeriodicStructureAdapter_toFractional = "FIXME";
+const char* doc_PeriodicStructureAdapter = "\
+FIXME\n\
+";
+
+const char* doc_PeriodicStructureAdapter_init_copy = "\
+FIXME\n\
+";
+
+const char* doc_PeriodicStructureAdapter_getLatPar = "\
+FIXME\n\
+";
+
+const char* doc_PeriodicStructureAdapter_setLatPar = "\
+FIXME\n\
+";
+
+const char* doc_PeriodicStructureAdapter_toCartesian = "\
+FIXME\n\
+";
+
+const char* doc_PeriodicStructureAdapter_toFractional = "\
+FIXME\n\
+";
+
 
 // class CrystalStructureAdapter
 
-const char* doc_CrystalStructureAdapter = "FIXME";
-const char* doc_CrystalStructureAdapter_init_copy = "FIXME";
-const char* doc_CrystalStructureAdapter_countSymOps = "FIXME";
-const char* doc_CrystalStructureAdapter_clearSymOps = "FIXME";
-const char* doc_CrystalStructureAdapter_addSymOp = "FIXME";
-const char* doc_CrystalStructureAdapter_getSymOp = "FIXME";
-const char* doc_CrystalStructureAdapter_getEquivalentAtoms = "FIXME";
-const char* doc_CrystalStructureAdapter_expandLatticeAtom = "FIXME";
-const char* doc_CrystalStructureAdapter_updateSymmetryPositions = "FIXME";
+const char* doc_CrystalStructureAdapter = "\
+FIXME\n\
+";
+
+const char* doc_CrystalStructureAdapter_init_copy = "\
+FIXME\n\
+";
+
+const char* doc_CrystalStructureAdapter_countSymOps = "\
+FIXME\n\
+";
+
+const char* doc_CrystalStructureAdapter_clearSymOps = "\
+FIXME\n\
+";
+
+const char* doc_CrystalStructureAdapter_addSymOp = "\
+FIXME\n\
+";
+
+const char* doc_CrystalStructureAdapter_getSymOp = "\
+FIXME\n\
+";
+
+const char* doc_CrystalStructureAdapter_getEquivalentAtoms = "\
+FIXME\n\
+";
+
+const char* doc_CrystalStructureAdapter_expandLatticeAtom = "\
+FIXME\n\
+";
+
+const char* doc_CrystalStructureAdapter_updateSymmetryPositions = "\
+FIXME\n\
+";
 
 // wrappers ------------------------------------------------------------------
 
