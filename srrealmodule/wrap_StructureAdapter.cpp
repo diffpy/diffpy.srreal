@@ -150,11 +150,28 @@ but not in the other and sd.add1 atom indices that are only in self.\n\
 This method can be overloaded in a derived class.\n\
 ";
 
-const char* doc_NoMetaStructureAdapter = "FIXME";
-const char* doc_NoMetaStructureAdapter_init = "FIXME";
+const char* doc_NoMetaStructureAdapter = "\
+StructureAdapter proxy which disables _customPQConfig method.\n\
+";
 
-const char* doc_NoSymmetryStructureAdapter = "FIXME";
-const char* doc_NoSymmetryStructureAdapter_init = "FIXME";
+const char* doc_NoMetaStructureAdapter_init = "\
+Create proxy to StructureAdapter that disables _customPQConfig.\n\
+\n\
+adapter  -- StructureAdapter object to be proxied.  The new adapter\n\
+            will avoid calling of adapter._customPQConfig method.\n\
+";
+
+const char* doc_NoSymmetryStructureAdapter = "\
+StructureAdapter proxy which disables crystal and periodic symmetry.\n\
+";
+
+const char* doc_NoSymmetryStructureAdapter_init = "\
+Create proxy to StructureAdapter that disables symmetry expansion.\n\
+\n\
+adapter  -- StructureAdapter object to be proxied.  Any iteration over\n\
+            atom pairs from periodic or space-group symmetry will be\n\
+            disabled in the proxy adapter.\n\
+";
 
 const char* doc_nometa = "\
 Return a proxy to StructureAdapter with _customPQConfig method disabled.\n\
