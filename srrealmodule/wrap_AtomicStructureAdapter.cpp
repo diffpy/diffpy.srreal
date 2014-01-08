@@ -169,6 +169,10 @@ const char* doc_CrystalStructureAdapter_init_copy = "\
 Make a deep copy of an existing CrystalStructureAdapter.\n\
 ";
 
+const char* doc_CrystalStructureAdapter_symmetryprecision = "\n\
+Distance threshold for assuming symmetry generated sites equal.\n\
+";
+
 const char* doc_CrystalStructureAdapter_countSymOps = "\
 Return number of space group symmetry operations stored in the adapter.\n\
 ";
@@ -381,6 +385,13 @@ crystaladapter_copy(const CrystalStructureAdapter& adpt)
 }
 
 
+double
+crystaladapter_getsymmetryprecision(const CrystalStructureAdapter& adpt)
+{
+    return adpt.getSymmetryPrecision();
+}
+
+
 void crystaladapter_addsymop(CrystalStructureAdapter& adpt,
         python::object R, python::object t)
 {
@@ -530,6 +541,10 @@ void wrap_AtomicStructureAdapter()
                 doc_StructureAdapter___init__fromstring)
         .def(self == self)
         .def(self != self)
+        .add_property("symmetryprecision",
+            crystaladapter_getsymmetryprecision,
+            &CrystalStructureAdapter::setSymmetryPrecision,
+            doc_CrystalStructureAdapter_symmetryprecision)
         .def("countSymOps", &CrystalStructureAdapter::countSymOps,
                 doc_CrystalStructureAdapter_countSymOps)
         .def("clearSymOps", &CrystalStructureAdapter::clearSymOps,
