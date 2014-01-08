@@ -108,7 +108,7 @@ Reserve memory for a specified number of atoms.\n\
 Although not required, calling this method can save memory and\n\
 avoid reallocation of Atom instances.\n\
 \n\
-sz   -- expected number of atoms in this adapter\n\
+sz   -- expected number of atoms in this adapter.\n\
 \n\
 No return value.\n\
 ";
@@ -116,66 +116,114 @@ No return value.\n\
 // class PeriodicStructureAdapter
 
 const char* doc_PeriodicStructureAdapter = "\
-FIXME\n\
+Group of atoms with periodic boundary conditions, but no\n\
+space group symmetry.\n\
 ";
 
 const char* doc_PeriodicStructureAdapter_init_copy = "\
-FIXME\n\
+Make a deep copy of an existing PeriodicStructureAdapter.\n\
 ";
 
 const char* doc_PeriodicStructureAdapter_getLatPar = "\
-FIXME\n\
+Get lattice parameters for the periodic unit cell.\n\
+\n\
+Return a tuple of (a, b, c, alpha, beta, gamma), where cell\n\
+angles are in degrees.\n\
 ";
 
 const char* doc_PeriodicStructureAdapter_setLatPar = "\
-FIXME\n\
+Set lattice parameters of the periodic unit cell.\n\
+\n\
+a, b, c  -- cell lengths in Angstroms.\n\
+alphadeg, betadeg, gammadeg  -- cell angles in degrees.\n\
+\n\
+No return value.\n\
 ";
 
 const char* doc_PeriodicStructureAdapter_toCartesian = "\
-FIXME\n\
+Convert atom position and displacement parameters to Cartesian coordinates.\n\
+\n\
+atom -- Atom object to be converted to Cartesian coordinates.\n\
+\n\
+No return value.  This updates the xyz_cartn and uij_cartn\n\
+attributes of the passed atom inplace.\n\
 ";
 
 const char* doc_PeriodicStructureAdapter_toFractional = "\
-FIXME\n\
+Convert atom position and displacement parameters to fractional coordinates.\n\
+\n\
+atom -- Atom object to be converted to fractional coordinates.\n\
+\n\
+No return value.  This updates the xyz_cartn and uij_cartn\n\
+attributes of the passed atom inplace.\n\
 ";
-
 
 // class CrystalStructureAdapter
 
 const char* doc_CrystalStructureAdapter = "\
-FIXME\n\
+Structure with asymmetric unit cell and a list of space group symmetry\n\
+operations.  The indexed atoms relate to the asymmetric unit cell.\n\
 ";
 
 const char* doc_CrystalStructureAdapter_init_copy = "\
-FIXME\n\
+Make a deep copy of an existing CrystalStructureAdapter.\n\
 ";
 
 const char* doc_CrystalStructureAdapter_countSymOps = "\
-FIXME\n\
+Return number of space group symmetry operations stored in the adapter.\n\
 ";
 
 const char* doc_CrystalStructureAdapter_clearSymOps = "\
-FIXME\n\
+Clear all symmetry operations from the adapter.\n\
 ";
 
 const char* doc_CrystalStructureAdapter_addSymOp = "\
-FIXME\n\
+Add one space group symmetry operation to the adapter.\n\
+\n\
+R    -- rotation matrix for the symmetry operation.\n\
+t    -- translation vector in the symmetry operation.\n\
+\n\
+No return value.  R and t are in fractional coordinates.\n\
 ";
 
 const char* doc_CrystalStructureAdapter_getSymOp = "\
-FIXME\n\
+Get rotation and translation for the specified symmetry operation.\n\
+\n\
+index    -- zero based index of a previously defined symmetry operation.\n\
+\n\
+Return a tuple (R, t) of symmetry rotation matrix and translation\n\
+vector in fractional coordinate system.\n\
 ";
 
 const char* doc_CrystalStructureAdapter_getEquivalentAtoms = "\
-FIXME\n\
+Return symmetry equivalent atoms for a site in the asymmetric unit.\n\
+\n\
+index    -- zero-based index of an atom in the asymmetric unit.\n\
+\n\
+Return all symmetry equivalent atoms in the periodic unit cell\n\
+as an AtomicStructureAdapter type.  Atom positions and displacement\n\
+parameters are in Cartesian coordinates.\n\
 ";
 
 const char* doc_CrystalStructureAdapter_expandLatticeAtom = "\
-FIXME\n\
+Perform symmetry expansion for an Atom in fractional coordinates.\n\
+\n\
+atom -- Atom object with xyz_cartn and uij_cartn referring to position\n\
+        and displacement parameters in fractional coordinates\n\
+\n\
+Return all symmetry equivalent atoms in the periodic unit cell\n\
+as an AtomicStructureAdapter type.  Positions and displacement\n\
+parameters are all in fractional coordinates.\n\
 ";
 
 const char* doc_CrystalStructureAdapter_updateSymmetryPositions = "\
-FIXME\n\
+Force update of symmetry equivalent positions for the asymmetric unit.\n\
+\n\
+The getEquivalentAtoms function calls this automatically if internal\n\
+symmetry operations changed or if size of the asymmetric unit changed.\n\
+An explicit call may be necessary for a more subtle changes such as\n\
+moving one asymmetric site.  The updateSymmetryPositions is always\n\
+implicitly called from createBondGenerator.\n\
 ";
 
 // wrappers ------------------------------------------------------------------
@@ -319,7 +367,6 @@ python::tuple periodicadapter_getlatpar(const PeriodicStructureAdapter& adpt)
 }
 
 // Wrapper helpers for class CrystalStructureAdapter
-
 
 CrystalStructureAdapterPtr crystaladapter_create()
 {
