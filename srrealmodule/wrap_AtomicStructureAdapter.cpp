@@ -72,10 +72,6 @@ Structure adapter for a non-periodic group of atoms.\n\
 This class supports indexing and iteration similar to Python list.\n\
 ";
 
-const char* doc_AtomicStructureAdapter_init_copy = "\
-Make a deep copy of an existing AtomicStructureAdapter.\n\
-";
-
 const char* doc_AtomicStructureAdapter_insert = "\
 Insert atom at a specified site index in this adapter.\n\
 \n\
@@ -120,10 +116,6 @@ Group of atoms with periodic boundary conditions, but no\n\
 space group symmetry.\n\
 ";
 
-const char* doc_PeriodicStructureAdapter_init_copy = "\
-Make a deep copy of an existing PeriodicStructureAdapter.\n\
-";
-
 const char* doc_PeriodicStructureAdapter_getLatPar = "\
 Get lattice parameters for the periodic unit cell.\n\
 \n\
@@ -163,10 +155,6 @@ attributes of the passed atom inplace.\n\
 const char* doc_CrystalStructureAdapter = "\
 Structure with asymmetric unit cell and a list of space group symmetry\n\
 operations.  The indexed atoms relate to the asymmetric unit cell.\n\
-";
-
-const char* doc_CrystalStructureAdapter_init_copy = "\
-Make a deep copy of an existing CrystalStructureAdapter.\n\
 ";
 
 const char* doc_CrystalStructureAdapter_symmetryprecision = "\n\
@@ -283,18 +271,6 @@ void set_uc23(Atom& a, double value) {
 
 // Wrapper helpers for class AtomicStructureAdapter
 
-AtomicStructureAdapterPtr atomadapter_create()
-{
-    return AtomicStructureAdapterPtr(new AtomicStructureAdapter);
-}
-
-
-AtomicStructureAdapterPtr atomadapter_copy(const AtomicStructureAdapter& adpt)
-{
-    return AtomicStructureAdapterPtr(new AtomicStructureAdapter(adpt));
-}
-
-
 class atomadapter_indexing : public vector_indexing_suite<
                          AtomicStructureAdapter, false, atomadapter_indexing>
 {
@@ -349,19 +325,6 @@ void atomadapter_reserve(AtomicStructureAdapter& adpt, int sz)
 
 // Wrapper helpers for class PeriodicStructureAdapter
 
-PeriodicStructureAdapterPtr periodicadapter_create()
-{
-    return PeriodicStructureAdapterPtr(new PeriodicStructureAdapter);
-}
-
-
-PeriodicStructureAdapterPtr
-periodicadapter_copy(const PeriodicStructureAdapter& adpt)
-{
-    return PeriodicStructureAdapterPtr(new PeriodicStructureAdapter(adpt));
-}
-
-
 python::tuple periodicadapter_getlatpar(const PeriodicStructureAdapter& adpt)
 {
     const Lattice& L = adpt.getLattice();
@@ -371,19 +334,6 @@ python::tuple periodicadapter_getlatpar(const PeriodicStructureAdapter& adpt)
 }
 
 // Wrapper helpers for class CrystalStructureAdapter
-
-CrystalStructureAdapterPtr crystaladapter_create()
-{
-    return CrystalStructureAdapterPtr(new CrystalStructureAdapter);
-}
-
-
-CrystalStructureAdapterPtr
-crystaladapter_copy(const CrystalStructureAdapter& adpt)
-{
-    return CrystalStructureAdapterPtr(new CrystalStructureAdapter(adpt));
-}
-
 
 double
 crystaladapter_getsymmetryprecision(const CrystalStructureAdapter& adpt)
@@ -421,7 +371,7 @@ crystaladapter_getequivalentatoms(const CrystalStructureAdapter& adpt, int idx)
     ensure_index_bounds(idx, 0, adpt.countSymOps());
     const CrystalStructureAdapter::AtomVector& av =
         adpt.getEquivalentAtoms(idx);
-    AtomicStructureAdapterPtr rv = atomadapter_create();
+    AtomicStructureAdapterPtr rv(new AtomicStructureAdapter);
     rv->assign(av.begin(), av.end());
     return rv;
 }
@@ -431,7 +381,7 @@ AtomicStructureAdapterPtr crystaladapter_expandlatticeatom(
         const CrystalStructureAdapter& adpt, const Atom& a)
 {
     CrystalStructureAdapter::AtomVector av = adpt.expandLatticeAtom(a);
-    AtomicStructureAdapterPtr rv = atomadapter_create();
+    AtomicStructureAdapterPtr rv(new AtomicStructureAdapter);
     rv->assign(av.begin(), av.end());
     return rv;
 }
@@ -483,14 +433,9 @@ void wrap_AtomicStructureAdapter()
         ;
 
     // class AtomicStructureAdapter
-    class_<AtomicStructureAdapter, bases<StructureAdapter> >(
+    class_<AtomicStructureAdapter, bases<StructureAdapter>,
+        AtomicStructureAdapterPtr>(
             "AtomicStructureAdapter", doc_AtomicStructureAdapter)
-        // object from default constructor would throw tr1::bad_weak_ptr
-        // when calling shared_from_this, but it seems to work well
-        // if constructed with a factory function.
-        .def("__init__", make_constructor(atomadapter_create))
-        .def("__init__", make_constructor(atomadapter_copy),
-                doc_AtomicStructureAdapter_init_copy)
         .def("__init__", StructureAdapterPickleSuite::constructor(),
                 doc_StructureAdapter___init__fromstring)
         .def(atomadapter_indexing())
@@ -509,11 +454,9 @@ void wrap_AtomicStructureAdapter()
         ;
 
     // class PeriodicStructureAdapter
-    class_<PeriodicStructureAdapter, bases<AtomicStructureAdapter> >(
+    class_<PeriodicStructureAdapter, bases<AtomicStructureAdapter>,
+        PeriodicStructureAdapterPtr>(
             "PeriodicStructureAdapter", doc_PeriodicStructureAdapter)
-        .def("__init__", make_constructor(periodicadapter_create))
-        .def("__init__", make_constructor(periodicadapter_copy),
-                doc_PeriodicStructureAdapter_init_copy)
         .def("__init__", StructureAdapterPickleSuite::constructor(),
                 doc_StructureAdapter___init__fromstring)
         .def(self == self)
@@ -532,11 +475,9 @@ void wrap_AtomicStructureAdapter()
         ;
 
     // class CrystalStructureAdapter
-    class_<CrystalStructureAdapter, bases<PeriodicStructureAdapter> >(
+    class_<CrystalStructureAdapter, bases<PeriodicStructureAdapter>,
+        CrystalStructureAdapterPtr>(
             "CrystalStructureAdapter", doc_CrystalStructureAdapter)
-        .def("__init__", make_constructor(crystaladapter_create))
-        .def("__init__", make_constructor(crystaladapter_copy),
-                doc_CrystalStructureAdapter_init_copy)
         .def("__init__", StructureAdapterPickleSuite::constructor(),
                 doc_StructureAdapter___init__fromstring)
         .def(self == self)
