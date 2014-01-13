@@ -24,6 +24,7 @@
 #include <diffpy/srreal/NoMetaStructureAdapter.hpp>
 #include <diffpy/srreal/NoSymmetryStructureAdapter.hpp>
 #include <diffpy/srreal/PairQuantity.hpp>
+#include <diffpy/serialization.ipp>
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
@@ -317,7 +318,6 @@ class StructureAdapterWrap :
             this->StructureAdapter::customPQConfig(pq);
         }
 
-    /* NOTE: uncomment to support serialization of Python classes
     private:
 
         // serialization
@@ -327,7 +327,6 @@ class StructureAdapterWrap :
         {
             ar & boost::serialization::base_object<StructureAdapter>(*this);
         }
-    */
 
 };  // class StructureAdapterWrap
 
@@ -342,8 +341,6 @@ void wrap_StructureAdapter()
 
     class_<StructureAdapterWrap, noncopyable>(
             "StructureAdapter", doc_StructureAdapter)
-        .def("__init__", StructureAdapterPickleSuite::constructor(),
-                doc_StructureAdapter___init__fromstring)
         .def("clone",
                 &StructureAdapter::clone,
                 doc_StructureAdapter_clone)
@@ -385,7 +382,7 @@ void wrap_StructureAdapter()
                 &StructureAdapterWrap::default_customPQConfig,
                 python::arg("pqobj"),
                 doc_StructureAdapter__customPQConfig)
-        .def_pickle(StructureAdapterPickleSuite())
+        .def_pickle(SerializationPickleSuite<StructureAdapter, DICT_PICKLE>())
         ;
 
     register_ptr_to_python<StructureAdapterPtr>();

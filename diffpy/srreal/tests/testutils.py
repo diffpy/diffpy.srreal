@@ -40,4 +40,23 @@ def loadDiffPyStructure(filename):
     stru = Structure(filename=fullpath)
     return stru
 
+# helper class for testing overloading of StructureAdapter
+
+from diffpy.srreal.structureadapter import StructureAdapter
+
+class DerivedStructureAdapter(StructureAdapter):
+
+    cpqcount = 0
+
+    def countSites(self):
+        return 0
+
+    def createBondGenerator(self):
+        from diffpy.srreal.structureadapter import BaseBondGenerator
+        return BaseBondGenerator(self)
+
+    def _customPQConfig(self, pqobj):
+        self.cpqcount += 1
+        return
+
 # End of file

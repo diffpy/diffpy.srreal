@@ -29,7 +29,7 @@ class TestRoutines(unittest.TestCase):
         adpt = createStructureAdapter(nickel)
         self.assertEqual(4, adpt.countSites())
         self.failUnless(False is adpt.siteAnisotropy(0))
-        self.failUnless(StructureAdapter is type(adpt))
+        self.failUnless(isinstance(adpt, StructureAdapter))
         adpt1 = createStructureAdapter(adpt)
         self.failUnless(adpt is adpt1)
         self.assertRaises(TypeError, createStructureAdapter, 77)
@@ -57,6 +57,44 @@ class TestRoutines(unittest.TestCase):
         return
 
 # End of class TestStructureAdapter
+
+
+##############################################################################
+class TestDerivedAdapter(unittest.TestCase):
+    'Check functionality in a Python-derived StructureAdapter class.'
+
+    def setUp(self):
+        from diffpy.srreal.tests.testutils import DerivedStructureAdapter
+        self.adpt = DerivedStructureAdapter()
+        return
+
+    def test__customPQConfig(self):
+        """check if DerivedStructureAdapter._customPQConfig gets called.
+        """
+        self.assertEqual(0, self.adpt.cpqcount)
+        pc = PDFCalculator()
+        pc.setStructure(self.adpt)
+        self.assertEqual(1, self.adpt.cpqcount)
+        pc(self.adpt)
+        self.assertEqual(2, self.adpt.cpqcount)
+
+    def test_pickling(self):
+        '''check pickling of DerivedStructureAdapter instances.
+        '''
+        from diffpy.srreal.tests.testutils import DerivedStructureAdapter
+        self.adpt.cpqcount = 1
+        adpt1 = cPickle.loads(cPickle.dumps(self.adpt))
+        self.failUnless(DerivedStructureAdapter is type(adpt1))
+        self.failIf(self.adpt is adpt1)
+        self.assertEqual(1, adpt1.cpqcount)
+        pc = PDFCalculator()
+        pc.setStructure(adpt1)
+        self.assertEqual(2, adpt1.cpqcount)
+        pc(adpt1)
+        self.assertEqual(3, adpt1.cpqcount)
+        return
+
+# End of class TestDerivedAdapter
 
 
 ##############################################################################
