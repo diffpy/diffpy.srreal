@@ -37,6 +37,7 @@ from diffpy.srreal.srreal_ext import PeriodicStructureAdapter
 from diffpy.srreal.srreal_ext import CrystalStructureAdapter
 from diffpy.srreal.srreal_ext import nometa, nosymmetry
 from diffpy.srreal.srreal_ext import _emptyStructureAdapter
+from diffpy.srreal.srreal_ext import BaseBondGenerator
 
 EMPTY = _emptyStructureAdapter()
 

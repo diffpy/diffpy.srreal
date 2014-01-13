@@ -155,7 +155,7 @@ void wrap_BaseBondGenerator()
     using namespace nswrap_BaseBondGenerator;
 
     class_<BaseBondGenerator>("BaseBondGenerator", doc_BaseBondGenerator,
-            init<StructureAdapterConstPtr>())
+            init<StructureAdapterPtr>())
         .def("rewind", &BaseBondGenerator::rewind,
                 doc_BaseBondGenerator_rewind)
         .def("finished", &BaseBondGenerator::finished,
