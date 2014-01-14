@@ -331,6 +331,35 @@ class StructureAdapterWrap :
 };  // class StructureAdapterWrap
 
 
+class StructureAdapterPickleSuite2 :
+    public SerializationPickleSuite<StructureAdapter, DICT_PICKLE>
+{
+    public:
+
+        static boost::python::tuple getinitargs(
+                diffpy::srreal::StructureAdapterPtr adpt)
+        {
+            python::tuple rv;
+            // if adapter has been created from Python, we can use the default
+            // Python constructor, i.e., __init__ with no arguments.
+            bool frompython = dynamic_pointer_cast<StructureAdapterWrap>(adpt);
+            if (frompython)  return rv;
+            // otherwise the instance is from a non-wrapped C++ adapter,
+            // and we need to reconstruct it using boost::serialization
+            std::string content = diffpy::serialization_tostring(adpt);
+            rv = python::make_tuple(content);
+            return rv;
+        }
+
+
+        static boost::python::object constructor()
+        {
+            return StructureAdapterPickleSuite::constructor();
+        }
+
+};  // class StructureAdapterPickleSuite2
+
+
 }   // namespace nswrap_StructureAdapter
 
 // Wrapper definition --------------------------------------------------------
@@ -341,6 +370,8 @@ void wrap_StructureAdapter()
 
     class_<StructureAdapterWrap, noncopyable>(
             "StructureAdapter", doc_StructureAdapter)
+        .def("__init__", StructureAdapterPickleSuite::constructor(),
+                doc_StructureAdapter___init__fromstring)
         .def("clone",
                 &StructureAdapter::clone,
                 doc_StructureAdapter_clone)
@@ -382,7 +413,7 @@ void wrap_StructureAdapter()
                 &StructureAdapterWrap::default_customPQConfig,
                 python::arg("pqobj"),
                 doc_StructureAdapter__customPQConfig)
-        .def_pickle(SerializationPickleSuite<StructureAdapter, DICT_PICKLE>())
+        .def_pickle(StructureAdapterPickleSuite2())
         ;
 
     register_ptr_to_python<StructureAdapterPtr>();
@@ -396,5 +427,8 @@ void wrap_StructureAdapter()
 }
 
 }   // namespace srrealmodule
+
+using srrealmodule::nswrap_StructureAdapter::StructureAdapterWrap;
+BOOST_CLASS_EXPORT(StructureAdapterWrap)
 
 // End of file

@@ -56,6 +56,15 @@ class TestRoutines(unittest.TestCase):
             adpt.siteCartesianUij(1), adpt1.siteCartesianUij(1)))
         return
 
+    def test_pickle_nonwrapped(self):
+        '''Check if pickling works for non-wrapped C++ object.
+        '''
+        from diffpy.srreal.structureadapter import EMPTY as e0
+        spkl = cPickle.dumps(e0)
+        e1 = cPickle.loads(spkl)
+        self.assertEqual(0, e1.countSites())
+        return
+
 # End of class TestStructureAdapter
 
 
