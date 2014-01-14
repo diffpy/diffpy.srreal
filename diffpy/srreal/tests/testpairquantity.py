@@ -4,6 +4,7 @@
 """
 
 import unittest
+import cPickle
 from diffpy.srreal.pairquantity import PairQuantity
 
 
@@ -52,6 +53,22 @@ class TestPairQuantity(unittest.TestCase):
         self.assertEqual(0, adpt.countSites())
         return
 
+
+    def test_pickling(self):
+        '''check pickling and unpickling of PairQuantity.
+        '''
+        from diffpy.srreal.tests.testutils import DerivedStructureAdapter
+        stru0 = DerivedStructureAdapter()
+        self.pq.setStructure(stru0)
+        self.assertEqual(1, stru0.cpqcount)
+        spkl = cPickle.dumps(self.pq)
+        pq1 = cPickle.loads(spkl)
+        self.failUnless(stru0 is self.pq.getStructure())
+        stru1 = pq1.getStructure()
+        self.failUnless(type(stru1) is DerivedStructureAdapter)
+        self.failIf(stru1 is stru0)
+        self.assertEqual(1, stru1.cpqcount)
+        return
 
 # End of class TestPairQuantity
 

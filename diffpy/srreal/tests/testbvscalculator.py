@@ -163,6 +163,25 @@ class TestBVSCalculator(unittest.TestCase):
         self.assertEqual(8, bpab.B)
         return
 
+
+    def test_pickling_derived_structure(self):
+        '''check pickling of BVSCalculator with DerivedStructureAdapter.
+        '''
+        from diffpy.srreal.tests.testutils import DerivedStructureAdapter
+        bvc = self.bvc
+        stru0 = DerivedStructureAdapter()
+        bvc.setStructure(stru0)
+        self.assertEqual(1, stru0.cpqcount)
+        spkl = cPickle.dumps(bvc)
+        bvc1 = cPickle.loads(spkl)
+        self.failUnless(stru0 is bvc.getStructure())
+        stru1 = bvc1.getStructure()
+        self.failUnless(type(stru1) is DerivedStructureAdapter)
+        self.failIf(stru1 is stru0)
+        self.assertEqual(1, stru1.cpqcount)
+        return
+
+
 # End of class TestBVSCalculator
 
 if __name__ == '__main__':

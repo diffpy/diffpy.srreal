@@ -104,6 +104,23 @@ class TestOverlapCalculator(unittest.TestCase):
         self.assertEqual(123, olc2.atomradiitable.foo)
         return
 
+    def test_pickling_derived_structure(self):
+        '''check pickling of OverlapCalculator with DerivedStructureAdapter.
+        '''
+        from diffpy.srreal.tests.testutils import DerivedStructureAdapter
+        olc = self.olc
+        stru0 = DerivedStructureAdapter()
+        olc.setStructure(stru0)
+        self.assertEqual(1, stru0.cpqcount)
+        spkl = cPickle.dumps(olc)
+        olc1 = cPickle.loads(spkl)
+        self.failUnless(stru0 is olc.getStructure())
+        stru1 = olc1.getStructure()
+        self.failUnless(type(stru1) is DerivedStructureAdapter)
+        self.failIf(stru1 is stru0)
+        self.assertEqual(1, stru1.cpqcount)
+        return
+
     def test_parallel(self):
         """check parallel run of OverlapCalculator
         """

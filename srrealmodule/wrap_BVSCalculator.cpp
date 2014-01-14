@@ -99,7 +99,7 @@ void wrap_BVSCalculator()
                 doc_BVSCalculator_bvrmsdiff)
         .add_property("bvparamtable", getbvparamtable, setbvparamtable,
                 doc_BVSCalculator_bvparamtable)
-        .def_pickle(SerializationPickleSuite<BVSCalculator>())
+        .def_pickle(PairQuantityPickleSuite<BVSCalculator>())
         ;
 
 }

@@ -345,7 +345,7 @@ void wrap_PDFCalculators()
                 doc_DebyePDFCalculator_setOptimumQstep)
         .def("isOptimumQstep", &DebyePDFCalculator::isOptimumQstep,
                 doc_DebyePDFCalculator_isOptimumQstep)
-        .def_pickle(SerializationPickleSuite<DebyePDFCalculator>())
+        .def_pickle(PairQuantityPickleSuite<DebyePDFCalculator>())
         ;
 
     // PDFCalculator
@@ -363,7 +363,7 @@ void wrap_PDFCalculators()
                 getbaseline,
                 setbaseline<PDFCalculator,PDFBaseline>,
                 doc_PDFCalculator_baseline)
-        .def_pickle(SerializationPickleSuite<PDFCalculator>())
+        .def_pickle(PairQuantityPickleSuite<PDFCalculator>())
         ;
 
     // FFT functions

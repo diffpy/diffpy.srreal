@@ -204,6 +204,23 @@ class TestDebyePDFCalculator(unittest.TestCase):
         return
 
 
+    def test_pickling_derived_structure(self):
+        '''check pickling of DebyePDFCalculator with DerivedStructureAdapter.
+        '''
+        from diffpy.srreal.tests.testutils import DerivedStructureAdapter
+        dpdfc = self.dpdfc
+        stru0 = DerivedStructureAdapter()
+        dpdfc.setStructure(stru0)
+        self.assertEqual(1, stru0.cpqcount)
+        spkl = cPickle.dumps(dpdfc)
+        dpdfc1 = cPickle.loads(spkl)
+        self.failUnless(stru0 is dpdfc.getStructure())
+        stru1 = dpdfc1.getStructure()
+        self.failUnless(type(stru1) is DerivedStructureAdapter)
+        self.failIf(stru1 is stru0)
+        self.assertEqual(1, stru1.cpqcount)
+        return
+
 
 #   def test_getPeakWidthModel(self):
 #       """check DebyePDFCalculator.getPeakWidthModel()

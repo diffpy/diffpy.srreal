@@ -290,6 +290,22 @@ class TestPDFCalculator(unittest.TestCase):
         self.failUnless(True is pdfcalc1.getPairMask(0, 1))
         return
 
+    def test_pickling_derived_structure(self):
+        '''check pickling of PDFCalculator with DerivedStructureAdapter.
+        '''
+        from diffpy.srreal.tests.testutils import DerivedStructureAdapter
+        pdfc = self.pdfcalc
+        stru0 = DerivedStructureAdapter()
+        pdfc.setStructure(stru0)
+        self.assertEqual(1, stru0.cpqcount)
+        spkl = cPickle.dumps(pdfc)
+        pdfc1 = cPickle.loads(spkl)
+        self.failUnless(stru0 is pdfc.getStructure())
+        stru1 = pdfc1.getStructure()
+        self.failUnless(type(stru1) is DerivedStructureAdapter)
+        self.failIf(stru1 is stru0)
+        self.assertEqual(1, stru1.cpqcount)
+        return
 
     def test_envelopes(self):
         '''Check the envelopes property.

@@ -181,11 +181,11 @@ object get_neighbor_sites(const OverlapCalculator& obj, object i)
 
 
 class OverlapCalculatorPickleSuite :
-    public SerializationPickleSuite<OverlapCalculator>
+    public PairQuantityPickleSuite<OverlapCalculator>
 {
     private:
 
-        typedef SerializationPickleSuite<OverlapCalculator> Super;
+        typedef PairQuantityPickleSuite<OverlapCalculator> Super;
 
     public:
 

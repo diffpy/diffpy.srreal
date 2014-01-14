@@ -708,7 +708,7 @@ void wrap_PairQuantity()
                 doc_BasePairQuantity_ticker)
         .def("copy", pqcopy,
                 doc_BasePairQuantity_copy)
-        .def_pickle(SerializationPickleSuite<PairQuantity>())
+        .def_pickle(PairQuantityPickleSuite<PairQuantity>())
         ;
 
     class_<PairQuantityWrap, bases<PairQuantity>,

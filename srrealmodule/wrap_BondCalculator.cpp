@@ -131,7 +131,7 @@ void wrap_BondCalculator()
                 doc_BondCalculator_filterCone)
         .def("filterOff", &BondCalculator::filterOff,
                 doc_BondCalculator_filterOff)
-        .def_pickle(SerializationPickleSuite<BondCalculator>())
+        .def_pickle(PairQuantityPickleSuite<BondCalculator>())
         ;
 
 }

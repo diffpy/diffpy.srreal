@@ -76,6 +76,24 @@ class TestBondCalculator(unittest.TestCase):
         return
 
 
+    def test_pickling_derived_structure(self):
+        '''check pickling of BondCalculator with DerivedStructureAdapter.
+        '''
+        from diffpy.srreal.tests.testutils import DerivedStructureAdapter
+        bdc = self.bdc
+        stru0 = DerivedStructureAdapter()
+        bdc.setStructure(stru0)
+        self.assertEqual(1, stru0.cpqcount)
+        spkl = cPickle.dumps(bdc)
+        bdc1 = cPickle.loads(spkl)
+        self.failUnless(stru0 is bdc.getStructure())
+        stru1 = bdc1.getStructure()
+        self.failUnless(type(stru1) is DerivedStructureAdapter)
+        self.failIf(stru1 is stru0)
+        self.assertEqual(1, stru1.cpqcount)
+        return
+
+
     def test_distances(self):
         """check BondCalculator.distances
         """

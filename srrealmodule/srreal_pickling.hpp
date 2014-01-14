@@ -82,6 +82,52 @@ class SerializationPickleSuite : public boost::python::pickle_suite
 };  // class SerializationPickleSuite
 
 
+template <class T, bool pickledict=DICT_PICKLE>
+class PairQuantityPickleSuite :
+    public SerializationPickleSuite<T, pickledict>
+{
+    private:
+
+        typedef SerializationPickleSuite<T, pickledict> Super;
+
+    public:
+
+        static boost::python::tuple getstate(boost::python::object obj)
+        {
+            using namespace boost::python;
+            using namespace diffpy::srreal;
+            // store the original structure object
+            object stru = obj.attr("getStructure")();
+            // temporarily remove structure from the pair quantity
+            T& pq = extract<T&>(obj);
+            StructureAdapterPtr pstru =
+                replacePairQuantityStructure(pq, StructureAdapterPtr());
+            object state0 = Super::getstate(obj);
+            // restore the original structure
+            replacePairQuantityStructure(pq, pstru);
+            tuple rv = make_tuple(state0, stru);
+            return rv;
+        }
+
+
+        static void setstate(
+                boost::python::object obj, boost::python::tuple state)
+        {
+            using namespace boost::python;
+            using namespace diffpy::srreal;
+            ensure_tuple_length(state, 2);
+            // restore the state using boost serialization
+            tuple st0 = extract<tuple>(state[0]);
+            Super::setstate(obj, st0);
+            // restore the structure object
+            StructureAdapterPtr pstru = extract<StructureAdapterPtr>(state[1]);
+            T& pq = extract<T&>(obj);
+            replacePairQuantityStructure(pq, pstru);
+        }
+
+};  // class PairQuantityPickleSuite
+
+
 class StructureAdapterPickleSuite : public boost::python::pickle_suite
 {
     public:
