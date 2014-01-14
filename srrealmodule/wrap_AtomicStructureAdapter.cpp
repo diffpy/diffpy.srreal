@@ -26,6 +26,7 @@
 #include <diffpy/srreal/AtomicStructureAdapter.hpp>
 #include <diffpy/srreal/PeriodicStructureAdapter.hpp>
 #include <diffpy/srreal/CrystalStructureAdapter.hpp>
+#include <diffpy/srreal/PairQuantity.hpp>
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
@@ -72,6 +73,12 @@ Structure adapter for a non-periodic group of atoms.\n\
 This class supports indexing and iteration similar to Python list.\n\
 ";
 
+const char* doc_AtomicStructureAdapter_clone = "\
+Return a deep copy of this AtomicStructureAdapter.\n\
+\n\
+This method can be overloaded in a derived class.\n\
+";
+
 const char* doc_AtomicStructureAdapter_insert = "\
 Insert atom at a specified site index in this adapter.\n\
 \n\
@@ -116,6 +123,12 @@ Group of atoms with periodic boundary conditions, but no\n\
 space group symmetry.\n\
 ";
 
+const char* doc_PeriodicStructureAdapter_clone = "\
+Return a deep copy of this PeriodicStructureAdapter.\n\
+\n\
+This method can be overloaded in a derived class.\n\
+";
+
 const char* doc_PeriodicStructureAdapter_getLatPar = "\
 Get lattice parameters for the periodic unit cell.\n\
 \n\
@@ -155,6 +168,12 @@ attributes of the passed atom inplace.\n\
 const char* doc_CrystalStructureAdapter = "\
 Structure with asymmetric unit cell and a list of space group symmetry\n\
 operations.  The indexed atoms relate to the asymmetric unit cell.\n\
+";
+
+const char* doc_CrystalStructureAdapter_clone = "\
+Return a deep copy of this CrystalStructureAdapter.\n\
+\n\
+This method can be overloaded in a derived class.\n\
 ";
 
 const char* doc_CrystalStructureAdapter_symmetryprecision = "\n\
@@ -269,7 +288,44 @@ double get_uc23(const Atom& a)  { return a.uij_cartn(1, 2); }
 void set_uc23(Atom& a, double value) {
     a.uij_cartn(1, 2) = a.uij_cartn(2, 1) = value; }
 
+// template wrapper class for overloading of clone and _customPQConfig
+
+template <class T>
+class MakeWrapper : public T, public wrapper_srreal<T>
+{
+    public:
+
+        StructureAdapterPtr clone() const
+        {
+            override f = this->get_override("clone");
+            if (f)  return f();
+            else  return this->default_clone();
+        }
+
+        StructureAdapterPtr default_clone() const
+        {
+            return this->T::clone();
+        }
+
+
+        void customPQConfig(PairQuantity* pq) const
+        {
+            override f = this->get_override("_customPQConfig");
+            if (f)  f(pq);
+            else    this->default_customPQConfig(pq);
+        }
+
+        void default_customPQConfig(PairQuantity* pq) const
+        {
+            this->T::customPQConfig(pq);
+        }
+
+};  // class MakeWrapper
+
 // Wrapper helpers for class AtomicStructureAdapter
+
+typedef MakeWrapper<AtomicStructureAdapter> AtomicStructureAdapterWrap;
+typedef boost::shared_ptr<AtomicStructureAdapterWrap> AtomicStructureAdapterWrapPtr;
 
 class atomadapter_indexing : public vector_indexing_suite<
                          AtomicStructureAdapter, false, atomadapter_indexing>
@@ -325,6 +381,9 @@ void atomadapter_reserve(AtomicStructureAdapter& adpt, int sz)
 
 // Wrapper helpers for class PeriodicStructureAdapter
 
+typedef MakeWrapper<PeriodicStructureAdapter> PeriodicStructureAdapterWrap;
+typedef boost::shared_ptr<PeriodicStructureAdapterWrap> PeriodicStructureAdapterWrapPtr;
+
 python::tuple periodicadapter_getlatpar(const PeriodicStructureAdapter& adpt)
 {
     const Lattice& L = adpt.getLattice();
@@ -334,6 +393,9 @@ python::tuple periodicadapter_getlatpar(const PeriodicStructureAdapter& adpt)
 }
 
 // Wrapper helpers for class CrystalStructureAdapter
+
+typedef MakeWrapper<CrystalStructureAdapter> CrystalStructureAdapterWrap;
+typedef boost::shared_ptr<CrystalStructureAdapterWrap> CrystalStructureAdapterWrapPtr;
 
 double
 crystaladapter_getsymmetryprecision(const CrystalStructureAdapter& adpt)
@@ -388,6 +450,10 @@ AtomicStructureAdapterPtr crystaladapter_expandlatticeatom(
 
 }   // namespace nswrap_AtomicStructureAdapter
 
+// declare shared docstrings from wrap_StructureAdapter.cpp
+
+extern const char* doc_StructureAdapter__customPQConfig;
+
 // Wrapper definitions -------------------------------------------------------
 
 void wrap_AtomicStructureAdapter()
@@ -433,14 +499,23 @@ void wrap_AtomicStructureAdapter()
         ;
 
     // class AtomicStructureAdapter
-    class_<AtomicStructureAdapter, bases<StructureAdapter>,
-        AtomicStructureAdapterPtr>(
+    class_<AtomicStructureAdapterWrap, bases<StructureAdapter>,
+        noncopyable, AtomicStructureAdapterWrapPtr>(
             "AtomicStructureAdapter", doc_AtomicStructureAdapter)
         .def("__init__", StructureAdapterPickleSuite::constructor(),
                 doc_StructureAdapter___init__fromstring)
         .def(atomadapter_indexing())
         .def(self == self)
         .def(self != self)
+        .def("clone",
+                &AtomicStructureAdapter::clone,
+                &AtomicStructureAdapterWrap::default_clone,
+                doc_AtomicStructureAdapter_clone)
+        .def("_customPQConfig",
+                &AtomicStructureAdapter::customPQConfig,
+                &AtomicStructureAdapterWrap::default_customPQConfig,
+                python::arg("pqobj"),
+                doc_StructureAdapter__customPQConfig)
         .def("insert", atomadapter_insert,
                 (bp::arg("index"), bp::arg("atom")),
                 doc_AtomicStructureAdapter_insert)
@@ -454,13 +529,22 @@ void wrap_AtomicStructureAdapter()
         ;
 
     // class PeriodicStructureAdapter
-    class_<PeriodicStructureAdapter, bases<AtomicStructureAdapter>,
-        PeriodicStructureAdapterPtr>(
+    class_<PeriodicStructureAdapterWrap, bases<AtomicStructureAdapter>,
+        noncopyable, PeriodicStructureAdapterWrapPtr>(
             "PeriodicStructureAdapter", doc_PeriodicStructureAdapter)
         .def("__init__", StructureAdapterPickleSuite::constructor(),
                 doc_StructureAdapter___init__fromstring)
         .def(self == self)
         .def(self != self)
+        .def("clone",
+                &PeriodicStructureAdapter::clone,
+                &PeriodicStructureAdapterWrap::default_clone,
+                doc_PeriodicStructureAdapter_clone)
+        .def("_customPQConfig",
+                &PeriodicStructureAdapter::customPQConfig,
+                &PeriodicStructureAdapterWrap::default_customPQConfig,
+                python::arg("pqobj"),
+                doc_StructureAdapter__customPQConfig)
         .def("getLatPar", periodicadapter_getlatpar,
                 doc_PeriodicStructureAdapter_getLatPar)
         .def("setLatPar", &PeriodicStructureAdapter::setLatPar,
@@ -475,13 +559,22 @@ void wrap_AtomicStructureAdapter()
         ;
 
     // class CrystalStructureAdapter
-    class_<CrystalStructureAdapter, bases<PeriodicStructureAdapter>,
-        CrystalStructureAdapterPtr>(
+    class_<CrystalStructureAdapterWrap, bases<PeriodicStructureAdapter>,
+        noncopyable, CrystalStructureAdapterWrapPtr>(
             "CrystalStructureAdapter", doc_CrystalStructureAdapter)
         .def("__init__", StructureAdapterPickleSuite::constructor(),
                 doc_StructureAdapter___init__fromstring)
         .def(self == self)
         .def(self != self)
+        .def("clone",
+                &CrystalStructureAdapter::clone,
+                &CrystalStructureAdapterWrap::default_clone,
+                doc_CrystalStructureAdapter_clone)
+        .def("_customPQConfig",
+                &CrystalStructureAdapter::customPQConfig,
+                &CrystalStructureAdapterWrap::default_customPQConfig,
+                python::arg("pqobj"),
+                doc_StructureAdapter__customPQConfig)
         .add_property("symmetryprecision",
             crystaladapter_getsymmetryprecision,
             &CrystalStructureAdapter::setSymmetryPrecision,

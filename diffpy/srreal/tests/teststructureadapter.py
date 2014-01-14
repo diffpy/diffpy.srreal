@@ -86,6 +86,7 @@ class TestDerivedAdapter(unittest.TestCase):
         self.assertEqual(1, self.adpt.cpqcount)
         pc(self.adpt)
         self.assertEqual(2, self.adpt.cpqcount)
+        return
 
     def test_pickling(self):
         '''check pickling of DerivedStructureAdapter instances.
@@ -105,6 +106,28 @@ class TestDerivedAdapter(unittest.TestCase):
 
 # End of class TestDerivedAdapter
 
+class TestDerivedAtomicAdapter(TestDerivedAdapter):
+
+    def setUp(self):
+        from diffpy.srreal.tests.testutils import DerivedAtomicStructureAdapter
+        self.adpt = DerivedAtomicStructureAdapter()
+        return
+
+
+class TestDerivedPeriodicAdapter(TestDerivedAdapter):
+
+    def setUp(self):
+        from diffpy.srreal.tests.testutils import DerivedPeriodicStructureAdapter
+        self.adpt = DerivedPeriodicStructureAdapter()
+        return
+
+
+class TestDerivedCrystalAdapter(TestDerivedAdapter):
+
+    def setUp(self):
+        from diffpy.srreal.tests.testutils import DerivedCrystalStructureAdapter
+        self.adpt = DerivedCrystalStructureAdapter()
+        return
 
 ##############################################################################
 class TestNoMeta(unittest.TestCase):

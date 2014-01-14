@@ -426,6 +426,11 @@ void wrap_StructureAdapter()
             doc__emptyStructureAdapter);
 }
 
+// Export shared docstrings
+
+const char* doc_StructureAdapter__customPQConfig =
+    nswrap_StructureAdapter::doc_StructureAdapter__customPQConfig;
+
 }   // namespace srrealmodule
 
 using srrealmodule::nswrap_StructureAdapter::StructureAdapterWrap;

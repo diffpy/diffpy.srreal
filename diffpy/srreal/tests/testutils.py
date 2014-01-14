@@ -43,10 +43,20 @@ def loadDiffPyStructure(filename):
 # helper class for testing overloading of StructureAdapter
 
 from diffpy.srreal.structureadapter import StructureAdapter
+from diffpy.srreal.structureadapter import AtomicStructureAdapter
+from diffpy.srreal.structureadapter import PeriodicStructureAdapter
+from diffpy.srreal.structureadapter import CrystalStructureAdapter
 
-class DerivedStructureAdapter(StructureAdapter):
+class HasCustomPQConfig(object):
 
     cpqcount = 0
+
+    def _customPQConfig(self, pqobj):
+        self.cpqcount += 1
+        return
+
+
+class DerivedStructureAdapter(HasCustomPQConfig, StructureAdapter):
 
     def countSites(self):
         return 0
@@ -55,8 +65,16 @@ class DerivedStructureAdapter(StructureAdapter):
         from diffpy.srreal.structureadapter import BaseBondGenerator
         return BaseBondGenerator(self)
 
-    def _customPQConfig(self, pqobj):
-        self.cpqcount += 1
-        return
+class DerivedAtomicStructureAdapter(
+        HasCustomPQConfig, AtomicStructureAdapter):
+    pass
+
+class DerivedPeriodicStructureAdapter(
+        HasCustomPQConfig, PeriodicStructureAdapter):
+    pass
+
+class DerivedCrystalStructureAdapter(
+        HasCustomPQConfig, CrystalStructureAdapter):
+    pass
 
 # End of file
