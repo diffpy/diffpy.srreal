@@ -14,6 +14,7 @@ from diffpy.srreal.tests.testutils import TestCaseObjCrystOptional
 from diffpy.srreal.tests.testutils import loadObjCrystCrystal
 from diffpy.srreal.tests.testutils import loadDiffPyStructure, datafile
 from diffpy.srreal.structureadapter import *
+import diffpy.srreal.tests.testutils as testutils
 
 
 # useful variables
@@ -72,13 +73,14 @@ class TestRoutines(unittest.TestCase):
 class TestDerivedAdapter(unittest.TestCase):
     'Check functionality in a Python-derived StructureAdapter class.'
 
+    DerivedCls = testutils.DerivedStructureAdapter
+
     def setUp(self):
-        from diffpy.srreal.tests.testutils import DerivedStructureAdapter
-        self.adpt = DerivedStructureAdapter()
+        self.adpt = self.DerivedCls()
         return
 
     def test__customPQConfig(self):
-        """check if DerivedStructureAdapter._customPQConfig gets called.
+        """check if DerivedCls._customPQConfig gets called.
         """
         self.assertEqual(0, self.adpt.cpqcount)
         pc = PDFCalculator()
@@ -89,12 +91,11 @@ class TestDerivedAdapter(unittest.TestCase):
         return
 
     def test_pickling(self):
-        '''check pickling of DerivedStructureAdapter instances.
+        '''check pickling of DerivedCls instances.
         '''
-        from diffpy.srreal.tests.testutils import DerivedStructureAdapter
         self.adpt.cpqcount = 1
         adpt1 = cPickle.loads(cPickle.dumps(self.adpt))
-        self.failUnless(DerivedStructureAdapter is type(adpt1))
+        self.failUnless(self.DerivedCls is type(adpt1))
         self.failIf(self.adpt is adpt1)
         self.assertEqual(1, adpt1.cpqcount)
         pc = PDFCalculator()
@@ -107,27 +108,14 @@ class TestDerivedAdapter(unittest.TestCase):
 # End of class TestDerivedAdapter
 
 class TestDerivedAtomicAdapter(TestDerivedAdapter):
-
-    def setUp(self):
-        from diffpy.srreal.tests.testutils import DerivedAtomicStructureAdapter
-        self.adpt = DerivedAtomicStructureAdapter()
-        return
-
+    DerivedCls = testutils.DerivedAtomicStructureAdapter
 
 class TestDerivedPeriodicAdapter(TestDerivedAdapter):
-
-    def setUp(self):
-        from diffpy.srreal.tests.testutils import DerivedPeriodicStructureAdapter
-        self.adpt = DerivedPeriodicStructureAdapter()
-        return
-
+    DerivedCls = testutils.DerivedPeriodicStructureAdapter
 
 class TestDerivedCrystalAdapter(TestDerivedAdapter):
+    DerivedCls = testutils.DerivedCrystalStructureAdapter
 
-    def setUp(self):
-        from diffpy.srreal.tests.testutils import DerivedCrystalStructureAdapter
-        self.adpt = DerivedCrystalStructureAdapter()
-        return
 
 ##############################################################################
 class TestNoMeta(unittest.TestCase):

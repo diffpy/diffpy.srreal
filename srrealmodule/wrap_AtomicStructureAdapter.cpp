@@ -27,6 +27,7 @@
 #include <diffpy/srreal/PeriodicStructureAdapter.hpp>
 #include <diffpy/srreal/CrystalStructureAdapter.hpp>
 #include <diffpy/srreal/PairQuantity.hpp>
+#include <diffpy/serialization.ipp>
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
@@ -320,6 +321,16 @@ class MakeWrapper : public T, public wrapper_srreal<T>
             this->T::customPQConfig(pq);
         }
 
+    private:
+
+        // serialization
+        friend class boost::serialization::access;
+        template<class Archive>
+            void serialize(Archive& ar, const unsigned int version)
+        {
+            ar & boost::serialization::base_object<T>(*this);
+        }
+
 };  // class MakeWrapper
 
 // Wrapper helpers for class AtomicStructureAdapter
@@ -452,6 +463,7 @@ AtomicStructureAdapterPtr crystaladapter_expandlatticeatom(
 
 // declare shared docstrings from wrap_StructureAdapter.cpp
 
+extern const char* doc_StructureAdapter___init__fromstring;
 extern const char* doc_StructureAdapter__customPQConfig;
 
 // Wrapper definitions -------------------------------------------------------
@@ -502,7 +514,7 @@ void wrap_AtomicStructureAdapter()
     class_<AtomicStructureAdapterWrap, bases<StructureAdapter>,
         noncopyable, AtomicStructureAdapterWrapPtr>(
             "AtomicStructureAdapter", doc_AtomicStructureAdapter)
-        .def("__init__", StructureAdapterPickleSuite::constructor(),
+        .def("__init__", StructureAdapter_constructor(),
                 doc_StructureAdapter___init__fromstring)
         .def(atomadapter_indexing())
         .def(self == self)
@@ -525,14 +537,14 @@ void wrap_AtomicStructureAdapter()
                 bp::arg("index"), doc_AtomicStructureAdapter_pop)
         .def("reserve", atomadapter_reserve,
                 bp::arg("sz"), doc_AtomicStructureAdapter_reserve)
-        .def_pickle(StructureAdapterPickleSuite())
+        .def_pickle(StructureAdapterPickleSuite<AtomicStructureAdapterWrap>())
         ;
 
     // class PeriodicStructureAdapter
     class_<PeriodicStructureAdapterWrap, bases<AtomicStructureAdapter>,
         noncopyable, PeriodicStructureAdapterWrapPtr>(
             "PeriodicStructureAdapter", doc_PeriodicStructureAdapter)
-        .def("__init__", StructureAdapterPickleSuite::constructor(),
+        .def("__init__", StructureAdapter_constructor(),
                 doc_StructureAdapter___init__fromstring)
         .def(self == self)
         .def(self != self)
@@ -555,14 +567,14 @@ void wrap_AtomicStructureAdapter()
                 bp::arg("atom"), doc_PeriodicStructureAdapter_toCartesian)
         .def("toFractional", &PeriodicStructureAdapter::toFractional,
                 bp::arg("atom"), doc_PeriodicStructureAdapter_toFractional)
-        .def_pickle(StructureAdapterPickleSuite())
+        .def_pickle(StructureAdapterPickleSuite<PeriodicStructureAdapterWrap>())
         ;
 
     // class CrystalStructureAdapter
     class_<CrystalStructureAdapterWrap, bases<PeriodicStructureAdapter>,
         noncopyable, CrystalStructureAdapterWrapPtr>(
             "CrystalStructureAdapter", doc_CrystalStructureAdapter)
-        .def("__init__", StructureAdapterPickleSuite::constructor(),
+        .def("__init__", StructureAdapter_constructor(),
                 doc_StructureAdapter___init__fromstring)
         .def(self == self)
         .def(self != self)
@@ -597,11 +609,20 @@ void wrap_AtomicStructureAdapter()
         .def("updateSymmetryPositions",
                 &CrystalStructureAdapter::updateSymmetryPositions,
                 doc_CrystalStructureAdapter_updateSymmetryPositions)
-        .def_pickle(StructureAdapterPickleSuite())
+        .def_pickle(StructureAdapterPickleSuite<CrystalStructureAdapterWrap>())
         ;
 
 }
 
 }   // namespace srrealmodule
+
+using srrealmodule::nswrap_AtomicStructureAdapter::AtomicStructureAdapterWrap;
+BOOST_CLASS_EXPORT(AtomicStructureAdapterWrap)
+
+using srrealmodule::nswrap_AtomicStructureAdapter::PeriodicStructureAdapterWrap;
+BOOST_CLASS_EXPORT(PeriodicStructureAdapterWrap)
+
+using srrealmodule::nswrap_AtomicStructureAdapter::CrystalStructureAdapterWrap;
+BOOST_CLASS_EXPORT(CrystalStructureAdapterWrap)
 
 // End of file

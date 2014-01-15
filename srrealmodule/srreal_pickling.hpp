@@ -128,18 +128,85 @@ class PairQuantityPickleSuite :
 };  // class PairQuantityPickleSuite
 
 
+template <class T>
 class StructureAdapterPickleSuite : public boost::python::pickle_suite
 {
     public:
 
         static boost::python::tuple getinitargs(
-                diffpy::srreal::StructureAdapterPtr);
-        static boost::python::object constructor();
+                diffpy::srreal::StructureAdapterPtr adpt)
+        {
+            using namespace boost;
+            python::tuple rv;
+            // if adapter has been created from Python, we can use the default
+            // Python constructor, i.e., __init__ with no arguments.
+            if (frompython(adpt))  return rv;
+            // otherwise the instance is from a non-wrapped C++ adapter,
+            // and we need to reconstruct it using boost::serialization
+            std::string content = diffpy::serialization_tostring(adpt);
+            rv = python::make_tuple(content);
+            return rv;
+        }
+
+
+        static boost::python::tuple getstate(boost::python::object obj)
+        {
+            using namespace boost;
+            using namespace std;
+            using diffpy::srreal::StructureAdapterPtr;
+            StructureAdapterPtr adpt =
+                python::extract<StructureAdapterPtr>(obj);
+            python::object content;
+            // Store serialization data for a Python-built object
+            if (frompython(adpt))
+            {
+                const T& tobj = boost::python::extract<const T&>(obj);
+                content = python::str(diffpy::serialization_tostring(tobj));
+            }
+            python::tuple rv =
+                python::make_tuple(content, obj.attr("__dict__"));
+            return rv;
+        }
+
+
+        static void setstate(
+                boost::python::object obj, boost::python::tuple state)
+        {
+            using namespace std;
+            using namespace boost::python;
+            ensure_tuple_length(state, 2);
+            // Restore the C++ data from state[0] for Python built-objects.
+            // state[0] is None for C++ objects and there is no need to do
+            // anything is those were already restored by string constructor.
+            object st0 = state[0];
+            if (st0.ptr() != Py_None)
+            {
+                T& tobj = extract<T&>(obj);
+                string content = extract<string>(state[0]);
+                diffpy::serialization_fromstring(tobj, content);
+            }
+            // restore the object's __dict__
+            dict d = extract<dict>(obj.attr("__dict__"));
+            d.update(state[1]);
+        }
+
+
+        static bool getstate_manages_dict()  { return true; }
+
+
+    private:
+
+        static bool frompython(
+                diffpy::srreal::StructureAdapterPtr adpt)
+        {
+            return bool(boost::dynamic_pointer_cast<T>(adpt));
+        }
 
 };  // class StructureAdapterPickleSuite
 
-extern
-const char* doc_StructureAdapter___init__fromstring;
+/// Helper function for creating Python constructor from string
+/// that restores c++ non-wrapped classes.
+boost::python::object StructureAdapter_constructor();
 
 }   // namespace srrealmodule
 

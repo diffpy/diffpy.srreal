@@ -34,28 +34,13 @@ createStructureAdapterFromString(const std::string& content)
 
 }   // namespace
 
-// class StructureAdapterPickleSuite -----------------------------------------
-
-boost::python::tuple
-StructureAdapterPickleSuite::getinitargs(StructureAdapterPtr adpt)
-{
-    std::string content = diffpy::serialization_tostring(adpt);
-    return boost::python::make_tuple(content);
-}
-
+// Non-member functions for StructureAdapterPickleSuite ----------------------
 
 boost::python::object
-StructureAdapterPickleSuite::constructor()
+StructureAdapter_constructor()
 {
     return boost::python::make_constructor(createStructureAdapterFromString);
 }
-
-// shared docstring for StructureAdapterPickleSuite clients
-
-const char* doc_StructureAdapter___init__fromstring = "\
-Construct StructureAdapter object from a string.  This is used\n\
-internally by the pickle protocol and should not be called directly.\n\
-";
 
 }   // namespace srrealmodule
 
