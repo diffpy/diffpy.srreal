@@ -26,6 +26,7 @@
 #include <cassert>
 
 #include <diffpy/Attributes.hpp>
+#include <diffpy/srreal/StructureAdapter.hpp>
 
 #include "srreal_converters.hpp"
 // numpy/arrayobject.h needs to be included after srreal_converters.hpp,
@@ -253,6 +254,26 @@ void throwPureVirtualCalled(const char* fncname)
     emsg += "' called.";
     PyErr_SetString(PyExc_RuntimeError, emsg.c_str());
     boost::python::throw_error_already_set();
+}
+
+
+/// shared converter that first tries to extract the pointer and then calls
+/// diffpy.srreal.structureadapter.createStructureAdapter
+::diffpy::srreal::StructureAdapterPtr
+convertToStructureAdapterPtr(::boost::python::object stru)
+{
+    using namespace boost::python;
+    using diffpy::srreal::StructureAdapterPtr;
+    StructureAdapterPtr adpt;
+    extract<StructureAdapterPtr> getadpt(stru);
+    if (getadpt.check())  adpt = getadpt();
+    else
+    {
+        object mod = import("diffpy.srreal.structureadapter");
+        object createStructureAdapter = mod.attr("createStructureAdapter");
+        adpt = extract<StructureAdapterPtr>(createStructureAdapter(stru));
+    }
+    return adpt;
 }
 
 }   // namespace srrealmodule

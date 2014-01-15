@@ -17,6 +17,7 @@
 *****************************************************************************/
 
 #include <boost/python/module.hpp>
+#include <boost/python/import.hpp>
 #include "srreal_numpy_symbol.hpp"
 #include <numpy/arrayobject.h>
 
@@ -71,6 +72,9 @@ BOOST_PYTHON_MODULE(srreal_ext)
     wrap_BondCalculator();
     wrap_AtomRadiiTable();
     wrap_OverlapCalculator();
+    // load structure converters
+    using boost::python::import;
+    import("diffpy.srreal.structureconverters");
 }
 
 // End of file

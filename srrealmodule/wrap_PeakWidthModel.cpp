@@ -151,7 +151,7 @@ DECLARE_PYSET_FUNCTION_WRAPPER(PeakWidthModel::getRegisteredTypes,
 double maxwidthwithpystructure(const PeakWidthModel& pwm,
         python::object stru, double rmin, double rmax)
 {
-    StructureAdapterPtr adpt = createStructureAdapter(stru);
+    StructureAdapterPtr adpt = convertToStructureAdapterPtr(stru);
     double rv = pwm.maxWidth(adpt, rmin, rmax);
     return rv;
 }

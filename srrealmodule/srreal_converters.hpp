@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <string>
 
+#include <diffpy/srreal/forwardtypes.hpp>
 #include <diffpy/srreal/R3linalg.hpp>
 #include <diffpy/srreal/QuantityType.hpp>
 
@@ -403,6 +404,10 @@ class wrapper_registry_configurator
         mutable PyObject* mpyptr;
 };
 
+/// shared converter that first tries to extract the pointer and then calls
+/// diffpy.srreal.structureadapter.createStructureAdapter
+::diffpy::srreal::StructureAdapterPtr
+convertToStructureAdapterPtr(::boost::python::object);
 
 }   // namespace srrealmodule
 

@@ -304,7 +304,13 @@ python::object repr_QuantityType(const QuantityType& v)
 
 python::object eval_asarray(PairQuantity& obj, const python::object& a)
 {
-    QuantityType value = (Py_None == a.ptr()) ? obj.eval() : obj.eval(a);
+    QuantityType value;
+    if (Py_None == a.ptr())  value = obj.eval();
+    else
+    {
+        StructureAdapterPtr adpt = convertToStructureAdapterPtr(a);
+        value = obj.eval(adpt);
+    }
     python::object rv = convertToNumPyArray(value);
     return rv;
 }
