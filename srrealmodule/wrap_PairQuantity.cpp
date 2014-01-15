@@ -33,11 +33,10 @@
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include <boost/python/stl_iterator.hpp>
 
-#include <diffpy/srreal/PythonStructureAdapter.hpp>
-#include <diffpy/srreal/PairQuantity.hpp>
-
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
+
+#include <diffpy/srreal/PairQuantity.hpp>
 
 namespace srrealmodule {
 namespace nswrap_PairQuantity {
@@ -302,15 +301,9 @@ python::object repr_QuantityType(const QuantityType& v)
 // PairQuantity::eval is a template non-constant method and
 // needs an explicit wrapper function.
 
-python::object eval_asarray(PairQuantity& obj, const python::object& a)
+python::object eval_asarray(PairQuantity& obj, python::object& a)
 {
-    QuantityType value;
-    if (Py_None == a.ptr())  value = obj.eval();
-    else
-    {
-        StructureAdapterPtr adpt = convertToStructureAdapterPtr(a);
-        value = obj.eval(adpt);
-    }
+    QuantityType value = (Py_None == a.ptr()) ? obj.eval() : obj.eval(a);
     python::object rv = convertToNumPyArray(value);
     return rv;
 }

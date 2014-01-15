@@ -24,7 +24,6 @@
 #include <diffpy/srreal/ConstantPeakWidth.hpp>
 #include <diffpy/srreal/DebyeWallerPeakWidth.hpp>
 #include <diffpy/srreal/JeongPeakWidth.hpp>
-#include <diffpy/srreal/PythonStructureAdapter.hpp>
 #include <diffpy/serialization.hpp>
 
 #include "srreal_converters.hpp"
@@ -151,7 +150,7 @@ DECLARE_PYSET_FUNCTION_WRAPPER(PeakWidthModel::getRegisteredTypes,
 double maxwidthwithpystructure(const PeakWidthModel& pwm,
         python::object stru, double rmin, double rmax)
 {
-    StructureAdapterPtr adpt = convertToStructureAdapterPtr(stru);
+    StructureAdapterPtr adpt = createStructureAdapter(stru);
     double rv = pwm.maxWidth(adpt, rmin, rmax);
     return rv;
 }

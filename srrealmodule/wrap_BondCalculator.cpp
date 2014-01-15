@@ -19,7 +19,6 @@
 #include <boost/python.hpp>
 
 #include <diffpy/srreal/BondCalculator.hpp>
-#include <diffpy/srreal/PythonStructureAdapter.hpp>
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"

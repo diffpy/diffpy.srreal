@@ -256,26 +256,30 @@ void throwPureVirtualCalled(const char* fncname)
     boost::python::throw_error_already_set();
 }
 
+}   // namespace srrealmodule
+
+
+namespace diffpy {
+namespace srreal {
 
 /// shared converter that first tries to extract the pointer and then calls
 /// diffpy.srreal.structureadapter.createStructureAdapter
-::diffpy::srreal::StructureAdapterPtr
-convertToStructureAdapterPtr(::boost::python::object stru)
+StructureAdapterPtr createStructureAdapter(::boost::python::object stru)
 {
     using namespace boost::python;
-    using diffpy::srreal::StructureAdapterPtr;
     StructureAdapterPtr adpt;
     extract<StructureAdapterPtr> getadpt(stru);
     if (getadpt.check())  adpt = getadpt();
     else
     {
         object mod = import("diffpy.srreal.structureadapter");
-        object createStructureAdapter = mod.attr("createStructureAdapter");
-        adpt = extract<StructureAdapterPtr>(createStructureAdapter(stru));
+        object convertinpython = mod.attr("createStructureAdapter");
+        adpt = extract<StructureAdapterPtr>(convertinpython(stru));
     }
     return adpt;
 }
 
-}   // namespace srrealmodule
+}   // namespace srreal
+}   // namespace diffpy
 
 // End of file

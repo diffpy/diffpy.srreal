@@ -21,7 +21,6 @@
 
 #include <diffpy/srreal/DebyePDFCalculator.hpp>
 #include <diffpy/srreal/PDFCalculator.hpp>
-#include <diffpy/srreal/PythonStructureAdapter.hpp>
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"

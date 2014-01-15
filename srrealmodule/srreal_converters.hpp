@@ -30,7 +30,21 @@
 
 #include "srreal_numpy_symbol.hpp"
 
+/// Conversion function that supports implicit conversions in
+/// PairQuantity::eval and PairQuantity::setStructure
+
+namespace diffpy {
+namespace srreal {
+
+StructureAdapterPtr
+createStructureAdapter(::boost::python::object);
+
+}   // namespace srreal
+}   // namespace diffpy
+
 namespace srrealmodule {
+
+using diffpy::srreal::createStructureAdapter;
 
 /// this macro creates a setter for overloaded method that can accept
 /// either instance or a type string
@@ -403,11 +417,6 @@ class wrapper_registry_configurator
         mutable TPtr mcptr;
         mutable PyObject* mpyptr;
 };
-
-/// shared converter that first tries to extract the pointer and then calls
-/// diffpy.srreal.structureadapter.createStructureAdapter
-::diffpy::srreal::StructureAdapterPtr
-convertToStructureAdapterPtr(::boost::python::object);
 
 }   // namespace srrealmodule
 
