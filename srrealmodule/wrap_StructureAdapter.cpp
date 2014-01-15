@@ -303,7 +303,7 @@ class StructureAdapterWrap :
         void customPQConfig(PairQuantity* pq) const
         {
             override f = this->get_override("_customPQConfig");
-            if (f)  f(pq);
+            if (f)  f(ptr(pq));
             else    this->default_customPQConfig(pq);
         }
 
