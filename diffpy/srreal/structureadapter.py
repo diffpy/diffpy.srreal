@@ -30,8 +30,57 @@ Constants:
 EMPTY        -- singleton instance of an empty structure.
 """
 
+def createStructureAdapter(stru):
+    '''
+    Create StructureAdapter from a Python object.
 
-from diffpy.srreal.srreal_ext import StructureAdapter, createStructureAdapter
+    stru -- an object that is convertible to StructureAdapter, i.e., it has
+            a registered factory that converts Python structure object to
+            StructureAdapter.  Return stru if already a StructureAdapter.
+
+    Return a StructureAdapter instance.
+    Raise TypeError if stru cannot be converted to StructureAdapter.
+    '''
+    if isinstance(stru, StructureAdapter):  return stru
+    import inspect
+    # build fully-qualified names of Python types in method resolution order
+    cls = type(stru)
+    fqnames = [str(tp).split("'")[1] for tp in inspect.getmro(cls)]
+    for fqn in fqnames:
+        if not fqn in _adapter_converters_registry:  continue
+        factory = _adapter_converters_registry[fqn]
+        return factory(stru)
+    # none of the registered factories could convert the stru object
+    emsg = "Cannot create structure adapter for %r." % (stru,)
+    raise TypeError(emsg)
+
+
+def RegisterStructureAdapter(fqname):
+    '''Function decorator that marks it as a converter of specified
+    object type to StructureAdapter class in diffpy.srreal.  The registered
+    structure object types can be afterwards directly used with calculators
+    in diffpy.srreal as they would be implicitly converted to the internal
+    diffpy.srreal structure type.
+
+    fqname   -- fully qualified class name for the convertible objects.
+                This is the quoted string included in "str(type(obj))".
+                The converter function would be called for object of the
+                same or derived types.
+
+    See diffpy.srreal.structureconverters module for usage example.
+    '''
+    def __wrapper(fnc):
+        _adapter_converters_registry[fqname] = fnc
+        return fnc
+    return __wrapper
+
+
+_adapter_converters_registry = {}
+
+# import of srreal_ext calls RegisterStructureAdapter, therefore it has
+# to be at the end of this module.
+
+from diffpy.srreal.srreal_ext import StructureAdapter
 from diffpy.srreal.srreal_ext import Atom, AtomicStructureAdapter
 from diffpy.srreal.srreal_ext import PeriodicStructureAdapter
 from diffpy.srreal.srreal_ext import CrystalStructureAdapter

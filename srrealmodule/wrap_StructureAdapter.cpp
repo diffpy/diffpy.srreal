@@ -155,17 +155,6 @@ stru -- StructureAdapter object or an object convertible to StructureAdapter.\n\
 Return a proxy StructureAdapter with disabled symmetry expansion.\n\
 ";
 
-const char* doc_createStructureAdapter = "\
-Create StructureAdapter from a Python object.\n\
-\n\
-stru -- an object that is convertible to StructureAdapter, i.e., it has\n\
-        a registered factory that converts Python structure object to\n\
-        StructureAdapter.  Return stru if already a StructureAdapter.\n\
-\n\
-Return a StructureAdapter instance.\n\
-Raise TypeError if stru cannot be converted to StructureAdapter.\n\
-";
-
 const char* doc__emptyStructureAdapter = "\
 Factory for an empty structure singleton.\n\
 \n\
@@ -396,8 +385,6 @@ void wrap_StructureAdapter()
 
     def("nometa", nometa<object>, doc_nometa);
     def("nosymmetry", nosymmetry<object>, doc_nosymmetry);
-    def("createStructureAdapter", createStructureAdapter,
-            doc_createStructureAdapter);
     def("_emptyStructureAdapter", emptyStructureAdapter,
             doc__emptyStructureAdapter);
 }
