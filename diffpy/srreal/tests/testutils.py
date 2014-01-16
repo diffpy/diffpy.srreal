@@ -10,14 +10,20 @@ TestCaseObjCrystOptional -- use this as a TestCase base class that
 import logging
 import os.path
 
+from diffpy.srreal.structureconverters import convertObjCrystCrystal
+
 # class TestCaseObjCrystOptional
 
 try:
-    import pyobjcryst
+    import pyobjcryst.crystal
     from unittest import TestCase as TestCaseObjCrystOptional
+    convertObjCrystCrystal(pyobjcryst.crystal.Crystal())
 except ImportError:
     TestCaseObjCrystOptional = object
     logging.warning('Cannot import pyobjcryst, pyobjcryst tests skipped.')
+except TypeError:
+    TestCaseObjCrystOptional = object
+    logging.warning('Compiled without ObjCryst, pyobjcryst tests skipped.')
 
 # helper functions
 
