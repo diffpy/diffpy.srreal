@@ -36,6 +36,17 @@ def convertDiffPyStructure(stru):
         rv = nosymmetry(rv)
     return rv
 
+# Converters for Molecule and Crystal from pyobjcryst ------------------------
+
+from diffpy.srreal.srreal_ext import convertObjCrystMolecule
+RegisterStructureAdapter(
+        'pyobjcryst._pyobjcryst.Molecule', convertObjCrystMolecule)
+
+from diffpy.srreal.srreal_ext import convertObjCrystCrystal
+RegisterStructureAdapter(
+        'pyobjcryst._pyobjcryst.Crystal', convertObjCrystCrystal)
+
+# Define adapter class for diffpy.Structure class ----------------------------
 
 class DiffPyStructureAdapter(PeriodicStructureAdapter):
 
