@@ -20,14 +20,13 @@
 
 #include <boost/python.hpp>
 
-#include <diffpy/srreal/PythonStructureAdapter.hpp>
+#include "srreal_converters.hpp"
+#include "srreal_pickling.hpp"
+
 #include <diffpy/srreal/NoMetaStructureAdapter.hpp>
 #include <diffpy/srreal/NoSymmetryStructureAdapter.hpp>
 #include <diffpy/srreal/PairQuantity.hpp>
 #include <diffpy/serialization.ipp>
-
-#include "srreal_converters.hpp"
-#include "srreal_pickling.hpp"
 
 namespace srrealmodule {
 namespace nswrap_StructureAdapter {
