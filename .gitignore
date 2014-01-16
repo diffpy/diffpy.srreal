@@ -16,6 +16,7 @@ sdist
 temp
 develop-eggs
 .installed.cfg
+.sconf_temp/
 .sconsign.dblite
 lib
 lib64
