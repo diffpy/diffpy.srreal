@@ -60,6 +60,8 @@ cpppath = getsyspaths('CPLUS_INCLUDE_PATH', 'CPATH')
 env.AppendUnique(CPPPATH=cpppath)
 env.AppendUnique(LIBS=['diffpy'])
 
+fast_linkflags = ['-s']
+
 # Platform specific intricacies.
 if env['PLATFORM'] == 'darwin':
     env.AppendUnique(CXXFLAGS='-ftemplate-depth=256')
@@ -68,6 +70,7 @@ if env['PLATFORM'] == 'darwin':
     env.Replace(SHLINKFLAGS=darwin_shlinkflags)
     env.AppendUnique(SHLINKFLAGS=['-bundle'])
     env.AppendUnique(SHLINKFLAGS=['-undefined', 'dynamic_lookup'])
+    fast_linkflags[:] = []
 
 # Compiler specific options
 if icpc:
@@ -86,7 +89,7 @@ if env['build'] == 'debug':
 elif env['build'] == 'fast':
     env.AppendUnique(CCFLAGS=['-O3'] + fast_optimflags)
     env.AppendUnique(CPPDEFINES='NDEBUG')
-    env.AppendUnique(LINKFLAGS='-s')
+    env.AppendUnique(LINKFLAGS=fast_linkflags)
 
 if env['profile']:
     env.AppendUnique(CCFLAGS='-pg')
