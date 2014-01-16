@@ -23,9 +23,42 @@ ext_kws = {
         'include_dirs' : get_numpy_include_dirs(),
 }
 
-srreal_ext = Extension('diffpy.srreal.srreal_ext',
-    glob.glob('srrealmodule/*.cpp'),
-    **ext_kws)
+
+# Figure out which boost library to use. This doesn't appear to consult
+# LD_LIBRARY_PATH.
+def get_boost_libraries():
+    """Check for installed boost_python shared library.
+
+    Returns list of required boost_python shared libraries that are installed
+    on the system. If required libraries are not found, an Exception will be
+    thrown.
+    """
+    baselib = "boost_python"
+    boostlibtags = ['', '-mt']
+    from ctypes.util import find_library
+    for tag in boostlibtags:
+        lib = baselib + tag
+        found = find_library(lib)
+        if found: break
+
+    # Raise Exception if we don't find anything
+    if not found:
+        raise Exception("Cannot find shared boost_library library")
+
+    libs = [lib]
+    return libs
+
+
+def make_srreal_ext():
+    "Finalize all arguments and return Extension for srreal_ext."
+    blibs = get_boost_libraries()
+    blibs = [n for n in get_boost_libraries()
+        if not n in ext_kws['libraries']]
+    ext_kws['libraries'] += blibs
+    ext = Extension('diffpy.srreal.srreal_ext',
+        glob.glob('srrealmodule/*.cpp'),
+        **ext_kws)
+    return ext
 
 
 # versioncfgfile holds version data for git commit hash and date.
@@ -72,7 +105,7 @@ setup_args = dict(
         packages = find_packages(),
         test_suite = 'diffpy.srreal.tests',
         include_package_data = True,
-        ext_modules = [srreal_ext],
+        ext_modules = [],
         install_requires = [
             'diffpy.Structure',
         ],
@@ -93,6 +126,7 @@ setup_args = dict(
 )
 
 if __name__ == '__main__':
+    setup_args['ext_modules'] = [make_srreal_ext()]
     setup(**setup_args)
 
 # End of file
