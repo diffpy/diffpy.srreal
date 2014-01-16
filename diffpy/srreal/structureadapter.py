@@ -55,7 +55,7 @@ def createStructureAdapter(stru):
     raise TypeError(emsg)
 
 
-def RegisterStructureAdapter(fqname):
+def RegisterStructureAdapter(fqname, fnc=None):
     '''Function decorator that marks it as a converter of specified
     object type to StructureAdapter class in diffpy.srreal.  The registered
     structure object types can be afterwards directly used with calculators
@@ -66,14 +66,23 @@ def RegisterStructureAdapter(fqname):
                 This is the quoted string included in "str(type(obj))".
                 The converter function would be called for object of the
                 same or derived types.
+    fnc      -- function that converts the fqname type to StructureAdapter.
+
+    Note: When fnc is None RegisterStructureAdapter works as a decorator
+    and the conversion function can be specified below, i.e.,
+
+        @RegisterStructureAdapter('my.structure.Type')
+        def convertMyStructure(stru):
+            ...
 
     See diffpy.srreal.structureconverters module for usage example.
     '''
     def __wrapper(fnc):
         _adapter_converters_registry[fqname] = fnc
         return fnc
-    return __wrapper
-
+    if fnc is None:
+        return __wrapper
+    return __wrapper(fnc)
 
 _adapter_converters_registry = {}
 
