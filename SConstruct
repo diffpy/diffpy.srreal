@@ -96,7 +96,16 @@ if env['profile']:
     env.AppendUnique(LINKFLAGS='-pg')
 
 builddir = env.Dir('build/%s-%s' % (env['build'], platform.machine()))
+
 Export('env')
+
+def GlobSources(pattern):
+    """Same as Glob but also require that source node is a valid file.
+    """
+    rv = [f for f in Glob(pattern) if f.srcnode().isfile()]
+    return rv
+
+Export('GlobSources')
 
 if os.path.isfile('sconscript.local'):
     env.SConscript('sconscript.local')

@@ -3,7 +3,7 @@ import os
 from distutils.core import Distribution
 from distutils.command.build import build
 
-Import('env')
+Import('env', 'GlobSources')
 
 # make sure numpy headers are available
 from numpy.distutils.misc_util import get_numpy_include_dirs
@@ -14,7 +14,7 @@ if not (GetOption('clean') or env.GetOption('help')):
     SConscript('SConscript.configure')
 
 # python extension module
-module = env.SharedLibrary('srreal_ext', Glob('*.cpp'),
+module = env.SharedLibrary('srreal_ext', GlobSources('*.cpp'),
         SHLIBPREFIX='', SHLIBSUFFIX='.so')
 Alias('module', module)
 
