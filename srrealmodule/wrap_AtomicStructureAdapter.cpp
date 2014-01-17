@@ -107,6 +107,10 @@ index    -- integer index of the removed atom.  May be negative\n\
 Return the removed Atom.\n\
 ";
 
+const char* doc_AtomicStructureAdapter_clear = "\
+Remove all atoms from the structure.\n\
+";
+
 const char* doc_AtomicStructureAdapter_reserve = "\
 Reserve memory for a specified number of atoms.\n\
 Although not required, calling this method can save memory and\n\
@@ -535,6 +539,8 @@ void wrap_AtomicStructureAdapter()
                 doc_AtomicStructureAdapter_append)
         .def("pop", atomadapter_pop,
                 bp::arg("index"), doc_AtomicStructureAdapter_pop)
+        .def("clear", &AtomicStructureAdapter::clear,
+                doc_AtomicStructureAdapter_clear)
         .def("reserve", atomadapter_reserve,
                 bp::arg("sz"), doc_AtomicStructureAdapter_reserve)
         .def_pickle(StructureAdapterPickleSuite<AtomicStructureAdapterWrap>())
