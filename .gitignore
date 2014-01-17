@@ -16,13 +16,9 @@ sdist
 temp
 develop-eggs
 .installed.cfg
-.sconf_temp/
-.sconsign.dblite
 lib
 lib64
 tags
-errors.err
-sconscript.local
 
 # Installer logs
 pip-log.txt
@@ -40,8 +36,16 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
-.gdb_history
 
 # version information
 setup.cfg
 /diffpy/srreal/version.cfg
+
+# SCons build files
+*.pyc
+.gdb_history
+.sconf_temp/
+.sconsign.dblite
+config.log
+errors.err
+sconscript.local
