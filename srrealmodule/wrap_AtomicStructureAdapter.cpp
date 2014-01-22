@@ -476,6 +476,7 @@ void wrap_AtomicStructureAdapter()
 {
     namespace bp = boost::python;
     using namespace nswrap_AtomicStructureAdapter;
+    using diffpy::srreal::hash_value;
 
     // class Atom
     class_<Atom> atom_class("Atom", doc_Atom);
@@ -484,6 +485,7 @@ void wrap_AtomicStructureAdapter()
         .def(init<const Atom&>(bp::arg("atom"), doc_Atom_init_copy))
         .def(self == self)
         .def(self != self)
+        .def("__hash__", hash_value)
         .def("_get_xyz_cartn",
                 get_xyz_cartn,
                 with_custodian_and_ward_postcall<0,1>())
