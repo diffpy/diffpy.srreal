@@ -39,31 +39,33 @@ using boost::python::slice;
 // docstrings ----------------------------------------------------------------
 
 const char* doc_StructureDifference = "\
-FIXME\n\
+Class for expressing difference between two StructureAdapter objects.\n\
+\n\
+Attributes:\n\
+\n\
+stru0    -- old StructureAdapter instance\n\
+stru1    -- new StructureAdapter instance\n\
+pop0     -- list of indices of atoms that are only in stru0\n\
+add1     -- indices of atoms that are only in stru1\n\
 ";
 
 const char* doc_StructureDifference_init_copy = "\
-FIXME\n\
+Create a copy of an existing StructureDifference object sd.\n\
 ";
 
 const char* doc_StructureDifference_init_structures = "\
-FIXME\n\
-";
-
-const char* doc_StructureDifference_pop0 = "\
-FIXME\n\
-";
-
-const char* doc_StructureDifference_add1 = "\
-FIXME\n\
+Create StructureDifference for comparing stru0 (old) and stru1 (new).\n\
 ";
 
 const char* doc_StructureDifference_diffmethod = "\
-FIXME\n\
+Read-only string type of C++ difference algorithm that was used to compare\n\
+the structures.  Possible values are ('NONE', 'SIDEBYSIDE', 'SORTED').\n\
 ";
 
 const char* doc_StructureDifference_allowsfastupdate = "\
-FIXME\n\
+Return True if PairQuantity evaluated for stru0 can be fast-updated\n\
+for structure stru1.  Fast update is done by removal of contributions\n\
+from stru0 atoms at indices pop0 and addition of add1 atoms in stru1.\n\
 ";
 
 // wrappers ------------------------------------------------------------------
@@ -161,15 +163,13 @@ void wrap_StructureDifference()
         .def(init<const StructureDifference&>(bp::arg("sd"),
                     doc_StructureDifference_init_copy))
         .def(init<StructureAdapterPtr, StructureAdapterPtr>(
-                    (bp::arg("adpt0"), bp::arg("adpt1")),
+                    (bp::arg("stru0"), bp::arg("stru1")),
                     doc_StructureDifference_init_structures))
         .def_readwrite("stru0", &StructureDifference::stru0)
         .def_readwrite("stru1", &StructureDifference::stru1)
-        .add_property("pop0",
-                get_pop0, set_pop0, doc_StructureDifference_pop0)
+        .add_property("pop0", get_pop0, set_pop0)
         .setattr("_pop0", bp::object())
-        .add_property("add1",
-                get_add1, set_add1, doc_StructureDifference_add1)
+        .add_property("add1", get_add1, set_add1)
         .setattr("_add1", bp::object())
         .add_property("diffmethod",
                 get_diffmethod,

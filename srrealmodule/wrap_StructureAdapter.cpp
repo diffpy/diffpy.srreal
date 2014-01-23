@@ -135,12 +135,19 @@ PairQuantity object.\n\
 pqobj    -- the owner PairQuantity object.  The function should check for the\n\
             exact type of pqobj and apply configuration accordingly.\n\
 \n\
-No return value.  This method can be overloaded in the derived class.\n\
+No return value.  This method can be overloaded in a derived class.\n\
 No action by default.\n\
 ";
 
 const char* doc_StructureAdapter_diff = "\
-FIXME\n\
+Evaluate difference between this and other StructureAdapter.\n\
+\n\
+other    -- another StructureAdapter instance to compare with self\n\
+\n\
+Return StructureDifference object sd, where sd.stru0 is self,\n\
+sd.stru1 other, sd.pop0 are indices of atom sites that are in self,\n\
+but not in the other and sd.add1 atom indices that are only in self.\n\
+This method can be overloaded in a derived class.\n\
 ";
 
 const char* doc_nometa = "\
