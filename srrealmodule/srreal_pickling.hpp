@@ -177,7 +177,7 @@ class StructureAdapterPickleSuite : public boost::python::pickle_suite
             ensure_tuple_length(state, 2);
             // Restore the C++ data from state[0] for Python built-objects.
             // state[0] is None for C++ objects and there is no need to do
-            // anything is those were already restored by string constructor.
+            // anything as those were already restored by string constructor.
             object st0 = state[0];
             if (st0.ptr() != Py_None)
             {
