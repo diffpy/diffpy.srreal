@@ -28,6 +28,7 @@ namespace srrealmodule {
 void wrap_exceptions();
 void wrap_EventTicker();
 void wrap_Attributes();
+void wrap_StructureDifference();
 void wrap_StructureAdapter();
 void wrap_AtomicStructureAdapter();
 void wrap_ObjCrystAdapters();
@@ -58,6 +59,7 @@ BOOST_PYTHON_MODULE(srreal_ext)
     wrap_exceptions();
     wrap_EventTicker();
     wrap_Attributes();
+    wrap_StructureDifference();
     wrap_StructureAdapter();
     wrap_AtomicStructureAdapter();
     wrap_ObjCrystAdapters();
