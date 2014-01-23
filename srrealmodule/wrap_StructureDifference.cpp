@@ -109,49 +109,22 @@ void set_add1(python::object obj, python::object value)
     get_add1(obj)[slice()] = convertToPythonList(sd.add1);
 }
 
-// support for the diffmethod property
-
-const char* diffmethod_NONE = "NONE";
-const char* diffmethod_SIDEBYSIDE = "SIDEBYSIDE";
-const char* diffmethod_SORTED = "SORTED";
 
 std::string get_diffmethod(const StructureDifference& sd)
 {
     switch (sd.diffmethod)
     {
         case StructureDifference::Method::NONE:
-            return diffmethod_NONE;
+            return "NONE";
         case StructureDifference::Method::SIDEBYSIDE:
-            return diffmethod_SIDEBYSIDE;
+            return "SIDEBYSIDE";
         case StructureDifference::Method::SORTED:
-            return diffmethod_SORTED;
+            return "SORTED";
     }
     std::string emsg = "Unknown internal value of StructureDifference::Method.";
     throw std::out_of_range(emsg);
 }
 
-
-void set_diffmethod(StructureDifference& sd, const std::string& tp)
-{
-    if (tp == diffmethod_NONE) {
-        sd.diffmethod = StructureDifference::Method::NONE;
-        return;
-    }
-    if (tp == diffmethod_SIDEBYSIDE) {
-        sd.diffmethod = StructureDifference::Method::SIDEBYSIDE;
-        return;
-    }
-    if (tp == diffmethod_SORTED) {
-        sd.diffmethod = StructureDifference::Method::SORTED;
-        return;
-    }
-    python::object emsg = ("diffmethod must be one of %r." %
-            python::make_tuple(
-                python::make_tuple(diffmethod_NONE,
-                    diffmethod_SIDEBYSIDE, diffmethod_SORTED)));
-    PyErr_SetObject(PyExc_ValueError, emsg.ptr());
-    python::throw_error_already_set();
-}
 
 bool sd_allowsfastupdate(python::object obj)
 {
@@ -199,7 +172,7 @@ void wrap_StructureDifference()
                 get_add1, set_add1, doc_StructureDifference_add1)
         .setattr("_add1", bp::object())
         .add_property("diffmethod",
-                get_diffmethod, set_diffmethod,
+                get_diffmethod,
                 doc_StructureDifference_diffmethod)
         .def("allowsfastupdate",
                 sd_allowsfastupdate,
