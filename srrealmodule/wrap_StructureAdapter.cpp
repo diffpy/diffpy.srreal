@@ -23,12 +23,17 @@
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
 
+#include <diffpy/srreal/StructureDifference.hpp>
 #include <diffpy/srreal/NoMetaStructureAdapter.hpp>
 #include <diffpy/srreal/NoSymmetryStructureAdapter.hpp>
 #include <diffpy/srreal/PairQuantity.hpp>
 #include <diffpy/serialization.ipp>
 
 namespace srrealmodule {
+
+// declarations
+void sync_StructureDifference(boost::python::object obj);
+
 namespace nswrap_StructureAdapter {
 
 using namespace boost;
@@ -132,6 +137,10 @@ pqobj    -- the owner PairQuantity object.  The function should check for the\n\
 \n\
 No return value.  This method can be overloaded in the derived class.\n\
 No action by default.\n\
+";
+
+const char* doc_StructureAdapter_diff = "\
+FIXME\n\
 ";
 
 const char* doc_nometa = "\
@@ -311,6 +320,26 @@ class StructureAdapterWrap :
             this->StructureAdapter::customPQConfig(pq);
         }
 
+
+        StructureDifference diff(StructureAdapterConstPtr other) const
+        {
+            override f = this->get_override("diff");
+            if (f)
+            {
+                python::object sdobj = f(other);
+                sync_StructureDifference(sdobj);
+                StructureDifference& sd =
+                    python::extract<StructureDifference&>(sdobj);
+                return sd;
+            }
+            return this->default_diff(other);
+        }
+
+        StructureDifference default_diff(StructureAdapterConstPtr other) const
+        {
+            return this->StructureAdapter::diff(other);
+        }
+
     private:
 
         // serialization
@@ -377,6 +406,11 @@ void wrap_StructureAdapter()
                 &StructureAdapterWrap::default_customPQConfig,
                 python::arg("pqobj"),
                 doc_StructureAdapter__customPQConfig)
+        .def("diff",
+                &StructureAdapter::diff,
+                &StructureAdapterWrap::default_diff,
+                python::arg("other"),
+                doc_StructureAdapter_diff)
         .def_pickle(StructureAdapterPickleSuite<StructureAdapterWrap>())
         ;
 
@@ -394,6 +428,8 @@ const char* doc_StructureAdapter___init__fromstring =
     nswrap_StructureAdapter::doc_StructureAdapter___init__fromstring;
 const char* doc_StructureAdapter__customPQConfig =
     nswrap_StructureAdapter::doc_StructureAdapter__customPQConfig;
+const char* doc_StructureAdapter_diff =
+    nswrap_StructureAdapter::doc_StructureAdapter_diff;
 
 }   // namespace srrealmodule
 

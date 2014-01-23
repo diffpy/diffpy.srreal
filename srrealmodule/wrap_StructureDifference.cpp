@@ -28,7 +28,6 @@
 namespace srrealmodule {
 
 // declarations
-
 void sync_StructureDifference(boost::python::object obj);
 
 namespace nswrap_StructureDifference {

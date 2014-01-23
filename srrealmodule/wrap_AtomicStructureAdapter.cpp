@@ -27,6 +27,7 @@
 #include <diffpy/srreal/PeriodicStructureAdapter.hpp>
 #include <diffpy/srreal/CrystalStructureAdapter.hpp>
 #include <diffpy/srreal/PairQuantity.hpp>
+#include <diffpy/srreal/StructureDifference.hpp>
 #include <diffpy/serialization.ipp>
 
 #include "srreal_converters.hpp"
@@ -34,6 +35,10 @@
 #include "srreal_validators.hpp"
 
 namespace srrealmodule {
+
+// declarations
+void sync_StructureDifference(boost::python::object obj);
+
 namespace nswrap_AtomicStructureAdapter {
 
 using namespace boost;
@@ -325,6 +330,26 @@ class MakeWrapper : public T, public wrapper_srreal<T>
             this->T::customPQConfig(pq);
         }
 
+
+        StructureDifference diff(StructureAdapterConstPtr other) const
+        {
+            override f = this->get_override("diff");
+            if (f)
+            {
+                python::object sdobj = f(other);
+                sync_StructureDifference(sdobj);
+                StructureDifference& sd =
+                    python::extract<StructureDifference&>(sdobj);
+                return sd;
+            }
+            return this->default_diff(other);
+        }
+
+        StructureDifference default_diff(StructureAdapterConstPtr other) const
+        {
+            return this->T::diff(other);
+        }
+
     private:
 
         // serialization
@@ -469,6 +494,7 @@ AtomicStructureAdapterPtr crystaladapter_expandlatticeatom(
 
 extern const char* doc_StructureAdapter___init__fromstring;
 extern const char* doc_StructureAdapter__customPQConfig;
+extern const char* doc_StructureAdapter_diff;
 
 // Wrapper definitions -------------------------------------------------------
 
@@ -534,6 +560,11 @@ void wrap_AtomicStructureAdapter()
                 &AtomicStructureAdapterWrap::default_customPQConfig,
                 python::arg("pqobj"),
                 doc_StructureAdapter__customPQConfig)
+        .def("diff",
+                &AtomicStructureAdapter::diff,
+                &AtomicStructureAdapterWrap::default_diff,
+                python::arg("other"),
+                doc_StructureAdapter_diff)
         .def("insert", atomadapter_insert,
                 (bp::arg("index"), bp::arg("atom")),
                 doc_AtomicStructureAdapter_insert)
@@ -565,6 +596,11 @@ void wrap_AtomicStructureAdapter()
                 &PeriodicStructureAdapterWrap::default_customPQConfig,
                 python::arg("pqobj"),
                 doc_StructureAdapter__customPQConfig)
+        .def("diff",
+                &PeriodicStructureAdapter::diff,
+                &PeriodicStructureAdapterWrap::default_diff,
+                python::arg("other"),
+                doc_StructureAdapter_diff)
         .def("getLatPar", periodicadapter_getlatpar,
                 doc_PeriodicStructureAdapter_getLatPar)
         .def("setLatPar", &PeriodicStructureAdapter::setLatPar,
@@ -595,6 +631,11 @@ void wrap_AtomicStructureAdapter()
                 &CrystalStructureAdapterWrap::default_customPQConfig,
                 python::arg("pqobj"),
                 doc_StructureAdapter__customPQConfig)
+        .def("diff",
+                &CrystalStructureAdapter::diff,
+                &CrystalStructureAdapterWrap::default_diff,
+                python::arg("other"),
+                doc_StructureAdapter_diff)
         .add_property("symmetryprecision",
             crystaladapter_getsymmetryprecision,
             &CrystalStructureAdapter::setSymmetryPrecision,
