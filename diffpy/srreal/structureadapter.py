@@ -99,5 +99,6 @@ from diffpy.srreal.srreal_ext import _emptyStructureAdapter
 from diffpy.srreal.srreal_ext import BaseBondGenerator
 
 EMPTY = _emptyStructureAdapter()
+del _emptyStructureAdapter
 
 # End of file

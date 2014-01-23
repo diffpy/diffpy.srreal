@@ -150,6 +150,12 @@ but not in the other and sd.add1 atom indices that are only in self.\n\
 This method can be overloaded in a derived class.\n\
 ";
 
+const char* doc_NoMetaStructureAdapter = "FIXME";
+const char* doc_NoMetaStructureAdapter_init = "FIXME";
+
+const char* doc_NoSymmetryStructureAdapter = "FIXME";
+const char* doc_NoSymmetryStructureAdapter_init = "FIXME";
+
 const char* doc_nometa = "\
 Return a proxy to StructureAdapter with _customPQConfig method disabled.\n\
 This creates a thin wrapper over a source StructureAdapter object that\n\
@@ -360,6 +366,23 @@ class StructureAdapterWrap :
 };  // class StructureAdapterWrap
 
 
+template <class T>
+class StructureProxyPickleSuite : public boost::python::pickle_suite
+{
+    public:
+
+        static boost::python::tuple getinitargs(
+                diffpy::srreal::StructureAdapterPtr adpt)
+        {
+            using namespace boost;
+            shared_ptr<T> tadpt = dynamic_pointer_cast<T>(adpt);
+            StructureAdapterPtr srcadpt = tadpt->getSourceStructure();
+            python::tuple rv = python::make_tuple(srcadpt);
+            return rv;
+        }
+
+};
+
 }   // namespace nswrap_StructureAdapter
 
 // Wrapper definition --------------------------------------------------------
@@ -422,6 +445,26 @@ void wrap_StructureAdapter()
         ;
 
     register_ptr_to_python<StructureAdapterPtr>();
+
+    typedef boost::shared_ptr<NoMetaStructureAdapter>
+        NoMetaStructureAdapterPtr;
+    class_<NoMetaStructureAdapter,
+        bases<StructureAdapter>, NoMetaStructureAdapterPtr>(
+            "NoMetaStructureAdapter", doc_NoMetaStructureAdapter)
+        .def(init<StructureAdapterPtr>(python::arg("adapter"),
+                    doc_NoMetaStructureAdapter_init))
+        .def_pickle(StructureProxyPickleSuite<NoMetaStructureAdapter>())
+        ;
+
+    typedef boost::shared_ptr<NoSymmetryStructureAdapter>
+        NoSymmetryStructureAdapterPtr;
+    class_<NoSymmetryStructureAdapter,
+        bases<StructureAdapter>, NoSymmetryStructureAdapterPtr>(
+            "NoSymmetryStructureAdapter", doc_NoSymmetryStructureAdapter)
+        .def(init<StructureAdapterPtr>(python::arg("adapter"),
+                    doc_NoSymmetryStructureAdapter_init))
+        .def_pickle(StructureProxyPickleSuite<NoSymmetryStructureAdapter>())
+        ;
 
     def("nometa", nometa<object>, doc_nometa);
     def("nosymmetry", nosymmetry<object>, doc_nosymmetry);
