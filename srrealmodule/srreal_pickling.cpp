@@ -16,8 +16,8 @@
 *
 *****************************************************************************/
 
-#include <diffpy/srreal/StructureAdapter.hpp>
 #include "srreal_pickling.hpp"
+#include <diffpy/srreal/StructureAdapter.hpp>
 
 namespace srrealmodule {
 namespace {
