@@ -8,6 +8,7 @@
 import os
 import re
 import platform
+from distutils.sysconfig import get_config_var
 
 def subdictionary(d, keyset):
     return dict([kv for kv in d.items() if kv[0] in keyset])
@@ -61,6 +62,7 @@ env.AppendUnique(CPPPATH=cpppath)
 env.AppendUnique(LIBS=['diffpy'])
 
 fast_linkflags = ['-s']
+fast_shlinkflags = get_config_var('LDSHARED').split()[1:]
 
 # Platform specific intricacies.
 if env['PLATFORM'] == 'darwin':
@@ -90,6 +92,7 @@ elif env['build'] == 'fast':
     env.AppendUnique(CCFLAGS=['-O3'] + fast_optimflags)
     env.AppendUnique(CPPDEFINES='NDEBUG')
     env.AppendUnique(LINKFLAGS=fast_linkflags)
+    env.AppendUnique(SHLINKFLAGS=fast_shlinkflags)
 
 if env['profile']:
     env.AppendUnique(CCFLAGS='-pg')
