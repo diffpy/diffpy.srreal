@@ -23,9 +23,17 @@ def configure_boost_library(libname):
 
 # Start configuration --------------------------------------------------------
 
+# Temporarily link with Python shared_library so that the check
+# for boost_python does not fail due to unresolved Python symbols.
+from distutils.sysconfig import get_config_var
+save_linkflags = env['LINKFLAGS']
+env.Prepend(LINKFLAGS=get_config_var('BLDLIBRARY'))
+
 conf = Configure(env)
 configure_boost_library('boost_python')
-
 env = conf.Finish()
+
+# Restore the original LINKFLAGS.
+env.Replace(LINKFLAGS=save_linkflags)
 
 # vim: ft=python
