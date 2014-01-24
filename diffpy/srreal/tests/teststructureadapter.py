@@ -165,7 +165,7 @@ class TestNoMeta(unittest.TestCase):
         '''
         adpt1 = nometa(nickel)
         adpt2 = nometa(adpt1)
-        self.assertIs(adpt1, adpt2)
+        self.failUnless(adpt1 is adpt2)
 
 # End of class TestNoMeta
 
@@ -203,7 +203,7 @@ class TestNoSymmetry(unittest.TestCase):
         '''
         adpt1 = nosymmetry(nickel)
         adpt2 = nosymmetry(adpt1)
-        self.assertIs(adpt1, adpt2)
+        self.failUnless(adpt1 is adpt2)
 
     def test_nosymmetry_pickling(self):
         '''check pickling of the NoSymmetryStructureAdapter wrapper.
