@@ -80,7 +80,6 @@ def gitinfo():
 
 
 def getversioncfg():
-    import os
     from ConfigParser import SafeConfigParser
     cp = SafeConfigParser()
     cp.read(versioncfgfile)
@@ -88,7 +87,7 @@ def getversioncfg():
     if not os.path.isdir(gitdir):  return cp
     d = cp.defaults()
     g = gitinfo()
-    if g['commit'] != d.get('commit'):
+    if g['version'] != d.get('version') or g['commit'] != d.get('commit'):
         cp.set('DEFAULT', 'version', g['version'])
         cp.set('DEFAULT', 'commit', g['commit'])
         cp.set('DEFAULT', 'date', g['date'])
