@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# SrReal documentation build configuration file, created by
+# diffpy.SrReal documentation build configuration file, created by
 # sphinx-quickstart on Tue Oct 22 12:02:48 2013.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -20,6 +20,9 @@ import time
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('../../..'))
+
+# abbreviations
+ab_authors = u'Pavol Juhás, Christopher L. Farrow, Simon J.L. Billinge group'
 
 # -- General configuration -----------------------------------------------------
 
@@ -44,7 +47,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'SrReal'
-copyright = u'2013, Pavol Juhás, Christopher L. Farrow'
+copyright = u'%Y, Brookhaven National Laboratory'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -94,7 +97,7 @@ exclude_patterns = []
 pygments_style = 'sphinx'
 
 # A list of ignored prefixes for module index sorting.
-#modindex_common_prefix = []
+modindex_common_prefix = ['diffpy.srreal']
 
 # Display all warnings for missing links.
 nitpicky = True
@@ -197,7 +200,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
   ('index', 'SrReal_manual.tex', u'SrReal Documentation',
-   u'Pavol Juhás, Christopher L. Farrow', 'manual'),
+   ab_authors, 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -227,7 +230,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'srreal', u'SrReal Documentation',
-     [u'Pavol Juhás, Christopher L. Farrow'], 1)
+     ab_authors, 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -241,7 +244,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'SrReal', u'SrReal Documentation',
-   u'Pavol Juhás, Christopher L. Farrow', 'SrReal', 'One line description of project.',
+   ab_authors, 'SrReal', 'One line description of project.',
    'Miscellaneous'),
 ]
 
