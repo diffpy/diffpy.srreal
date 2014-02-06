@@ -108,11 +108,6 @@ setup_args = dict(
         install_requires = [
             'diffpy.Structure',
         ],
-        dependency_links = [
-            # REMOVE dev.danse.us for a public release.
-            'http://dev.danse.us/packages/',
-            "http://www.diffpy.org/packages/",
-        ],
         zip_safe = False,
 
         author = "Simon J.L. Billinge",
