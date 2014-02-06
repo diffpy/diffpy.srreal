@@ -1,3 +1,5 @@
+FIXME FIXME FIXME
+
 This program is part of the DiffPy and DANSE open-source projects
 and is available subject to the conditions and terms laid out below.
 
@@ -5,7 +7,6 @@ If you use this program to do productive scientific research that leads
 to publication, we ask that you acknowledge use of the program by citing
 the following paper in your publication:
 
-    FIXME:
     C. L. Farrow, P. Juhas, J. W. Liu, D. Bryndin, E. S. Bozin,
     J. Bloch, Th. Proffen and S. J. L. Billinge, PDFfit2 and
     PDFgui: computer programs for studying nanostructure in
