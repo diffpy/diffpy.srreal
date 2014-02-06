@@ -47,13 +47,13 @@ The diffpy.srreal requires Python 2.6 or 2.7 and the following software:
     libboost-dev -- Boost C++ libraries development files (1.43 or later)
     libdiffpy    -- C++ library for PDF, bond valence sum and other pair
                     quantity calculators https://github.com/diffpy/libdiffpy/
+    diffpy.Structure -- simple storage and manipulation of atomic structures
+                    https://github.com/diffpy/diffpy.Structure/
 
 Recommended software:
 
     periodictable -- periodic table of elements in Python
                     http://www.reflectometry.org/danse/elements.html
-    diffpy.Structure -- simple storage and manipulation of atomic structures
-                    https://github.com/diffpy/diffpy.Structure/
     pyobjcryst   -- Python bindings to ObjCryst++, the Object Oriented
                     Crystallographic library for C++
                     https://github.com/diffpy/pyobjcryst/
