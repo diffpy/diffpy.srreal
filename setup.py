@@ -2,11 +2,10 @@
 
 # Installation script for diffpy.srreal
 
-"""diffpy.srreal - prototype for new PDF calculator and assortment
-of real space utilities.
+"""diffpy.srreal - calculators for PDF, bond valence sum, and other
+quantities based on atom pair interaction.
 
 Packages:   diffpy.srreal
-Scripts:    (none yet)
 """
 
 import os
@@ -110,13 +109,34 @@ setup_args = dict(
         ],
         zip_safe = False,
 
-        author = "Simon J.L. Billinge",
+        author = "Simon J.L. Billinge group",
         author_email = "sb2896@columbia.edu",
-        description = "Prototype for new PDF calculator and other real " + \
-                      "space utilities.",
-        license = "BSD",
-        url = "http://www.diffpy.org/",
-        keywords = "PDF calculator real-space utilities",
+        maintainer = "Pavol Juhas",
+        maintainer_email = "pavol.juhas@gmail.com",
+        description = ("calculators for PDF, bond valence sum, and other "
+                       "quantities based on atom pair interaction."),
+        license = "BSD",    # FIXME
+        url = "https://github.com/diffpy/diffpy.srreal/",
+        keywords = "PDF BVS atom overlap calculator real-space",
+        classifiers = [
+            # List of possible values at
+            # http://pypi.python.org/pypi?:action=list_classifiers
+            'Development Status :: 5 - Production/Stable',
+            'Environment :: Console',
+            'Intended Audience :: Developers',
+            'Intended Audience :: Education',
+            'Intended Audience :: Science/Research',
+            'License :: OSI Approved :: BSD License',
+            'Operating System :: MacOS :: MacOS X',
+            'Operating System :: POSIX',
+            'Operating System :: Unix',
+            'Programming Language :: C++',
+            'Programming Language :: Python :: 2.6',
+            'Programming Language :: Python :: 2.7',
+            'Topic :: Scientific/Engineering :: Chemistry',
+            'Topic :: Scientific/Engineering :: Physics',
+            'Topic :: Software Development :: Libraries',
+        ],
 )
 
 if __name__ == '__main__':
