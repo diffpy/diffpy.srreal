@@ -15,7 +15,8 @@ from setuptools import setup, find_packages
 from setuptools import Extension
 from numpy.distutils.misc_util import get_numpy_include_dirs
 
-# define extensions here
+
+# define extension arguments here
 ext_kws = {
         'libraries' : ['diffpy'],
         'extra_compile_args' : [],
@@ -49,16 +50,15 @@ def get_boost_libraries():
     return libs
 
 
-def make_srreal_ext():
-    "Finalize all arguments and return Extension for srreal_ext."
-    blibs = get_boost_libraries()
+def create_extensions():
+    "Initialize Extension objects for the setup function."
     blibs = [n for n in get_boost_libraries()
-        if not n in ext_kws['libraries']]
+            if not n in ext_kws['libraries']]
     ext_kws['libraries'] += blibs
     ext = Extension('diffpy.srreal.srreal_ext',
-        glob.glob('srrealmodule/*.cpp'),
-        **ext_kws)
-    return ext
+            glob.glob('srrealmodule/*.cpp'),
+            **ext_kws)
+    return [ext]
 
 
 # versioncfgfile holds version data for git commit hash and date.
@@ -125,7 +125,7 @@ setup_args = dict(
 )
 
 if __name__ == '__main__':
-    setup_args['ext_modules'] = [make_srreal_ext()]
+    setup_args['ext_modules'] = create_extensions()
     setup(**setup_args)
 
 # End of file
