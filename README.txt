@@ -17,19 +17,18 @@ be done in two modes - either as a real-space summation of peak profiles
 (PDFCalculator) or as a reciprocal-space Debye summation and Fourier
 transform of the total scattering structure function (DebyePDFCalculator).
 
-The diffpy.srreal package is a Python binding to the underlying C++ library
-libdiffpy (https://github.com/diffpy/libdiffpy/).  The calculators are created
-as objects of a given calculator type and thus multiple instances of the
-same calculator class can exist with completely different configurations.
-Calculators are composed of other objects that perform lower-level tasks,
-e.g., calculate the peak profile function or lookup atom scattering factors.
-These objects can be re-assigned or modified at runtime allowing to configure
-or tweak the calculation procedure.  New classes can be defined using object
-inheritance either in Python or in C++ and used with the existing calculators;
-as an example, this allows to calculate PDF with a user-defined profile
-function.  A new calculator class can be also defined for any quantity that
-is obtained by iteration over atom pairs, by defining only the function that
-processes atom-pair contributions.
+The diffpy.srreal package is a Python binding to the C++ library libdiffpy
+(https://github.com/diffpy/libdiffpy/).  Calculators are created as
+objects of a given calculator type and so multiple instances of the same
+calculator type can exist with different configurations.  Calculators are
+composed of other objects that perform lower-level tasks, such as calculating
+peak profile or looking up atom scattering factors.  These objects can be
+re-assigned at runtime allowing to easily customize the calculation procedure.
+New classes can be defined using object inheritance either in Python or in C++
+and used with the existing calculators; as an example, this allows to
+calculate PDF with a user-defined profile function.  A new calculator class
+can be also defined for any quantity that is obtained by iteration over atom
+pairs, by defining only the function that processes atom-pair contributions.
 
 For more information about the diffpy.srreal library, see users manual at
 
@@ -58,19 +57,19 @@ Recommended software:
                     Crystallographic library for C++
                     https://github.com/diffpy/pyobjcryst/
 
-Some of the required software packages may be available in the system package
-manager, for example, on Ubuntu Linux the dependencies can be installed as:
+Some of the required software may be available in the system package manager,
+for example, on Ubuntu Linux the dependencies can be installed as:
 
     sudo apt-get install \
         python-setuptools python-numpy scons \
         build-essential python-dev libboost-dev
 
-For Mac OS X systems with the MacPorts package manager one could do
+For Mac OS X machine with the MacPorts package manager one could do
 
     sudo port install \
         python27 py27-setuptools py27-numpy scons boost
 
-When installing for MacPorts, make sure the MacPorts bin directory is the
+When installing with MacPorts, make sure the MacPorts bin directory is the
 first in the system PATH and that python27 is selected as the default
 Python version in MacPorts:
 
@@ -93,8 +92,8 @@ packages are in place and then run
 
 This installs diffpy.srreal for all users in the default system location.
 If administrator (root) access is not available, see the usage info from
-"python setup.py install --help" for options to install to user-writable
-directories.  The installation integrity can be verified by changing to
+"python setup.py install --help" for options to install to a user-writable
+location.  The installation integrity can be verified by changing to
 the HOME directory and running
 
     python -m diffpy.srreal.tests.run
@@ -114,11 +113,11 @@ diffpy.srreal is an open-source software developed as a part of the
 DiffPy-CMI complex modeling initiative at the Brookhaven National
 Laboratory.  The diffpy.srreal sources are hosted at
 
-    https://github.com/diffpy/diffpy.srreal/,
+    https://github.com/diffpy/diffpy.srreal
 
 Feel free to fork the project and contribute.  To install diffpy.srreal
-in a development mode, with its sources being directly used by Python
-rather than copied to a package directory, use
+in a development mode, where the sources are directly used by Python
+rather than copied to a system directory, use
 
     python setup.py develop --user
 
