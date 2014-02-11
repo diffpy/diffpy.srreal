@@ -19,7 +19,7 @@
 
 #include <boost/python.hpp>
 
-#include <diffpy/version.hpp>
+#include <diffpy/features.hpp>
 #include <diffpy/srreal/StructureAdapter.hpp>
 
 #ifdef DIFFPY_HAS_OBJCRYST
