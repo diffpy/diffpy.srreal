@@ -1,5 +1,6 @@
 recursive-include diffpy *
 recursive-include srrealmodule *
+recursive-exclude diffpy *.pyc *.so
 include SConstruct
 include AUTHORS.txt LICENSE.txt README.txt
 exclude MANIFEST.in
