@@ -66,7 +66,6 @@ release = fullversion
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
 #today = ''
-fulldate = versiondata.get('DEFAULT', 'date')
 today_seconds = versiondata.getint('DEFAULT', 'timestamp')
 today = time.strftime('%B %d, %Y', time.localtime(today_seconds))
 year = today.split()[-1]
