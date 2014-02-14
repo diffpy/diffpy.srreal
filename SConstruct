@@ -1,3 +1,21 @@
+MY_SCONS_HELP = """\
+SCons rules for compiling and installing diffpy.srreal.
+SCons build is much faster when run with parallel jobs (-j4).
+Usage: scons [target] [var=value]
+
+Targets:
+
+module              build Python extension module srreal_ext.so [default]
+install             install to default Python package location
+develop             copy extension module to diffpy/srreal/ directory
+test                execute unit tests
+
+Build configuration variables:
+%s
+Variables can be also assigned in a user script sconsvars.py.
+SCons construction environment can be customized in sconscript.local script.
+"""
+
 # This SConstruct is for faster parallel builds.
 # Use "setup.py" for normal installation.
 #
@@ -42,7 +60,7 @@ vars.Add(EnumVariable('build',
 vars.Add(BoolVariable('profile',
     'build with profiling information', False))
 vars.Update(env)
-env.Help(vars.GenerateHelpText(env))
+env.Help(MY_SCONS_HELP % vars.GenerateHelpText(env))
 
 # Use Intel C++ compiler when it is available
 icpc = env.WhereIs('icpc')
