@@ -19,7 +19,7 @@ import time
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(0, os.path.abspath('../../..'))
+#sys.path.insert(0, os.path.abspath('../../..'))
 
 # abbreviations
 ab_authors = u'Pavol Juhás, Christopher L. Farrow, Simon J.L. Billinge group'
@@ -52,7 +52,9 @@ copyright = u'%Y, Brookhaven National Laboratory'
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
+sys.path.insert(0, os.path.abspath('../../..'))
 from setup import versiondata
+sys.path.remove(os.path.abspath('../../..'))
 fullversion = versiondata.get('DEFAULT', 'version')
 # The short X.Y version.
 version = '.'.join(fullversion.split('.')[:2])
