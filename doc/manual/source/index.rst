@@ -56,7 +56,7 @@ Acknowledgments
 Developers
 -----------
 
-PyObjCryst is developed and maintained by
+diffpy.srreal is developed and maintained by
 
 .. literalinclude:: ../../../AUTHORS.txt
 
