@@ -1,6 +1,9 @@
 diffpy Package
 ==============
 
+:mod:`diffpy` Package
+---------------------
+
 Subpackages
 -----------
 
