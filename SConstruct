@@ -8,10 +8,10 @@ Usage: scons [target] [var=value]
 
 Targets:
 
-module              build Python extension module srreal_ext.so [default]
-install             install to default Python package location
-develop             copy extension module to diffpy/srreal/ directory
-test                execute unit tests
+module      build Python extension module srreal_ext.so [default]
+install     install to default Python package location
+develop     copy extension module to diffpy/srreal/ directory
+test        execute unit tests
 
 Build configuration variables:
 %s
