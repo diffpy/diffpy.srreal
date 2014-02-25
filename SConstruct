@@ -1,3 +1,6 @@
+# This SConstruct is for faster parallel builds.
+# Use "setup.py" for normal installation.
+
 MY_SCONS_HELP = """\
 SCons rules for compiling and installing diffpy.srreal.
 SCons build is much faster when run with parallel jobs (-j4).
@@ -16,17 +19,10 @@ Variables can be also assigned in a user script sconsvars.py.
 SCons construction environment can be customized in sconscript.local script.
 """
 
-# This SConstruct is for faster parallel builds.
-# Use "setup.py" for normal installation.
-#
-# module     -- build the shared library object srreal_ext.so
-# develop    -- copy srreal_ext.so to the diffpy/srreal/ directory
-# install    -- trick distutils into installing the scons-built srreal_ext.so
-
 import os
 import re
+import subprocess
 import platform
-from distutils.sysconfig import get_config_var
 
 def subdictionary(d, keyset):
     return dict([kv for kv in d.items() if kv[0] in keyset])
@@ -35,11 +31,18 @@ def getsyspaths(*names):
     s = os.pathsep.join(filter(None, map(os.environ.get, names)))
     return filter(os.path.exists, s.split(os.pathsep))
 
+def pyconfigflags(name):
+    cmd = [env['python'], '-c', '\n'.join((
+            'from distutils.sysconfig import get_config_var',
+            'print get_config_var(%r)' % name))]
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    out = proc.communicate()[0]
+    return out.split()
+
 # copy system environment variables related to compilation
 DefaultEnvironment(ENV=subdictionary(os.environ, '''
     PATH PYTHONPATH
     LD_LIBRARY_PATH DYLD_LIBRARY_PATH LIBRARY_PATH
-    http_proxy
     '''.split())
 )
 
@@ -82,7 +85,7 @@ env.AppendUnique(CPPPATH=cpppath)
 env.AppendUnique(LIBS=['diffpy'])
 
 fast_linkflags = ['-s']
-fast_shlinkflags = get_config_var('LDSHARED').split()[1:]
+fast_shlinkflags = pyconfigflags('LDSHARED')[1:]
 
 # Platform specific intricacies.
 if env['PLATFORM'] == 'darwin':
