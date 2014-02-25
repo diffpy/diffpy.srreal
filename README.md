@@ -1,4 +1,6 @@
-diffpy.srreal - calculators for PDF, bond valence sum and other pair quantities
+#diffpy.srreal
+
+Calculators for PDF, bond valence sum and other pair quantities
 
 The diffpy.srreal package provides calculators for atomic pair distribution
 function (PDF), bond valence sums (BVS), atom overlaps for a hard-sphere
@@ -32,28 +34,28 @@ pairs, by defining only the function that processes atom-pair contributions.
 
 For more information about the diffpy.srreal library, see users manual at
 
-    http://www.diffpy.org/doc/srreal/
+http://www.diffpy.org/doc/srreal/
 
 
-REQUIREMENTS
+## REQUIREMENTS
 
 The diffpy.srreal requires Python 2.6 or 2.7 and the following software:
 
-    setuptools   -- tools for installing Python packages
-    NumPy        -- library for scientific computing with Python
-    scons        -- software constructions tool (1.0 or later)
-    python-dev   -- header files for interfacing Python with C
-    libboost-dev -- Boost C++ libraries development files (1.43 or later)
-    libdiffpy    -- C++ library for PDF, bond valence sum and other pair
+* `setuptools`   - tools for installing Python packages
+* `NumPy`        - library for scientific computing with Python
+* `scons`        - software constructions tool (1.0 or later)
+* `python-dev`   - header files for interfacing Python with C
+* `libboost-dev` - Boost C++ libraries development files (1.43 or later)
+* `libdiffpy`    - C++ library for PDF, bond valence sum and other pair
                     quantity calculators https://github.com/diffpy/libdiffpy/
-    diffpy.Structure -- simple storage and manipulation of atomic structures
+* `diffpy.Structure` - simple storage and manipulation of atomic structures
                     https://github.com/diffpy/diffpy.Structure/
 
 Recommended software:
 
-    periodictable -- periodic table of elements in Python
+* `periodictable` - periodic table of elements in Python
                     http://www.reflectometry.org/danse/elements.html
-    pyobjcryst   -- Python bindings to ObjCryst++, the Object Oriented
+* `pyobjcryst`    - Python bindings to ObjCryst++, the Object Oriented
                     Crystallographic library for C++
                     https://github.com/diffpy/pyobjcryst/
 
@@ -79,7 +81,7 @@ For other required packages see their respective web pages for installation
 instructions.
 
 
-INSTALLATION
+## INSTALLATION
 
 The easiest option is to use the latest DiffPy-CMI release bundle from
 http://www.diffpy.org/, which comes with diffpy.srreal and all other
@@ -107,7 +109,7 @@ See "scons -h" for build parameters and options to install to a user-writable
 directory.
 
 
-DEVELOPMENT
+## DEVELOPMENT
 
 diffpy.srreal is an open-source software developed as a part of the
 DiffPy-CMI complex modeling initiative at the Brookhaven National
@@ -127,10 +129,10 @@ integrity, use
     scons -j4 build=debug develop [test]
 
 
-CONTACTS
+## CONTACTS
 
 For more information on diffpy.srreal please visit the project web-page
 
-    http://www.diffpy.org/
+http://www.diffpy.org/
 
 or email Prof. Simon Billinge at sb2896@columbia.edu.
