@@ -31,13 +31,13 @@ def getsyspaths(*names):
     s = os.pathsep.join(filter(None, map(os.environ.get, names)))
     return filter(os.path.exists, s.split(os.pathsep))
 
-def pyconfigflags(name):
+def pyconfigvar(name):
     cmd = [env['python'], '-c', '\n'.join((
             'from distutils.sysconfig import get_config_var',
             'print get_config_var(%r)' % name))]
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     out = proc.communicate()[0]
-    return out.split()
+    return out.rstrip()
 
 # copy system environment variables related to compilation
 DefaultEnvironment(ENV=subdictionary(os.environ, '''
@@ -85,7 +85,7 @@ env.AppendUnique(CPPPATH=cpppath)
 env.AppendUnique(LIBS=['diffpy'])
 
 fast_linkflags = ['-s']
-fast_shlinkflags = pyconfigflags('LDSHARED')[1:]
+fast_shlinkflags = pyconfigvar('LDSHARED').split()[1:]
 
 # Platform specific intricacies.
 if env['PLATFORM'] == 'darwin':
@@ -123,7 +123,7 @@ if env['profile']:
 
 builddir = env.Dir('build/%s-%s' % (env['build'], platform.machine()))
 
-Export('env')
+Export('env', 'pyconfigvar')
 
 def GlobSources(pattern):
     """Same as Glob but also require that source node is a valid file.
