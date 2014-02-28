@@ -101,7 +101,7 @@ the HOME directory and running ::
 
    python -m diffpy.srreal.tests.run
 
-An alternative way of installing diffpy.srreal is to use the scons tool,
+An alternative way of installing diffpy.srreal is to use the SCons tool,
 which can speed up the process by compiling the C++ files in parallel (-j4)::
 
    sudo scons -j4 install
