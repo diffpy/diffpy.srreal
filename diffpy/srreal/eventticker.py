@@ -2,9 +2,9 @@
 ##############################################################################
 #
 # diffpy.srreal     Complex Modeling Initiative
-#                   Pavol Juhas
-#                   (c) 2013 Brookhaven National Laboratory,
-#                   Upton, New York.  All rights reserved.
+#                   (c) 2013 Brookhaven Science Associates,
+#                   Brookhaven National Laboratory.
+#                   All rights reserved.
 #
 # File coded by:    Pavol Juhas
 #
