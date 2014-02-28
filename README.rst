@@ -21,7 +21,7 @@ be done in two modes - either as a real-space summation of peak profiles
 transform of the total scattering structure function (DebyePDFCalculator).
 
 The diffpy.srreal package is a Python binding to the C++ library libdiffpy
-(https://github.com/diffpy/libdiffpy/).  Calculators are created as
+(https://github.com/diffpy/libdiffpy).  Calculators are created as
 objects of a given calculator type and so multiple instances of the same
 calculator type can exist with different configurations.  Calculators are
 composed of other objects that perform lower-level tasks, such as calculating
@@ -34,7 +34,7 @@ can be also defined for any quantity that is obtained by iteration over atom
 pairs, by defining only the function that processes atom-pair contributions.
 
 For more information about the diffpy.srreal library, see users manual at
-http://www.diffpy.org/doc/srreal.
+http://diffpy.github.io/diffpy.srreal.
 
 
 REQUIREMENTS
