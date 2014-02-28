@@ -2,7 +2,7 @@
 *
 * diffpy.srreal     by DANSE Diffraction group
 *                   Simon J. L. Billinge
-*                   (c) 2011 Trustees of the Columbia University
+*                   (c) 2011 The Trustees of Columbia University
 *                   in the City of New York.  All rights reserved.
 *
 * File coded by:    Pavol Juhas
