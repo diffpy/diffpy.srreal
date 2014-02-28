@@ -116,7 +116,7 @@ setup_args = dict(
         maintainer_email = "pavol.juhas@gmail.com",
         description = ("calculators for PDF, bond valence sum, and other "
                        "quantities based on atom pair interaction."),
-        license = "BSD",    # FIXME
+        license = 'BSD-style license',
         url = "https://github.com/diffpy/diffpy.srreal/",
         keywords = "PDF BVS atom overlap calculator real-space",
         classifiers = [
