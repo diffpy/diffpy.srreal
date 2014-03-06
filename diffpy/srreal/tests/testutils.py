@@ -25,6 +25,18 @@ except TypeError:
     TestCaseObjCrystOptional = object
     logging.warning('Compiled without ObjCryst, pyobjcryst tests skipped.')
 
+# class TestCasePeriodictableOptional
+
+try:
+    import periodictable
+    from unittest import TestCase as TestCasePeriodictableOptional
+except ImportError:
+    TestCasePeriodictableOptional = object
+    logging.warning('Cannot import periodictable, periodictable tests skipped.')
+except TypeError:
+    TestCaseObjCrystOptional = object
+    logging.warning('Compiled without ObjCryst, pyobjcryst tests skipped.')
+
 # helper functions
 
 def datafile(filename):

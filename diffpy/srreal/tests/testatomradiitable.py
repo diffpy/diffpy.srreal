@@ -7,6 +7,7 @@
 import os
 import unittest
 import cPickle
+from diffpy.srreal.tests.testutils import TestCasePeriodictableOptional
 from diffpy.srreal.atomradiitable import AtomRadiiTable, CovalentRadiiTable
 from diffpy.srreal.atomradiitable import ConstantRadiiTable
 
@@ -109,7 +110,7 @@ class TestAtomRadiiTable(unittest.TestCase):
 # End of class TestAtomRadiiTable
 
 ##############################################################################
-class TestCovalentRadiiTable(unittest.TestCase):
+class TestCovalentRadiiTable(TestCasePeriodictableOptional):
 
     def setUp(self):
         self.rtb = CovalentRadiiTable()
