@@ -1,170 +1,166 @@
-srreal Package
-==============
+diffpy.srreal package
+=====================
 
-:mod:`srreal` Package
----------------------
+Submodules
+----------
 
-.. automodule:: diffpy.srreal
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`atomradiitable` Module
-----------------------------
+diffpy.srreal.atomradiitable module
+-----------------------------------
 
 .. automodule:: diffpy.srreal.atomradiitable
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`attributes` Module
-------------------------
+diffpy.srreal.attributes module
+-------------------------------
 
 .. automodule:: diffpy.srreal.attributes
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`bondcalculator` Module
-----------------------------
+diffpy.srreal.bondcalculator module
+-----------------------------------
 
 .. automodule:: diffpy.srreal.bondcalculator
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`bvparameterstable` Module
--------------------------------
+diffpy.srreal.bvparameterstable module
+--------------------------------------
 
 .. automodule:: diffpy.srreal.bvparameterstable
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`bvscalculator` Module
----------------------------
+diffpy.srreal.bvscalculator module
+----------------------------------
 
 .. automodule:: diffpy.srreal.bvscalculator
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`eventticker` Module
--------------------------
+diffpy.srreal.eventticker module
+--------------------------------
 
 .. automodule:: diffpy.srreal.eventticker
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`overlapcalculator` Module
--------------------------------
+diffpy.srreal.overlapcalculator module
+--------------------------------------
 
 .. automodule:: diffpy.srreal.overlapcalculator
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`pairquantity` Module
---------------------------
+diffpy.srreal.pairquantity module
+---------------------------------
 
 .. automodule:: diffpy.srreal.pairquantity
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`parallel` Module
-----------------------
+diffpy.srreal.parallel module
+-----------------------------
 
 .. automodule:: diffpy.srreal.parallel
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`pdfbaseline` Module
--------------------------
+diffpy.srreal.pdfbaseline module
+--------------------------------
 
 .. automodule:: diffpy.srreal.pdfbaseline
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`pdfcalculator` Module
----------------------------
+diffpy.srreal.pdfcalculator module
+----------------------------------
 
 .. automodule:: diffpy.srreal.pdfcalculator
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`pdfenvelope` Module
--------------------------
+diffpy.srreal.pdfenvelope module
+--------------------------------
 
 .. automodule:: diffpy.srreal.pdfenvelope
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`peakprofile` Module
--------------------------
+diffpy.srreal.peakprofile module
+--------------------------------
 
 .. automodule:: diffpy.srreal.peakprofile
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`peakwidthmodel` Module
-----------------------------
+diffpy.srreal.peakwidthmodel module
+-----------------------------------
 
 .. automodule:: diffpy.srreal.peakwidthmodel
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`scatteringfactortable` Module
------------------------------------
+diffpy.srreal.scatteringfactortable module
+------------------------------------------
 
 .. automodule:: diffpy.srreal.scatteringfactortable
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`structureadapter` Module
-------------------------------
+diffpy.srreal.structureadapter module
+-------------------------------------
 
 .. automodule:: diffpy.srreal.structureadapter
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`structureconverters` Module
----------------------------------
+diffpy.srreal.structureconverters module
+----------------------------------------
 
 .. automodule:: diffpy.srreal.structureconverters
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`version` Module
----------------------
+diffpy.srreal.version module
+----------------------------
 
 .. automodule:: diffpy.srreal.version
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`wraputils` Module
------------------------
+diffpy.srreal.wraputils module
+------------------------------
 
 .. automodule:: diffpy.srreal.wraputils
     :members:
     :undoc-members:
     :show-inheritance:
 
-Subpackages
------------
 
-.. toctree::
+Module contents
+---------------
 
-    diffpy.srreal.tests
-
+.. automodule:: diffpy.srreal
+    :members:
+    :undoc-members:
+    :show-inheritance:

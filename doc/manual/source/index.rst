@@ -13,6 +13,7 @@ Last updated |today|.
 
 diffpy.srreal - calculators for PDF, bond valence sum and other pair quantities
 
+
 The diffpy.srreal package provides calculators for atomic pair distribution
 function (PDF), bond valence sums (BVS), atom overlaps for a hard-sphere
 model, bond distances and directions up to specified maximum distance.   The
@@ -31,7 +32,7 @@ be done in two modes - either as a real-space summation of peak profiles
 transform of the total scattering structure function (DebyePDFCalculator).
 
 The diffpy.srreal package is a Python binding to the C++ library libdiffpy
-(https://github.com/diffpy/libdiffpy/).  Calculators are created as
+(https://github.com/diffpy/libdiffpy).  Calculators are created as
 objects of a given calculator type and so multiple instances of the same
 calculator type can exist with different configurations.  Calculators are
 composed of other objects that perform lower-level tasks, such as calculating
@@ -47,7 +48,7 @@ pairs, by defining only the function that processes atom-pair contributions.
 Disclaimer
 ===================
 
-.. include:: ../../../LICENSE.txt
+.. literalinclude:: ../../../LICENSE.txt
 
 ================
 Acknowledgments

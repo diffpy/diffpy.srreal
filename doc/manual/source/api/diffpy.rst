@@ -1,8 +1,5 @@
-diffpy Package
+diffpy package
 ==============
-
-:mod:`diffpy` Package
----------------------
 
 Subpackages
 -----------
@@ -11,3 +8,10 @@ Subpackages
 
     diffpy.srreal
 
+Module contents
+---------------
+
+.. automodule:: diffpy
+    :members:
+    :undoc-members:
+    :show-inheritance:
