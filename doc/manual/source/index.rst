@@ -66,11 +66,13 @@ diffpy.srreal is developed and maintained by
 Installation
 ======================================
 
-.. include:: install.rst
+See the `README.rst <https://github.com/diffpy/diffpy.srreal#requirements>`_
+file included with the distribution.
 
 
+======================================
 API and Index
-==================
+======================================
 
 .. toctree::
    :maxdepth: 2
