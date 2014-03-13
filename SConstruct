@@ -31,13 +31,17 @@ def getsyspaths(*names):
     s = os.pathsep.join(filter(None, map(os.environ.get, names)))
     return filter(os.path.exists, s.split(os.pathsep))
 
-def pyconfigvar(name):
-    cmd = [env['python'], '-c', '\n'.join((
-            'from distutils.sysconfig import get_config_var',
-            'print get_config_var(%r)' % name))]
-    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+def pyoutput(cmd):
+    proc = subprocess.Popen([env['python'], '-c', cmd],
+            stdout=subprocess.PIPE)
     out = proc.communicate()[0]
     return out.rstrip()
+
+def pyconfigvar(name):
+    cmd = '\n'.join((
+            'from distutils.sysconfig import get_config_var',
+            'print get_config_var(%r)' % name))
+    return pyoutput(cmd)
 
 # copy system environment variables related to compilation
 DefaultEnvironment(ENV=subdictionary(os.environ, '''
@@ -123,7 +127,7 @@ if env['profile']:
 
 builddir = env.Dir('build/%s-%s' % (env['build'], platform.machine()))
 
-Export('env', 'pyconfigvar')
+Export('env', 'pyconfigvar', 'pyoutput')
 
 def GlobSources(pattern):
     """Same as Glob but also require that source node is a valid file.
