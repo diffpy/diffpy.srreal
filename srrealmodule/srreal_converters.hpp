@@ -269,7 +269,8 @@ inline ::boost::python::object
 convertToNumPyArray(const ::std::vector<diffpy::srreal::R3::Vector>& vr3v)
 {
     using namespace diffpy::srreal;
-    int sz[2] = {vr3v.size(), R3::Ndim};
+    int n = vr3v.size();
+    int sz[2] = {n, R3::Ndim};
     NumPyArray_DoublePtr ap = createNumPyDoubleArray(2, sz);
     double* p = ap.second;
     std::vector<R3::Vector>::const_iterator v = vr3v.begin();
