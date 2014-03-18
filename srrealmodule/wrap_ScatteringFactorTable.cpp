@@ -249,7 +249,9 @@ class ScatteringFactorTableWrap :
         ScatteringFactorTableWrap(const ScatteringFactorTable& src)
         {
             ScatteringFactorTable& thistable = *this;
-            thistable = src;
+            // workaround for weird implicit ScatteringFactorTable::operator=
+            // in g++ Red Hat 4.7.2-2, which must have non-constant argument.
+            thistable = const_cast<ScatteringFactorTable&>(src);
         }
 
         // HasClassRegistry methods
