@@ -377,10 +377,23 @@ class atomadapter_indexing : public vector_indexing_suite<
         static object
         get_slice(Container& container, index_type from, index_type to)
         {
-            Container rv;
+            StructureAdapterPtr rv = container.clone();
+            AtomicStructureAdapterPtr rva;
+            rva = boost::static_pointer_cast<AtomicStructureAdapter>(rv);
+            // short-circuit for long slices
+            if ((to - from) > rva->countSites() / 2)
+            {
+                rva->erase(rva->begin() + to, rva->end());
+                rva->erase(rva->begin(), rva->begin() + from);
+                return object(rv);
+            }
+            // otherwise save memory for short slices
+            rva->clear();
+            rv = rva->clone();
+            rva = boost::static_pointer_cast<AtomicStructureAdapter>(rv);
             if (from <= to)
             {
-                rv.assign(container.begin() + from, container.begin() + to);
+                rva->assign(container.begin() + from, container.begin() + to);
             }
             return object(rv);
         }
