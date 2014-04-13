@@ -41,7 +41,7 @@ class TestOverlapCalculator(unittest.TestCase):
         """check OverlapCalculator.__init__()
         """
         self.assertEqual(0, self.olc.rmin)
-        self.assertTrue(100 < self.olc.rmax)
+        self.assertTrue(100 <= self.olc.rmax)
         self.assertEqual(0, self.olc.rmaxused)
         self.assertEqual(0.0, self.olc.totalsquareoverlap)
         return
