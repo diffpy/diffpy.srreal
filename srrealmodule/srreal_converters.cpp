@@ -139,11 +139,6 @@ boost::python::object viewAsNumPyArray(::diffpy::srreal::R3::Matrix& mx)
 }
 
 
-/// helper for creating a 2D numpy array view on a 2D double buffer
-boost::python::object
-viewAs2DNumPyDoubleArray(double* data, int rows, int cols);
-
-
 /// helper for creating numpy array of integers
 NumPyArray_IntPtr createNumPyIntArray(int dim, const int* sz)
 {
