@@ -18,6 +18,7 @@
 *****************************************************************************/
 
 #include <boost/python/def.hpp>
+#include <boost/python/slice.hpp>
 #include <boost/python/stl_iterator.hpp>
 #include <boost/python/exception_translator.hpp>
 #include <string>
@@ -136,6 +137,72 @@ boost::python::object viewAsNumPyArray(::diffpy::srreal::R3::Matrix& mx)
     double* data = &(mx(0, 0));
     int sz[2] = {R3::Ndim, R3::Ndim};
     return createNumPyDoubleView(data, 2, sz);
+}
+
+
+/// Copy NumPy array to R3::Vector
+void assignR3Vector(
+        ::diffpy::srreal::R3::Vector& dst, boost::python::object& value)
+{
+    using namespace boost;
+    using diffpy::srreal::R3::Ndim;
+    // If value is numpy array, try direct data access
+    if (PyArray_Check(value.ptr()))
+    {
+        PyObject* vobj = PyArray_ContiguousFromAny(
+                value.ptr(), PyArray_DOUBLE, 1, 1);
+        if (vobj && Ndim == PyArray_DIM(vobj, 0))
+        {
+            double* p = static_cast<double*>(PyArray_DATA(vobj));
+            std::copy(p, p + Ndim, dst.data().begin());
+            Py_DECREF(vobj);
+            return;
+        }
+        Py_XDECREF(vobj);
+    }
+    // handle scalar assignment
+    python::extract<double> getvalue(value);
+    if (getvalue.check())
+    {
+        std::fill(dst.data().begin(), dst.data().end(), getvalue());
+        return;
+    }
+    // finally assign using array view
+    python::object dstview = viewAsNumPyArray(dst);
+    dstview[python::slice()] = value;
+}
+
+
+/// Copy possible NumPy array to R3::Matrix
+void assignR3Matrix(
+        ::diffpy::srreal::R3::Matrix& dst, boost::python::object& value)
+{
+    using namespace boost;
+    using diffpy::srreal::R3::Ndim;
+    // If value is numpy array, try direct data access
+    if (PyArray_Check(value.ptr()))
+    {
+        PyObject* vobj = PyArray_ContiguousFromAny(
+                value.ptr(), PyArray_DOUBLE, 2, 2);
+        if (vobj && Ndim == PyArray_DIM(vobj, 0) == PyArray_DIM(vobj, 1))
+        {
+            double* p = static_cast<double*>(PyArray_DATA(vobj));
+            std::copy(p, p + Ndim * Ndim, dst.data().begin());
+            Py_DECREF(vobj);
+            return;
+        }
+        Py_XDECREF(vobj);
+    }
+    // handle scalar assignment
+    python::extract<double> getvalue(value);
+    if (getvalue.check())
+    {
+        std::fill(dst.data().begin(), dst.data().end(), getvalue());
+        return;
+    }
+    // finally assign using array view
+    python::object dstview = viewAsNumPyArray(dst);
+    dstview[python::slice()] = value;
 }
 
 

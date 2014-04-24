@@ -21,7 +21,6 @@
 
 #include <boost/python.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
-#include <boost/python/slice.hpp>
 
 #include <diffpy/srreal/AtomicStructureAdapter.hpp>
 #include <diffpy/srreal/PeriodicStructureAdapter.hpp>
@@ -258,8 +257,7 @@ object get_xyz_cartn(Atom& a)
 
 void set_xyz_cartn(Atom& a, object value)
 {
-    object xyzc = get_xyz_cartn(a);
-    xyzc[slice()] = value;
+    assignR3Vector(a.xyz_cartn, value);
 }
 
 
@@ -268,10 +266,9 @@ object get_uij_cartn(Atom& a)
     return viewAsNumPyArray(a.uij_cartn);
 }
 
-void set_uij_cartn(Atom& a, object value)
+void set_uij_cartn(Atom& a, object& value)
 {
-    object uijc = get_uij_cartn(a);
-    uijc[slice()] = value;
+    assignR3Matrix(a.uij_cartn, value);
 }
 
 
@@ -461,10 +458,8 @@ void crystaladapter_addsymop(CrystalStructureAdapter& adpt,
         python::object R, python::object t)
 {
     static SymOpRotTrans op;
-    object Rview = viewAsNumPyArray(op.R);
-    Rview[slice()] = R;
-    object tview = viewAsNumPyArray(op.t);
-    tview[slice()] = t;
+    assignR3Matrix(op.R, R);
+    assignR3Vector(op.t, t);
     adpt.addSymOp(op);
 }
 

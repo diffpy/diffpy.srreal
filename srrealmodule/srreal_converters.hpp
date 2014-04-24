@@ -300,6 +300,14 @@ viewAsNumPyArray(::diffpy::srreal::R3::Vector&);
 boost::python::object
 viewAsNumPyArray(::diffpy::srreal::R3::Matrix&);
 
+/// Copy possible NumPy array to R3::Vector
+void assignR3Vector(
+        ::diffpy::srreal::R3::Vector& dst, boost::python::object& value);
+
+/// Copy possible NumPy array to R3::Matrix
+void assignR3Matrix(
+        ::diffpy::srreal::R3::Matrix& dst, boost::python::object& value);
+
 /// Type for numpy array object and a raw pointer to its double data
 typedef std::pair<boost::python::object, int*> NumPyArray_IntPtr;
 
