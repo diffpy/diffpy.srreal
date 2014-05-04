@@ -39,6 +39,25 @@ class TestRoutines(unittest.TestCase):
         self.assertRaises(TypeError, createStructureAdapter, {})
         return
 
+    def test_createStructureAdapterTypes(self):
+        '''Check types returned by conversion from diffpy.Structure.
+        '''
+        from diffpy.srreal.structureconverters import (
+            DiffPyStructureAtomicAdapter,
+            DiffPyStructurePeriodicAdapter)
+        adpt = createStructureAdapter(nickel)
+        self.failUnless(type(adpt) is DiffPyStructurePeriodicAdapter)
+        nickel.pdffit = None
+        adpt1 = createStructureAdapter(nickel)
+        self.failUnless(type(adpt1) is PeriodicStructureAdapter)
+        nickel.lattice.setLatPar(1, 1, 1, 90, 90, 90)
+        adpt2 = createStructureAdapter(nickel)
+        self.failUnless(type(adpt2) is AtomicStructureAdapter)
+        nickel.pdffit = dict(scale=1)
+        adpt3 = createStructureAdapter(nickel)
+        self.failUnless(type(adpt3) is DiffPyStructureAtomicAdapter)
+        return
+
     def test_pickling(self):
         '''check pickling of StructureAdapter instances.
         '''

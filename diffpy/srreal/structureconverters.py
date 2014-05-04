@@ -21,20 +21,30 @@ StructureAdapter classes.
 
 import numpy
 from diffpy.srreal.structureadapter import RegisterStructureAdapter
+from diffpy.srreal.srreal_ext import AtomicStructureAdapter
 from diffpy.srreal.srreal_ext import PeriodicStructureAdapter
-from diffpy.srreal.srreal_ext import nosymmetry
-from diffpy.srreal.srreal_ext import Atom as AdapterAtom
 
 # Converter for Structure class from diffpy.Structure ------------------------
 
 @RegisterStructureAdapter('diffpy.Structure.structure.Structure')
 def convertDiffPyStructure(stru):
     'Adapt Structure class from diffpy.Structure package.'
-    rv = DiffPyStructureAdapter()
-    rv._fetchStructureData(stru)
-    if numpy.allclose(stru.lattice.base, numpy.identity(3)):
-        rv = nosymmetry(rv)
-    return rv
+    haslattice = not numpy.allclose(stru.lattice.base, numpy.identity(3))
+    isperiodic = haslattice
+    hasmeta = _DiffPyStructureMetadata.hasMetadata(stru)
+    if hasmeta:
+        if isperiodic:
+            adpt = DiffPyStructurePeriodicAdapter()
+        else:
+            adpt = DiffPyStructureAtomicAdapter()
+        adpt._fetchMetadata(stru)
+    else:
+        if isperiodic:
+            adpt = PeriodicStructureAdapter()
+        else:
+            adpt = AtomicStructureAdapter()
+    _fetchDiffPyStructureData(adpt, stru)
+    return adpt
 
 # Converters for Molecule and Crystal from pyobjcryst ------------------------
 
@@ -46,11 +56,21 @@ from diffpy.srreal.srreal_ext import convertObjCrystCrystal
 RegisterStructureAdapter(
         'pyobjcryst._pyobjcryst.Crystal', convertObjCrystCrystal)
 
-# Define adapter class for diffpy.Structure class ----------------------------
+# Adapter classes and helpers for diffpy.Structure class ---------------------
 
-class DiffPyStructureAdapter(PeriodicStructureAdapter):
+class _DiffPyStructureMetadata(object):
+
+    "Base class for handling metadata information in the pdffit attribute."
 
     pdffit = None
+
+    @staticmethod
+    def hasMetadata(stru):
+        """True if Structure object carries data in its pdffit attribute.
+        """
+        rv = hasattr(stru, 'pdffit') and bool(stru.pdffit)
+        return rv
+
 
     def _customPQConfig(self, pqobj):
         """Apply PDF-related metadata if defined in PDFFit structure format.
@@ -80,8 +100,8 @@ class DiffPyStructureAdapter(PeriodicStructureAdapter):
         return
 
 
-    def _fetchStructureData(self, stru):
-        """Copy structure data from Python class to this Adapter.
+    def _fetchMetadata(self, stru):
+        """Copy data from the pdffit attribute of diffpy.Structure object
 
         stru -- instance of Structure class from diffpy.Structure
 
@@ -89,26 +109,48 @@ class DiffPyStructureAdapter(PeriodicStructureAdapter):
         """
         # get PDF-related metadata
         self.pdffit = {}
-        if hasattr(stru, 'pdffit') and stru.pdffit:
+        if self.hasMetadata(stru):
             self.pdffit.update(scale=1.0, delta1=0.0, delta2=0.0)
             self.pdffit.update(stru.pdffit)
-        # lattice
-        self.setLatPar(*stru.lattice.abcABG())
-        # copy atoms
-        del self[:]
-        self.reserve(len(stru))
-        aa = AdapterAtom()
-        for a0 in stru:
-            aa.atomtype = a0.element
-            aa.occupancy = a0.occupancy
-            aa.anisotropy = a0.anisotropy
-            # copy fractional coordinates and then convert to Cartesian
-            aa.xyz_cartn = a0.xyz
-            aa.uij_cartn = a0.U
-            self.toCartesian(aa)
-            self.append(aa)
         return
 
-# End of class DiffPyStructureAdapter
+# end of class _DiffPyStructureMetadata
+
+
+class DiffPyStructureAtomicAdapter(
+        _DiffPyStructureMetadata, AtomicStructureAdapter):
+    pass
+
+
+class DiffPyStructurePeriodicAdapter(
+        _DiffPyStructureMetadata, PeriodicStructureAdapter):
+    pass
+
+
+def _fetchDiffPyStructureData(adpt, stru):
+    """Copy structure data from diffpy.Structure object to this Adapter.
+
+    adpt -- instance of AtomicStructureAdapter or PeriodicStructureAdapter
+    stru -- instance of Structure class from diffpy.Structure
+
+    No return value.
+    """
+    from diffpy.srreal.srreal_ext import Atom as AdapterAtom
+    # copy atoms
+    del adpt[:]
+    adpt.reserve(len(stru))
+    aa = AdapterAtom()
+    for a0 in stru:
+        aa.atomtype = a0.element
+        aa.occupancy = a0.occupancy
+        aa.anisotropy = a0.anisotropy
+        # copy fractional coordinates
+        aa.xyz_cartn = a0.xyz
+        aa.uij_cartn = a0.U
+        adpt.append(aa)
+    if hasattr(adpt, 'setLatPar'):
+        adpt.setLatPar(*stru.lattice.abcABG())
+        map(adpt.toCartesian, adpt)
+    return
 
 # End of file
