@@ -29,7 +29,7 @@ from diffpy.srreal.srreal_ext import PeriodicStructureAdapter
 @RegisterStructureAdapter('diffpy.Structure.structure.Structure')
 def convertDiffPyStructure(stru):
     'Adapt Structure class from diffpy.Structure package.'
-    haslattice = not numpy.allclose(stru.lattice.base, numpy.identity(3))
+    haslattice = ((1, 1, 1, 90, 90, 90) != stru.lattice.abcABG())
     isperiodic = haslattice
     hasmeta = _DiffPyStructureMetadata.hasMetadata(stru)
     if hasmeta:
