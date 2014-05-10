@@ -25,6 +25,8 @@
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
 
+#define BVPARMCIF "bvparm2011.cif"
+
 namespace srrealmodule {
 namespace nswrap_BVParametersTable {
 
@@ -46,7 +48,7 @@ atom1    -- symbol of the anion atom, no charge specification\n\
 valence1 -- integer anion valence, must be negative\n\
 Ro       -- valence parameter Ro\n\
 B        -- valence parameter B\n\
-ref_id   -- optional reference code in bvparm2009.cif\n\
+ref_id   -- optional reference code in " BVPARMCIF "\n\
 ";
 
 const char* doc_BVParam___repr__ = "\
@@ -62,7 +64,7 @@ Distance in Angstroms corresponding to specified bond valence.\n\
 ";
 
 const char* doc_BVParam_setFromCifLine = "\
-Update bond valence data from a string formatted as in bvparm2009.cif.\n\
+Update bond valence data from a string formatted as in " BVPARMCIF ".\n\
 ";
 
 const char* doc_BVParam_atom0 = "\
@@ -90,7 +92,7 @@ Bond valence parameter B in Angstroms.\n\
 ";
 
 const char* doc_BVParam_ref_id = "\
-code of the reference paper in bvparm2009.cif.\n\
+code of the reference paper in " BVPARMCIF ".\n\
 ";
 
 const char* doc_BVParametersTable = "\
@@ -153,7 +155,7 @@ atom1    -- bare symbol of the anion atom\n\
 valence1 -- negative integer anion valence\n\
 Ro       -- valence parameter Ro in Angstroms\n\
 B        -- valence parameter B in Angstroms\n\
-ref_id   -- optional reference code in bvparm2009.cif\n\
+ref_id   -- optional reference code in " BVPARMCIF "\n\
 \n\
 No return value.\n\
 ";
