@@ -197,6 +197,7 @@ DECLARE_PYSET_METHOD_WRAPPER(getAll, getAll_asset)
 
 object repr_BVParam(const BVParam& bp)
 {
+    if (bp == BVParametersTable::none())  return object("BVParam()");
     object rv = ("BVParam(%r, %i, %r, %i, Ro=%s, B=%s, ref_id=%r)" %
         make_tuple(bp.matom0, bp.mvalence0, bp.matom1, bp.mvalence1,
             bp.mRo, bp.mB, bp.mref_id));
