@@ -191,7 +191,8 @@ const char* doc_BasePairQuantity_ticker = "\
 Return EventTicker object with the last configuration change time.\n\
 \n\
 The ticker should be clicked on every configuration change that\n\
-requires reevaluation of the PairQuantity even for constant structure.\n\
+requires reevaluation of the PairQuantity even for an unchanged\n\
+structure.\n\
 ";
 
 const char* doc_BasePairQuantity_copy = "\
@@ -208,7 +209,8 @@ const char* doc_PairQuantity_ticker = "\
 Return EventTicker object with the last configuration change time.\n\
 \n\
 The ticker should be clicked on every configuration change that\n\
-requires reevaluation of the PairQuantity even for constant structure.\n\
+requires reevaluation of the PairQuantity even for an unchanged\n\
+structure.\n\
 \n\
 This method can be overloaded in the derived class.\n\
 ";
