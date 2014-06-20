@@ -54,6 +54,39 @@ class TestPairQuantity(unittest.TestCase):
         return
 
 
+    def test_ticker(self):
+        """check PairQuantity.ticker()
+        """
+        from diffpy.srreal.eventticker import EventTicker
+        et0 = EventTicker(self.pq.ticker())
+        self.pq.rmax = 3.77
+        et1 = self.pq.ticker()
+        self.assertNotEqual(et0, et1)
+        self.failUnless(et0 < et1)
+        return
+
+
+    def test_ticker_override(self):
+        """check Python override of PairQuantity.ticker.
+        """
+        from diffpy.srreal.eventticker import EventTicker
+        pqd = PQDerived()
+        self.assertEqual(0, pqd.tcnt)
+        et0 = pqd.ticker()
+        self.assertEqual(1, pqd.tcnt)
+        et1 = PairQuantity.ticker(pqd)
+        self.assertEqual(1, pqd.tcnt)
+        self.assertEqual(et0, et1)
+        et0.click()
+        self.assertEqual(et0, et1)
+        # check that implicit ticker call from PQEvaluator is
+        # handled by Python override of the ticker method.
+        pqd.evaluatortype = 'OPTIMIZED'
+        pqd.eval()
+        self.assertEqual(2, pqd.tcnt)
+        return
+
+
     def test_pickling(self):
         '''check pickling and unpickling of PairQuantity.
         '''
@@ -71,6 +104,18 @@ class TestPairQuantity(unittest.TestCase):
         return
 
 # End of class TestPairQuantity
+
+# helper for testing PairQuantity overrides
+
+class PQDerived(PairQuantity):
+
+    tcnt = 0
+
+    def ticker(self):
+        self.tcnt += 1
+        return PairQuantity.ticker(self)
+
+# End of class PQDerived
 
 if __name__ == '__main__':
     unittest.main()

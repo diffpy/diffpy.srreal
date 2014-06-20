@@ -13,7 +13,7 @@
 ******************************************************************************
 *
 * Bindings to the PairQuantity class.  The business protected methods
-* can be overloaded from Python to create custom calculator.
+* can be overridden from Python to create custom calculator.
 * The class provides bindings to the eval and value methods for all derived
 * calculators and also the double attributes access that is inherited from
 * the Attributes wrapper in wrap_Attributes.
@@ -25,7 +25,7 @@
 * class BasePairQuantity -- base class to all calculators in Python
 
 * class PairQuantity -- derived class with publicized protected methods
-* _addPairContribution, _resetValue, etc.  Allows their overload from Python.
+* _addPairContribution, _resetValue, etc.  Allows their override from Python.
 *
 *****************************************************************************/
 
@@ -201,7 +201,7 @@ Return a deep copy of this PairQuantity object.\n\
 
 const char* doc_PairQuantity = "\
 Base class for Python defined pair quantity calculators.\n\
-No action by default.  Concrete calculators must overload the\n\
+No action by default.  Concrete calculators must override the\n\
 _addPairContribution method to get some results.\n\
 ";
 
@@ -212,7 +212,7 @@ The ticker should be clicked on every configuration change that\n\
 requires reevaluation of the PairQuantity even for an unchanged\n\
 structure.\n\
 \n\
-This method can be overloaded in the derived class.\n\
+This method can be overridden in the derived class.\n\
 ";
 
 const char* doc_PairQuantity__getParallelData = "\
@@ -221,7 +221,7 @@ By default a serialized content of the internal values array.\n\
 This can be added to the master object values by calling\n\
 PairQuantity._executeParallelMerge.\n\
 \n\
-This method can be overloaded in the derived class.\n\
+This method can be overridden in the derived class.\n\
 ";
 
 const char* doc_PairQuantity__resizeValue = "\
@@ -229,13 +229,13 @@ Resize the internal contributions array to the specified size.\n\
 \n\
 sz   -- new length of the internal array.\n\
 \n\
-No return value.  This method can be overloaded in the derived class.\n\
+No return value.  This method can be overridden in the derived class.\n\
 ";
 
 const char* doc_PairQuantity__resetValue = "\
 Reset all contribution in the internal array to zero.\n\
 \n\
-No return value.  This method can be overloaded in the derived class.\n\
+No return value.  This method can be overridden in the derived class.\n\
 For parallel calculations this resets the count of merged parallel\n\
 results to zero.\n\
 ";
@@ -243,17 +243,17 @@ results to zero.\n\
 const char* doc_PairQuantity__configureBondGenerator = "\
 Configure bond generator just before the start of summation.\n\
 The default method sets the upper and lower limits for the pair\n\
-distances.  An overloaded method can be used to apply a different\n\
+distances.  A method override can be used to apply a different\n\
 distance range.\n\
 \n\
 bnds -- instance of BaseBondGenerator to be configured\n\
 \n\
-No return value.  This method can be overloaded in the derived class.\n\
+No return value.  This method can be overridden in the derived class.\n\
 ";
 
 const char* doc_PairQuantity__addPairContribution = "\
 Process pair contribution at a unique bond generator state.\n\
-No action by default, needs to be overloaded to do something.\n\
+No action by default, needs to be overridden to do something.\n\
 \n\
 bnds     -- instance of BaseBondGenerator holding data for\n\
             a particular pair of atoms during summation.\n\
@@ -273,7 +273,7 @@ _mergeParallelData method.\n\
 \n\
 pdata    -- raw data string from the parallel _getParallelData function.\n\
 \n\
-No return value.  This method can be overloaded in the derived class.\n\
+No return value.  This method can be overridden in the derived class.\n\
 ";
 
 const char* doc_PairQuantity__finishValue = "\
@@ -281,7 +281,7 @@ Final processing of the results after iteration over all pairs.\n\
 This is for operations that are not suitable in the _addPairContribution\n\
 method, for example sorting.\n\
 \n\
-No return value.  This method can be overloaded in the derived class.\n\
+No return value.  This method can be overridden in the derived class.\n\
 No action by default.\n\
 ";
 
@@ -522,7 +522,7 @@ class PairQuantityExposed : public PairQuantity
 };
 
 
-// The second helper class allows overload of the exposed PairQuantity
+// The second helper class allows override of the exposed PairQuantity
 // methods from Python.
 
 class PairQuantityWrap :
@@ -531,7 +531,7 @@ class PairQuantityWrap :
 {
     public:
 
-        // Make getParallelData overloadable from Python.
+        // Make getParallelData overridable from Python.
 
         std::string getParallelData() const
         {
@@ -545,12 +545,18 @@ class PairQuantityWrap :
             return this->PairQuantityExposed::getParallelData();
         }
 
-        // Make the ticker method overloadable from Python
+        // Make the ticker method overridable from Python
 
         diffpy::eventticker::EventTicker& ticker() const
         {
+            using diffpy::eventticker::EventTicker;
             override f = this->get_override("ticker");
-            if (f)  return f();
+            if (f)
+            {
+                // avoid "dangling reference error" when used from C++
+                object ptic = f();
+                return extract<EventTicker&>(ptic);
+            }
             return this->default_ticker();
         }
 
@@ -560,7 +566,7 @@ class PairQuantityWrap :
         }
 
         // Make the protected virtual methods public so they
-        // can be exported to Python and overloaded as well.
+        // can be exported to Python and overridden as well.
 
         void resizeValue(size_t sz)
         {
@@ -716,7 +722,7 @@ void wrap_PairQuantity()
         noncopyable>("PairQuantity", doc_PairQuantity)
         .def("ticker",
                 &PairQuantityExposed::ticker,
-                &PairQuantityWrap::ticker,
+                &PairQuantityWrap::default_ticker,
                 return_internal_reference<>(),
                 doc_PairQuantity_ticker)
         .def("_getParallelData",
