@@ -12,7 +12,7 @@
 *
 ******************************************************************************
 *
-* Bindings to the PeakProfile class.  The business methods can be overloaded
+* Bindings to the PeakProfile class.  The business methods can be overridden
 * from Python to create custom peak profiles.  This may be however quite slow.
 *
 *****************************************************************************/
@@ -45,13 +45,13 @@ area must be 1.\n\
 const char* doc_PeakProfile_create = "\
 Return a new default instance of the same type as self.\n\
 \n\
-This method must be overloaded in a derived class.\n\
+This method must be overridden in a derived class.\n\
 ";
 
 const char* doc_PeakProfile_clone = "\
 Return a new instance that is a copy of self.\n\
 \n\
-This method must be overloaded in a derived class.\n\
+This method must be overridden in a derived class.\n\
 ";
 
 const char* doc_PeakProfile_type = "\
@@ -59,7 +59,7 @@ Return a unique string type that identifies a PeakProfile-derived class.\n\
 The string type is used for class registration and in the createByType\n\
 function.\n\
 \n\
-This method must be overloaded in a derived class.\n\
+This method must be overridden in a derived class.\n\
 ";
 
 const char* doc_PeakProfile___call__ = "\
@@ -100,7 +100,7 @@ has changed since the last calculation.  The ticker.click() method needs\n\
 to be therefore called after every change in PeakProfile configuration.\n\
 \n\
 Return EventTicker object.\n\
-This method may be overloaded in a Python-derived class.\n\
+This method can be overridden in a Python-derived class.\n\
 ";
 
 const char* doc_PeakProfile__registerThisType = "\
@@ -139,7 +139,7 @@ The profile is also rescaled to keep the integrated area of 1.\n\
 DECLARE_PYSET_FUNCTION_WRAPPER(PeakProfile::getRegisteredTypes,
         getPeakProfileTypes_asset)
 
-// Helper class allows overload of the PeakProfile methods from Python.
+// Support for override of PeakProfile methods from Python.
 
 class PeakProfileWrap :
     public PeakProfile,
@@ -185,12 +185,18 @@ class PeakProfileWrap :
             return this->get_pure_virtual_override("xboundhi")(fwhm);
         }
 
-        // Make the ticker method overloadable from Python
+        // Support for ticker override from Python.
 
         diffpy::eventticker::EventTicker& ticker() const
         {
+            using diffpy::eventticker::EventTicker;
             override f = this->get_override("ticker");
-            if (f)  return f();
+            if (f)
+            {
+                // avoid "dangling reference error" when used from C++
+                python::object ptic = f();
+                return python::extract<EventTicker&>(ptic);
+            }
             return this->default_ticker();
         }
 
@@ -254,6 +260,7 @@ void wrap_PeakProfile()
                 bp::arg("fwhm"), doc_PeakProfile_xboundhi)
         .def("ticker",
                 &PeakProfile::ticker,
+                &PeakProfileWrap::default_ticker,
                 return_internal_reference<>(),
                 doc_PeakProfile_ticker)
         .def("_registerThisType", &PeakProfile::registerThisType,

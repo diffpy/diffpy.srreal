@@ -98,6 +98,28 @@ class TestPeakProfile(unittest.TestCase):
         return
 
 
+    def test_ticker_override(self):
+        """check method override for PeakProfile.ticker in a derived class.
+        """
+        from diffpy.srreal.eventticker import EventTicker
+        pkf = MySawTooth()
+        self.assertEqual(0, pkf.tcnt)
+        et0 = pkf.ticker()
+        self.assertEqual(1, pkf.tcnt)
+        et1 = PeakProfile.ticker(pkf)
+        self.assertEqual(1, pkf.tcnt)
+        self.assertEqual(et0, et1)
+        et0.click()
+        self.assertEqual(et0, et1)
+        # check that implicit ticker call from PDFCalculator is
+        # handled by the Python ticker override.
+        pc = PDFCalculator()
+        pc.peakprofile = pkf
+        pc.ticker()
+        self.assertEqual(2, pkf.tcnt)
+        return
+
+
     def test_getRegisteredTypes(self):
         """check PeakProfile.getRegisteredTypes
         """
@@ -133,6 +155,11 @@ class MySawTooth(PeakProfile):
     def clone(self):
         import copy
         return copy.copy(self)
+
+    tcnt = 0
+    def ticker(self):
+        self.tcnt += 1
+        return PeakProfile.ticker(self)
 
     def __call__(self, x, fwhm):
         w = 1.0 * fwhm
