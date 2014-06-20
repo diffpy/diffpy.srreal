@@ -12,8 +12,8 @@
 *
 ******************************************************************************
 *
-* Bindings to the PeakWidthModel class.  The business methods can be overloaded
-* from Python to create custom peak profiles.  This may be however quite slow.
+* Bindings to the PeakWidthModel class.  The business methods can be overridden
+* from Python to create custom peak widths.  This may be however quite slow.
 *
 *****************************************************************************/
 
@@ -45,19 +45,19 @@ Peak width is defined as full width at half maximum (FWHM).\n\
 const char* doc_PeakWidthModel_create = "\
 Return a new instance of the same PeakWidthModel type.\n\
 \n\
-This method must be overloaded in a derived class.\n\
+This method must be overridden in a derived class.\n\
 ";
 
 const char* doc_PeakWidthModel_clone = "\
 Return a duplicate of this PeakWidthModel instance.\n\
 \n\
-This method must be overloaded in a derived class.\n\
+This method must be overridden in a derived class.\n\
 ";
 
 const char* doc_PeakWidthModel_type = "\
 Return a unique string name for this PeakWidthModel class.\n\
 \n\
-This method must be overloaded in a derived class.\n\
+This method must be overridden in a derived class.\n\
 ";
 
 const char* doc_PeakWidthModel_calculate = "\
@@ -66,7 +66,7 @@ Calculate the FWHM peak width for the specified bond.\n\
 bnds -- instance of BaseBondGenerator with the current bond data.\n\
 \n\
 Return float.\n\
-This method must be overloaded in a derived class.\n\
+This method must be overridden in a derived class.\n\
 ";
 
 const char* doc_PeakWidthModel_maxWidth = "\
@@ -87,7 +87,7 @@ has changed since the last calculation.  The ticker.click() method needs\n\
 to be therefore called after every change in PeakWidthModel configuration.\n\
 \n\
 Return EventTicker object.\n\
-This method may be overloaded in a Python-derived class.\n\
+This method can be overridden in a Python-derived class.\n\
 ";
 
 const char* doc_PeakWidthModel__registerThisType = "\
@@ -96,7 +96,7 @@ Add this instance to the global registry of PeakWidthModel types.\n\
 This method must be called once after definition of the derived\n\
 class to support pickling and the createByType factory.\n\
 \n\
-No return value.  Cannot be overloaded in Python.\n\
+No return value.  No support for Python override.\n\
 ";
 
 const char* doc_PeakWidthModel_createByType = "\
@@ -164,7 +164,7 @@ PeakWidthModelPtr getpwmodel(PeakWidthModelOwner& obj)
 
 DECLARE_BYTYPE_SETTER_WRAPPER(setPeakWidthModel, setpwmodel)
 
-// Helper class allows overload of the PeakWidthModel methods from Python.
+// Support for Python override of the PeakWidthModel methods.
 
 class PeakWidthModelWrap :
     public PeakWidthModel,
@@ -206,12 +206,18 @@ class PeakWidthModelWrap :
             return f(stru, rmin, rmax);
         }
 
-        // Make the ticker method overloadable from Python
+        // Make the ticker method overridable from Python
 
         diffpy::eventticker::EventTicker& ticker() const
         {
+            using diffpy::eventticker::EventTicker;
             override f = this->get_override("ticker");
-            if (f)  return f();
+            if (f)
+            {
+                // avoid "dangling reference error" when used from C++
+                python::object ptic = f();
+                return python::extract<EventTicker&>(ptic);
+            }
             return this->default_ticker();
         }
 
@@ -285,6 +291,7 @@ void wrap_PeakWidthModel()
                 doc_PeakWidthModel_maxWidth)
         .def("ticker",
                 &PeakWidthModel::ticker,
+                &PeakWidthModelWrap::default_ticker,
                 return_internal_reference<>(),
                 doc_PeakWidthModel_ticker)
         .def("_registerThisType", &PeakWidthModel::registerThisType,

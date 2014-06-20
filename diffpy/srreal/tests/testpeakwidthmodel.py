@@ -107,6 +107,28 @@ class TestPeakWidthModel(unittest.TestCase):
         return
 
 
+    def test_ticker_override(self):
+        """check PeakWidthModel.ticker override in a Python-derived class.
+        """
+        from diffpy.srreal.eventticker import EventTicker
+        pwm = MyPWM()
+        self.assertEqual(0, pwm.tcnt)
+        et0 = pwm.ticker()
+        self.assertEqual(1, pwm.tcnt)
+        et1 = PeakWidthModel.ticker(pwm)
+        self.assertEqual(1, pwm.tcnt)
+        self.assertEqual(et0, et1)
+        et0.click()
+        self.assertEqual(et0, et1)
+        # check that implicit ticker call from PDFCalculator is
+        # handled by the Python ticker override.
+        pc = PDFCalculator()
+        pc.peakwidthmodel = pwm
+        pc.ticker()
+        self.assertEqual(2, pwm.tcnt)
+        return
+
+
     def test_getRegisteredTypes(self):
         """check PeakWidthModel.getRegisteredTypes
         """
@@ -211,6 +233,11 @@ class MyPWM(PeakWidthModel):
 
     def calculate(self, bnds):
         return self.pwmscale * bnds.msd()
+
+    tcnt = 0
+    def ticker(self):
+        self.tcnt += 1
+        return PeakWidthModel.ticker(self)
 
 MyPWM()._registerThisType()
 
