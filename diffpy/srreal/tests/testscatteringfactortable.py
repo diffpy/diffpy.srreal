@@ -17,6 +17,11 @@ class LocalTable(ScatteringFactorTable):
     def _standardLookup(self, smbl, q):   return q + 1
     def radiationType(self):   return "rubbish"
     def type(self):   return "localtable"
+    def ticker(self):
+        self.tcnt += 1
+        return ScatteringFactorTable.ticker(self)
+    tcnt = 0
+
 LocalTable()._registerThisType()
 
 
@@ -29,6 +34,39 @@ class TestScatteringFactorTable(unittest.TestCase):
         return
 
     def tearDown(self):
+        return
+
+    def test_ticker(self):
+        """check ScatteringFactorTable.ticker()
+        """
+        from diffpy.srreal.eventticker import EventTicker
+        et0 = EventTicker(self.sftx.ticker())
+        self.sftx.setCustomAs('D', 'H')
+        et1 = self.sftx.ticker()
+        self.assertNotEqual(et0, et1)
+        self.failUnless(et0 < et1)
+        return
+
+    def test_ticker_override(self):
+        """check Python override of ScatteringFactorTable.ticker.
+        """
+        from diffpy.srreal.eventticker import EventTicker
+        from diffpy.srreal.pdfcalculator import PDFCalculator
+        lsft = LocalTable()
+        self.assertEqual(0, lsft.tcnt)
+        et0 = lsft.ticker()
+        self.assertEqual(1, lsft.tcnt)
+        et1 = ScatteringFactorTable.ticker(lsft)
+        self.assertEqual(1, lsft.tcnt)
+        self.assertEqual(et0, et1)
+        et0.click()
+        self.assertEqual(et0, et1)
+        # check that implicit ticker call from PDFCalculator is
+        # handled by Python override of the ticker method.
+        pc = PDFCalculator()
+        pc.scatteringfactortable = lsft
+        pc.ticker()
+        self.assertEqual(2, lsft.tcnt)
         return
 
     def test_pickling(self):
@@ -63,7 +101,7 @@ class TestScatteringFactorTable(unittest.TestCase):
         self.assertEqual(1, lsft1.lookup('H'))
         return
 
-# End of class TestC
+# End of class TestScatteringFactorTable
 
 if __name__ == '__main__':
     unittest.main()

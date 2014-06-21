@@ -13,7 +13,7 @@
 ******************************************************************************
 *
 * Bindings to the ScatteringFactorTable class.  The business methods can be
-* overloaded from Python to create custom peak profiles.
+* overridden from Python to return custom scattering factor values.
 *
 *****************************************************************************/
 
@@ -40,7 +40,7 @@ const char* doc_ScatteringFactorTable = "\
 Base class for looking up scattering factors by atom symbols.\n\
 This class has virtual methods and cannot be used as is.\n\
 \n\
-A derived class has to overload the following methods:\n\
+A derived class has to override the following methods:\n\
 \n\
     create(self)\n\
     clone(self)\n\
@@ -56,30 +56,30 @@ const char* doc_ScatteringFactorTable___init__ = "\
 Initialize ScatteringFactorTable and create the internal C++ object.\n\
 \n\
 src  -- copy custom scattering factors from this instance if specified.\n\
-        src is necessary for proper overloading of the clone method.\n\
+        src is necessary for proper override of the clone method.\n\
 \n\
 No return value.\n\
 ";
 
 const char* doc_ScatteringFactorTable_create = "\
 Return a new instance of the same ScatteringFactorTable type.\n\
-This method must be overloaded in a derived class.\n\
+This method must be overridden in a derived class.\n\
 ";
 
 const char* doc_ScatteringFactorTable_clone = "\
 Return a duplicate of this ScatteringFactorTable instance.\n\
-This method must be overloaded in a derived class.\n\
+This method must be overridden in a derived class.\n\
 ";
 
 const char* doc_ScatteringFactorTable_type = "\
 Return a unique string name for this ScatteringFactorTable class.\n\
-This method must be overloaded in a derived class.\n\
+This method must be overridden in a derived class.\n\
 ";
 
 const char* doc_ScatteringFactorTable_radiationType = "\
 Return a string identifying the radiation type.\n\
 'X' for x-rays, 'N' for neutrons.\n\
-This method must be overloaded in a derived class.\n\
+This method must be overridden in a derived class.\n\
 ";
 
 const char* doc_ScatteringFactorTable_lookup = "\
@@ -89,7 +89,7 @@ can be redefined using the setCustomAs method.\n\
 smbl -- string symbol for atom, ion or isotope\n\
 Q    -- Q value in inverse Angstroms, by default 0\n\
 \n\
-Return float.  Cannot be overloaded in Python.\n\
+Return float.  No support for Python override.\n\
 ";
 
 const char* doc_ScatteringFactorTable__standardLookup = "\
@@ -100,7 +100,7 @@ q    -- scattering vector amplitude in 1/A\n\
 \n\
 Return float.\n\
 Raise ValueError for unknown atom symbol.\n\
-This method must be overloaded in a derived class.\n\
+This method must be overridden in a derived class.\n\
 ";
 
 const char* doc_ScatteringFactorTable_setCustomAs2 = "\
@@ -111,7 +111,7 @@ scattering factors for '12-C' as for 'C'.\n\
 smbl -- custom string alias for an existing standard symbol\n\
 src  -- standard atom symbol (cannot be another alias)\n\
 \n\
-No return value.  Cannot be overloaded in Python.\n\
+No return value.  No support for Python override.\n\
 ";
 
 const char* doc_ScatteringFactorTable_setCustomAs4 = "\
@@ -125,7 +125,7 @@ sf   -- new scattering factor value, defaults to the standard src factor.\n\
 q    -- optional Q value for the new custom scattering factor.\n\
         The internal scaling of the standard value is calculated at this Q.\n\
 \n\
-No return value.  Cannot be overloaded in Python.\n\
+No return value.  No support for Python override.\n\
 ";
 
 const char* doc_ScatteringFactorTable_resetCustom = "\
@@ -133,23 +133,33 @@ Revert scattering factor for the specified symbol to a standard value.\n\
 \n\
 smbl -- string symbol for atom, ion or isotope\n\
 \n\
-No return value.  Cannot be overloaded in Python.\n\
+No return value.  No support for Python override.\n\
 ";
 
 const char* doc_ScatteringFactorTable_resetAll = "\
 Reset all custom scattering factor values.\n\
 \n\
-No return value.  Cannot be overloaded in Python.\n\
+No return value.  No support for Python override.\n\
 ";
 
 const char* doc_ScatteringFactorTable_getCustomSymbols = "\
 Return a set of all atom symbols with custom scattering factors.\n\
 ";
 
+const char* doc_ScatteringFactorTable_ticker = "\
+Return EventTicker that marks last modification time of this object.\n\
+This ticker object is used in fast PDF update, to check if scattering\n\
+factors  changed since the last calculation.  The ticker.click() method\n\
+thus needs to be used for _standardLookup that returns variable values.\n\
+\n\
+Return EventTicker object.\n\
+This method can be overridden in a Python-derived class.\n\
+";
+
 const char* doc_ScatteringFactorTable__registerThisType = "\
 Add this instance to the global registry of ScatteringFactorTable types.\n\
 \n\
-No return value.  Cannot be overloaded in Python.\n\
+No return value.  No support for Python override.\n\
 ";
 
 const char* doc_ScatteringFactorTable_createByType = "\
@@ -228,13 +238,9 @@ ScatteringFactorTablePtr getsftable(ScatteringFactorTableOwner& obj)
     return obj.getScatteringFactorTable();
 }
 
-    DECLARE_BYTYPE_SETTER_WRAPPER(setScatteringFactorTable, setsftable)
-void setsftable(ScatteringFactorTableOwner& obj, ScatteringFactorTablePtr tb)
-{
-    obj.setScatteringFactorTable(tb);
-}
+DECLARE_BYTYPE_SETTER_WRAPPER(setScatteringFactorTable, setsftable)
 
-// Helper class for overloads of ScatteringFactorTable methods from Python
+// Helper class to support Python override of ScatteringFactorTable methods
 
 class ScatteringFactorTableWrap :
     public ScatteringFactorTable,
@@ -286,6 +292,27 @@ class ScatteringFactorTableWrap :
         double standardLookup(const std::string& smbl, double q) const
         {
             return this->get_pure_virtual_override("_standardLookup")(smbl, q);
+        }
+
+
+        // Make the ticker method overridable from Python
+
+        diffpy::eventticker::EventTicker& ticker() const
+        {
+            using diffpy::eventticker::EventTicker;
+            override f = this->get_override("ticker");
+            if (f)
+            {
+                // avoid "dangling reference error" when used from C++
+                object ptic = f();
+                return extract<EventTicker&>(ptic);
+            }
+            return this->default_ticker();
+        }
+
+        diffpy::eventticker::EventTicker& default_ticker() const
+        {
+            return this->ScatteringFactorTable::ticker();
         }
 
     protected:
@@ -358,6 +385,11 @@ void wrap_ScatteringFactorTable()
                 doc_ScatteringFactorTable_resetAll)
         .def("getCustomSymbols", getCustomSymbols_asset<ScatteringFactorTable>,
                 doc_ScatteringFactorTable_getCustomSymbols)
+        .def("ticker",
+                &ScatteringFactorTable::ticker,
+                &ScatteringFactorTableWrap::default_ticker,
+                return_internal_reference<>(),
+                doc_ScatteringFactorTable_ticker)
         .def("_registerThisType", &ScatteringFactorTable::registerThisType,
                 doc_ScatteringFactorTable__registerThisType)
         .def("createByType", &ScatteringFactorTable::createByType,
