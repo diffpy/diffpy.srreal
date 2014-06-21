@@ -75,4 +75,7 @@ OverlapCalculator.__boostpython__init = OverlapCalculator.__init__
 OverlapCalculator.__init__ = _init_kwargs
 OverlapCalculator.__call__ = _call_kwargs
 
+# this registers CovalentRadiiTable as 'covalent' type
+import diffpy.srreal.atomradiitable
+
 # End of file
