@@ -15,7 +15,7 @@ class LocalTable(ScatteringFactorTable):
     def clone(self):  return LocalTable(self)
     def create(self): return LocalTable()
     def _standardLookup(self, smbl, q):   return q + 1
-    def radiationType(self):   return "rubbish"
+    def radiationType(self):   return "LTB"
     def type(self):   return "localtable"
     def ticker(self):
         self.tcnt += 1
@@ -34,6 +34,15 @@ class TestScatteringFactorTable(unittest.TestCase):
         return
 
     def tearDown(self):
+        return
+
+    def test_class_registry(self):
+        """check if instances are aliased by radiationType().
+        """
+        ltb = ScatteringFactorTable.createByType('LTB')
+        self.failUnless(type(ltb) is LocalTable)
+        ltb2 = ScatteringFactorTable.createByType('localtable')
+        self.failUnless(type(ltb2) is LocalTable)
         return
 
     def test_ticker(self):
