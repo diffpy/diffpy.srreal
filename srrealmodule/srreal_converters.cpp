@@ -184,7 +184,8 @@ void assignR3Matrix(
     {
         PyObject* vobj = PyArray_ContiguousFromAny(
                 value.ptr(), PyArray_DOUBLE, 2, 2);
-        if (vobj && Ndim == PyArray_DIM(vobj, 0) == PyArray_DIM(vobj, 1))
+        if (vobj && Ndim == PyArray_DIM(vobj, 0) &&
+                Ndim == PyArray_DIM(vobj, 1))
         {
             double* p = static_cast<double*>(PyArray_DATA(vobj));
             std::copy(p, p + Ndim * Ndim, dst.data().begin());
