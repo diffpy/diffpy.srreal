@@ -30,7 +30,9 @@
 #include <diffpy/srreal/StructureAdapter.hpp>
 
 #include "srreal_converters.hpp"
-// numpy/arrayobject.h needs to be included after srreal_converters.hpp,
+
+#include "srreal_numpy_symbol.hpp"
+// numpy/arrayobject.h needs to be included after srreal_numpy_symbol.hpp,
 // which defines PY_ARRAY_UNIQUE_SYMBOL.  NO_IMPORT_ARRAY indicates
 // import_array will be called in the extension module initializer.
 #define NO_IMPORT_ARRAY

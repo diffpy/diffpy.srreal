@@ -28,7 +28,6 @@
 #include <diffpy/srreal/R3linalg.hpp>
 #include <diffpy/srreal/QuantityType.hpp>
 
-#include "srreal_numpy_symbol.hpp"
 
 /// Conversion function that supports implicit conversions in
 /// PairQuantity::eval and PairQuantity::setStructure
