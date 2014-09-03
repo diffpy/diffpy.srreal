@@ -60,10 +60,15 @@ def create_extensions():
     return [ext]
 
 
+# Use this version when git data are not available, like in git zip archive.
+# Update when tagging a new release.
+FALLBACK_VERSION = '1.0-x'
+
 # versioncfgfile holds version data for git commit hash and date.
 # It must reside in the same directory as version.py.
 MYDIR = os.path.dirname(os.path.abspath(__file__))
 versioncfgfile = os.path.join(MYDIR, 'diffpy/srreal/version.cfg')
+gitarchivecfgfile = versioncfgfile.replace('version.cfg', 'gitarchive.cfg')
 
 def gitinfo():
     from subprocess import Popen, PIPE
@@ -79,15 +84,24 @@ def gitinfo():
 
 
 def getversioncfg():
-    from ConfigParser import SafeConfigParser
-    cp = SafeConfigParser()
-    cp.read(versioncfgfile)
+    from ConfigParser import RawConfigParser
+    vd0 = dict(version=FALLBACK_VERSION, commit='', date='', timestamp=0)
+    # first fetch data from gitarchivecfgfile, ignore if it is unexpanded
+    g = vd0.copy()
+    cp0 = RawConfigParser(vd0)
+    cp0.read(gitarchivecfgfile)
+    if '$Format:' not in cp0.get('DEFAULT', 'commit'):
+        g = cp0.defaults()
+    # then try to obtain version data from git.
     gitdir = os.path.join(MYDIR, '.git')
-    if not os.path.isdir(gitdir):  return cp
-    try:
-        g = gitinfo()
-    except OSError:
-        return cp
+    if os.path.isdir(gitdir) or 'GIT_DIR' in os.environ:
+        try:
+            g = gitinfo()
+        except OSError:
+            pass
+    # finally, check and update the active version file
+    cp = RawConfigParser()
+    cp.read(versioncfgfile)
     d = cp.defaults()
     if g['version'] != d.get('version') or g['commit'] != d.get('commit'):
         cp.set('DEFAULT', 'version', g['version'])
