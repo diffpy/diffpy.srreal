@@ -462,6 +462,7 @@ void wrap_StructureAdapter()
         ;
 
     register_ptr_to_python<StructureAdapterPtr>();
+    implicitly_convertible<StructureAdapterPtr, StructureAdapterConstPtr>();
 
     typedef boost::shared_ptr<NoMetaStructureAdapter>
         NoMetaStructureAdapterPtr;
