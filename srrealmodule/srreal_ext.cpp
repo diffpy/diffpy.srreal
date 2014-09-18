@@ -25,6 +25,7 @@
 
 namespace srrealmodule {
 
+void wrap_libdiffpy_version();
 void wrap_exceptions();
 void wrap_EventTicker();
 void wrap_Attributes();
@@ -56,6 +57,7 @@ BOOST_PYTHON_MODULE(srreal_ext)
     // initialize numpy module
     import_array();
     // execute external wrappers
+    wrap_libdiffpy_version();
     wrap_exceptions();
     wrap_EventTicker();
     wrap_Attributes();
