@@ -19,11 +19,11 @@
 #include <boost/python.hpp>
 #include <boost/serialization/export.hpp>
 
-#include <diffpy/srreal/AtomRadiiTable.hpp>
-#include <diffpy/srreal/ConstantRadiiTable.hpp>
-
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
+
+#include <diffpy/srreal/AtomRadiiTable.hpp>
+#include <diffpy/srreal/ConstantRadiiTable.hpp>
 
 namespace srrealmodule {
 namespace nswrap_AtomRadiiTable {

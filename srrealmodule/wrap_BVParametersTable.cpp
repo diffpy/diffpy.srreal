@@ -19,11 +19,11 @@
 #include <boost/python.hpp>
 #include <string>
 
-#include <diffpy/srreal/BVParam.hpp>
-#include <diffpy/srreal/BVParametersTable.hpp>
-
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
+
+#include <diffpy/srreal/BVParam.hpp>
+#include <diffpy/srreal/BVParametersTable.hpp>
 
 #define BVPARMCIF "bvparm2011.cif"
 
