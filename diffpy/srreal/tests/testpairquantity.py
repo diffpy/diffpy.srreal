@@ -87,6 +87,40 @@ class TestPairQuantity(unittest.TestCase):
         return
 
 
+    def test__addPairContribution(self):
+        """Check Python override of PairQuantity._addPairContribution.
+        """
+        pqcnt = PQCounter()
+        self.assertEqual(0, pqcnt(carbonzchain(0)))
+        self.assertEqual(0, pqcnt(carbonzchain(1)))
+        self.assertEqual(1, pqcnt(carbonzchain(2)))
+        self.assertEqual(10, pqcnt(carbonzchain(5)))
+        return
+
+
+    def test_optimized_evaluation(self):
+        """Check OPTIMIZED evaluation in Python-defined calculator class.
+        """
+        c8 = carbonzchain(8)
+        c9 = carbonzchain(9)
+        pq = PQDerived()
+        pq.evaluatortype = 'OPTIMIZED'
+        pq.eval(c8)
+        # PQDerived does not override _stashPartialValue, therefore
+        # the optimized evaluation should fail
+        self.assertRaises(RuntimeError, pq.eval, c8)
+        ocnt = PQCounter()
+        ocnt.evaluatortype = 'OPTIMIZED'
+        self.assertEqual(28, ocnt(c8))
+        self.assertEqual(28, ocnt(c8))
+        self.assertEqual('OPTIMIZED', ocnt.evaluatortypeused)
+        self.assertEqual(36, ocnt(c9))
+        self.assertEqual('OPTIMIZED', ocnt.evaluatortypeused)
+        self.assertEqual(28, ocnt(c8))
+        self.assertEqual('OPTIMIZED', ocnt.evaluatortypeused)
+        return
+
+
     def test_pickling(self):
         '''check pickling and unpickling of PairQuantity.
         '''
@@ -116,6 +150,42 @@ class PQDerived(PairQuantity):
         return PairQuantity.ticker(self)
 
 # End of class PQDerived
+
+# helper for testing support for optimized evaluation
+
+class PQCounter(PairQuantity):
+
+    def __init__(self):
+        super(PQCounter, self).__init__()
+        self._resizeValue(1)
+        self.rmax = 10
+        return
+
+    def __call__(self, structure=None):
+        rv, = self.eval(structure)
+        return rv
+
+    def _addPairContribution(self, bnds, sumscale):
+        self._value[0] += 0.5 * sumscale
+        return
+
+    def _stashPartialValue(self):
+        self.__stashed_value = self._value[0]
+        return
+
+    def _restorePartialValue(self):
+        self._value[0] = self.__stashed_value
+        del self.__stashed_value
+        return
+
+# End of class PQCounter
+
+def carbonzchain(n):
+    "Helper function that returns a z-chain of Carbon atoms."
+    from diffpy.Structure import Structure, Atom
+    rv = Structure([Atom('C', [0, 0, z]) for z in range(n)])
+    return rv
+
 
 if __name__ == '__main__':
     unittest.main()

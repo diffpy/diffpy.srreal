@@ -285,6 +285,34 @@ No return value.  This method can be overridden in the derived class.\n\
 No action by default.\n\
 ";
 
+const char* doc_PairQuantity__stashPartialValue = "\
+Save results from unchanged part of the structure in OPTIMIZED evaluation.\n\
+\n\
+This method gets called in OPTIMIZED calculation just before assigning\n\
+the new structure, which implicitly calls _resetValue.  The method must\n\
+store internal partial results, for example as private class attributes.\n\
+The accompanying function _restorePartialValue then recovers the stored\n\
+values to undo the _resetValue effects.\n\
+\n\
+No return value.  This method must be overridden in the derived class to\n\
+support OPTIMIZED evaluation.\n\
+\n\
+See also _restorePartialValue.\n\
+";
+
+const char* doc_PairQuantity__restorePartialValue = "\
+Restore partial results from unchanged sub-structure in OPTIMIZED evaluation.\n\
+\n\
+This method is executed in OPTIMIZED calculation after assignment of the\n\
+new Structure and the implicit call of _resetValue.  The method must\n\
+restore internal results that were saved before by _stashPartialValue.\n\
+\n\
+No return value.  This method must be overridden in the derived class to\n\
+support OPTIMIZED evaluation.\n\
+\n\
+See also _stashPartialValue.\n\
+";
+
 const char* doc_PairQuantity__value = "\
 Reference to the internal vector of total contributions.\n\
 ";
@@ -519,6 +547,18 @@ class PairQuantityExposed : public PairQuantity
             this->PairQuantity::finishValue();
         }
 
+
+        void stashPartialValue()
+        {
+            this->PairQuantity::stashPartialValue();
+        }
+
+
+        void restorePartialValue()
+        {
+            this->PairQuantity::restorePartialValue();
+        }
+
 };
 
 
@@ -647,6 +687,32 @@ class PairQuantityWrap :
             this->PairQuantityExposed::finishValue();
         }
 
+
+        void stashPartialValue()
+        {
+            override f = this->get_override("_stashPartialValue");
+            if (f)  f();
+            else    this->default_stashPartialValue();
+        }
+
+        void default_stashPartialValue()
+        {
+            this->PairQuantityExposed::stashPartialValue();
+        }
+
+
+        void restorePartialValue()
+        {
+            override f = this->get_override("_restorePartialValue");
+            if (f)  f();
+            else    this->default_restorePartialValue();
+        }
+
+        void default_restorePartialValue()
+        {
+            this->PairQuantityExposed::restorePartialValue();
+        }
+
 };  // class PairQuantityWrap
 
 }   // namespace nswrap_PairQuantity
@@ -757,6 +823,14 @@ void wrap_PairQuantity()
                 &PairQuantityExposed::finishValue,
                 &PairQuantityWrap::default_finishValue,
                 doc_PairQuantity__finishValue)
+        .def("_stashPartialValue",
+                &PairQuantityExposed::stashPartialValue,
+                &PairQuantityWrap::default_stashPartialValue,
+                doc_PairQuantity__stashPartialValue)
+        .def("_restorePartialValue",
+                &PairQuantityExposed::restorePartialValue,
+                &PairQuantityWrap::default_restorePartialValue,
+                doc_PairQuantity__restorePartialValue)
         .add_property("_value", make_function(&PairQuantityWrap::value,
                     return_internal_reference<>()),
                 doc_PairQuantity__value)
