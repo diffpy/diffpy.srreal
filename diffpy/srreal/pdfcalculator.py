@@ -200,6 +200,12 @@ PDFCalculator.qmax = propertyFromExtDoubleAttr('qmax',
         Affects the termination ripples.  Not used when zero.
         [0 1/A]''')
 
+PDFCalculator.qstep = propertyFromExtDoubleAttr('qstep',
+        '''Spacing in the Q-grid.  Q-values are at the multiples of qstep.
+        The value is padded by rsteps so that PI/qstep > extendedrmax and
+        PI/(qstep * rstep) is a power of 2.  Read-only.
+        [PI/(padded extendedrmax) A]''')
+
 PDFCalculator.slope = propertyFromExtDoubleAttr('slope',
         '''Slope of the linear PDF background.  Assigned according to
         number density of the evaluated structure at each PDF calculation.
