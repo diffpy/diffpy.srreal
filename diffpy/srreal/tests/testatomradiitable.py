@@ -138,6 +138,26 @@ class TestCovalentRadiiTable(TestCasePeriodictableOptional):
         self.assertEqual(1.22, self.rtb._standardLookup('Ga'))
         return
 
+    def test_create(self):
+        """check CovalentRadiiTable.create()
+        """
+        self.rtb.setCustom('Na', 1.3)
+        rtb2 = self.rtb.create()
+        self.assertTrue(isinstance(rtb2, CovalentRadiiTable))
+        self.assertEqual(1, len(self.rtb.getAllCustom()))
+        self.assertEqual(0, len(rtb2.getAllCustom()))
+        return
+
+    def test_clone(self):
+        """check CovalentRadiiTable.clone()
+        """
+        self.rtb.setCustom('Na', 1.3)
+        rtb2 = self.rtb.clone()
+        self.assertTrue(isinstance(rtb2, CovalentRadiiTable))
+        self.assertEqual(1, len(rtb2.getAllCustom()))
+        self.assertEqual(1.3, rtb2.lookup('Na'))
+        return
+
     def test_fromString(self):
         """check CovalentRadiiTable.fromString()
         """
