@@ -52,15 +52,6 @@ Derived class can be added to the global registry of ScatteringFactorTable\n\
 types by calling the _registerThisType method with any instance.\n\
 ";
 
-const char* doc_ScatteringFactorTable___init__ = "\
-Initialize ScatteringFactorTable and create the internal C++ object.\n\
-\n\
-src  -- copy custom scattering factors from this instance if specified.\n\
-        src is necessary for proper override of the clone method.\n\
-\n\
-No return value.\n\
-";
-
 const char* doc_ScatteringFactorTable_create = "\
 Return a new instance of the same ScatteringFactorTable type.\n\
 This method must be overridden in a derived class.\n\
@@ -345,8 +336,6 @@ void wrap_ScatteringFactorTable()
 
     class_<ScatteringFactorTableWrap, noncopyable>(
             "ScatteringFactorTable", doc_ScatteringFactorTable)
-        .def(init<const ScatteringFactorTable&>(bp::arg("src"),
-                    doc_ScatteringFactorTable___init__))
         .def("create", &ScatteringFactorTable::create,
                 doc_ScatteringFactorTable_create)
         .def("clone", &ScatteringFactorTable::clone,

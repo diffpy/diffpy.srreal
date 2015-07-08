@@ -12,7 +12,9 @@ from diffpy.srreal.scatteringfactortable import ScatteringFactorTable
 
 
 class LocalTable(ScatteringFactorTable):
-    def clone(self):  return LocalTable(self)
+    def clone(self):
+        import copy
+        return copy.copy(self)
     def create(self): return LocalTable()
     def _standardLookup(self, smbl, q):   return q + 1
     def radiationType(self):   return "LTB"
@@ -108,6 +110,26 @@ class TestScatteringFactorTable(unittest.TestCase):
         self.assertEqual(lsft.type(), lsft1.type())
         self.assertEqual(3, lsft1._standardLookup('Cl', 2))
         self.assertEqual(1, lsft1.lookup('H'))
+        return
+
+    def test_derived_create(self):
+        """Check override of ScatteringFactorTable.create in Python class.
+        """
+        lsft = LocalTable()
+        lsft.setCustomAs('Xy', 'Na')
+        lsft2 = lsft.create()
+        self.assertTrue(isinstance(lsft2, LocalTable))
+        self.assertEqual(set(), lsft2.getCustomSymbols())
+        return
+
+    def test_derived_clone(self):
+        """Check override of ScatteringFactorTable.clone in Python class.
+        """
+        lsft = LocalTable()
+        lsft.setCustomAs('Xy', 'Na')
+        lsft2 = lsft.clone()
+        self.assertTrue(isinstance(lsft2, LocalTable))
+        self.assertEqual(set(['Xy']), lsft2.getCustomSymbols())
         return
 
 # End of class TestScatteringFactorTable
