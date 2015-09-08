@@ -43,7 +43,8 @@ def get_boost_libraries():
 
     # Raise Exception if we don't find anything
     if not found:
-        raise Exception("Cannot find shared boost_library library")
+        emsg ="Cannot find shared %r library." % baselib
+        raise Exception(emsg)
 
     libs = [lib]
     return libs
