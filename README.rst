@@ -1,3 +1,9 @@
+.. image:: https://travis-ci.org/diffpy/diffpy.srreal.svg?branch=master
+   :target: https://travis-ci.org/diffpy/diffpy.srreal
+
+.. image:: http://codecov.io/github/diffpy/diffpy.srreal/coverage.svg?branch=master
+   :target: http://codecov.io/github/diffpy/diffpy.srreal?branch=master
+
 diffpy.srreal
 ========================================================================
 
