@@ -15,14 +15,10 @@ matrix:
     - os: osx
       env: MYUSEMC=false
 
-# python:
-#   - 2.7
-
 before_install:
   - git fetch origin --unshallow --tags
   - MYPYTHON_VERSION=2.7
   - if [[ "${MYUSEMC}" == false ]]; then MYPIPFLAGS="--user"; fi
-  - MYGIT_REV=$(git log -1 --format='%H')
   - MYMCREPO=https://repo.continuum.io/miniconda
   - case ${TRAVIS_OS_NAME} in
     linux)
@@ -77,7 +73,7 @@ install:
         easy_install --user "${MYTARBUNDLE}";
     fi
   - PYGIT_REV=$(python -c "import diffpy.srreal.version as v; print(v.__gitsha__)")
-  - test "${MYGIT_REV}" = "${PYGIT_REV}"
+  - test "${TRAVIS_COMMIT}" = "${PYGIT_REV}"
 
 before_script:
   - cd
