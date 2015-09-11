@@ -1,0 +1,90 @@
+sudo: required
+
+language: generic
+
+os:
+  - linux
+  - osx
+
+env:
+  - MYUSEMC=true
+  - MYUSEMC=false
+
+matrix:
+  exclude:
+    - os: osx
+      env: MYUSEMC=false
+
+# python:
+#   - 2.7
+
+before_install:
+  - git fetch origin --unshallow --tags
+  - MYPYTHON_VERSION=2.7
+  - if [[ "${MYUSEMC}" == false ]]; then MYPIPFLAGS="--user"; fi
+  - MYGIT_REV=$(git log -1 --format='%H')
+  - MYMCREPO=https://repo.continuum.io/miniconda
+  - case ${TRAVIS_OS_NAME} in
+    linux)
+        MYMCBUNDLE=Miniconda-latest-Linux-x86_64.sh ;;
+    osx)
+        MYMCBUNDLE=Miniconda-latest-MacOSX-x86_64.sh ;;
+    *)
+        echo "Unsupported operating system." >&2
+        exit 2 ;;
+    esac
+  - mkdir -p ~/pkgs/;
+  - if [[ "${MYUSEMC}" == true ]]; then
+        pushd ~/pkgs/;
+        wget --timestamping ${MYMCREPO}/${MYMCBUNDLE};
+        test -x ~/mc/bin/conda || bash ${MYMCBUNDLE} -b -f -p ~/mc;
+        export PATH="${HOME}/mc/bin:${PATH}";
+        conda update conda --yes;
+        conda install --yes python=${MYPYTHON_VERSION} conda-build;
+        conda create --name=testenv --yes python=${MYPYTHON_VERSION} coverage;
+        conda config --add channels pavoljuhas/channel/dev;
+        popd;
+    fi
+  - if [[ "${MYUSEMC}" == false ]]; then
+        test "${TRAVIS_OS_NAME}" = "linux" || exit $?;
+        sudo apt-get update -qq;
+        sudo apt-get install -y libgsl0-dev libboost-all-dev python-dev
+            python-setuptools python-numpy python-scipy python-pyparsing
+            python-lxml python-pip build-essential scons;
+        devutils/makesdist;
+        MYTARBUNDLE="$(ls -t "${PWD}"/dist/*.tar.gz | head -1)";
+        pushd ~/pkgs;
+        git clone https://github.com/diffpy/libObjCryst.git;
+        git clone https://github.com/diffpy/libdiffpy.git;
+        popd;
+    fi
+
+
+install:
+  - if [[ "${MYUSEMC}" == true ]]; then
+        conda build conda-recipe;
+        source activate testenv;
+        conda install --yes --use-local diffpy.srreal;
+    fi
+  - if [[ "${MYUSEMC}" == false ]]; then
+        pip install $MYPIPFLAGS coverage;
+        pip install $MYPIPFLAGS periodictable;
+        easy_install --user https://github.com/diffpy/diffpy.Structure/archive/master.tar.gz;
+        easy_install --user https://github.com/diffpy/diffpy.utils/archive/master.tar.gz;
+        sudo scons -C ~/pkgs/libObjCryst install;
+        easy_install --user https://github.com/diffpy/pyobjcryst/archive/master.tar.gz;
+        sudo scons -C ~/pkgs/libdiffpy install;
+        easy_install --user "${MYTARBUNDLE}";
+    fi
+  - PYGIT_REV=$(python -c "import diffpy.srreal.version as v; print(v.__gitsha__)")
+  - test "${MYGIT_REV}" = "${PYGIT_REV}"
+
+before_script:
+  - cd
+
+script:
+  - coverage run --source diffpy.srreal -m diffpy.srreal.tests.run
+
+after_success:
+  - pip install $MYPIPFLAGS codecov
+  - codecov
