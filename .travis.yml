@@ -7,8 +7,11 @@ os:
   - osx
 
 env:
-  - MYUSEMC=true
-  - MYUSEMC=false
+  global:
+    - MYPYTHON_VERSION=2.7
+  matrix:
+    - MYUSEMC=true
+    - MYUSEMC=false
 
 matrix:
   exclude:
@@ -17,7 +20,6 @@ matrix:
 
 before_install:
   - git fetch origin --unshallow --tags
-  - MYPYTHON_VERSION=2.7
   - if [[ "${MYUSEMC}" == false ]]; then MYPIPFLAGS="--user"; fi
   - MYMCREPO=https://repo.continuum.io/miniconda
   - case ${TRAVIS_OS_NAME} in
