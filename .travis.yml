@@ -61,8 +61,10 @@ before_install:
 install:
   - if [[ "${MYUSEMC}" == true ]]; then
         conda build conda-recipe;
+        MYCONDAPACKAGE="$(ls -t ~/mc/conda-bld/*/diffpy.srreal*.bz2 | head -1)";
+        ls -d "${MYCONDAPACKAGE}" >/dev/null;
         source activate testenv;
-        conda install --yes --use-local diffpy.srreal;
+        conda install --yes "${MYCONDAPACKAGE}";
     fi
   - if [[ "${MYUSEMC}" == false ]]; then
         pip install $MYPIPFLAGS coverage;
