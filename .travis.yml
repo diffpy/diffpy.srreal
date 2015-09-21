@@ -20,7 +20,12 @@ matrix:
 
 before_install:
   - git fetch origin --unshallow --tags
-  - if [[ "${MYUSEMC}" == false ]]; then MYPIPFLAGS="--user"; fi
+  - if ${MYUSEMC}; then
+        NOAPT=true; NOMC=false;
+    else
+        NOAPT=false; NOMC=true;
+        MYPIPFLAGS="--user";
+    fi
   - MYMCREPO=https://repo.continuum.io/miniconda
   - case ${TRAVIS_OS_NAME} in
     linux)
@@ -31,53 +36,58 @@ before_install:
         echo "Unsupported operating system." >&2
         exit 2 ;;
     esac
-  - mkdir -p ~/pkgs/;
-  - if [[ "${MYUSEMC}" == true ]]; then
-        pushd ~/pkgs/;
-        wget --timestamping ${MYMCREPO}/${MYMCBUNDLE};
-        test -x ~/mc/bin/conda || bash ${MYMCBUNDLE} -b -f -p ~/mc;
-        export PATH="${HOME}/mc/bin:${PATH}";
-        conda update conda --yes;
-        conda install --yes python=${MYPYTHON_VERSION} conda-build;
-        conda create --name=testenv --yes python=${MYPYTHON_VERSION} coverage;
-        conda config --add channels pavoljuhas/channel/dev;
-        popd;
-    fi
-  - if [[ "${MYUSEMC}" == false ]]; then
-        test "${TRAVIS_OS_NAME}" = "linux" || exit $?;
-        sudo apt-get update -qq;
-        sudo apt-get install -y libgsl0-dev libboost-all-dev python-dev
-            python-setuptools python-numpy python-scipy python-pyparsing
-            python-lxml python-pip build-essential scons;
-        devutils/makesdist;
-        MYTARBUNDLE="$(ls -t "${PWD}"/dist/*.tar.gz | head -1)";
-        pushd ~/pkgs;
-        git clone https://github.com/diffpy/libObjCryst.git;
-        git clone https://github.com/diffpy/libdiffpy.git;
-        popd;
-    fi
+
+  - mkdir -p ~/pkgs/
+
+  - $NOMC || pushd ~/pkgs/
+  - $NOMC || wget --timestamping ${MYMCREPO}/${MYMCBUNDLE}
+  - $NOMC || test -x ~/mc/bin/conda || bash ${MYMCBUNDLE} -b -f -p ~/mc
+  - $NOMC || popd
+  - $NOMC || export PATH="${HOME}/mc/bin:${PATH}"
+  - $NOMC || conda update conda --yes
+  - $NOMC || conda install --yes python=${MYPYTHON_VERSION} conda-build
+  - $NOMC || conda create --name=testenv --yes python=${MYPYTHON_VERSION} coverage
+  - $NOMC || conda config --add channels pavoljuhas/channel/dev
+  - $NOMC || conda config --add channels pavoljuhas
+
+  - $NOAPT || test "${TRAVIS_OS_NAME}" = "linux" || exit $?
+  - $NOAPT || sudo apt-get update -qq
+  - $NOAPT || sudo apt-get install -y
+                  libgsl0-dev libboost-all-dev python-dev
+                  python-setuptools python-numpy python-scipy python-pyparsing
+                  python-lxml python-pip build-essential scons
+  - $NOAPT || devutils/makesdist
+  - $NOAPT || MYTARBUNDLE="$(ls -t "${PWD}"/dist/*.tar.gz | head -1)"
+  - $NOAPT || pushd ~/pkgs
+  - $NOAPT || git clone https://github.com/diffpy/libObjCryst.git
+  - $NOAPT || git clone https://github.com/diffpy/libdiffpy.git
+  - $NOAPT || popd
 
 
 install:
-  - if [[ "${MYUSEMC}" == true ]]; then
-        conda build conda-recipe;
-        MYCONDAPACKAGE="$(ls -t ~/mc/conda-bld/*/diffpy.srreal*.bz2 | head -1)";
-        ls -d "${MYCONDAPACKAGE}" >/dev/null;
-        source activate testenv;
-        conda install --yes "${MYCONDAPACKAGE}";
+  - $NOMC || conda build conda-recipe
+  - $NOMC || MYCONDAPACKAGE="$(ls -t ~/mc/conda-bld/*/diffpy.srreal*.bz2 | head -1)"
+  - $NOMC || ls -d "${MYCONDAPACKAGE}" >/dev/null
+  - $NOMC || source activate testenv
+  - $NOMC || conda install --yes "${MYCONDAPACKAGE}"
+
+  - $NOAPT || pip install $MYPIPFLAGS coverage
+  - $NOAPT || pip install $MYPIPFLAGS periodictable
+  - $NOAPT || easy_install --user
+                  https://github.com/diffpy/diffpy.Structure/archive/master.tar.gz
+  - $NOAPT || easy_install --user
+                  https://github.com/diffpy/diffpy.utils/archive/master.tar.gz
+  - $NOAPT || sudo scons -C ~/pkgs/libObjCryst install
+  - $NOAPT || easy_install --user
+                  https://github.com/diffpy/pyobjcryst/archive/master.tar.gz
+  - $NOAPT || sudo scons -C ~/pkgs/libdiffpy install
+  - $NOAPT || easy_install --user "${MYTARBUNDLE}"
+
+  - MYGIT_REV=$(python -c "import diffpy.srreal.version as v; print(v.__gitsha__)")
+  - if [[ "${TRAVIS_COMMIT}" != "${MYGIT_REV}" ]]; then
+        echo "Version mismatch ${TRAVIS_COMMIT} vs ${MYGIT_REV}.";
+        exit 1;
     fi
-  - if [[ "${MYUSEMC}" == false ]]; then
-        pip install $MYPIPFLAGS coverage;
-        pip install $MYPIPFLAGS periodictable;
-        easy_install --user https://github.com/diffpy/diffpy.Structure/archive/master.tar.gz;
-        easy_install --user https://github.com/diffpy/diffpy.utils/archive/master.tar.gz;
-        sudo scons -C ~/pkgs/libObjCryst install;
-        easy_install --user https://github.com/diffpy/pyobjcryst/archive/master.tar.gz;
-        sudo scons -C ~/pkgs/libdiffpy install;
-        easy_install --user "${MYTARBUNDLE}";
-    fi
-  - PYGIT_REV=$(python -c "import diffpy.srreal.version as v; print(v.__gitsha__)")
-  - test "${TRAVIS_COMMIT}" = "${PYGIT_REV}"
 
 before_script:
   - cd
