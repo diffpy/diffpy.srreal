@@ -45,7 +45,7 @@ before_install:
   - $NOMC || popd
   - $NOMC || export PATH="${HOME}/mc/bin:${PATH}"
   - $NOMC || conda update conda --yes
-  - $NOMC || conda install --yes python=${MYPYTHON_VERSION} conda-build
+  - $NOMC || conda install --yes python=${MYPYTHON_VERSION} conda-build jinja2
   - $NOMC || conda create --name=testenv --yes python=${MYPYTHON_VERSION} coverage
   - $NOMC || conda config --add channels pavoljuhas/channel/dev
   - $NOMC || conda config --add channels pavoljuhas
@@ -66,10 +66,9 @@ before_install:
 
 install:
   - $NOMC || conda build conda-recipe
-  - $NOMC || MYCONDAPACKAGE="$(ls -t ~/mc/conda-bld/*/diffpy.srreal*.bz2 | head -1)"
-  - $NOMC || ls -d "${MYCONDAPACKAGE}" >/dev/null
+  - $NOMC || conda list --name=_test --export diffpy.srreal > /tmp/mypackage.txt
   - $NOMC || source activate testenv
-  - $NOMC || conda install --yes "${MYCONDAPACKAGE}"
+  - $NOMC || conda install --yes --use-local --file=/tmp/mypackage.txt
 
   - $NOAPT || pip install $MYPIPFLAGS coverage
   - $NOAPT || pip install $MYPIPFLAGS periodictable
