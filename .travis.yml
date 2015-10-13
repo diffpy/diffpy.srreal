@@ -82,6 +82,7 @@ install:
   - $NOAPT || sudo scons -C ~/pkgs/libdiffpy install
   - $NOAPT || easy_install --user "${MYTARBUNDLE}"
 
+  - cd
   - MYGIT_REV=$(python -c "import diffpy.srreal.version as v; print(v.__gitsha__)")
   - if [[ "${TRAVIS_COMMIT}" != "${MYGIT_REV}" ]]; then
         echo "Version mismatch ${TRAVIS_COMMIT} vs ${MYGIT_REV}.";
