@@ -52,7 +52,7 @@ The diffpy.srreal requires Python 2.6 or 2.7 and the following software:
 * ``NumPy`` - library for scientific computing with Python
 * ``scons`` - software constructions tool (1.0 or later)
 * ``python-dev`` - header files for interfacing Python with C
-* ``libboost-dev`` - Boost C++ libraries development files (1.43 or later)
+* ``libboost-all-dev`` - Boost C++ libraries and development files (1.43 or later)
 * ``libdiffpy`` - C++ library for PDF, bond valence sum and other pair
   quantity calculators https://github.com/diffpy/libdiffpy
 * ``diffpy.Structure`` - simple storage and manipulation of atomic structures
@@ -70,7 +70,7 @@ for example, on Ubuntu Linux the dependencies can be installed as::
 
    sudo apt-get install \
       python-setuptools python-numpy scons \
-      build-essential python-dev libboost-dev
+      build-essential python-dev libboost-all-dev
 
 For Mac OS X machine with the MacPorts package manager one could do ::
 
