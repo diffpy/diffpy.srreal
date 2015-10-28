@@ -17,7 +17,9 @@
 *
 *****************************************************************************/
 
-#include <boost/python.hpp>
+#include <boost/python/class.hpp>
+#include <boost/python/copy_const_reference.hpp>
+#include <boost/python/register_ptr_to_python.hpp>
 
 #include <diffpy/srreal/ScatteringFactorTable.hpp>
 #include <diffpy/srreal/SFTXray.hpp>

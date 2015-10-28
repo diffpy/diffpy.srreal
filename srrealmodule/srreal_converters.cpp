@@ -17,10 +17,10 @@
 *
 *****************************************************************************/
 
-#include <boost/python/def.hpp>
 #include <boost/python/slice.hpp>
 #include <boost/python/stl_iterator.hpp>
 #include <boost/python/exception_translator.hpp>
+
 #include <string>
 #include <valarray>
 #include <stdexcept>

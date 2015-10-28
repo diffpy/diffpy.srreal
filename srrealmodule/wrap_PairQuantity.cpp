@@ -29,9 +29,11 @@
 *
 *****************************************************************************/
 
-#include <boost/python.hpp>
+#include <boost/python/class.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include <boost/python/stl_iterator.hpp>
+#include <boost/python/copy_non_const_reference.hpp>
+#include <boost/python/return_internal_reference.hpp>
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"

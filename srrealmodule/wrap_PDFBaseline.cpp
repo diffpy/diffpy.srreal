@@ -17,7 +17,10 @@
 *
 *****************************************************************************/
 
-#include <boost/python.hpp>
+#include <boost/python/class.hpp>
+#include <boost/python/def.hpp>
+#include <boost/python/copy_const_reference.hpp>
+#include <boost/python/register_ptr_to_python.hpp>
 
 #include <diffpy/srreal/PDFBaseline.hpp>
 #include <diffpy/srreal/ZeroBaseline.hpp>

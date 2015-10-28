@@ -16,9 +16,9 @@
 *
 *****************************************************************************/
 
-#include <boost/python.hpp>
+#include <boost/python/class.hpp>
+
 #include <cassert>
-#include <sstream>
 
 #include <diffpy/Attributes.hpp>
 

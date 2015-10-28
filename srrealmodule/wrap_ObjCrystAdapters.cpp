@@ -17,7 +17,7 @@
 *
 *****************************************************************************/
 
-#include <boost/python.hpp>
+#include <boost/python/def.hpp>
 
 #include <diffpy/features.hpp>
 #include <diffpy/srreal/StructureAdapter.hpp>

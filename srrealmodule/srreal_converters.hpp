@@ -20,7 +20,12 @@
 #ifndef SRREAL_CONVERTERS_HPP_INCLUDED
 #define SRREAL_CONVERTERS_HPP_INCLUDED
 
-#include <boost/python.hpp>
+#include <boost/python/object.hpp>
+#include <boost/python/import.hpp>
+#include <boost/python/list.hpp>
+#include <boost/python/dict.hpp>
+#include <boost/python/override.hpp>
+
 #include <algorithm>
 #include <string>
 

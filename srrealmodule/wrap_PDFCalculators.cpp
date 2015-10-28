@@ -16,7 +16,8 @@
 *
 *****************************************************************************/
 
-#include <boost/python.hpp>
+#include <boost/python/class.hpp>
+#include <boost/python/def.hpp>
 #include <boost/python/stl_iterator.hpp>
 
 #include <diffpy/srreal/DebyePDFCalculator.hpp>

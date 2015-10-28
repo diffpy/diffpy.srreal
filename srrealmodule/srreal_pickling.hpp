@@ -19,7 +19,12 @@
 #ifndef SRREAL_PICKLING_HPP_INCLUDED
 #define SRREAL_PICKLING_HPP_INCLUDED
 
-#include <boost/python.hpp>
+#include <boost/python/class.hpp>
+#include <boost/python/tuple.hpp>
+#include <boost/python/dict.hpp>
+#include <boost/python/str.hpp>
+#include <boost/python/operators.hpp>
+
 #include <string>
 #include <sstream>
 

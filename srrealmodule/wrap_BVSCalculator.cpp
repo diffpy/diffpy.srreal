@@ -16,7 +16,7 @@
 *
 *****************************************************************************/
 
-#include <boost/python.hpp>
+#include <boost/python/class.hpp>
 
 #include <diffpy/srreal/BVSCalculator.hpp>
 
