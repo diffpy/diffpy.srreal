@@ -19,7 +19,7 @@ requirements:
     - python
     - setuptools
     - numpy 1.9.2
-    - libdiffpy 1.2.96
+    - libdiffpy
     - pycifrw
     - diffpy.structure
     - scons
@@ -28,10 +28,10 @@ requirements:
     - python
     - setuptools
     - numpy >=1.9.2
-    - libdiffpy >=1.2.96,<1.3a0*
+    - libdiffpy
     - pycifrw
     - diffpy.structure
-    - pyobjcryst 1.0*
+    - pyobjcryst
     - periodictable
 
 test:
