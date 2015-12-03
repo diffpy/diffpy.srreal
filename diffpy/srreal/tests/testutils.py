@@ -4,6 +4,9 @@
 
 TestCaseObjCrystOptional -- use this as a TestCase base class that
     disables unit tests when pyobjcryst is not installed.
+
+TestCasePeriodictableOptional -- use this as a TestCase base class to
+    skip unit tests when periodictable is not installed.
 """
 
 
@@ -33,9 +36,6 @@ try:
 except ImportError:
     TestCasePeriodictableOptional = object
     logging.warning('Cannot import periodictable, periodictable tests skipped.')
-except TypeError:
-    TestCaseObjCrystOptional = object
-    logging.warning('Compiled without ObjCryst, pyobjcryst tests skipped.')
 
 # helper functions
 
