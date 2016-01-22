@@ -20,6 +20,10 @@
 #include <boost/python/dict.hpp>
 #include <boost/python/def.hpp>
 
+#if DIFFPY_VERSION < 1003000
+#error "diffpy.srreal requires libdiffpy 1.3 or later."
+#endif
+
 namespace srrealmodule {
 namespace nswrap_libdiffpy_version {
 
@@ -36,22 +40,18 @@ Return dictionary with version data for the loaded libdiffpy library.\n\
 python::dict get_libdiffpy_version_info_dict()
 {
     python::dict rv;
-#if DIFFPY_VERSION > 1002048
     // Obtain version data from runtime values.
     rv["version"] = libdiffpy_version_info::version;
     rv["version_str"] = libdiffpy_version_info::version_str;
     rv["major"] = libdiffpy_version_info::major;
     rv["minor"] = libdiffpy_version_info::minor;
+    rv["micro"] = libdiffpy_version_info::micro;
     rv["date"] = libdiffpy_version_info::date;
     rv["git_sha"] = libdiffpy_version_info::git_sha;
+#if DIFFPY_VERSION > 1003000
+    rv["patch"] = libdiffpy_version_info::patch;
 #else
-    // For old libdiffpy revert to compile time values.
-    rv["version"] = DIFFPY_VERSION;
-    rv["version_str"] = DIFFPY_VERSION_STR;
-    rv["major"] = DIFFPY_VERSION_MAJOR;
-    rv["minor"] = DIFFPY_VERSION_MINOR;
-    rv["date"] = DIFFPY_VERSION_DATE;
-    rv["git_sha"] = DIFFPY_GIT_SHA;
+    rv["patch"] = 0;
 #endif
     return rv;
 }

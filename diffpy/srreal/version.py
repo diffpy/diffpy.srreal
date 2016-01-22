@@ -14,7 +14,7 @@
 ##############################################################################
 
 
-"""Definition of __version__, __date__, __gitsha__.
+"""Definition of __version__, __date__, __gitsha__, libdiffpy_version_info.
 """
 
 from pkg_resources import resource_filename
@@ -33,42 +33,42 @@ __timestamp__ = cp.getint('DEFAULT', 'timestamp')
 
 del cp
 
-# Access to version data of the libdiffpy shared library ---------------------
+# version information on the active libdiffpy shared library -----------------
+
+from collections import namedtuple
+from diffpy.srreal.srreal_ext import _get_libdiffpy_version_info_dict
+
+libdiffpy_version_info = namedtuple('libdiffpy_version_info',
+        "version version_number major minor micro patch date git_sha")
+vd = _get_libdiffpy_version_info_dict()
+libdiffpy_version_info = libdiffpy_version_info(
+        version = vd['version_str'],
+        version_number = vd['version'],
+        major = vd['major'],
+        minor = vd['minor'],
+        micro = vd['micro'],
+        patch = vd['patch'],
+        date = vd['date'],
+        git_sha = vd['git_sha'])
+del vd
+
 
 def get_libdiffpy_version_info():
-    """Get version data for the linked libdiffpy shared library.
-
-    Return a singleton instance of libdiffpy_version_info class.
     """
-    global _lvi
-    if _lvi is not None:  return _lvi
-    from diffpy.srreal.srreal_ext import _get_libdiffpy_version_info_dict
-    vd = _get_libdiffpy_version_info_dict()
+    Get version data for the active libdiffpy shared library.
 
-    class libdiffpy_version_info(object):
+    Returns
+    -------
+    libdiffpy_version_info
+        a namedtuple which contains libdiffpy version data.
 
-        """Version information for the loaded libdiffpy shared library.
 
-        version  -- version string for the loaded libdiffpy library.
-        version_number -- Integer encoding of the library version.
-        major    -- Major version number of the library.
-        minor    -- Minor version number of the library.
-        date     -- Git commit date of the libdiffpy sources.
-        git_sha  -- Git commit hash of this libdiffpy version.
-        """
-
-        version = vd['version_str']
-        version_number = vd['version']
-        major = vd['major']
-        minor = vd['minor']
-        date = vd['date']
-        git_sha = vd['git_sha']
-
-    # class libdiffpy_version_info
-
-    _lvi = libdiffpy_version_info()
-    return get_libdiffpy_version_info()
-
-_lvi = None
+    .. note:: Deprecated in diffpy.srreal 1.1
+          `libdiffpy_version_info` will be removed in diffpy.srreal 1.2.
+    """
+    from warnings import warn
+    warn("get_libdiffpy_version_info is deprecated, "
+         "use the libdiffpy_version_info object.", DeprecationWarning)
+    return libdiffpy_version_info
 
 # End of file
