@@ -18,7 +18,7 @@
 """
 
 # package version
-from diffpy.srreal.version import __version__
+from diffpy.srreal._version_data import __version__
 
 
 # End of file

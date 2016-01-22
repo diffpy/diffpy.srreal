@@ -14,24 +14,13 @@
 ##############################################################################
 
 
-"""Definition of __version__, __date__, __gitsha__, libdiffpy_version_info.
+"""Definitions of version-related constants and of libdiffpy_version_info.
 """
 
-from pkg_resources import resource_filename
-from ConfigParser import RawConfigParser
-
-# obtain version information from the version.cfg file
-cp = RawConfigParser(dict(version='', date='', commit='', timestamp=0))
-if not cp.read(resource_filename(__name__, 'version.cfg')):
-    from warnings import warn
-    warn('Package metadata not found, execute "./setup.py egg_info".')
-
-__version__ = cp.get('DEFAULT', 'version')
-__date__ = cp.get('DEFAULT', 'date')
-__gitsha__ = cp.get('DEFAULT', 'commit')
-__timestamp__ = cp.getint('DEFAULT', 'timestamp')
-
-del cp
+from diffpy.srreal._version_data import __version__
+from diffpy.srreal._version_data import __date__
+from diffpy.srreal._version_data import __gitsha__
+from diffpy.srreal._version_data import __timestamp__
 
 # version information on the active libdiffpy shared library -----------------
 
