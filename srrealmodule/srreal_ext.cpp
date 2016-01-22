@@ -78,8 +78,20 @@ BOOST_PYTHON_MODULE(srreal_ext)
     wrap_BondCalculator();
     wrap_AtomRadiiTable();
     wrap_OverlapCalculator();
-    // load structure converters
+    // load Python modules that tweak the wrapped classes
     using boost::python::import;
+    import("diffpy.srreal.attributes");
+    import("diffpy.srreal.atomradiitable");
+    import("diffpy.srreal.bondcalculator");
+    import("diffpy.srreal.bvscalculator");
+    import("diffpy.srreal.overlapcalculator");
+    import("diffpy.srreal.pdfbaseline");
+    import("diffpy.srreal.pdfcalculator");
+    import("diffpy.srreal.pdfenvelope");
+    import("diffpy.srreal.peakprofile");
+    import("diffpy.srreal.peakwidthmodel");
+    import("diffpy.srreal.scatteringfactortable");
+    // load structure converters
     import("diffpy.srreal.structureconverters");
 }
 

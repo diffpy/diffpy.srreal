@@ -43,10 +43,6 @@ from diffpy.srreal.peakprofile import PeakProfile
 from diffpy.srreal.peakwidthmodel import (PeakWidthModel,
         ConstantPeakWidth, DebyeWallerPeakWidth, JeongPeakWidth)
 
-# activate pickling in PDFCalculator-owned classes
-
-import diffpy.srreal.scatteringfactortable
-
 # ----------------------------------------------------------------------------
 
 def _defineCommonInterface(cls):

@@ -196,8 +196,6 @@ void wrap_Attributes()
                 (python::arg("getter")=None, python::arg("setter")=None),
                 doc_Attributes__registerDoubleAttribute)
         ;
-    // inject the __getattr__ and __setattr__ methods
-    import("diffpy.srreal.attributes");
 }
 
 }   // namespace srrealmodule
