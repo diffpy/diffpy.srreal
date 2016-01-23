@@ -18,12 +18,16 @@ matrix:
     - os: osx
       env: MYUSEMC=false
 
+git:
+  depth: 999999
+
 branches:
   except:
     - /^v[0-9]/
 
 before_install:
-  - git fetch origin --unshallow --tags
+  - umask 022
+  - git fetch origin --tags
   - if ${MYUSEMC}; then
         NOAPT=true; NOMC=false;
     else
@@ -42,17 +46,17 @@ before_install:
     esac
 
   - mkdir -p ~/pkgs/
+  - mkdir -p ~/rundir/
 
   - $NOMC || pushd ~/pkgs/
   - $NOMC || wget --timestamping ${MYMCREPO}/${MYMCBUNDLE}
   - $NOMC || test -x ~/mc/bin/conda || bash ${MYMCBUNDLE} -b -f -p ~/mc
   - $NOMC || popd
   - $NOMC || export PATH="${HOME}/mc/bin:${PATH}"
-  - $NOMC || conda update conda --yes
-  - $NOMC || conda install --yes python=${MYPYTHON_VERSION} conda-build jinja2
+  - $NOMC || conda update --yes conda
+  - $NOMC || conda install --yes conda-build jinja2
   - $NOMC || conda create --name=testenv --yes python=${MYPYTHON_VERSION} coverage
-  - $NOMC || conda config --add channels pavoljuhas/channel/dev
-  - $NOMC || conda config --add channels pavoljuhas
+  - $NOMC || conda config --add channels diffpy
 
   - $NOAPT || test "${TRAVIS_OS_NAME}" = "linux" || exit $?
   - $NOAPT || sudo apt-get update -qq
@@ -69,7 +73,7 @@ before_install:
 
 
 install:
-  - $NOMC || conda build conda-recipe
+  - $NOMC || CONDA_PY=${MYPYTHON_VERSION} conda build conda-recipe
   - $NOMC || conda list --name=_test --export diffpy.srreal > /tmp/mypackage.txt
   - $NOMC || source activate testenv
   - $NOMC || conda install --yes --use-local --file=/tmp/mypackage.txt
@@ -86,15 +90,12 @@ install:
   - $NOAPT || sudo scons -C ~/pkgs/libdiffpy install
   - $NOAPT || easy_install --user "${MYTARBUNDLE}"
 
-  - cd
+  - cd ~/rundir
   - MYGIT_REV=$(python -c "import diffpy.srreal.version as v; print(v.__gitsha__)")
   - if [[ "${TRAVIS_COMMIT}" != "${MYGIT_REV}" ]]; then
         echo "Version mismatch ${TRAVIS_COMMIT} vs ${MYGIT_REV}.";
         exit 1;
     fi
-
-before_script:
-  - cd
 
 script:
   - coverage run --source diffpy.srreal -m diffpy.srreal.tests.run
