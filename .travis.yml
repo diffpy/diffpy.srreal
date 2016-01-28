@@ -62,7 +62,7 @@ before_install:
   - $NOAPT || sudo apt-get update -qq
   - $NOAPT || sudo apt-get install -y
                   libgsl0-dev libboost-all-dev python-dev
-                  python-setuptools python-numpy python-scipy python-pyparsing
+                  python-setuptools python-numpy python-pyparsing
                   python-lxml python-pip build-essential scons
   - $NOAPT || devutils/makesdist
   - $NOAPT || MYTARBUNDLE="$(ls -t "${PWD}"/dist/*.tar.gz | head -1)"
@@ -80,13 +80,10 @@ install:
 
   - $NOAPT || pip install $MYPIPFLAGS coverage
   - $NOAPT || pip install $MYPIPFLAGS periodictable
-  - $NOAPT || easy_install --user
-                  https://github.com/diffpy/diffpy.Structure/archive/master.tar.gz
-  - $NOAPT || easy_install --user
-                  https://github.com/diffpy/diffpy.utils/archive/master.tar.gz
+  - $NOAPT || easy_install --user diffpy.Structure
+  - $NOAPT || easy_install --user diffpy.utils
   - $NOAPT || sudo scons -C ~/pkgs/libObjCryst install
-  - $NOAPT || easy_install --user
-                  https://github.com/diffpy/pyobjcryst/archive/master.tar.gz
+  - $NOAPT || easy_install --user pyobjcryst
   - $NOAPT || sudo scons -C ~/pkgs/libdiffpy install
   - $NOAPT || easy_install --user "${MYTARBUNDLE}"
 
