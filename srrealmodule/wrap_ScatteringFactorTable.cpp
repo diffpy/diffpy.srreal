@@ -27,6 +27,14 @@
 #include <diffpy/srreal/SFTNeutron.hpp>
 #include <diffpy/srreal/SFTElectronNumber.hpp>
 
+#include "srreal_numpy_symbol.hpp"
+// numpy/arrayobject.h needs to be included after srreal_numpy_symbol.hpp,
+// which defines PY_ARRAY_UNIQUE_SYMBOL.  NO_IMPORT_ARRAY indicates
+// import_array will be called in the extension module initializer.
+#define NO_IMPORT_ARRAY
+#include <numpy/arrayobject.h>
+
+
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
 
@@ -81,8 +89,10 @@ can be redefined using the setCustomAs method.\n\
 \n\
 smbl -- string symbol for atom, ion or isotope.\n\
 Q    -- Q value in inverse Angstroms, by default 0.\n\
+        Q can be either float or NumPy array.\n\
 \n\
-Return float.  No support for Python override.\n\
+Return float or NumPy array of the same shape as Q.\n\
+No support for Python override.\n\
 ";
 
 const char* doc_ScatteringFactorTable__standardLookup = "\
@@ -325,6 +335,22 @@ class ScatteringFactorTableWrap :
 
 };  // class ScatteringFactorTableWrap
 
+object lookupnparray(const ScatteringFactorTable& sftb,
+        std::string smbl, object& qobj)
+{
+    NumPyArray_DoublePtr aa = extractNumPyDoubleArray(qobj);
+    NumPyArray_DoublePtr bb = createNumPyDoubleArrayLike(aa.first);
+    double* src = aa.second;
+    double* last = aa.second + PyArray_Size(aa.first.ptr());
+    double* dst = bb.second;
+    for (; src != last; ++src, ++dst)
+    {
+        *dst = sftb.lookup(smbl, *src);
+    }
+    return bb.first;
+}
+
+
 }   // namespace nswrap_ScatteringFactorTable
 
 // Wrapper definition --------------------------------------------------------
@@ -349,6 +375,9 @@ void wrap_ScatteringFactorTable()
                 &ScatteringFactorTable::radiationType,
                 return_value_policy<copy_const_reference>(),
                 doc_ScatteringFactorTable_radiationType)
+        .def("lookup",
+                lookupnparray,
+                (bp::arg("smbl"), bp::arg("qarray")))
         .def("lookup",
                 &ScatteringFactorTable::lookup,
                 (bp::arg("smbl"), bp::arg("q")=0.0),
