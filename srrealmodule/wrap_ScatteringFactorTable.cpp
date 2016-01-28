@@ -79,8 +79,8 @@ const char* doc_ScatteringFactorTable_lookup = "\
 Scattering factor of a specified atom at Q in 1/A.  The standard value\n\
 can be redefined using the setCustomAs method.\n\
 \n\
-smbl -- string symbol for atom, ion or isotope\n\
-Q    -- Q value in inverse Angstroms, by default 0\n\
+smbl -- string symbol for atom, ion or isotope.\n\
+Q    -- Q value in inverse Angstroms, by default 0.\n\
 \n\
 Return float.  No support for Python override.\n\
 ";
@@ -88,8 +88,8 @@ Return float.  No support for Python override.\n\
 const char* doc_ScatteringFactorTable__standardLookup = "\
 Standard value of the atom scattering factor at given Q in 1/A.\n\
 \n\
-smbl -- string symbol for atom, ion or isotope\n\
-q    -- scattering vector amplitude in 1/A\n\
+smbl -- string symbol for atom, ion or isotope.\n\
+q    -- scattering vector amplitude in 1/A.\n\
 \n\
 Return float.\n\
 Raise ValueError for unknown atom symbol.\n\
@@ -101,8 +101,8 @@ Define custom alias for the specified atom symbol.\n\
 Example: setCustomAs('12-C', 'C')  will declare the same\n\
 scattering factors for '12-C' as for 'C'.\n\
 \n\
-smbl -- custom string alias for an existing standard symbol\n\
-src  -- standard atom symbol (cannot be another alias)\n\
+smbl -- custom string alias for an existing standard symbol.\n\
+src  -- standard atom symbol (cannot be another alias).\n\
 \n\
 No return value.  No support for Python override.\n\
 ";
@@ -112,8 +112,8 @@ Define custom scattering factor for the specified atom symbol.\n\
 The custom value is calculated by rescaling standard value\n\
 from a source atom type.\n\
 \n\
-smbl -- string symbol of the atom with custom scattering factor\n\
-src  -- atom symbol for the source standard scattering factor\n\
+smbl -- string symbol of the atom with custom scattering factor.\n\
+src  -- atom symbol for the source standard scattering factor.\n\
 sf   -- new scattering factor value, defaults to the standard src factor.\n\
 q    -- optional Q value for the new custom scattering factor.\n\
         The internal scaling of the standard value is calculated at this Q.\n\
@@ -124,7 +124,7 @@ No return value.  No support for Python override.\n\
 const char* doc_ScatteringFactorTable_resetCustom = "\
 Revert scattering factor for the specified symbol to a standard value.\n\
 \n\
-smbl -- string symbol for atom, ion or isotope\n\
+smbl -- string symbol for atom, ion or isotope.\n\
 \n\
 No return value.  No support for Python override.\n\
 ";
