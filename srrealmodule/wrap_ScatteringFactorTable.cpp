@@ -27,6 +27,14 @@
 #include <diffpy/srreal/SFTNeutron.hpp>
 #include <diffpy/srreal/SFTElectronNumber.hpp>
 
+#include "srreal_numpy_symbol.hpp"
+// numpy/arrayobject.h needs to be included after srreal_numpy_symbol.hpp,
+// which defines PY_ARRAY_UNIQUE_SYMBOL.  NO_IMPORT_ARRAY indicates
+// import_array will be called in the extension module initializer.
+#define NO_IMPORT_ARRAY
+#include <numpy/arrayobject.h>
+
+
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
 
@@ -79,17 +87,19 @@ const char* doc_ScatteringFactorTable_lookup = "\
 Scattering factor of a specified atom at Q in 1/A.  The standard value\n\
 can be redefined using the setCustomAs method.\n\
 \n\
-smbl -- string symbol for atom, ion or isotope\n\
-Q    -- Q value in inverse Angstroms, by default 0\n\
+smbl -- string symbol for atom, ion or isotope.\n\
+Q    -- Q value in inverse Angstroms, by default 0.\n\
+        Q can be either float or NumPy array.\n\
 \n\
-Return float.  No support for Python override.\n\
+Return float or NumPy array of the same shape as Q.\n\
+No support for Python override.\n\
 ";
 
 const char* doc_ScatteringFactorTable__standardLookup = "\
 Standard value of the atom scattering factor at given Q in 1/A.\n\
 \n\
-smbl -- string symbol for atom, ion or isotope\n\
-q    -- scattering vector amplitude in 1/A\n\
+smbl -- string symbol for atom, ion or isotope.\n\
+q    -- scattering vector amplitude in 1/A.\n\
 \n\
 Return float.\n\
 Raise ValueError for unknown atom symbol.\n\
@@ -101,8 +111,8 @@ Define custom alias for the specified atom symbol.\n\
 Example: setCustomAs('12-C', 'C')  will declare the same\n\
 scattering factors for '12-C' as for 'C'.\n\
 \n\
-smbl -- custom string alias for an existing standard symbol\n\
-src  -- standard atom symbol (cannot be another alias)\n\
+smbl -- custom string alias for an existing standard symbol.\n\
+src  -- standard atom symbol (cannot be another alias).\n\
 \n\
 No return value.  No support for Python override.\n\
 ";
@@ -112,8 +122,8 @@ Define custom scattering factor for the specified atom symbol.\n\
 The custom value is calculated by rescaling standard value\n\
 from a source atom type.\n\
 \n\
-smbl -- string symbol of the atom with custom scattering factor\n\
-src  -- atom symbol for the source standard scattering factor\n\
+smbl -- string symbol of the atom with custom scattering factor.\n\
+src  -- atom symbol for the source standard scattering factor.\n\
 sf   -- new scattering factor value, defaults to the standard src factor.\n\
 q    -- optional Q value for the new custom scattering factor.\n\
         The internal scaling of the standard value is calculated at this Q.\n\
@@ -124,7 +134,7 @@ No return value.  No support for Python override.\n\
 const char* doc_ScatteringFactorTable_resetCustom = "\
 Revert scattering factor for the specified symbol to a standard value.\n\
 \n\
-smbl -- string symbol for atom, ion or isotope\n\
+smbl -- string symbol for atom, ion or isotope.\n\
 \n\
 No return value.  No support for Python override.\n\
 ";
@@ -325,6 +335,22 @@ class ScatteringFactorTableWrap :
 
 };  // class ScatteringFactorTableWrap
 
+object lookupnparray(const ScatteringFactorTable& sftb,
+        std::string smbl, object& qobj)
+{
+    NumPyArray_DoublePtr aa = extractNumPyDoubleArray(qobj);
+    NumPyArray_DoublePtr bb = createNumPyDoubleArrayLike(aa.first);
+    double* src = aa.second;
+    double* last = aa.second + PyArray_Size(aa.first.ptr());
+    double* dst = bb.second;
+    for (; src != last; ++src, ++dst)
+    {
+        *dst = sftb.lookup(smbl, *src);
+    }
+    return bb.first;
+}
+
+
 }   // namespace nswrap_ScatteringFactorTable
 
 // Wrapper definition --------------------------------------------------------
@@ -349,6 +375,9 @@ void wrap_ScatteringFactorTable()
                 &ScatteringFactorTable::radiationType,
                 return_value_policy<copy_const_reference>(),
                 doc_ScatteringFactorTable_radiationType)
+        .def("lookup",
+                lookupnparray,
+                (bp::arg("smbl"), bp::arg("qarray")))
         .def("lookup",
                 &ScatteringFactorTable::lookup,
                 (bp::arg("smbl"), bp::arg("q")=0.0),

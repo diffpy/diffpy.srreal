@@ -227,11 +227,18 @@ void fillPyListWithSets(::boost::python::list lst, const T& value)
 /// Type for numpy array object and a raw pointer to its double data
 typedef std::pair<boost::python::object, double*> NumPyArray_DoublePtr;
 
+
 /// helper for creating numpy array of doubles
 NumPyArray_DoublePtr createNumPyDoubleArray(int dim, const int* sz);
 
+
+/// helper for creating numpy array of the same shape as the argument
+NumPyArray_DoublePtr createNumPyDoubleArrayLike(boost::python::object& obj);
+
+
 /// helper for creating numpy views on existing double array
 boost::python::object createNumPyDoubleView(double*, int dim, const int* sz);
+
 
 /// template function for converting iterables to numpy array of doubles
 template <class Iter>
@@ -296,24 +303,30 @@ convertToNumPyArray(const ::diffpy::srreal::QuantityType& value)
     return convertToNumPyArray(value.begin(), value.end());
 }
 
+
 /// NumPy array view specializations for R3::Vector
 boost::python::object
 viewAsNumPyArray(::diffpy::srreal::R3::Vector&);
+
 
 /// NumPy array view specializations for R3::Matrix
 boost::python::object
 viewAsNumPyArray(::diffpy::srreal::R3::Matrix&);
 
+
 /// Copy possible NumPy array to R3::Vector
 void assignR3Vector(
         ::diffpy::srreal::R3::Vector& dst, boost::python::object& value);
+
 
 /// Copy possible NumPy array to R3::Matrix
 void assignR3Matrix(
         ::diffpy::srreal::R3::Matrix& dst, boost::python::object& value);
 
+
 /// Type for numpy array object and a raw pointer to its double data
 typedef std::pair<boost::python::object, int*> NumPyArray_IntPtr;
+
 
 /// helper for creating numpy array of integers
 NumPyArray_IntPtr createNumPyIntArray(int dim, const int* sz);
@@ -359,6 +372,10 @@ convertToPythonDict(const T& value)
 ::diffpy::srreal::QuantityType&
 extractQuantityType(::boost::python::object obj,
         ::diffpy::srreal::QuantityType& rv);
+
+
+/// efficient conversion of Python object to a numpy array of doubles
+NumPyArray_DoublePtr extractNumPyDoubleArray(::boost::python::object& obj);
 
 
 /// extract integer with a support for numpy.int types

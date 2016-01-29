@@ -6,6 +6,7 @@
 
 import unittest
 import cPickle
+import numpy
 
 from diffpy.srreal.scatteringfactortable import ScatteringFactorTable
 
@@ -128,6 +129,23 @@ class TestScatteringFactorTable(unittest.TestCase):
         lsft2 = lsft.clone()
         self.assertTrue(isinstance(lsft2, LocalTable))
         self.assertEqual(set(['Xy']), lsft2.getCustomSymbols())
+        return
+
+    def test_lookup(self):
+        """Check ScatteringFactorTable.lookup handling of array arguments.
+        """
+        qa = numpy.linspace(0, 50)
+        sftx = self.sftx
+        fmn0 = numpy.array([sftx.lookup('Mn', x) for x in qa])
+        fmn1 = sftx.lookup('Mn', qa)
+        self.assertTrue(numpy.array_equal(fmn0, fmn1))
+        self.assertTrue(numpy.array_equal(
+            fmn0.reshape(5, 10), sftx.lookup('Mn', qa.reshape(5, 10))))
+        self.assertTrue(numpy.array_equal(
+            fmn0.reshape(5, 2, 5), sftx.lookup('Mn', qa.reshape(5, 2, 5))))
+        self.assertTrue(numpy.array_equal(fmn0, sftx.lookup('Mn', list(qa))))
+        self.assertRaises(TypeError, sftx.lookup, 'Na', 'asdf')
+        self.assertRaises(TypeError, sftx.lookup, 'Na', {})
         return
 
 # End of class TestScatteringFactorTable

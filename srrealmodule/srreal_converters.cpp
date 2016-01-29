@@ -106,6 +106,22 @@ NumPyArray_DoublePtr createNumPyDoubleArray(int dim, const int* sz)
 }
 
 
+/// helper for creating numpy array of the same shape as the argument
+NumPyArray_DoublePtr createNumPyDoubleArrayLike(boost::python::object& obj)
+{
+    PyObject* arr = obj.ptr();
+    int dim = PyArray_NDIM(arr);
+    npy_intp* shape = PyArray_DIMS(arr);
+    // create numpy array
+    boost::python::object rvobj(
+            boost::python::handle<>(
+                PyArray_SimpleNew(dim, shape, PyArray_DOUBLE)));
+    double* rvdata = static_cast<double*>(PyArray_DATA(rvobj.ptr()));
+    NumPyArray_DoublePtr rv(rvobj, rvdata);
+    return rv;
+}
+
+
 /// helper for creating a numpy array view on a double array
 boost::python::object
 createNumPyDoubleView(double* data, int dim, const int* sz)
@@ -244,6 +260,24 @@ extractQuantityType(
     // otherwise copy elementwise converting each element to a double
     python::stl_input_iterator<double> begin(obj), end;
     rv.assign(begin, end);
+    return rv;
+}
+
+
+/// efficient conversion of Python object to a numpy array of doubles
+NumPyArray_DoublePtr extractNumPyDoubleArray(::boost::python::object& obj)
+{
+    PyObject* arr = PyArray_ContiguousFromAny(obj.ptr(), PyArray_DOUBLE, 0, 0);
+    if (!arr)
+    {
+        const char* emsg = "Cannot convert this object to numpy array.";
+        PyErr_SetString(PyExc_TypeError, emsg);
+        boost::python::throw_error_already_set();
+        assert(false);
+    }
+    boost::python::object rvobj((boost::python::handle<>(arr)));
+    double* rvdata = static_cast<double*>(PyArray_DATA(arr));
+    NumPyArray_DoublePtr rv(rvobj, rvdata);
     return rv;
 }
 

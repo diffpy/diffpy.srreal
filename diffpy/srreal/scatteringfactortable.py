@@ -14,14 +14,15 @@
 ##############################################################################
 
 
-"""class ScatteringFactorTable -- scattering factors for atoms, ions and
-isotopes.
+"""\
+class ScatteringFactorTable -- scattering factors for atoms, ions and isotopes.
 """
 
 
 # exported items, these also makes them show in pydoc.
 __all__ = ['ScatteringFactorTable',
-        'SFTXray', 'SFTElectron', 'SFTNeutron', 'SFTElectronNumber']
+        'SFTXray', 'SFTElectron', 'SFTNeutron', 'SFTElectronNumber',
+        'SFAverage']
 
 from diffpy.srreal.srreal_ext import ScatteringFactorTable
 from diffpy.srreal.srreal_ext import SFTXray
@@ -29,6 +30,7 @@ from diffpy.srreal.srreal_ext import SFTElectron
 from diffpy.srreal.srreal_ext import SFTNeutron
 from diffpy.srreal.srreal_ext import SFTElectronNumber
 from diffpy.srreal.wraputils import _pickle_getstate, _pickle_setstate
+from diffpy.srreal.sfaverage import SFAverage
 
 # Pickling Support -----------------------------------------------------------
 
