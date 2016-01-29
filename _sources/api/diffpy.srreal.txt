@@ -120,9 +120,18 @@ diffpy.srreal.scatteringfactortable module
 ------------------------------------------
 
 .. automodule:: diffpy.srreal.scatteringfactortable
-    :members:
+    :members: ScatteringFactorTable, SFTXray,
+      SFTElectron, SFTNeutron, SFTElectronNumber
     :undoc-members:
     :show-inheritance:
+
+diffpy.srreal.sfaverage module
+------------------------------
+
+.. automodule:: diffpy.srreal.sfaverage
+    :members:
+    :undoc-members:
+    :no-show-inheritance:
 
 diffpy.srreal.structureadapter module
 -------------------------------------

@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>diffpy.srreal documentation &mdash; SrReal 1.0a0-2 documentation</title>
+    <title>diffpy.srreal documentation &mdash; SrReal 1.1 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.0a0-2',
+        VERSION:     '1.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,11 +24,11 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
-    <link rel="top" title="SrReal 1.0a0-2 documentation" href="#" />
+    <link rel="top" title="SrReal 1.1 documentation" href="#" />
     <link rel="next" title="diffpy.srreal package" href="api/diffpy.srreal.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -40,19 +40,19 @@
         <li class="right" >
           <a href="api/diffpy.srreal.html" title="diffpy.srreal package"
              accesskey="N">next</a> |</li>
-        <li><a href="#">SrReal 1.0a0-2 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="#">SrReal 1.1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="diffpy-srreal-documentation">
 <h1>diffpy.srreal documentation<a class="headerlink" href="#diffpy-srreal-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Software version 1.0a0-2.</p>
-<p>Last updated March 11, 2014.</p>
+<p>Software version 1.1.</p>
+<p>Last updated January 29, 2016.</p>
 <p>diffpy.srreal - calculators for PDF, bond valence sum and other pair quantities</p>
 <p>The diffpy.srreal package provides calculators for atomic pair distribution
 function (PDF), bond valence sums (BVS), atom overlaps for a hard-sphere
@@ -96,7 +96,7 @@ Copyright (c) 2006-2007, Board of Trustees of Michigan State University
 Copyright (c) 2008-2012, The Trustees of Columbia University in the City
     of New York
 
-Copyright (c) 2014, Brookhaven Science Associates, Brookhaven National
+Copyright (c) 2014-2016, Brookhaven Science Associates, Brookhaven National
     Laboratory
 
 
@@ -268,6 +268,7 @@ file included with the distribution.</p>
 <li class="toctree-l2"><a class="reference internal" href="api/diffpy.srreal.html#module-diffpy.srreal.peakprofile">diffpy.srreal.peakprofile module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/diffpy.srreal.html#module-diffpy.srreal.peakwidthmodel">diffpy.srreal.peakwidthmodel module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/diffpy.srreal.html#module-diffpy.srreal.scatteringfactortable">diffpy.srreal.scatteringfactortable module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/diffpy.srreal.html#module-diffpy.srreal.sfaverage">diffpy.srreal.sfaverage module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/diffpy.srreal.html#module-diffpy.srreal.structureadapter">diffpy.srreal.structureadapter module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/diffpy.srreal.html#module-diffpy.srreal.structureconverters">diffpy.srreal.structureconverters module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/diffpy.srreal.html#module-diffpy.srreal.version">diffpy.srreal.version module</a></li>
@@ -278,9 +279,9 @@ file included with the distribution.</p>
 </ul>
 </div>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
-<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
-<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+<li><a class="reference internal" href="genindex.html"><span>Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span>Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span>Search Page</span></a></li>
 </ul>
 </div>
 </div>
@@ -289,7 +290,7 @@ file included with the distribution.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
@@ -308,12 +309,14 @@ file included with the distribution.</p>
   <h4>Next topic</h4>
   <p class="topless"><a href="api/diffpy.srreal.html"
                         title="next chapter">diffpy.srreal package</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/index.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -330,7 +333,7 @@ file included with the distribution.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -342,12 +345,12 @@ file included with the distribution.</p>
         <li class="right" >
           <a href="api/diffpy.srreal.html" title="diffpy.srreal package"
              >next</a> |</li>
-        <li><a href="#">SrReal 1.0a0-2 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="#">SrReal 1.1 documentation</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Brookhaven National Laboratory.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Brookhaven National Laboratory.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.4.
     </div>
   </body>
 </html>
