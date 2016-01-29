@@ -17,6 +17,13 @@
 """
 
 
+# create logger instance for the tests subpackage
+import logging
+
+logging.basicConfig()
+logger = logging.getLogger(__name__)
+del logging
+
 
 def testsuite():
     '''Build a unit tests suite for the diffpy.srreal package.

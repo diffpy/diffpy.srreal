@@ -10,9 +10,8 @@ TestCasePeriodictableOptional -- use this as a TestCase base class to
 """
 
 
-import logging
-
 from diffpy.srreal.structureconverters import convertObjCrystCrystal
+from diffpy.srreal.tests import logger
 
 # class TestCaseObjCrystOptional
 
@@ -22,10 +21,10 @@ try:
     convertObjCrystCrystal(pyobjcryst.crystal.Crystal())
 except ImportError:
     TestCaseObjCrystOptional = object
-    logging.warning('Cannot import pyobjcryst, pyobjcryst tests skipped.')
+    logger.warning('Cannot import pyobjcryst, pyobjcryst tests skipped.')
 except TypeError:
     TestCaseObjCrystOptional = object
-    logging.warning('Compiled without ObjCryst, pyobjcryst tests skipped.')
+    logger.warning('Compiled without ObjCryst, pyobjcryst tests skipped.')
 
 # class TestCasePeriodictableOptional
 
@@ -34,7 +33,7 @@ try:
     from unittest import TestCase as TestCasePeriodictableOptional
 except ImportError:
     TestCasePeriodictableOptional = object
-    logging.warning('Cannot import periodictable, periodictable tests skipped.')
+    logger.warning('Cannot import periodictable, periodictable tests skipped.')
 
 # helper functions
 
