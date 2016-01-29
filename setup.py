@@ -15,6 +15,11 @@ from setuptools import Extension
 from numpy.distutils.misc_util import get_numpy_include_dirs
 
 
+# Use this version when git data are not available, like in git zip archive.
+# Update when tagging a new release.
+FALLBACK_VERSION = '1.1.post0'
+
+
 # define extension arguments here
 ext_kws = {
         'libraries' : ['diffpy'],
@@ -66,10 +71,6 @@ def create_extensions():
             **ext_kws)
     return [ext]
 
-
-# Use this version when git data are not available, like in git zip archive.
-# Update when tagging a new release.
-FALLBACK_VERSION = '1.1a1.post0'
 
 # versioncfgfile holds version data for git commit hash and date.
 # It must reside in the same directory as version.py.
