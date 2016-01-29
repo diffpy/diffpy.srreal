@@ -4,7 +4,6 @@
 """
 
 
-import os
 import unittest
 import cPickle
 import numpy
@@ -12,8 +11,10 @@ from diffpy.Structure import Structure
 from diffpy.srreal.pdfcalculator import PDFCalculator
 from diffpy.srreal.tests.testutils import TestCaseObjCrystOptional
 from diffpy.srreal.tests.testutils import loadObjCrystCrystal
-from diffpy.srreal.tests.testutils import loadDiffPyStructure, datafile
-from diffpy.srreal.structureadapter import *
+from diffpy.srreal.tests.testutils import loadDiffPyStructure
+from diffpy.srreal.structureadapter import (
+        createStructureAdapter, nometa, nosymmetry, StructureAdapter,
+        AtomicStructureAdapter, Atom, PeriodicStructureAdapter)
 import diffpy.srreal.tests.testutils as testutils
 
 

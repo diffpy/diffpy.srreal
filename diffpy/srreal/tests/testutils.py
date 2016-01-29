@@ -11,7 +11,6 @@ TestCasePeriodictableOptional -- use this as a TestCase base class to
 
 
 import logging
-import os.path
 
 from diffpy.srreal.structureconverters import convertObjCrystCrystal
 

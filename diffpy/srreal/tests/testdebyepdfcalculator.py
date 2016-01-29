@@ -4,7 +4,6 @@
 """
 
 
-import os
 import unittest
 import cPickle
 import numpy
@@ -107,7 +106,6 @@ class TestDebyePDFCalculator(unittest.TestCase):
         dpdfc = self.dpdfc
         dpdfc.qmin = 1.0
         rutile = self.tio2rutile
-        atomtypes = [a.element for a in rutile]
         r0, g0 = dpdfc(rutile)
         # Ti-Ti
         dpdfc.maskAllPairs(False)

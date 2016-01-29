@@ -69,7 +69,6 @@ class TestPairQuantity(unittest.TestCase):
     def test_ticker_override(self):
         """check Python override of PairQuantity.ticker.
         """
-        from diffpy.srreal.eventticker import EventTicker
         pqd = PQDerived()
         self.assertEqual(0, pqd.tcnt)
         et0 = pqd.ticker()

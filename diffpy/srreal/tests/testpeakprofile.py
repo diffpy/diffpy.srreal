@@ -4,10 +4,8 @@
 """
 
 
-import os
 import unittest
 import cPickle
-import numpy
 
 from diffpy.srreal.peakprofile import PeakProfile, \
         GaussianProfile, CroppedGaussianProfile
@@ -101,7 +99,6 @@ class TestPeakProfile(unittest.TestCase):
     def test_ticker_override(self):
         """check method override for PeakProfile.ticker in a derived class.
         """
-        from diffpy.srreal.eventticker import EventTicker
         pkf = MySawTooth()
         self.assertEqual(0, pkf.tcnt)
         et0 = pkf.ticker()
@@ -163,7 +160,7 @@ class MySawTooth(PeakProfile):
 
     def __call__(self, x, fwhm):
         w = 1.0 * fwhm
-        rv = (1 - math.abs(x) / w) / (1.0 * w)
+        rv = (1 - abs(x) / w) / (1.0 * w)
         if rv < 0:  rv = 0
         return rv
 

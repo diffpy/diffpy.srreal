@@ -4,7 +4,6 @@
 """
 
 
-import os
 import unittest
 import cPickle
 from diffpy.srreal.tests.testutils import TestCasePeriodictableOptional

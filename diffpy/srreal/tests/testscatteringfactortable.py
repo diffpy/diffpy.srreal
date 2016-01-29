@@ -4,7 +4,6 @@
 """
 
 
-import os
 import unittest
 import cPickle
 
@@ -61,7 +60,6 @@ class TestScatteringFactorTable(unittest.TestCase):
     def test_ticker_override(self):
         """check Python override of ScatteringFactorTable.ticker.
         """
-        from diffpy.srreal.eventticker import EventTicker
         from diffpy.srreal.pdfcalculator import PDFCalculator
         lsft = LocalTable()
         self.assertEqual(0, lsft.tcnt)

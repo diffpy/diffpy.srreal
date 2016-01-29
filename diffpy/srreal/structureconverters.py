@@ -19,7 +19,6 @@ Converters from other structure representations in Python to diffpy.srreal
 StructureAdapter classes.
 """
 
-import numpy
 from diffpy.srreal.structureadapter import RegisterStructureAdapter
 from diffpy.srreal.srreal_ext import AtomicStructureAdapter
 from diffpy.srreal.srreal_ext import PeriodicStructureAdapter

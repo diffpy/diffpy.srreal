@@ -4,12 +4,10 @@
 """
 
 
-import os
 import unittest
 import multiprocessing
 import numpy
 from diffpy.srreal.tests.testutils import loadDiffPyStructure
-from diffpy.srreal.pdfcalculator import PDFCalculator
 from diffpy.srreal.parallel import createParallelCalculator
 
 ##############################################################################

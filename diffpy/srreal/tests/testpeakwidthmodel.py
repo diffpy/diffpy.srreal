@@ -4,7 +4,6 @@
 """
 
 
-import os
 import unittest
 import cPickle
 
@@ -110,7 +109,6 @@ class TestPeakWidthModel(unittest.TestCase):
     def test_ticker_override(self):
         """check PeakWidthModel.ticker override in a Python-derived class.
         """
-        from diffpy.srreal.eventticker import EventTicker
         pwm = MyPWM()
         self.assertEqual(0, pwm.tcnt)
         et0 = pwm.ticker()
