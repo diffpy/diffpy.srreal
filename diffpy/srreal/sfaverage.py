@@ -15,10 +15,7 @@
 
 
 """\
-class SFAverage -- calculate average scattering factors and other statistics.
-
-This class calculates compositional average of scattering factors and squared
-factors from a structure object or from atom concentrations.
+Compositional averaging of atom scattering factors.
 
 
 Examples
@@ -52,19 +49,23 @@ class SFAverage(object):
 
     Attributes
     ----------
-    f1sum : float or NumPy array
-        sum of scattering factors from all atoms.
-    f2sum : float or NumPy array
-        sum of squared scattering factors from all atoms.
-    count : float
-        total number of atoms.  Can be non-integer in case of
-        fractional occupancies
-    f1avg : float or NumPy array
-        compositional average of scattering factors.
-    f2avg : float or NumPy array
-        compositional average of squared scattering factors.
-    composition : dict
-        dictionary of atom symbols and their total abundancies.
+    f1sum :
+        Sum of scattering factors from all atoms.
+        Float or NumPy array.
+    f2sum :
+        Sum of squared scattering factors from all atoms.
+        Float or NumPy array.
+    count :
+        Total number of atoms.  Can be non-integer in case of
+        fractional occupancies.
+    f1avg :
+        Compositional average of scattering factors.
+        Float or NumPy array.
+    f2avg :
+        Compositional average of squared scattering factors.
+        Float or NumPy array.
+    composition :
+        Dictionary of atom symbols and their total abundancies.
     """
 
     f1sum = 0
