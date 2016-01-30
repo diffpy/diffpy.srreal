@@ -81,7 +81,6 @@ install:
   - $NOAPT || pip install $MYPIPFLAGS coverage
   - $NOAPT || pip install $MYPIPFLAGS periodictable
   - $NOAPT || easy_install --user diffpy.Structure
-  - $NOAPT || easy_install --user diffpy.utils
   - $NOAPT || sudo scons -C ~/pkgs/libObjCryst install
   - $NOAPT || easy_install --user pyobjcryst
   - $NOAPT || sudo scons -C ~/pkgs/libdiffpy install
