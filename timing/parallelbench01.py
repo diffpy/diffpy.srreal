@@ -3,7 +3,7 @@
 from __future__ import print_function
 import multiprocessing
 import numpy as np
-import timeit
+import time
 from diffpy.Structure import Structure
 from diffpy.srreal.pdfcalculator import PDFCalculator
 from diffpy.srreal.structureadapter import createStructureAdapter
@@ -25,13 +25,13 @@ pool = multiprocessing.Pool(processes=ncpu)
 ppc = [createParallelCalculator(pdfcstd.copy(), nn, pool.imap_unordered)
         for nn in range(1, ncpu + 1)]
 
-def timecalculator(pc):
-    import __main__
-    __main__._thecalculator = pc
-    t = timeit.repeat('pc(adpt)',
-            setup='from __main__ import _thecalculator as pc, adpt as adpt',
-            repeat=1, number=1)
-    return np.mean(t)
+def timecalculator(pc, repeats=1):
+    t0 = time.time()
+    for i in range(repeats):
+        pc(adpt)
+    t1 = time.time()
+    return (t1 - t0) / repeats
+
 
 print("time on a single thread:", timecalculator(pc0))
 
