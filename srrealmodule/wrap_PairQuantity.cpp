@@ -39,6 +39,7 @@
 #include "srreal_pickling.hpp"
 
 #include <diffpy/srreal/PairQuantity.hpp>
+#include <diffpy/srreal/NoMetaStructureAdapter.hpp>
 
 namespace srrealmodule {
 namespace nswrap_PairQuantity {
@@ -330,12 +331,45 @@ python::object repr_QuantityType(const QuantityType& v)
 }
 
 
+class ScopedGILRelease
+{
+    public:
+
+        inline ScopedGILRelease()
+        {
+            m_thread_state = PyEval_SaveThread();
+        }
+
+        inline ~ScopedGILRelease()
+        {
+            PyEval_RestoreThread(m_thread_state);
+            m_thread_state = NULL;
+        }
+
+    private:
+
+        PyThreadState * m_thread_state;
+};
+
+
 // PairQuantity::eval is a template non-constant method and
 // needs an explicit wrapper function.
 
 python::object eval_asarray(PairQuantity& obj, python::object& a)
 {
-    QuantityType value = (Py_None == a.ptr()) ? obj.eval() : obj.eval(a);
+    if (Py_None != a.ptr())  obj.setStructure(nometa(a));
+    QuantityType value;
+    boost::scoped_ptr<ScopedGILRelease> releasegilhere(new ScopedGILRelease);
+    try
+    {
+        value = obj.eval();
+        releasegilhere.reset();
+    }
+    catch (...)
+    {
+        releasegilhere.reset();
+        throw;
+    }
     python::object rv = convertToNumPyArray(value);
     return rv;
 }
