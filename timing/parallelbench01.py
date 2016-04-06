@@ -8,6 +8,7 @@ from diffpy.Structure import Structure
 from diffpy.srreal.pdfcalculator import PDFCalculator
 from diffpy.srreal.structureadapter import createStructureAdapter
 from diffpy.srreal.parallel import createParallelCalculator
+from timingutils import fitparalleltimes, timecalculator
 
 mentholcif = 'menthol.cif'
 Uisodefault = 0.01
@@ -22,8 +23,6 @@ pc0 = pdfcstd.copy()
 
 ncpu = multiprocessing.cpu_count()
 pool = multiprocessing.Pool(processes=ncpu)
-ppc = [createParallelCalculator(pdfcstd.copy(), nn, pool.imap_unordered)
-        for nn in range(1, ncpu + 1)]
 
 def timecalculator(pc, repeats=1):
     t0 = time.time()
@@ -35,6 +34,12 @@ def timecalculator(pc, repeats=1):
 
 print("time on a single thread:", timecalculator(pc0))
 
-for ppi in ppc:
-    print("timing with %i/%i parallel jobs:" % (ppi.ncpu, ncpu),
-            timecalculator(ppi))
+partimes = []
+for nn in range(1, ncpu + 1):
+    ppi = createParallelCalculator(pdfcstd.copy(), nn, pool.imap_unordered)
+    ti = timecalculator(ppi)
+    partimes.append(ti)
+    print("timing with %i/%i parallel jobs:" % (ppi.ncpu, ncpu), ti)
+
+fpt = fitparalleltimes(partimes)
+print(fpt)
