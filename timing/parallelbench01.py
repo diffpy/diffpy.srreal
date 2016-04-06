@@ -8,7 +8,7 @@ from diffpy.Structure import Structure
 from diffpy.srreal.pdfcalculator import PDFCalculator
 from diffpy.srreal.structureadapter import createStructureAdapter
 from diffpy.srreal.parallel import createParallelCalculator
-from timingutils import fitparalleltimes, timecalculator
+from timingutils import fitparalleltimes
 
 mentholcif = 'menthol.cif'
 Uisodefault = 0.01
