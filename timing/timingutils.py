@@ -1,3 +1,4 @@
+from __future__ import print_function
 import numpy
 import numpy.linalg
 
@@ -34,6 +35,22 @@ class fitparalleltimes(object):
         return rv
 
 
+    def plot(self):
+        from matplotlib.pyplot import plot
+        nx = numpy.linspace(0.9, self.n.max() + 0.5)
+        rv = plot(self.n, self.t, 'bo',
+                  nx, self.tsim(nx), 'g--',
+                  [self.nbest], [self.tbest], '*', markersize=6)
+        hcircle = rv[0]
+        hcircle.set_markerfacecolor('none')
+        hcircle.set_markeredgecolor('blue')
+        hstar = rv[-1]
+        hstar.set_markersize(12)
+        hstar.set_markerfacecolor('none')
+        hstar.set_markeredgecolor('red')
+        return rv
+
+
     def __str__(self):
         rv = "ABC = %g %g %g  tbest = %g  nbest = %g" % (
                 self.A, self.B, self.C, self.tbest, self.nbest)
@@ -42,10 +59,10 @@ class fitparalleltimes(object):
 # class fitparalleltimes
 
 if __name__ == '__main__':
-    times1 = numpy.array([
+    fpt1 = fitparalleltimes([
         7.3867149353, 3.98858690262, 3.24399209023, 3.07190990448])
-    times2 = numpy.array([
+    print("fpt1:", fpt1)
+    fpt2 = fitparalleltimes([
         8.0034828186, 3.52259397507, 2.41263222694, 1.81602692604,
         1.63822293282, 1.53632307053, 1.46815896034, 1.39612221718])
-    print fitparalleltimes(times1)
-    print fitparalleltimes(times2)
+    print("fpt2:", fpt2)
