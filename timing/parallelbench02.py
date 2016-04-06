@@ -4,6 +4,7 @@ from __future__ import print_function
 import multiprocessing
 import numpy as np
 import time
+import sys
 from diffpy.Structure import Structure
 from diffpy.srreal.pdfcalculator import PDFCalculator
 from diffpy.srreal.structureadapter import createStructureAdapter
@@ -36,26 +37,40 @@ def timecalculator(pc, repeats=1):
     return (t1 - t0) / repeats
 
 
-ncpu = multiprocessing.cpu_count()
-pool = multiprocessing.Pool(processes=ncpu)
+from ipyparallel import Client
+rc = Client()
+dv = rc[:]
+ncpu = len(rc)
+
 
 class ParallelCalculator(object):
 
     def __init__(self, ncpu):
         self.pcmaster = pdfcstd.copy()
         self.ncpu = ncpu
+        dv.push(dict(pc=self.pcmaster.copy()))
+        for i, vv in enumerate(rc):
+            vv.execute('pc._setupParallelRun(%i, %i)' %
+                    (i, self.ncpu))
         return
 
 
     def __call__(self, stru):
         self.pcmaster.setStructure(stru)
-        arglist = [(self.pcmaster, i, self.ncpu)
-                for i in range(self.ncpu)]
-        for data in pool.imap_unordered(partialresult, arglist):
+        dv.push(dict(stru=stru))
+        dv.execute('pc.eval(stru); pdata = pc._getParallelData()')
+        for i, data in enumerate(dv.pull('pdata')):
+            if i == self.ncpu:  break
             self.pcmaster._mergeParallelData(data, self.ncpu)
         rv = (self.pcmaster.rgrid, self.pcmaster.pdf)
         return rv
 
+
+r0, g0 = pc0(adpt)
+ppc = ParallelCalculator(4)
+r1, g1 = ppc(adpt)
+
+print("parallel calculator consistent:", np.allclose(g0, g1))
 
 print("time on a single thread:", timecalculator(pc0))
 
