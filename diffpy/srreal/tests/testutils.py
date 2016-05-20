@@ -10,6 +10,9 @@ TestCasePeriodictableOptional -- use this as a TestCase base class to
 """
 
 
+import copy
+import numpy
+
 from diffpy.srreal.structureconverters import convertObjCrystCrystal
 from diffpy.srreal.tests import logger
 
@@ -76,12 +79,61 @@ class HasCustomPQConfig(object):
 
 class DerivedStructureAdapter(HasCustomPQConfig, StructureAdapter):
 
-    def countSites(self):
-        return 0
+    def __init__(self):
+        StructureAdapter.__init__(self)
+        self.positions = []
+
+
+    def clone(self):
+        rv = DerivedStructureAdapter()
+        rv.positions[:] = copy.deepcopy(self.positions)
+        return rv
+
 
     def createBondGenerator(self):
         from diffpy.srreal.structureadapter import BaseBondGenerator
         return BaseBondGenerator(self)
+
+
+    def countSites(self):
+        return len(self.positions)
+
+    # reuse base totalOccupancy
+    # reuse base numberDensity
+
+    def siteAtomType(self, idx):
+        self._checkindex(idx)
+        return "Cu"
+
+
+    def siteCartesianPosition(self, idx):
+        return self.positions[idx]
+
+
+    def siteMultiplicity(self, idx):
+        self._checkindex(idx)
+        return 2 * StructureAdapter.siteMultiplicity(self, idx)
+
+
+    def siteOccupancy(self, idx):
+        self._checkindex(idx)
+        return 0.5 * StructureAdapter.siteOccupancy(self, idx)
+
+    def siteAnisotropy(self, idx):
+        self._checkindex(idx)
+        return False
+
+
+    def siteCartesianUij(self, idx):
+        self._checkindex(idx)
+        return numpy.identity(3, dtype=float) * 0.005
+
+
+    def _checkindex(self, idx):
+        self.positions[idx]
+        return
+
+# End of class DerivedStructureAdapter
 
 class DerivedAtomicStructureAdapter(
         HasCustomPQConfig, AtomicStructureAdapter):
