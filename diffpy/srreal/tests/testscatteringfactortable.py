@@ -42,9 +42,9 @@ class TestScatteringFactorTable(unittest.TestCase):
         """check if instances are aliased by radiationType().
         """
         ltb = ScatteringFactorTable.createByType('LTB')
-        self.failUnless(type(ltb) is LocalTable)
+        self.assertTrue(type(ltb) is LocalTable)
         ltb2 = ScatteringFactorTable.createByType('localtable')
-        self.failUnless(type(ltb2) is LocalTable)
+        self.assertTrue(type(ltb2) is LocalTable)
         return
 
     def test_ticker(self):
@@ -55,7 +55,7 @@ class TestScatteringFactorTable(unittest.TestCase):
         self.sftx.setCustomAs('D', 'H')
         et1 = self.sftx.ticker()
         self.assertNotEqual(et0, et1)
-        self.failUnless(et0 < et1)
+        self.assertTrue(et0 < et1)
         return
 
     def test_ticker_override(self):

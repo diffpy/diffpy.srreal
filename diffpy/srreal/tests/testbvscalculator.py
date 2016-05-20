@@ -43,12 +43,12 @@ class TestBVSCalculator(unittest.TestCase):
         vcalc = self.bvc(self.rutile)
         self.assertEqual(len(self.rutile), len(vcalc))
         self.assertEqual(tuple(self.bvc.value), tuple(vcalc))
-        self.failUnless(vcalc[0] > 0)
-        self.failUnless(vcalc[-1] < 0)
+        self.assertTrue(vcalc[0] > 0)
+        self.assertTrue(vcalc[-1] < 0)
         self.assertAlmostEqual(0.0, sum(vcalc), 12)
         self.assertAlmostEqual(0.0, sum(self.bvc.valences), 12)
         for vo, vc in zip(self.bvc.valences, vcalc):
-            self.failUnless(abs((vo - vc) / vo) < 0.1)
+            self.assertTrue(abs((vo - vc) / vo) < 0.1)
         return
 
 
@@ -59,7 +59,7 @@ class TestBVSCalculator(unittest.TestCase):
         self.assertEqual(6, len(self.bvc.bvdiff))
         # rutile is overbonded
         for bvd in self.bvc.bvdiff:
-            self.failUnless(bvd < 0)
+            self.assertTrue(bvd < 0)
         return
 
 
@@ -78,7 +78,7 @@ class TestBVSCalculator(unittest.TestCase):
         from math import sqrt
         self.assertEqual(0, self.bvc.bvrmsdiff)
         self.bvc(self.rutile)
-        self.failUnless(self.bvc.bvrmsdiff > 0)
+        self.assertTrue(self.bvc.bvrmsdiff > 0)
         self.assertAlmostEqual(sqrt(self.bvc.bvmsdiff),
                 self.bvc.bvrmsdiff, 12)
         bvrmsd0 = self.bvc.bvrmsdiff
@@ -128,7 +128,7 @@ class TestBVSCalculator(unittest.TestCase):
         bvsc.foobar = 'asdf'
         spkl = cPickle.dumps(bvsc)
         bvsc1 = cPickle.loads(spkl)
-        self.failIf(bvsc is bvsc1)
+        self.assertFalse(bvsc is bvsc1)
         for a in bvsc._namesOfDoubleAttributes():
             self.assertEqual(getattr(bvsc, a), getattr(bvsc1, a))
         self.assertEqual('asdf', bvsc1.foobar)
@@ -140,11 +140,11 @@ class TestBVSCalculator(unittest.TestCase):
         '''
         self.bvc.maskAllPairs(False)
         self.bvc.setPairMask(0, 1, True)
-        self.failUnless(False is self.bvc.getPairMask(0, 0))
-        self.failUnless(True is self.bvc.getPairMask(0, 1))
+        self.assertTrue(False is self.bvc.getPairMask(0, 0))
+        self.assertTrue(True is self.bvc.getPairMask(0, 1))
         bvc1 = cPickle.loads(cPickle.dumps(self.bvc))
-        self.failUnless(False is bvc1.getPairMask(0, 0))
-        self.failUnless(True is bvc1.getPairMask(0, 1))
+        self.assertTrue(False is bvc1.getPairMask(0, 0))
+        self.assertTrue(True is bvc1.getPairMask(0, 1))
         return
 
 
@@ -173,10 +173,10 @@ class TestBVSCalculator(unittest.TestCase):
         self.assertEqual(1, stru0.cpqcount)
         spkl = cPickle.dumps(bvc)
         bvc1 = cPickle.loads(spkl)
-        self.failUnless(stru0 is bvc.getStructure())
+        self.assertTrue(stru0 is bvc.getStructure())
         stru1 = bvc1.getStructure()
-        self.failUnless(type(stru1) is DerivedStructureAdapter)
-        self.failIf(stru1 is stru0)
+        self.assertTrue(type(stru1) is DerivedStructureAdapter)
+        self.assertFalse(stru1 is stru0)
         self.assertEqual(1, stru1.cpqcount)
         return
 

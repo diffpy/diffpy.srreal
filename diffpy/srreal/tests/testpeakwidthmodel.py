@@ -102,7 +102,7 @@ class TestPeakWidthModel(unittest.TestCase):
         self.pwconst.width = 3
         et1 = self.pwconst.ticker()
         self.assertNotEqual(et0, et1)
-        self.failUnless(et0 < et1)
+        self.assertTrue(et0 < et1)
         return
 
 

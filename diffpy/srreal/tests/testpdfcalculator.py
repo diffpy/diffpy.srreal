@@ -68,8 +68,8 @@ class TestPDFCalculator(unittest.TestCase):
         r3, g3 = self.pdfcalc(rutile2)
         self.assertEqual(0.0, sum(g3[r3 >= 5] ** 2))
         r4, g4 = self.pdfcalc(rutile2, scale=1, spdiameter=0)
-        self.failUnless(numpy.all(r4 == r0))
-        self.failUnless(numpy.all(g4 == g0))
+        self.assertTrue(numpy.all(r4 == r0))
+        self.assertTrue(numpy.all(g4 == g0))
         return
 
     def test__getDoubleAttr(self):
@@ -84,15 +84,15 @@ class TestPDFCalculator(unittest.TestCase):
     def test__hasDoubleAttr(self):
         """check PDFCalculator._hasDoubleAttr()
         """
-        self.failUnless(self.pdfcalc._hasDoubleAttr('scale'))
-        self.failIf(self.pdfcalc._hasDoubleAttr('notanattribute'))
+        self.assertTrue(self.pdfcalc._hasDoubleAttr('scale'))
+        self.assertFalse(self.pdfcalc._hasDoubleAttr('notanattribute'))
         return
 
     def test__namesOfDoubleAttributes(self):
         """check PDFCalculator._namesOfDoubleAttributes()
         """
-        self.failUnless(type(self.pdfcalc._namesOfDoubleAttributes()) is set)
-        self.failUnless('qmax' in self.pdfcalc._namesOfDoubleAttributes())
+        self.assertTrue(type(self.pdfcalc._namesOfDoubleAttributes()) is set)
+        self.assertTrue('qmax' in self.pdfcalc._namesOfDoubleAttributes())
         return
 
     def test__setDoubleAttr(self):
@@ -113,7 +113,7 @@ class TestPDFCalculator(unittest.TestCase):
         self.pdfcalc._setDoubleAttr('rmax', 10.0001)
         self.pdfcalc.eval(self.nickel)
         gcalc = self.pdfcalc.pdf
-        self.failUnless(_maxNormDiff(gpf2, gcalc) < 0.0091)
+        self.assertTrue(_maxNormDiff(gpf2, gcalc) < 0.0091)
         return
 
     def test_eval_rutile(self):
@@ -133,12 +133,12 @@ class TestPDFCalculator(unittest.TestCase):
         gcalc = self.pdfcalc.pdf
         # termination at rmin is poorly cut in PDFfit2
         mxnd = _maxNormDiff(gpf2, gcalc)
-        self.failUnless(mxnd < 0.057)
+        self.assertTrue(mxnd < 0.057)
         # more accurate from 1.5
         mxnd1 = _maxNormDiff(gpf2[:500], gcalc[:500])
         mxnd2 = _maxNormDiff(gpf2[500:], gcalc[500:])
-        self.failUnless(mxnd1 < 0.056)
-        self.failUnless(mxnd2 < 0.020)
+        self.assertTrue(mxnd1 < 0.056)
+        self.assertTrue(mxnd2 < 0.020)
         return
 
     def test_partial_pdfs(self):
@@ -155,39 +155,39 @@ class TestPDFCalculator(unittest.TestCase):
         pdfc.setTypeMask("Ti", "Ti", True)
         r1, g1 = pdfc(rutile)
         rdf1 = pdfc.rdf
-        self.failUnless(numpy.array_equal(r0, r1))
+        self.assertTrue(numpy.array_equal(r0, r1))
         pdfc.invertMask()
         r1i, g1i = pdfc(rutile)
         rdf1i = pdfc.rdf
-        self.failUnless(numpy.array_equal(r0, r1i))
-        self.failUnless(numpy.allclose(g0, g1 + g1i))
-        self.failUnless(numpy.allclose(rdf0, rdf1 + rdf1i))
+        self.assertTrue(numpy.array_equal(r0, r1i))
+        self.assertTrue(numpy.allclose(g0, g1 + g1i))
+        self.assertTrue(numpy.allclose(rdf0, rdf1 + rdf1i))
         # Ti-O
         pdfc.maskAllPairs(True)
         pdfc.setPairMask(range(2), range(2), False)
         pdfc.setPairMask(range(2, 6), range(2, 6), False)
         r2, g2 = pdfc(rutile)
         rdf2 = pdfc.rdf
-        self.failUnless(numpy.array_equal(r0, r2))
+        self.assertTrue(numpy.array_equal(r0, r2))
         pdfc.invertMask()
         r2i, g2i = pdfc(rutile)
         rdf2i = pdfc.rdf
-        self.failUnless(numpy.allclose(g0, g2 + g2i))
-        self.failUnless(numpy.allclose(rdf0, rdf2 + rdf2i))
+        self.assertTrue(numpy.allclose(g0, g2 + g2i))
+        self.assertTrue(numpy.allclose(rdf0, rdf2 + rdf2i))
         # Ti-O using type mask
         pdfc.maskAllPairs(True)
         pdfc.setTypeMask("Ti", "Ti", False)
         pdfc.setTypeMask("O", "O", False)
         r2t, g2t = pdfc(rutile)
         rdf2t = pdfc.rdf
-        self.failUnless(numpy.array_equal(r0, r2t))
-        self.failUnless(numpy.array_equal(g2, g2t))
-        self.failUnless(numpy.array_equal(rdf2, rdf2t))
+        self.assertTrue(numpy.array_equal(r0, r2t))
+        self.assertTrue(numpy.array_equal(g2, g2t))
+        self.assertTrue(numpy.array_equal(rdf2, rdf2t))
         pdfc.invertMask()
         r2ti, g2ti = pdfc(rutile)
         rdf2ti = pdfc.rdf
-        self.failUnless(numpy.array_equal(g2i, g2ti))
-        self.failUnless(numpy.array_equal(rdf2i, rdf2ti))
+        self.assertTrue(numpy.array_equal(g2i, g2ti))
+        self.assertTrue(numpy.array_equal(rdf2i, rdf2ti))
         # O-O
         pdfc.maskAllPairs(False)
         for i, smbli in enumerate(atomtypes):
@@ -199,11 +199,11 @@ class TestPDFCalculator(unittest.TestCase):
         pdfc.invertMask()
         r3i, g3i = pdfc(rutile)
         rdf3i = pdfc.rdf
-        self.failUnless(numpy.allclose(g0, g3 + g3i))
-        self.failUnless(numpy.allclose(rdf0, rdf3 + rdf3i))
+        self.assertTrue(numpy.allclose(g0, g3 + g3i))
+        self.assertTrue(numpy.allclose(rdf0, rdf3 + rdf3i))
         # check the sum of all partials
-        self.failUnless(numpy.allclose(g0, g1 + g2 + g3))
-        self.failUnless(numpy.allclose(rdf0, rdf1 + rdf2 + rdf3))
+        self.assertTrue(numpy.allclose(g0, g1 + g2 + g3))
+        self.assertTrue(numpy.allclose(rdf0, rdf1 + rdf2 + rdf3))
         return
 
     def test_full_mask(self):
@@ -220,7 +220,7 @@ class TestPDFCalculator(unittest.TestCase):
         indices = range(len(rutile))
         pdfc.setPairMask(indices, indices, True)
         r2, g2 = pdfc(rutile)
-        self.failUnless(numpy.array_equal(g0, g2))
+        self.assertTrue(numpy.array_equal(g0, g2))
         return
 
     def test_zero_mask(self):
@@ -282,11 +282,11 @@ class TestPDFCalculator(unittest.TestCase):
         '''
         self.pdfcalc.maskAllPairs(False)
         self.pdfcalc.setPairMask(0, 1, True)
-        self.failUnless(False is self.pdfcalc.getPairMask(0, 0))
-        self.failUnless(True is self.pdfcalc.getPairMask(0, 1))
+        self.assertTrue(False is self.pdfcalc.getPairMask(0, 0))
+        self.assertTrue(True is self.pdfcalc.getPairMask(0, 1))
         pdfcalc1 = cPickle.loads(cPickle.dumps(self.pdfcalc))
-        self.failUnless(False is pdfcalc1.getPairMask(0, 0))
-        self.failUnless(True is pdfcalc1.getPairMask(0, 1))
+        self.assertTrue(False is pdfcalc1.getPairMask(0, 0))
+        self.assertTrue(True is pdfcalc1.getPairMask(0, 1))
         return
 
     def test_pickling_derived_structure(self):
@@ -299,10 +299,10 @@ class TestPDFCalculator(unittest.TestCase):
         self.assertEqual(1, stru0.cpqcount)
         spkl = cPickle.dumps(pdfc)
         pdfc1 = cPickle.loads(spkl)
-        self.failUnless(stru0 is pdfc.getStructure())
+        self.assertTrue(stru0 is pdfc.getStructure())
         stru1 = pdfc1.getStructure()
-        self.failUnless(type(stru1) is DerivedStructureAdapter)
-        self.failIf(stru1 is stru0)
+        self.assertTrue(type(stru1) is DerivedStructureAdapter)
+        self.assertFalse(stru1 is stru0)
         self.assertEqual(1, stru1.cpqcount)
         return
 
@@ -311,7 +311,7 @@ class TestPDFCalculator(unittest.TestCase):
         '''
         from diffpy.srreal.pdfenvelope import PDFEnvelope
         pc = self.pdfcalc
-        self.failUnless(len(pc.envelopes) > 0)
+        self.assertTrue(len(pc.envelopes) > 0)
         pc.clearEnvelopes()
         self.assertEqual(0, len(pc.envelopes))
         pc.addEnvelope(PDFEnvelope.createByType('scale'))
@@ -319,7 +319,7 @@ class TestPDFCalculator(unittest.TestCase):
         self.assertEqual('scale', pc.envelopes[0].type())
         pc.envelopes += ('qresolution',)
         self.assertEqual(('qresolution', 'scale'), pc.usedenvelopetypes)
-        self.failUnless(all([isinstance(e, PDFEnvelope)
+        self.assertTrue(all([isinstance(e, PDFEnvelope)
             for e in pc.envelopes]))
         return
 

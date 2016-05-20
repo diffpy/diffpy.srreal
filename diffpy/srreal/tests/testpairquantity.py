@@ -62,7 +62,7 @@ class TestPairQuantity(unittest.TestCase):
         self.pq.rmax = 3.77
         et1 = self.pq.ticker()
         self.assertNotEqual(et0, et1)
-        self.failUnless(et0 < et1)
+        self.assertTrue(et0 < et1)
         return
 
 
@@ -129,10 +129,10 @@ class TestPairQuantity(unittest.TestCase):
         self.assertEqual(1, stru0.cpqcount)
         spkl = cPickle.dumps(self.pq)
         pq1 = cPickle.loads(spkl)
-        self.failUnless(stru0 is self.pq.getStructure())
+        self.assertTrue(stru0 is self.pq.getStructure())
         stru1 = pq1.getStructure()
-        self.failUnless(type(stru1) is DerivedStructureAdapter)
-        self.failIf(stru1 is stru0)
+        self.assertTrue(type(stru1) is DerivedStructureAdapter)
+        self.assertFalse(stru1 is stru0)
         self.assertEqual(1, stru1.cpqcount)
         return
 

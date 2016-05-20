@@ -91,7 +91,7 @@ class TestPeakProfile(unittest.TestCase):
         self.pkgauss.peakprecision = 0.003
         et1 = self.pkgauss.ticker()
         self.assertNotEqual(et0, et1)
-        self.failUnless(et0 < et1)
+        self.assertTrue(et0 < et1)
         return
 
 

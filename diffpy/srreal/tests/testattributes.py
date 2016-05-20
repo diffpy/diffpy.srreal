@@ -28,13 +28,13 @@ class TestAttributes(unittest.TestCase):
         # normal attribute
         a = Attributes()
         a.x = 45
-        self.failUnless("x" in a.__dict__)
-        self.failIf("x" in a._namesOfDoubleAttributes())
+        self.assertTrue("x" in a.__dict__)
+        self.assertFalse("x" in a._namesOfDoubleAttributes())
         self.assertRaises(AttributeError, a._getDoubleAttr, "x")
         self.assertRaises(AttributeError, a._setDoubleAttr, "x", 13)
         del a.x
         a._registerDoubleAttribute("x")
-        self.failUnless("x" in a._namesOfDoubleAttributes())
+        self.assertTrue("x" in a._namesOfDoubleAttributes())
         a.x = 27
         self.assertEqual(27, a._getDoubleAttr("x"))
         return
@@ -59,12 +59,12 @@ class TestAttributes(unittest.TestCase):
         # check if attributes are garbage collected
         pq = PairQuantity()
         wpq = weakref.ref(pq)
-        self.failIf(wpq() is None)
+        self.assertFalse(wpq() is None)
         pq._registerDoubleAttribute('foo')
         pq.foo = 45
         self.assertEqual(45, pq._getDoubleAttr('foo'))
         del pq
-        self.failUnless(wpq() is None)
+        self.assertTrue(wpq() is None)
         return
 
 
@@ -89,9 +89,9 @@ class TestAttributes(unittest.TestCase):
         """
         a = Attributes()
         a.foo = 45
-        self.failIf(a._hasDoubleAttr('foo'))
+        self.assertFalse(a._hasDoubleAttr('foo'))
         a._registerDoubleAttribute('foo')
-        self.failUnless(a._hasDoubleAttr('foo'))
+        self.assertTrue(a._hasDoubleAttr('foo'))
         return
 
 
@@ -102,9 +102,9 @@ class TestAttributes(unittest.TestCase):
         self.assertEqual(0, len(a._namesOfDoubleAttributes()))
         pq = PairQuantity()
         self.assertNotEqual(0, len(pq._namesOfDoubleAttributes()))
-        self.failIf('bar' in pq._namesOfDoubleAttributes())
+        self.assertFalse('bar' in pq._namesOfDoubleAttributes())
         pq._registerDoubleAttribute('bar')
-        self.failUnless('bar' in pq._namesOfDoubleAttributes())
+        self.assertTrue('bar' in pq._namesOfDoubleAttributes())
         return
 
 
@@ -119,10 +119,11 @@ class TestAttributes(unittest.TestCase):
         self.assertEqual(1, len(a._namesOfDoubleAttributes()))
         self.assertEqual(0, len(a._namesOfWritableDoubleAttributes()))
         pdfc = PDFCalculator()
-        self.failUnless('extendedrmin' in pdfc._namesOfDoubleAttributes())
-        self.failUnless('extendedrmax' in pdfc._namesOfDoubleAttributes())
-        self.failIf('extendedrmin' in pdfc._namesOfWritableDoubleAttributes())
-        self.failIf('extendedrmax' in pdfc._namesOfWritableDoubleAttributes())
+        self.assertTrue('extendedrmin' in pdfc._namesOfDoubleAttributes())
+        self.assertTrue('extendedrmax' in pdfc._namesOfDoubleAttributes())
+        nwda = pdfc._namesOfWritableDoubleAttributes()
+        self.assertFalse('extendedrmin' in nwda)
+        self.assertFalse('extendedrmax' in nwda)
         return
 
 
@@ -139,28 +140,28 @@ class TestAttributes(unittest.TestCase):
             return
         a = Attributes()
         wa = weakref.ref(a)
-        self.failIf(wa() is None)
+        self.assertFalse(wa() is None)
         a._registerDoubleAttribute('a1', g, s)
-        self.failIf('a1' in a.__dict__)
-        self.failIf(d['g_called'])
-        self.failIf(d['s_called'])
+        self.assertFalse('a1' in a.__dict__)
+        self.assertFalse(d['g_called'])
+        self.assertFalse(d['s_called'])
         self.assertEqual(0, a.a1)
-        self.failUnless(d['g_called'])
-        self.failIf(d['s_called'])
+        self.assertTrue(d['g_called'])
+        self.assertFalse(d['s_called'])
         a.a1 = 47
-        self.failUnless(d['s_called'])
+        self.assertTrue(d['s_called'])
         self.assertEqual(47, d['value'])
-        self.failUnless(hasattr(a, 'a1'))
+        self.assertTrue(hasattr(a, 'a1'))
         a._registerDoubleAttribute('a1readonly', g)
         self.assertEqual(47, a.a1readonly)
-        self.failUnless(hasattr(a, 'a1readonly'))
+        self.assertTrue(hasattr(a, 'a1readonly'))
         self.assertRaises(AttributeError, a._setDoubleAttr, 'a1readonly', 7)
         self.assertRaises(AttributeError, setattr, a, 'a1readonly', 5)
         self.assertEqual(47, a.a1readonly)
         a.a1 = 9
         self.assertEqual(9, a.a1readonly)
         del a
-        self.failUnless(wa() is None)
+        self.assertTrue(wa() is None)
         return
 
 
@@ -169,7 +170,7 @@ class TestAttributes(unittest.TestCase):
         """
         pdfc = PDFCalculator()
         pdfc._setDoubleAttr('scale', 1.23)
-        self.failIf('scale' in pdfc.__dict__)
+        self.assertFalse('scale' in pdfc.__dict__)
         self.assertEqual(1.23, pdfc.scale)
         return
 

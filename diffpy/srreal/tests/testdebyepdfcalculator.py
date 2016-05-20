@@ -69,15 +69,15 @@ class TestDebyePDFCalculator(unittest.TestCase):
     def test__hasDoubleAttr(self):
         """check DebyePDFCalculator._hasDoubleAttr()
         """
-        self.failUnless(self.dpdfc._hasDoubleAttr('scale'))
-        self.failIf(self.dpdfc._hasDoubleAttr('notanattribute'))
+        self.assertTrue(self.dpdfc._hasDoubleAttr('scale'))
+        self.assertFalse(self.dpdfc._hasDoubleAttr('notanattribute'))
         return
 
     def test__namesOfDoubleAttributes(self):
         """check DebyePDFCalculator._namesOfDoubleAttributes()
         """
-        self.failUnless(type(self.dpdfc._namesOfDoubleAttributes()) is set)
-        self.failUnless('qmax' in self.dpdfc._namesOfDoubleAttributes())
+        self.assertTrue(type(self.dpdfc._namesOfDoubleAttributes()) is set)
+        self.assertTrue('qmax' in self.dpdfc._namesOfDoubleAttributes())
         return
 
     def test__setDoubleAttr(self):
@@ -97,7 +97,7 @@ class TestDebyePDFCalculator(unittest.TestCase):
         r0, g0 = PDFCalculator(qmax=qmax)(self.bucky)
         r1, g1 = self.dpdfc(self.bucky)
         mxnd = _maxNormDiff(g0, g1)
-        self.failUnless(mxnd < 0.0006)
+        self.assertTrue(mxnd < 0.0006)
         return
 
     def test_partial_pdfs(self):
@@ -111,40 +111,40 @@ class TestDebyePDFCalculator(unittest.TestCase):
         dpdfc.maskAllPairs(False)
         dpdfc.setTypeMask("Ti", "Ti", True)
         r1, g1 = dpdfc(rutile)
-        self.failUnless(numpy.array_equal(r0, r1))
+        self.assertTrue(numpy.array_equal(r0, r1))
         dpdfc.invertMask()
         r1i, g1i = dpdfc(rutile)
-        self.failUnless(numpy.array_equal(r0, r1i))
-        self.failUnless(numpy.allclose(g0, g1 + g1i))
+        self.assertTrue(numpy.array_equal(r0, r1i))
+        self.assertTrue(numpy.allclose(g0, g1 + g1i))
         # Ti-O
         dpdfc.maskAllPairs(False)
         dpdfc.setTypeMask('all', 'ALL', True)
         dpdfc.setTypeMask('Ti', 'Ti', False)
         dpdfc.setTypeMask('O', 'O', False)
         r2, g2 = dpdfc(rutile)
-        self.failUnless(numpy.array_equal(r0, r2))
+        self.assertTrue(numpy.array_equal(r0, r2))
         dpdfc.invertMask()
         r2i, g2i = dpdfc(rutile)
-        self.failUnless(numpy.allclose(g0, g2 + g2i))
+        self.assertTrue(numpy.allclose(g0, g2 + g2i))
         # Ti-O from type mask
         dpdfc.maskAllPairs(True)
         dpdfc.setTypeMask("Ti", "Ti", False)
         dpdfc.setTypeMask("O", "O", False)
         r2t, g2t = dpdfc(rutile)
-        self.failUnless(numpy.array_equal(r0, r2t))
-        self.failUnless(numpy.array_equal(g2, g2t))
+        self.assertTrue(numpy.array_equal(r0, r2t))
+        self.assertTrue(numpy.array_equal(g2, g2t))
         dpdfc.invertMask()
         r2ti, g2ti = dpdfc(rutile)
-        self.failUnless(numpy.array_equal(g2i, g2ti))
+        self.assertTrue(numpy.array_equal(g2i, g2ti))
         # O-O
         dpdfc.maskAllPairs(False)
         dpdfc.setTypeMask('O', 'O', True)
         r3, g3 = dpdfc(rutile)
         dpdfc.invertMask()
         r3i, g3i = dpdfc(rutile)
-        self.failUnless(numpy.allclose(g0, g3 + g3i))
+        self.assertTrue(numpy.allclose(g0, g3 + g3i))
         # check the sum of all partials
-        self.failUnless(numpy.allclose(g0, g1 + g2 + g3))
+        self.assertTrue(numpy.allclose(g0, g1 + g2 + g3))
         return
 
     def test_pickling(self):
@@ -170,7 +170,7 @@ class TestDebyePDFCalculator(unittest.TestCase):
         dpdfc.foobar = 'asdf'
         spkl = cPickle.dumps(dpdfc)
         dpdfc1 = cPickle.loads(spkl)
-        self.failIf(dpdfc is dpdfc1)
+        self.assertFalse(dpdfc is dpdfc1)
         sft = dpdfc.scatteringfactortable
         sft1 = dpdfc1.scatteringfactortable
         self.assertEqual(sft.type(), sft1.type())
@@ -192,13 +192,13 @@ class TestDebyePDFCalculator(unittest.TestCase):
         self.dpdfc.maskAllPairs(False)
         self.dpdfc.setPairMask(0, 1, True)
         self.dpdfc.setTypeMask("Na", "Cl", True)
-        self.failUnless(False is self.dpdfc.getPairMask(0, 0))
-        self.failUnless(True is self.dpdfc.getPairMask(0, 1))
-        self.failUnless(True is self.dpdfc.getTypeMask("Cl", "Na"))
+        self.assertTrue(False is self.dpdfc.getPairMask(0, 0))
+        self.assertTrue(True is self.dpdfc.getPairMask(0, 1))
+        self.assertTrue(True is self.dpdfc.getTypeMask("Cl", "Na"))
         dpdfc1 = cPickle.loads(cPickle.dumps(self.dpdfc))
-        self.failUnless(False is dpdfc1.getPairMask(0, 0))
-        self.failUnless(True is dpdfc1.getPairMask(0, 1))
-        self.failUnless(True is self.dpdfc.getTypeMask("Cl", "Na"))
+        self.assertTrue(False is dpdfc1.getPairMask(0, 0))
+        self.assertTrue(True is dpdfc1.getPairMask(0, 1))
+        self.assertTrue(True is self.dpdfc.getTypeMask("Cl", "Na"))
         return
 
 
@@ -212,10 +212,10 @@ class TestDebyePDFCalculator(unittest.TestCase):
         self.assertEqual(1, stru0.cpqcount)
         spkl = cPickle.dumps(dpdfc)
         dpdfc1 = cPickle.loads(spkl)
-        self.failUnless(stru0 is dpdfc.getStructure())
+        self.assertTrue(stru0 is dpdfc.getStructure())
         stru1 = dpdfc1.getStructure()
-        self.failUnless(type(stru1) is DerivedStructureAdapter)
-        self.failIf(stru1 is stru0)
+        self.assertTrue(type(stru1) is DerivedStructureAdapter)
+        self.assertFalse(stru1 is stru0)
         self.assertEqual(1, stru1.cpqcount)
         return
 

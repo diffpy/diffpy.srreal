@@ -30,10 +30,10 @@ class TestRoutines(unittest.TestCase):
         """
         adpt = createStructureAdapter(nickel)
         self.assertEqual(4, adpt.countSites())
-        self.failUnless(False is adpt.siteAnisotropy(0))
-        self.failUnless(isinstance(adpt, StructureAdapter))
+        self.assertTrue(False is adpt.siteAnisotropy(0))
+        self.assertTrue(isinstance(adpt, StructureAdapter))
         adpt1 = createStructureAdapter(adpt)
-        self.failUnless(adpt is adpt1)
+        self.assertTrue(adpt is adpt1)
         self.assertRaises(TypeError, createStructureAdapter, 77)
         self.assertRaises(TypeError, createStructureAdapter, range(8))
         self.assertRaises(TypeError, createStructureAdapter, None)
@@ -47,16 +47,16 @@ class TestRoutines(unittest.TestCase):
             DiffPyStructureAtomicAdapter,
             DiffPyStructurePeriodicAdapter)
         adpt = createStructureAdapter(nickel)
-        self.failUnless(type(adpt) is DiffPyStructurePeriodicAdapter)
+        self.assertTrue(type(adpt) is DiffPyStructurePeriodicAdapter)
         nickel.pdffit = None
         adpt1 = createStructureAdapter(nickel)
-        self.failUnless(type(adpt1) is PeriodicStructureAdapter)
+        self.assertTrue(type(adpt1) is PeriodicStructureAdapter)
         nickel.lattice.setLatPar(1, 1, 1, 90, 90, 90)
         adpt2 = createStructureAdapter(nickel)
-        self.failUnless(type(adpt2) is AtomicStructureAdapter)
+        self.assertTrue(type(adpt2) is AtomicStructureAdapter)
         nickel.pdffit = dict(scale=1)
         adpt3 = createStructureAdapter(nickel)
-        self.failUnless(type(adpt3) is DiffPyStructureAtomicAdapter)
+        self.assertTrue(type(adpt3) is DiffPyStructureAtomicAdapter)
         return
 
     def test_pickling(self):
@@ -64,16 +64,16 @@ class TestRoutines(unittest.TestCase):
         '''
         adpt = createStructureAdapter(nickel)
         adpt1 = cPickle.loads(cPickle.dumps(adpt))
-        self.failIf(adpt is adpt1)
+        self.assertFalse(adpt is adpt1)
         self.assertEqual(adpt.countSites(), adpt1.countSites())
         self.assertEqual(adpt.totalOccupancy(), adpt1.totalOccupancy())
         self.assertEqual(adpt.siteAtomType(1), adpt1.siteAtomType(1))
-        self.failUnless(numpy.array_equal(
+        self.assertTrue(numpy.array_equal(
             adpt.siteCartesianPosition(1), adpt1.siteCartesianPosition(1)))
         self.assertEqual(adpt.siteMultiplicity(1), adpt1.siteMultiplicity(1))
         self.assertEqual(adpt.siteOccupancy(1), adpt1.siteOccupancy(1))
-        self.failUnless(adpt.siteAnisotropy(1) is adpt1.siteAnisotropy(1))
-        self.failUnless(numpy.array_equal(
+        self.assertTrue(adpt.siteAnisotropy(1) is adpt1.siteAnisotropy(1))
+        self.assertTrue(numpy.array_equal(
             adpt.siteCartesianUij(1), adpt1.siteCartesianUij(1)))
         return
 
@@ -115,8 +115,8 @@ class TestDerivedAdapter(unittest.TestCase):
         '''
         self.adpt.cpqcount = 1
         adpt1 = cPickle.loads(cPickle.dumps(self.adpt))
-        self.failUnless(self.DerivedCls is type(adpt1))
-        self.failIf(self.adpt is adpt1)
+        self.assertTrue(self.DerivedCls is type(adpt1))
+        self.assertFalse(self.adpt is adpt1)
         self.assertEqual(1, adpt1.cpqcount)
         pc = PDFCalculator()
         pc.setStructure(adpt1)
@@ -147,24 +147,24 @@ class TestNoMeta(unittest.TestCase):
         ni1 = Structure(nickel)
         ni1.pdffit['scale'] = 2.0
         r1, g1 = PDFCalculator()(ni1)
-        self.failUnless(numpy.array_equal(r0, r1))
-        self.failUnless(numpy.allclose(2 * g0, g1))
+        self.assertTrue(numpy.array_equal(r0, r1))
+        self.assertTrue(numpy.allclose(2 * g0, g1))
         ni1nm = nometa(ni1)
-        self.failUnless(ni1nm is nometa(ni1nm))
+        self.assertTrue(ni1nm is nometa(ni1nm))
         r1nm, g1nm = PDFCalculator()(ni1nm)
-        self.failUnless(numpy.array_equal(r0, r1nm))
-        self.failUnless(numpy.allclose(g0, g1nm))
+        self.assertTrue(numpy.array_equal(r0, r1nm))
+        self.assertTrue(numpy.allclose(g0, g1nm))
         ni2 = Structure(nickel)
         ni2.pdffit['delta2'] = 4
         r2, g2 = PDFCalculator()(ni2)
         r2, g2nm = PDFCalculator()(nometa(ni2))
-        self.failIf(numpy.allclose(g0, g2))
-        self.failUnless(numpy.allclose(g0, g2nm))
+        self.assertFalse(numpy.allclose(g0, g2))
+        self.assertTrue(numpy.allclose(g0, g2nm))
         adpt2 = createStructureAdapter(ni2)
         ra2, ga2 = PDFCalculator()(adpt2)
         ra2, ga2nm = PDFCalculator()(nometa(adpt2))
-        self.failUnless(numpy.allclose(g2, ga2))
-        self.failUnless(numpy.allclose(g0, ga2nm))
+        self.assertTrue(numpy.allclose(g2, ga2))
+        self.assertTrue(numpy.allclose(g0, ga2nm))
         return
 
     def test_nometa_pickling(self):
@@ -174,10 +174,10 @@ class TestNoMeta(unittest.TestCase):
         ni1 = Structure(nickel)
         ni1.pdffit['scale'] = 2.0
         ni1nm = cPickle.loads(cPickle.dumps(nometa(ni1)))
-        self.failIf(ni1nm is ni1)
+        self.assertFalse(ni1nm is ni1)
         r1nm, g1nm = PDFCalculator()(ni1nm)
-        self.failUnless(numpy.array_equal(r0, r1nm))
-        self.failUnless(numpy.array_equal(g0, g1nm))
+        self.assertTrue(numpy.array_equal(r0, r1nm))
+        self.assertTrue(numpy.array_equal(g0, g1nm))
         return
 
     def test_nometa_twice(self):
@@ -185,7 +185,7 @@ class TestNoMeta(unittest.TestCase):
         '''
         adpt1 = nometa(nickel)
         adpt2 = nometa(adpt1)
-        self.failUnless(adpt1 is adpt2)
+        self.assertTrue(adpt1 is adpt2)
 
 # End of class TestNoMeta
 
@@ -200,13 +200,13 @@ class TestNoSymmetry(unittest.TestCase):
         r0, g0 = pdfc0(nickel)
         rdf0 = pdfc0.rdf
         niuc = nosymmetry(nickel)
-        self.failUnless(niuc is nosymmetry(niuc))
+        self.assertTrue(niuc is nosymmetry(niuc))
         pdfc1 = PDFCalculator()
         r1, g1 = pdfc1(niuc)
-        self.failUnless(numpy.array_equal(r0, r1))
-        self.failIf(numpy.allclose(g0, g1))
+        self.assertTrue(numpy.array_equal(r0, r1))
+        self.assertFalse(numpy.allclose(g0, g1))
         tail = (r0 > 5.0)
-        self.failUnless(numpy.allclose(0.0 * g1[tail], g1[tail]))
+        self.assertTrue(numpy.allclose(0.0 * g1[tail], g1[tail]))
         rdf0 = pdfc0.rdf
         rdf1 = pdfc1.rdf
         head = r0 < 3.0
@@ -214,8 +214,8 @@ class TestNoSymmetry(unittest.TestCase):
         self.assertAlmostEqual(3.0, numpy.sum(rdf1[head] * pdfc1.rstep), 5)
         adpt0 = createStructureAdapter(nickel)
         ra2, ga2 = PDFCalculator()(nosymmetry(adpt0))
-        self.failUnless(numpy.array_equal(r0, ra2))
-        self.failUnless(numpy.allclose(g1, ga2))
+        self.assertTrue(numpy.array_equal(r0, ra2))
+        self.assertTrue(numpy.allclose(g1, ga2))
         return
 
     def test_nosymmetry_twice(self):
@@ -223,7 +223,7 @@ class TestNoSymmetry(unittest.TestCase):
         '''
         adpt1 = nosymmetry(nickel)
         adpt2 = nosymmetry(adpt1)
-        self.failUnless(adpt1 is adpt2)
+        self.assertTrue(adpt1 is adpt2)
 
     def test_nosymmetry_pickling(self):
         '''check pickling of the NoSymmetryStructureAdapter wrapper.
@@ -231,10 +231,10 @@ class TestNoSymmetry(unittest.TestCase):
         ni1ns = nosymmetry(nickel)
         r1, g1 = PDFCalculator()(ni1ns)
         ni2ns = cPickle.loads(cPickle.dumps(ni1ns))
-        self.failIf(ni1ns is ni2ns)
+        self.assertFalse(ni1ns is ni2ns)
         r2, g2 = PDFCalculator()(ni2ns)
-        self.failUnless(numpy.array_equal(r1, r2))
-        self.failUnless(numpy.array_equal(g1, g2))
+        self.assertTrue(numpy.array_equal(r1, r2))
+        self.assertTrue(numpy.array_equal(g1, g2))
         return
 
 # End of class TestNoSymmetry
@@ -255,12 +255,12 @@ class TestPyObjCrystAdapter(TestCaseObjCrystOptional):
         self.assertEqual(6, self.rutile.totalOccupancy())
         self.assertEqual("Ti", self.rutile.siteAtomType(0))
         self.assertEqual("O", self.rutile.siteAtomType(1))
-        self.failUnless(True is self.rutile.siteAnisotropy(0))
-        self.failUnless(True is self.rutile.siteAnisotropy(1))
-        self.failUnless(numpy.allclose(
+        self.assertTrue(True is self.rutile.siteAnisotropy(0))
+        self.assertTrue(True is self.rutile.siteAnisotropy(1))
+        self.assertTrue(numpy.allclose(
             numpy.diag([0.008698, 0.008698, 0.005492]),
             self.rutile.siteCartesianUij(0)))
-        self.failUnless(numpy.allclose(
+        self.assertTrue(numpy.allclose(
             numpy.diag([0.021733, 0.021733, 0.007707]),
             self.rutile.siteCartesianUij(1)))
         return
@@ -270,10 +270,10 @@ class TestPyObjCrystAdapter(TestCaseObjCrystOptional):
         '''
         r0, g0 = PDFCalculator()(self.rutile)
         rutile1 = cPickle.loads(cPickle.dumps(self.rutile))
-        self.failIf(self.rutile is rutile1)
+        self.assertFalse(self.rutile is rutile1)
         r1, g1 = PDFCalculator()(rutile1)
-        self.failUnless(numpy.array_equal(r0, r1))
-        self.failUnless(numpy.array_equal(g0, g1))
+        self.assertTrue(numpy.array_equal(r0, r1))
+        self.assertTrue(numpy.array_equal(g0, g1))
         return
 
 # End of class TestNoSymmetry
@@ -387,7 +387,7 @@ class TestAtom(unittest.TestCase):
         a1 = cPickle.loads(cPickle.dumps(self.a))
         self.assertEqual("Na", a1.atomtype)
         self.assertEqual(self.a, a1)
-        self.failIf(self.a is a1)
+        self.assertFalse(self.a is a1)
         return
 
     def test_xyz_cartn(self):

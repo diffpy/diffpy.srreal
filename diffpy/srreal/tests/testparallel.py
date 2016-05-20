@@ -48,24 +48,24 @@ class TestRoutines(unittest.TestCase):
         r0, g0 = pdfc(self.cdse)
         ppdfc1 = createParallelCalculator(PDFCalculator(), 3, map)
         r1, g1 = ppdfc1(self.cdse)
-        self.failUnless(numpy.array_equal(r0, r1))
-        self.failUnless(numpy.allclose(g0, g1))
+        self.assertTrue(numpy.array_equal(r0, r1))
+        self.assertTrue(numpy.allclose(g0, g1))
         ppdfc2 = createParallelCalculator(PDFCalculator(),
                 self.ncpu, self.pool.imap_unordered)
         r2, g2 = ppdfc2(self.cdse)
-        self.failUnless(numpy.array_equal(r0, r2))
-        self.failUnless(numpy.allclose(g0, g2))
+        self.assertTrue(numpy.array_equal(r0, r2))
+        self.assertTrue(numpy.allclose(g0, g2))
         pdfc.rmax = ppdfc1.rmax = ppdfc2.rmax = 5
         pdfc.qmax = ppdfc1.qmax = ppdfc2.qmax = 15
         r0a, g0a = pdfc()
-        self.failUnless(numpy.all(r0a <= 5))
+        self.assertTrue(numpy.all(r0a <= 5))
         self.assertFalse(numpy.allclose(g0a, numpy.interp(r0a, r0, g0)))
         r1a, g1a = ppdfc1()
-        self.failUnless(numpy.array_equal(r0a, r1a))
-        self.failUnless(numpy.allclose(g0a, g1a))
+        self.assertTrue(numpy.array_equal(r0a, r1a))
+        self.assertTrue(numpy.allclose(g0a, g1a))
         r2a, g2a = ppdfc2()
-        self.failUnless(numpy.array_equal(r0a, r2a))
-        self.failUnless(numpy.allclose(g0a, g2a))
+        self.assertTrue(numpy.array_equal(r0a, r2a))
+        self.assertTrue(numpy.allclose(g0a, g2a))
         return
 
     def test_parallel_bonds(self):
@@ -77,11 +77,11 @@ class TestRoutines(unittest.TestCase):
         d0 = bc(nickel)
         pbc1 = createParallelCalculator(BondCalculator(), 3, map)
         d1 = pbc1(nickel)
-        self.failUnless(numpy.array_equal(d0, d1))
+        self.assertTrue(numpy.array_equal(d0, d1))
         pbc2 = createParallelCalculator(BondCalculator(),
                 self.ncpu, self.pool.imap_unordered)
         d2 = pbc2(nickel)
-        self.failUnless(numpy.array_equal(d0, d2))
+        self.assertTrue(numpy.array_equal(d0, d2))
         bc.rmax = pbc1.rmax = pbc2.rmax = 2.5
         for bci in (bc, pbc1, pbc2):
             bci.maskAllPairs(False)
@@ -90,9 +90,9 @@ class TestRoutines(unittest.TestCase):
         d0a = bc(nickel)
         self.assertEqual(8, len(d0a))
         d1a = pbc1(nickel)
-        self.failUnless(numpy.array_equal(d0a, d1a))
+        self.assertTrue(numpy.array_equal(d0a, d1a))
         d2a = pbc2(nickel)
-        self.failUnless(numpy.array_equal(d0a, d2a))
+        self.assertTrue(numpy.array_equal(d0a, d2a))
         return
 
 # End of class TestRoutines

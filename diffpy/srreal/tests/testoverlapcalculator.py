@@ -113,10 +113,10 @@ class TestOverlapCalculator(unittest.TestCase):
         self.assertEqual(1, stru0.cpqcount)
         spkl = cPickle.dumps(olc)
         olc1 = cPickle.loads(spkl)
-        self.failUnless(stru0 is olc.getStructure())
+        self.assertTrue(stru0 is olc.getStructure())
         stru1 = olc1.getStructure()
-        self.failUnless(type(stru1) is DerivedStructureAdapter)
-        self.failIf(stru1 is stru0)
+        self.assertTrue(type(stru1) is DerivedStructureAdapter)
+        self.assertFalse(stru1 is stru0)
         self.assertEqual(1, stru1.cpqcount)
         return
 
@@ -328,7 +328,7 @@ class TestOverlapCalculator(unittest.TestCase):
 
 # End of class TestOverlapCalculator
 
-###############################################################################
+##############################################################################
 class TestOverlapCalculatorObjCryst(TestCaseObjCrystOptional):
 
     def setUp(self):
