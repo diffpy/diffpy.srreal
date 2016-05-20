@@ -513,7 +513,7 @@ void wrap_StructureAdapter()
                 &StructureAdapterWrap::default_siteOccupancy,
                 doc_StructureAdapter_siteOccupancy)
         .def("siteAnisotropy",
-                &StructureAdapter::siteAnisotropy,
+                siteAnisotropy_safe,
                 doc_StructureAdapter_siteAnisotropy)
         .def("siteCartesianUij",
                 siteCartesianUij_asarray<StructureAdapter,int>,

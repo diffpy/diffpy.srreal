@@ -14,7 +14,8 @@ from diffpy.srreal.tests.testutils import loadObjCrystCrystal
 from diffpy.srreal.tests.testutils import loadDiffPyStructure
 from diffpy.srreal.structureadapter import (
         createStructureAdapter, nometa, nosymmetry, StructureAdapter,
-        AtomicStructureAdapter, Atom, PeriodicStructureAdapter)
+        AtomicStructureAdapter, Atom, PeriodicStructureAdapter,
+        CrystalStructureAdapter)
 import diffpy.srreal.tests.testutils as testutils
 
 
@@ -279,24 +280,66 @@ class TestPyObjCrystAdapter(TestCaseObjCrystOptional):
 # End of class TestNoSymmetry
 
 ##############################################################################
-# class TestStructureAdapter(unittest.TestCase):
-#
-#   def setUp(self):
-#       return
-#
-#   def tearDown(self):
-#       return
-#
-#   def test___init__(self):
-#       """check StructureAdapter.__init__()
-#       """
-#       return
-#
-#   def test___reduce__(self):
-#       """check StructureAdapter.__reduce__()
-#       """
-#       return
-#
+class IndexRangeTests(object):
+    'Check error handling for site index arguments.'
+
+    AdptClass = None
+
+    def setUp(self):
+        self.adpt = self.AdptClass()
+        return
+
+    def test_siteAnisotropyIndex(self):
+        """Check out-of-range arguments in AdptClass.siteAnisotropy.
+        """
+        cnt = self.adpt.countSites()
+        self.assertRaises(IndexError, self.adpt.siteAnisotropy, cnt)
+        self.assertRaises(IndexError, self.adpt.siteAnisotropy, -1)
+        return
+
+# End of class IndexRangeTests
+
+TestCase = unittest.TestCase
+
+# test index bounds for C++ classes
+
+class TestAtomicAdapterIndexRange(IndexRangeTests, TestCase):
+    AdptClass = AtomicStructureAdapter
+
+# No need to do index tests for PeriodicStructureAdapter as it does not
+# override any of AtomicStructureAdapter site-access methods.
+# CrystalStructureAdapter overrides siteMultiplicity so we'll
+# test it here as well.
+
+class TestCrystalAdapter(IndexRangeTests, TestCase):
+    AdptClass = CrystalStructureAdapter
+
+##############################################################################
+class TestDerivedStructureAdapter(IndexRangeTests, TestCase):
+    AdptClass = testutils.DerivedStructureAdapter
+
+    def setUp(self):
+        IndexRangeTests.setUp(self)
+        self.adpt1 = self.adpt.clone()
+        self.adpt1.positions.append(numpy.array([1.0, 2.0, 3.0]))
+        return
+
+    def test_siteAnisotropy_valid(self):
+        """Check DerivedStructureAdapter.siteAnisotropy.
+        """
+        adpt1 = self.adpt1
+        self.assertFalse(adpt1.siteAnisotropy(0))
+        return
+
+# End of class TestDerivedStructureAdapter
+
+##############################################################################
+class TestStructureAdapter(unittest.TestCase):
+
+    def setUp(self):
+        self.adpt = StructureAdapter()
+        return
+
 #   def test__customPQConfig(self):
 #       """check StructureAdapter._customPQConfig()
 #       """
@@ -316,12 +359,13 @@ class TestPyObjCrystAdapter(TestCaseObjCrystOptional):
 #       """check StructureAdapter.numberDensity()
 #       """
 #       return
-#
-#   def test_siteAnisotropy(self):
-#       """check StructureAdapter.siteAnisotropy()
-#       """
-#       return
-#
+
+    def test_siteAnisotropy(self):
+        """check StructureAdapter.siteAnisotropy()
+        """
+        self.assertRaises(RuntimeError, self.adpt.siteAnisotropy, 0)
+        return
+
 #   def test_siteAtomType(self):
 #       """check StructureAdapter.siteAtomType()
 #       """
@@ -332,11 +376,6 @@ class TestPyObjCrystAdapter(TestCaseObjCrystOptional):
 #       """
 #       return
 #
-#   def test_siteCartesianUij(self):
-#       """check StructureAdapter.siteCartesianUij()
-#       """
-#       return
-#
 #   def test_siteMultiplicity(self):
 #       """check StructureAdapter.siteMultiplicity()
 #       """
@@ -344,6 +383,11 @@ class TestPyObjCrystAdapter(TestCaseObjCrystOptional):
 #
 #   def test_siteOccupancy(self):
 #       """check StructureAdapter.siteOccupancy()
+#       """
+#       return
+#
+#   def test_siteCartesianUij(self):
+#       """check StructureAdapter.siteCartesianUij()
 #       """
 #       return
 #
