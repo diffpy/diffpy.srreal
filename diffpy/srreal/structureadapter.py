@@ -101,4 +101,9 @@ from diffpy.srreal.srreal_ext import BaseBondGenerator
 EMPTY = _emptyStructureAdapter()
 del _emptyStructureAdapter
 
+# silence the pyflakes syntax checker
+assert all((Atom, AtomicStructureAdapter, PeriodicStructureAdapter,
+            CrystalStructureAdapter, StructureDifference,
+            nometa, nosymmetry, BaseBondGenerator))
+
 # End of file

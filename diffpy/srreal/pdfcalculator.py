@@ -33,6 +33,9 @@ from diffpy.srreal.srreal_ext import fftftog, fftgtof
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
 from diffpy.srreal.wraputils import setattrFromKeywordArguments
 
+# silence the pyflakes syntax checker
+assert all((fftftog, fftgtof))
+
 # imports for backward compatibility
 from diffpy.srreal.pdfbaseline import (PDFBaseline, makePDFBaseline,
         ZeroBaseline, LinearBaseline)
@@ -42,6 +45,13 @@ from diffpy.srreal.pdfenvelope import (PDFEnvelope, makePDFEnvelope,
 from diffpy.srreal.peakprofile import PeakProfile
 from diffpy.srreal.peakwidthmodel import (PeakWidthModel,
         ConstantPeakWidth, DebyeWallerPeakWidth, JeongPeakWidth)
+
+# silence the pyflakes syntax checker
+assert all((PDFBaseline, makePDFBaseline, ZeroBaseline, LinearBaseline,
+            PDFEnvelope, makePDFEnvelope, QResolutionEnvelope, ScaleEnvelope,
+            SphericalShapeEnvelope, StepCutEnvelope, PeakProfile,
+            PeakWidthModel, ConstantPeakWidth, DebyeWallerPeakWidth,
+            JeongPeakWidth))
 
 # ----------------------------------------------------------------------------
 

@@ -22,6 +22,9 @@ from diffpy.srreal._version_data import __date__
 from diffpy.srreal._version_data import __gitsha__
 from diffpy.srreal._version_data import __timestamp__
 
+# silence the pyflakes syntax checker
+assert all((__version__, __date__, __gitsha__, __timestamp__)) or True
+
 # version information on the active libdiffpy shared library -----------------
 
 from collections import namedtuple

@@ -7,8 +7,8 @@
 import unittest
 import cPickle
 
-from diffpy.srreal.peakwidthmodel import PeakWidthModel, \
-        ConstantPeakWidth, DebyeWallerPeakWidth, JeongPeakWidth
+from diffpy.srreal.peakwidthmodel import PeakWidthModel
+from diffpy.srreal.peakwidthmodel import DebyeWallerPeakWidth, JeongPeakWidth
 from diffpy.srreal.pdfcalculator import PDFCalculator
 from diffpy.srreal.structureadapter import createStructureAdapter
 from diffpy.srreal.tests.testutils import loadDiffPyStructure

@@ -7,8 +7,7 @@
 import unittest
 import cPickle
 
-from diffpy.srreal.peakprofile import PeakProfile, \
-        GaussianProfile, CroppedGaussianProfile
+from diffpy.srreal.peakprofile import PeakProfile
 from diffpy.srreal.pdfcalculator import PDFCalculator
 
 ##############################################################################

@@ -31,6 +31,8 @@ except TypeError:
 try:
     import periodictable
     from unittest import TestCase as TestCasePeriodictableOptional
+    # silence the pyflakes syntax checker
+    del periodictable
 except ImportError:
     TestCasePeriodictableOptional = object
     logger.warning('Cannot import periodictable, periodictable tests skipped.')
