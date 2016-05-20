@@ -203,12 +203,62 @@ Factory for an empty structure singleton.\n\
 Return a singleton instance of empty StructureAdapter.\n\
 ";
 
+// Local Helpers - forward declarations --------------------------------------
+
+namespace {
+
+void checkindex(const StructureAdapter& adpt, int i);
+
+}   // namespace
+
 // wrappers ------------------------------------------------------------------
+
+const std::string& siteAtomType_safe(const StructureAdapter& adpt, int i)
+{
+    checkindex(adpt, i);
+    return adpt.siteAtomType(i);
+}
+
 
 DECLARE_PYARRAY_METHOD_WRAPPER1(siteCartesianPosition,
         siteCartesianPosition_asarray)
+
+python::object siteCartesianPosition_safe(const StructureAdapter& adpt, int i)
+{
+    checkindex(adpt, i);
+    return siteCartesianPosition_asarray(adpt, i);
+}
+
+
+int siteMultiplicity_safe(const StructureAdapter& adpt, int i)
+{
+    checkindex(adpt, i);
+    return adpt.siteMultiplicity(i);
+}
+
+
+double siteOccupancy_safe(const StructureAdapter& adpt, int i)
+{
+    checkindex(adpt, i);
+    return adpt.siteOccupancy(i);
+}
+
+
+bool siteAnisotropy_safe(const StructureAdapter& adpt, int i)
+{
+    checkindex(adpt, i);
+    return adpt.siteAnisotropy(i);
+}
+
+
 DECLARE_PYARRAY_METHOD_WRAPPER1(siteCartesianUij,
         siteCartesianUij_asarray)
+
+python::object siteCartesianUij_safe(const StructureAdapter& adpt, int i)
+{
+    checkindex(adpt, i);
+    return siteCartesianUij_asarray(adpt, i);
+}
 
 // Helper class necessary for wrapping a pure virtual methods
 
@@ -403,6 +453,22 @@ class StructureProxyPickleSuite : public boost::python::pickle_suite
         }
 
 };
+
+// Local Helpers -------------------------------------------------------------
+
+namespace {
+
+void checkindex(const StructureAdapter& adpt, int i)
+{
+    // Leave it up to Python wrapped classes to handle possible index issues.
+    if (dynamic_cast<const StructureAdapterWrap*>(&adpt))  return;
+    // Prevent out-of-bounds crash from C++ objects.
+    if (0 <= i && i < adpt.countSites())  return;
+    throw std::out_of_range("Index out of range.");
+}
+
+}   // namespace
+
 
 }   // namespace nswrap_StructureAdapter
 
