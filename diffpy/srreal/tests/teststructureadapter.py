@@ -297,6 +297,14 @@ class IndexRangeTests(object):
         self.assertRaises(IndexError, self.adpt.siteAnisotropy, -1)
         return
 
+    def test_siteOccupancyIndex(self):
+        """Check out-of-range arguments in AdptClass.siteOccupancy.
+        """
+        cnt = self.adpt.countSites()
+        self.assertRaises(IndexError, self.adpt.siteOccupancy, cnt)
+        self.assertRaises(IndexError, self.adpt.siteOccupancy, -1)
+        return
+
 # End of class IndexRangeTests
 
 TestCase = unittest.TestCase
@@ -329,6 +337,14 @@ class TestDerivedStructureAdapter(IndexRangeTests, TestCase):
         """
         adpt1 = self.adpt1
         self.assertFalse(adpt1.siteAnisotropy(0))
+        return
+
+    def test_siteOccupancy_valid(self):
+        """Check DerivedStructureAdapter.siteOccupancy.
+        """
+        adpt1 = self.adpt1
+        self.assertEqual(0.5, adpt1.siteOccupancy(0))
+        self.assertEqual(1.0, StructureAdapter.siteOccupancy(adpt1, 0))
         return
 
 # End of class TestDerivedStructureAdapter
@@ -381,11 +397,14 @@ class TestStructureAdapter(unittest.TestCase):
 #       """
 #       return
 #
-#   def test_siteOccupancy(self):
-#       """check StructureAdapter.siteOccupancy()
-#       """
-#       return
-#
+    def test_siteOccupancy(self):
+        """check StructureAdapter.siteOccupancy()
+        """
+        # check if we use the C++ method that alwasy return 1.
+        self.assertEqual(1.0, self.adpt.siteOccupancy(0))
+        self.assertEqual(1.0, self.adpt.siteOccupancy(99))
+        return
+
 #   def test_siteCartesianUij(self):
 #       """check StructureAdapter.siteCartesianUij()
 #       """

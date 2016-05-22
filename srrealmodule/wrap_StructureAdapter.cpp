@@ -509,9 +509,10 @@ void wrap_StructureAdapter()
                 &StructureAdapterWrap::default_siteMultiplicity,
                 doc_StructureAdapter_siteMultiplicity)
         .def("siteOccupancy",
-                &StructureAdapter::siteOccupancy,
-                &StructureAdapterWrap::default_siteOccupancy,
+                siteOccupancy_safe,
                 doc_StructureAdapter_siteOccupancy)
+        .def("siteOccupancy",
+                &StructureAdapterWrap::default_siteOccupancy)
         .def("siteAnisotropy",
                 siteAnisotropy_safe,
                 doc_StructureAdapter_siteAnisotropy)
