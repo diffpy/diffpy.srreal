@@ -505,7 +505,7 @@ void wrap_StructureAdapter()
                 &StructureAdapterWrap::default_siteAtomType,
                 return_value_policy<copy_const_reference>())
         .def("siteCartesianPosition",
-                    siteCartesianPosition_asarray<StructureAdapter,int>,
+                    siteCartesianPosition_safe,
                     doc_StructureAdapter_siteCartesianPosition)
         .def("siteMultiplicity",
                 &StructureAdapter::siteMultiplicity,

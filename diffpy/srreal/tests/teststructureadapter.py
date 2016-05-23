@@ -297,6 +297,14 @@ class IndexRangeTests(object):
         self.assertRaises(IndexError, self.adpt.siteAtomType, -1)
         return
 
+    def test_siteCartesianPositionIndex(self):
+        """Check out-of-range arguments in AdptClass.siteCartesianPosition.
+        """
+        cnt = self.adpt.countSites()
+        self.assertRaises(IndexError, self.adpt.siteCartesianPosition, cnt)
+        self.assertRaises(IndexError, self.adpt.siteCartesianPosition, -1)
+        return
+
     def test_siteAnisotropyIndex(self):
         """Check out-of-range arguments in AdptClass.siteAnisotropy.
         """
@@ -346,6 +354,14 @@ class TestDerivedStructureAdapter(IndexRangeTests, TestCase):
         adpt1 = self.adpt1
         self.assertEqual("Cu", adpt1.siteAtomType(0))
         self.assertEqual("", StructureAdapter.siteAtomType(adpt1, 0))
+        return
+
+    def test_siteCartesianPosition_valid(self):
+        """Check DerivedStructureAdapter.siteCartesianPosition.
+        """
+        adpt1 = self.adpt1
+        xyz0 = adpt1.siteCartesianPosition(0)
+        self.assertTrue(numpy.array_equal([1, 2, 3], xyz0))
         return
 
     def test_siteAnisotropy_valid(self):
@@ -404,11 +420,12 @@ class TestStructureAdapter(unittest.TestCase):
         self.assertEqual("", self.adpt.siteAtomType(0))
         return
 
-#   def test_siteCartesianPosition(self):
-#       """check StructureAdapter.siteCartesianPosition()
-#       """
-#       return
-#
+    def test_siteCartesianPosition(self):
+        """check StructureAdapter.siteCartesianPosition()
+        """
+        self.assertRaises(RuntimeError, self.adpt.siteAnisotropy, 0)
+        return
+
 #   def test_siteMultiplicity(self):
 #       """check StructureAdapter.siteMultiplicity()
 #       """
