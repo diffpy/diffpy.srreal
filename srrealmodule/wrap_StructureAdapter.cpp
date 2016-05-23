@@ -508,9 +508,10 @@ void wrap_StructureAdapter()
                     siteCartesianPosition_safe,
                     doc_StructureAdapter_siteCartesianPosition)
         .def("siteMultiplicity",
-                &StructureAdapter::siteMultiplicity,
-                &StructureAdapterWrap::default_siteMultiplicity,
+                siteMultiplicity_safe,
                 doc_StructureAdapter_siteMultiplicity)
+        .def("siteMultiplicity",
+                &StructureAdapterWrap::default_siteMultiplicity)
         .def("siteOccupancy",
                 siteOccupancy_safe,
                 doc_StructureAdapter_siteOccupancy)

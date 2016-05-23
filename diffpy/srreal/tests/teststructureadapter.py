@@ -305,12 +305,12 @@ class IndexRangeTests(object):
         self.assertRaises(IndexError, self.adpt.siteCartesianPosition, -1)
         return
 
-    def test_siteAnisotropyIndex(self):
-        """Check out-of-range arguments in AdptClass.siteAnisotropy.
+    def test_siteMultiplicityIndex(self):
+        """Check out-of-range arguments in AdptClass.siteMultiplicity.
         """
         cnt = self.adpt.countSites()
-        self.assertRaises(IndexError, self.adpt.siteAnisotropy, cnt)
-        self.assertRaises(IndexError, self.adpt.siteAnisotropy, -1)
+        self.assertRaises(IndexError, self.adpt.siteMultiplicity, cnt)
+        self.assertRaises(IndexError, self.adpt.siteMultiplicity, -1)
         return
 
     def test_siteOccupancyIndex(self):
@@ -319,6 +319,14 @@ class IndexRangeTests(object):
         cnt = self.adpt.countSites()
         self.assertRaises(IndexError, self.adpt.siteOccupancy, cnt)
         self.assertRaises(IndexError, self.adpt.siteOccupancy, -1)
+        return
+
+    def test_siteAnisotropyIndex(self):
+        """Check out-of-range arguments in AdptClass.siteAnisotropy.
+        """
+        cnt = self.adpt.countSites()
+        self.assertRaises(IndexError, self.adpt.siteAnisotropy, cnt)
+        self.assertRaises(IndexError, self.adpt.siteAnisotropy, -1)
         return
 
 # End of class IndexRangeTests
@@ -364,11 +372,12 @@ class TestDerivedStructureAdapter(IndexRangeTests, TestCase):
         self.assertTrue(numpy.array_equal([1, 2, 3], xyz0))
         return
 
-    def test_siteAnisotropy_valid(self):
-        """Check DerivedStructureAdapter.siteAnisotropy.
+    def test_siteMultiplicity_valid(self):
+        """Check DerivedStructureAdapter.siteMultiplicity.
         """
         adpt1 = self.adpt1
-        self.assertFalse(adpt1.siteAnisotropy(0))
+        self.assertEqual(2, adpt1.siteMultiplicity(0))
+        self.assertEqual(1, StructureAdapter.siteMultiplicity(adpt1, 0))
         return
 
     def test_siteOccupancy_valid(self):
@@ -377,6 +386,13 @@ class TestDerivedStructureAdapter(IndexRangeTests, TestCase):
         adpt1 = self.adpt1
         self.assertEqual(0.5, adpt1.siteOccupancy(0))
         self.assertEqual(1.0, StructureAdapter.siteOccupancy(adpt1, 0))
+        return
+
+    def test_siteAnisotropy_valid(self):
+        """Check DerivedStructureAdapter.siteAnisotropy.
+        """
+        adpt1 = self.adpt1
+        self.assertFalse(adpt1.siteAnisotropy(0))
         return
 
 # End of class TestDerivedStructureAdapter
@@ -408,12 +424,6 @@ class TestStructureAdapter(unittest.TestCase):
 #       """
 #       return
 
-    def test_siteAnisotropy(self):
-        """check StructureAdapter.siteAnisotropy()
-        """
-        self.assertRaises(RuntimeError, self.adpt.siteAnisotropy, 0)
-        return
-
     def test_siteAtomType(self):
         """check StructureAdapter.siteAtomType()
         """
@@ -426,17 +436,24 @@ class TestStructureAdapter(unittest.TestCase):
         self.assertRaises(RuntimeError, self.adpt.siteAnisotropy, 0)
         return
 
-#   def test_siteMultiplicity(self):
-#       """check StructureAdapter.siteMultiplicity()
-#       """
-#       return
-#
+    def test_siteMultiplicity(self):
+        """check StructureAdapter.siteMultiplicity()
+        """
+        self.assertEqual(1, self.adpt.siteMultiplicity(0))
+        return
+
     def test_siteOccupancy(self):
         """check StructureAdapter.siteOccupancy()
         """
         # check if we use the C++ method that alwasy return 1.
         self.assertEqual(1.0, self.adpt.siteOccupancy(0))
         self.assertEqual(1.0, self.adpt.siteOccupancy(99))
+        return
+
+    def test_siteAnisotropy(self):
+        """check StructureAdapter.siteAnisotropy()
+        """
+        self.assertRaises(RuntimeError, self.adpt.siteAnisotropy, 0)
         return
 
 #   def test_siteCartesianUij(self):
