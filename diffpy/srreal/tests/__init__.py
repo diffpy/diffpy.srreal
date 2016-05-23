@@ -47,6 +47,7 @@ def testsuite():
         diffpy.srreal.tests.testpeakprofile
         diffpy.srreal.tests.testpeakwidthmodel
         diffpy.srreal.tests.testscatteringfactortable
+        diffpy.srreal.tests.testsfaverage
         diffpy.srreal.tests.teststructureadapter
     '''.split()
     suite = unittest.TestSuite()
