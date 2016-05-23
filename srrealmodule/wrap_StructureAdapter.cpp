@@ -497,10 +497,13 @@ void wrap_StructureAdapter()
         .def("numberDensity", &StructureAdapter::numberDensity,
                 &StructureAdapterWrap::default_numberDensity,
                 doc_StructureAdapter_numberDensity)
-        .def("siteAtomType", &StructureAdapter::siteAtomType,
-                &StructureAdapterWrap::default_siteAtomType,
+        .def("siteAtomType",
+                siteAtomType_safe,
                 return_value_policy<copy_const_reference>(),
                 doc_StructureAdapter_siteAtomType)
+        .def("siteAtomType",
+                &StructureAdapterWrap::default_siteAtomType,
+                return_value_policy<copy_const_reference>())
         .def("siteCartesianPosition",
                     siteCartesianPosition_asarray<StructureAdapter,int>,
                     doc_StructureAdapter_siteCartesianPosition)
