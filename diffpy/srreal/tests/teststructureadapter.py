@@ -329,6 +329,14 @@ class IndexRangeTests(object):
         self.assertRaises(IndexError, self.adpt.siteAnisotropy, -1)
         return
 
+    def test_siteCartesianUijIndex(self):
+        """Check out-of-range arguments in AdptClass.siteCartesianUij.
+        """
+        cnt = self.adpt.countSites()
+        self.assertRaises(IndexError, self.adpt.siteCartesianUij, cnt)
+        self.assertRaises(IndexError, self.adpt.siteCartesianUij, -1)
+        return
+
 # End of class IndexRangeTests
 
 TestCase = unittest.TestCase
@@ -395,6 +403,15 @@ class TestDerivedStructureAdapter(IndexRangeTests, TestCase):
         self.assertFalse(adpt1.siteAnisotropy(0))
         return
 
+    def test_siteCartesianUij_valid(self):
+        """Check DerivedStructureAdapter.siteCartesianUij.
+        """
+        adpt1 = self.adpt1
+        uiso = 0.005 * numpy.identity(3)
+        self.assertTrue(numpy.array_equal(uiso, adpt1.siteCartesianUij(0)))
+        self.assertRaises(IndexError, adpt1.siteCartesianUij, 1)
+        return
+
 # End of class TestDerivedStructureAdapter
 
 ##############################################################################
@@ -456,11 +473,12 @@ class TestStructureAdapter(unittest.TestCase):
         self.assertRaises(RuntimeError, self.adpt.siteAnisotropy, 0)
         return
 
-#   def test_siteCartesianUij(self):
-#       """check StructureAdapter.siteCartesianUij()
-#       """
-#       return
-#
+    def test_siteCartesianUij(self):
+        """check StructureAdapter.siteCartesianUij()
+        """
+        self.assertRaises(RuntimeError, self.adpt.siteCartesianUij, 0)
+        return
+
 #   def test_totalOccupancy(self):
 #       """check StructureAdapter.totalOccupancy()
 #       """

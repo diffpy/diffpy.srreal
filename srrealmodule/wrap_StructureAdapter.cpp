@@ -521,7 +521,7 @@ void wrap_StructureAdapter()
                 siteAnisotropy_safe,
                 doc_StructureAdapter_siteAnisotropy)
         .def("siteCartesianUij",
-                siteCartesianUij_asarray<StructureAdapter,int>,
+                siteCartesianUij_safe,
                 doc_StructureAdapter_siteCartesianUij)
         .def("_customPQConfig",
                 &StructureAdapter::customPQConfig,
