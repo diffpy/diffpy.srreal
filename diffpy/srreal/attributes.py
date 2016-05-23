@@ -39,13 +39,15 @@ Attributes.__getattr__ = __getattr__
 
 
 def __setattr__(self, name, value):
-    '''Assign to C++ double attribute if it exists.  Use standard Python
-    attribute assignment otherwise.
+    '''Assign to C++ double attribute if Python attribute does not exist.
     '''
-    if self._hasDoubleAttr(name):
-        self._setDoubleAttr(name, value)
-    else:
-        object.__setattr__(self, name, value)
+    try:
+        object.__getattribute__(self, name)
+    except AttributeError:
+        if self._hasDoubleAttr(name):
+            self._setDoubleAttr(name, value)
+            return
+    object.__setattr__(self, name, value)
     return
 
 Attributes.__setattr__ = __setattr__
