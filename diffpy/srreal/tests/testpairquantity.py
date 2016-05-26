@@ -6,6 +6,7 @@
 import unittest
 import cPickle
 from diffpy.srreal.pairquantity import PairQuantity
+from diffpy.srreal.pdfcalculator import PDFCalculator
 
 
 ##############################################################################
@@ -22,11 +23,14 @@ class TestPairQuantity(unittest.TestCase):
         self.assertTrue(pq.evaluatortype in ('BASIC', 'OPTIMIZED'))
         pq.evaluatortype = 'BASIC'
         self.assertEqual('BASIC', pq.evaluatortype)
-        setattr(pq, 'evaluatortype', 'OPTIMIZED')
-        self.assertEqual('OPTIMIZED', pq.evaluatortype)
         self.assertRaises(ValueError, setattr, pq, 'evaluatortype', 'invalid')
         self.assertRaises(ValueError, setattr, pq, 'evaluatortype', 'basic')
         self.assertRaises(ValueError, setattr, pq, 'evaluatortype', 'BASic')
+        # check OPTIMIZED setup with PDFCalculator where it is supported
+        pdfc = PDFCalculator()
+        self.assertEqual('BASIC', pdfc.evaluatortype)
+        pdfc.evaluatortype = 'OPTIMIZED'
+        self.assertEqual('OPTIMIZED', pdfc.evaluatortype)
         return
 
 
@@ -69,20 +73,24 @@ class TestPairQuantity(unittest.TestCase):
     def test_ticker_override(self):
         """check Python override of PairQuantity.ticker.
         """
-        pqd = PQDerived()
-        self.assertEqual(0, pqd.tcnt)
-        et0 = pqd.ticker()
-        self.assertEqual(1, pqd.tcnt)
-        et1 = PairQuantity.ticker(pqd)
-        self.assertEqual(1, pqd.tcnt)
+        pqcnt = PQCounter()
+        self.assertEqual(0, pqcnt.tcnt)
+        et0 = pqcnt.ticker()
+        self.assertEqual(1, pqcnt.tcnt)
+        et1 = PairQuantity.ticker(pqcnt)
+        self.assertEqual(1, pqcnt.tcnt)
         self.assertEqual(et0, et1)
         et0.click()
         self.assertEqual(et0, et1)
-        # check that implicit ticker call from PQEvaluator is
-        # handled by Python override of the ticker method.
-        pqd.evaluatortype = 'OPTIMIZED'
-        pqd.eval()
-        self.assertEqual(2, pqd.tcnt)
+        # BASIC evaluator does not call the ticker method.
+        pqcnt.eval()
+        self.assertEqual(1, pqcnt.tcnt)
+        # Check if ticker call from OPTIMIZED evaluator is handled
+        # with our Python override.
+        pqcnt.evaluatortype = 'OPTIMIZED'
+        self.assertEqual(1, pqcnt.tcnt)
+        pqcnt.eval()
+        self.assertEqual(2, pqcnt.tcnt)
         return
 
 
@@ -102,12 +110,20 @@ class TestPairQuantity(unittest.TestCase):
         """
         c8 = carbonzchain(8)
         c9 = carbonzchain(9)
-        pq = PQDerived()
-        pq.evaluatortype = 'OPTIMIZED'
-        pq.eval(c8)
-        # PQDerived does not override _stashPartialValue, therefore
-        # the optimized evaluation should fail
-        self.assertRaises(RuntimeError, pq.eval, c8)
+        pqd = PQDerived()
+        # wrapper for evaluation using specified evaluatortype.
+        # Use pq.eval twice to trigger optimized evaluation.
+        eval_as = lambda evtp, pq, stru : (
+            setattr(pq, 'evaluatortype', evtp),
+            pq.eval(stru), pq.eval())[-1]
+        eval_as('BASIC', pqd, c8)
+        self.assertEqual('BASIC', pqd.evaluatortype)
+        # pqd does not support OPTIMIZED evaluation.  Its use will
+        # raise ValueError or RuntimeError for older libdiffpy.
+        # Here we check for StandardError that covers them both.
+        self.assertRaises(StandardError,
+                          eval_as, 'OPTIMIZED', pqd, c8)
+        # PQCounter supports OPTIMIZED evaluation mode.
         ocnt = PQCounter()
         ocnt.evaluatortype = 'OPTIMIZED'
         self.assertEqual(28, ocnt(c8))
@@ -152,7 +168,7 @@ class PQDerived(PairQuantity):
 
 # helper for testing support for optimized evaluation
 
-class PQCounter(PairQuantity):
+class PQCounter(PQDerived):
 
     def __init__(self):
         super(PQCounter, self).__init__()
