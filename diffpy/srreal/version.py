@@ -31,7 +31,7 @@ from collections import namedtuple
 from diffpy.srreal.srreal_ext import _get_libdiffpy_version_info_dict
 
 libdiffpy_version_info = namedtuple('libdiffpy_version_info',
-        "version version_number major minor micro patch date git_sha")
+        "major minor micro patch version_number version date git_sha")
 vd = _get_libdiffpy_version_info_dict()
 libdiffpy_version_info = libdiffpy_version_info(
         version = vd['version_str'],
