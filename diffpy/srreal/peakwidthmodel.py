@@ -29,6 +29,7 @@ __all__ = '''
     JeongPeakWidth
     '''.split()
 
+from diffpy.srreal import _final_imports
 from diffpy.srreal.srreal_ext import PeakWidthModel, ConstantPeakWidth
 from diffpy.srreal.srreal_ext import DebyeWallerPeakWidth, JeongPeakWidth
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
@@ -78,5 +79,10 @@ JeongPeakWidth.delta2 = propertyFromExtDoubleAttr('delta2',
 
 JeongPeakWidth.qbroad = propertyFromExtDoubleAttr('qbroad',
         'PDF peak broadening from increased intensity noise at high Q.')
+
+# Import delayed tweaks of the extension classes.
+
+_final_imports.import_now()
+del _final_imports
 
 # End of file

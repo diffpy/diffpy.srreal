@@ -28,6 +28,7 @@ __all__ = '''
     CroppedGaussianProfile
     '''.split()
 
+from diffpy.srreal import _final_imports
 from diffpy.srreal.srreal_ext import PeakProfile
 from diffpy.srreal.srreal_ext import GaussianProfile, CroppedGaussianProfile
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
@@ -68,5 +69,10 @@ PeakProfile.peakprecision = propertyFromExtDoubleAttr('peakprecision',
     '''Profile amplitude relative to the peak maximum for evaluating peak
     bounds xboundlo and xboundhi. [3.33e-6 unitless]
     ''')
+
+# Import delayed tweaks of the extension classes.
+
+_final_imports.import_now()
+del _final_imports
 
 # End of file

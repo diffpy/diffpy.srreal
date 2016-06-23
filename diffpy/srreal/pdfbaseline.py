@@ -27,6 +27,7 @@ __all__ = '''
     LinearBaseline
     '''.split()
 
+from diffpy.srreal import _final_imports
 from diffpy.srreal.srreal_ext import PDFBaseline
 from diffpy.srreal.srreal_ext import ZeroBaseline, LinearBaseline
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
@@ -102,5 +103,10 @@ def makePDFBaseline(name, fnc, **dbattrs):
     '''
     from diffpy.srreal.wraputils import _wrapAsRegisteredUnaryFunction
     return _wrapAsRegisteredUnaryFunction(PDFBaseline, name, fnc, **dbattrs)
+
+# Import delayed tweaks of the extension classes.
+
+_final_imports.import_now()
+del _final_imports
 
 # End of file
