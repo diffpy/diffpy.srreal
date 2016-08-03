@@ -11,6 +11,7 @@ import numpy
 from diffpy.srreal.tests.testutils import loadDiffPyStructure
 from diffpy.srreal.tests.testutils import datafile
 from diffpy.srreal.pdfcalculator import PDFCalculator
+from diffpy.srreal.pdfcalculator import fftgtof, fftftog
 
 # helper functions
 
@@ -23,8 +24,8 @@ def _maxNormDiff(yobs, ycalc):
     rv = max(numpy.fabs(ynmdiff))
     return rv
 
+# ----------------------------------------------------------------------------
 
-##############################################################################
 class TestPDFCalculator(unittest.TestCase):
 
     nickel = None
@@ -351,6 +352,41 @@ class TestPDFCalculator(unittest.TestCase):
 
 # End of class TestPDFCalculator
 
+# ----------------------------------------------------------------------------
+
+class TestFFTRoutines(unittest.TestCase):
+
+    def test_fft_conversions(self):
+        """Verify conversions of arguments in fftgtof function.
+        """
+        fnipf2 = datafile('Ni-fit.fgr')
+        data = numpy.loadtxt(fnipf2)
+        dr = 0.01
+        fq0, dq0 = fftgtof(data[:,1], dr)
+        fq1, dq1 = fftgtof(data[:,1].copy(), dr)
+        fq2, dq2 = fftgtof(list(data[:,1]), dr)
+        self.assertTrue(numpy.array_equal(fq0, fq1))
+        self.assertTrue(numpy.array_equal(fq0, fq2))
+        self.assertEqual(dq0, dq1)
+        self.assertEqual(dq0, dq2)
+        return
+
+
+    def test_fft_roundtrip(self):
+        """Check if forward and inverse transformation recover the input.
+        """
+        fnipf2 = datafile('Ni-fit.fgr')
+        g0 = numpy.loadtxt(fnipf2, usecols=(1,))
+        dr0 = 0.01
+        fq, dq = fftgtof(g0, dr0)
+        g1, dr1 = fftftog(fq, dq)
+        self.assertAlmostEqual(dr0, dr1, 12)
+        self.assertTrue(numpy.allclose(g0, g1[:g0.size]))
+        return
+
+# End of class TestFFTRoutines
+
+# ----------------------------------------------------------------------------
 
 if __name__ == '__main__':
     unittest.main()
