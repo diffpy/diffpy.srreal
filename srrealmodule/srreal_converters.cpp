@@ -242,8 +242,9 @@ extractQuantityType(
         diffpy::srreal::QuantityType& rv)
 {
     using namespace boost;
+    using diffpy::srreal::QuantityType;
     // extract QuantityType directly
-    python::extract<diffpy::srreal::QuantityType&> getqt(obj);
+    python::extract<QuantityType&> getqt(obj);
     if (getqt.check())  return getqt();
     // copy data directly if it is a numpy array of doubles
     PyObject* pobj = obj.ptr();
@@ -252,9 +253,11 @@ extractQuantityType(
         (PyArray_DOUBLE == PyArray_TYPE(pobj));
     if (isdoublenumpyarray)
     {
-        double* pfirst = static_cast<double*>(PyArray_DATA(pobj));
-        double* plast = pfirst + PyArray_SIZE(pobj);
-        rv.assign(pfirst, plast);
+        double* src = static_cast<double*>(PyArray_DATA(pobj));
+        npy_intp stride = PyArray_STRIDE(pobj, 0) / PyArray_ITEMSIZE(pobj);
+        rv.resize(PyArray_SIZE(pobj));
+        QuantityType::iterator dst = rv.begin();
+        for (; dst != rv.end(); ++dst, src += stride)  *dst = *src;
         return rv;
     }
     // otherwise copy elementwise converting each element to a double
