@@ -369,6 +369,8 @@ convertToPythonDict(const T& value)
 
 
 /// efficient conversion of Python object to a QuantityType
+/// If obj wraps a QuantityType reference, return that reference.
+/// Otherwise copy the obj values to rv and return rv.
 ::diffpy::srreal::QuantityType&
 extractQuantityType(::boost::python::object obj,
         ::diffpy::srreal::QuantityType& rv);
