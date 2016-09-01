@@ -1,7 +1,8 @@
+{% set setupdata = load_setup_py_data() %}
+
 package:
   name: diffpy.srreal
-  ## Use __conda_version__.txt.
-  # version: "1.1a0"
+  version: {{ setupdata['version'] }}
 
 source:
   # git_url: https://github.com/diffpy/diffpy.srreal
