@@ -28,6 +28,13 @@
 #include <diffpy/srreal/SphericalShapeEnvelope.hpp>
 #include <diffpy/srreal/StepCutEnvelope.hpp>
 
+#include "srreal_numpy_symbol.hpp"
+// numpy/arrayobject.h needs to be included after srreal_numpy_symbol.hpp,
+// which defines PY_ARRAY_UNIQUE_SYMBOL.  NO_IMPORT_ARRAY indicates
+// import_array will be called in the extension module initializer.
+#define NO_IMPORT_ARRAY
+#include <numpy/arrayobject.h>
+
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
 
@@ -68,8 +75,9 @@ const char* doc_PDFEnvelope___call__ = "\
 Calculate PDF envelope at the specified r.\n\
 \n\
 r    -- atom distance in Angstroms where the scale envelope is evaluated.\n\
+        Float or NumPy array.\n\
 \n\
-Return float.\n\
+Return float or NumPy array.\n\
 ";
 
 const char* doc_PDFEnvelope__registerThisType = "\
@@ -177,6 +185,18 @@ class PDFEnvelopeWrap :
 };  // class PDFEnvelopeWrap
 
 
+object callnparray(const PDFEnvelope* obj, object& x)
+{
+    NumPyArray_DoublePtr xx = extractNumPyDoubleArray(x);
+    NumPyArray_DoublePtr yy = createNumPyDoubleArrayLike(xx.first);
+    double* src = xx.second;
+    double* last = xx.second + PyArray_Size(xx.first.ptr());
+    double* dst = yy.second;
+    for (; src != last; ++src, ++dst)  *dst = (*obj)(*src);
+    return yy.first;
+}
+
+
 std::string envelope_tostring(PDFEnvelopePtr obj)
 {
     return diffpy::serialization_tostring(obj);
@@ -209,6 +229,8 @@ void wrap_PDFEnvelope()
         .def("type", &PDFEnvelope::type,
                 return_value_policy<copy_const_reference>(),
                 doc_PDFEnvelope_type)
+        .def("__call__", callnparray,
+                bp::arg("r_array"))
         .def("__call__", &PDFEnvelope::operator(),
                 bp::arg("r"), doc_PDFEnvelope___call__)
         .def("_registerThisType", &PDFEnvelope::registerThisType,

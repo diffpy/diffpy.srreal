@@ -6,6 +6,7 @@
 
 import unittest
 import cPickle
+import numpy
 
 from diffpy.srreal.pdfenvelope import PDFEnvelope, makePDFEnvelope
 from diffpy.srreal.pdfenvelope import QResolutionEnvelope, ScaleEnvelope
@@ -38,12 +39,16 @@ class TestPDFEnvelope(unittest.TestCase):
     def test___call__(self):
         """check PDFEnvelope.__call__()
         """
+        x = numpy.arange(0, 9.1, 0.3)
         # this is a virtual method in the base class
         self.assertRaises(RuntimeError, PDFEnvelope().__call__, 37)
         self.assertEqual(0.0, self.fstepcut(10))
         self.assertEqual(1.0, self.fstepcut(3.45))
+        ycheck = numpy.array(17 * [1] + 14 * [0])
+        self.assertTrue(numpy.array_equal(ycheck, self.fstepcut(x)))
         self.assertEqual(1.0, self.fscale(3.45))
         self.assertEqual(1.0, self.fscale(345))
+        self.assertTrue(numpy.array_equal(numpy.ones_like(x), self.fscale(x)))
         self.fscale.scale = -2
         self.assertEqual(-2.0, self.fscale(3.5))
         return

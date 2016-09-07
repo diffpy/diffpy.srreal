@@ -6,6 +6,7 @@
 
 import unittest
 import cPickle
+import numpy
 
 from diffpy.srreal.pdfbaseline import PDFBaseline, makePDFBaseline
 from diffpy.srreal.pdfbaseline import ZeroBaseline, LinearBaseline
@@ -44,6 +45,8 @@ class TestPDFBaseline(unittest.TestCase):
         self.linear.slope = -2
         self.assertEqual(-7.0, self.linear(3.5))
         self.assertEqual(-2.0, self.linear._getDoubleAttr('slope'))
+        x = numpy.arange(0, 10.001, 0.1)
+        self.assertTrue(numpy.array_equal(-2 * x, self.linear(x)))
         return
 
 

@@ -26,6 +26,13 @@
 #include <diffpy/srreal/ZeroBaseline.hpp>
 #include <diffpy/srreal/LinearBaseline.hpp>
 
+#include "srreal_numpy_symbol.hpp"
+// numpy/arrayobject.h needs to be included after srreal_numpy_symbol.hpp,
+// which defines PY_ARRAY_UNIQUE_SYMBOL.  NO_IMPORT_ARRAY indicates
+// import_array will be called in the extension module initializer.
+#define NO_IMPORT_ARRAY
+#include <numpy/arrayobject.h>
+
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
 
@@ -66,8 +73,9 @@ const char* doc_PDFBaseline___call__ = "\
 Calculate PDF baseline at the specified r.\n\
 \n\
 r    -- atom distance in Angstroms where the baseline is calculated.\n\
+        Float or NumPy array.\n\
 \n\
-Return float.\n\
+Return float or NumPy array.\n\
 ";
 
 const char* doc_PDFBaseline__registerThisType = "\
@@ -156,6 +164,18 @@ class PDFBaselineWrap :
 };  // class PDFBaselineWrap
 
 
+object callnparray(const PDFBaseline* obj, object& x)
+{
+    NumPyArray_DoublePtr xx = extractNumPyDoubleArray(x);
+    NumPyArray_DoublePtr yy = createNumPyDoubleArrayLike(xx.first);
+    double* src = xx.second;
+    double* last = xx.second + PyArray_Size(xx.first.ptr());
+    double* dst = yy.second;
+    for (; src != last; ++src, ++dst)  *dst = (*obj)(*src);
+    return yy.first;
+}
+
+
 std::string baseline_tostring(PDFBaselinePtr obj)
 {
     return diffpy::serialization_tostring(obj);
@@ -188,6 +208,8 @@ void wrap_PDFBaseline()
         .def("type", &PDFBaseline::type,
                 return_value_policy<copy_const_reference>(),
                 doc_PDFBaseline_type)
+        .def("__call__", callnparray,
+                bp::arg("r_array"))
         .def("__call__", &PDFBaseline::operator(),
                 bp::arg("r"), doc_PDFBaseline___call__)
         .def("_registerThisType", &PDFBaseline::registerThisType,
