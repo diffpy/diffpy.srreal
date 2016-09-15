@@ -135,6 +135,11 @@ class TestPDFBaseline(unittest.TestCase):
         self.assertEqual(1, pbl3.a)
         self.assertEqual(2, pbl3.b)
         self.assertEqual(3, pbl3.c)
+        # fail if this baseline type already exists.
+        self.assertRaises(RuntimeError, makePDFBaseline, 'linear',
+                          parabola_baseline, a=1, b=2, c=3)
+        self.assertRaises(RuntimeError, makePDFBaseline, 'parabolabaseline',
+                          parabola_baseline, a=1, b=2, c=3)
         return
 
 # End of class TestPDFBaseline
