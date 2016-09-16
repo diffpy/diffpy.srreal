@@ -23,6 +23,7 @@
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
+#include "srreal_registry.hpp"
 
 #include <diffpy/srreal/AtomRadiiTable.hpp>
 #include <diffpy/srreal/ConstantRadiiTable.hpp>

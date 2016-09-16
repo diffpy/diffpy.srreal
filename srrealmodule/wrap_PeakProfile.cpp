@@ -30,6 +30,7 @@
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
+#include "srreal_registry.hpp"
 
 namespace srrealmodule {
 namespace nswrap_PeakProfile {

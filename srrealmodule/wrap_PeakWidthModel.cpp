@@ -31,6 +31,7 @@
 #include <diffpy/serialization.hpp>
 
 #include "srreal_converters.hpp"
+#include "srreal_registry.hpp"
 
 namespace srrealmodule {
 namespace nswrap_PeakWidthModel {
