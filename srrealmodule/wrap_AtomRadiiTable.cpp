@@ -51,41 +51,6 @@ Derived class can be added to the global registry of AtomRadiiTable\n\
 types by calling the _registerThisType method with any instance.\n\
 ";
 
-const char* doc_AtomRadiiTable_create = "\
-Return a new instance of the same type as this AtomRadiiTable object.\n\
-This method must be overloaded in a derived class.\n\
-";
-
-const char* doc_AtomRadiiTable_clone = "\
-Return a duplicate of this AtomRadiiTable instance.\n\
-This method must be overloaded in a derived class.\n\
-";
-
-const char* doc_AtomRadiiTable_type = "\
-Return a unique string name for this AtomRadiiTable class.\n\
-This method must be overloaded in a derived class.\n\
-";
-
-const char* doc_AtomRadiiTable__registerThisType = "\
-Add this instance to the global registry of AtomRadiiTable types.\n\
-\n\
-No return value.  Cannot be overloaded in Python.\n\
-";
-
-const char* doc_AtomRadiiTable_createByType = "\
-Create a new AtomRadiiTable object of the specified type.\n\
-\n\
-tp   -- string identifier for a registered AtomRadiiTable class.\n\
-        Use getRegisteredTypes for a set of allowed values.\n\
-\n\
-Return new AtomRadiiTable instance.\n\
-";
-
-const char* doc_AtomRadiiTable_getRegisteredTypes = "\
-Return a set of string names for the registered AtomRadiiTable\n\
-types.  These are the supported arguments for the createByType method.\n\
-";
-
 const char* doc_AtomRadiiTable_lookup = "\
 Return empirical radius of an atom in Angstroms.\n\
 \n\
@@ -182,8 +147,6 @@ Return the value of the default atom radius.\n\
 // wrappers ------------------------------------------------------------------
 
 DECLARE_PYDICT_METHOD_WRAPPER(getAllCustom, getAllCustom_asdict)
-DECLARE_PYSET_FUNCTION_WRAPPER(AtomRadiiTable::getRegisteredTypes,
-        getAtomRadiiTableTypes_asset)
 
 // Helper class for overloads of AtomRadiiTable methods from Python
 
@@ -254,23 +217,9 @@ void wrap_AtomRadiiTable()
     using namespace nswrap_AtomRadiiTable;
     using boost::noncopyable;
 
-    class_<AtomRadiiTableWrap, noncopyable>(
-            "AtomRadiiTable", doc_AtomRadiiTable)
-        .def("create", &AtomRadiiTable::create,
-                doc_AtomRadiiTable_create)
-        .def("clone", &AtomRadiiTable::clone,
-                doc_AtomRadiiTable_clone)
-        .def("type", &AtomRadiiTable::type,
-                return_value_policy<copy_const_reference>(),
-                doc_AtomRadiiTable_type)
-        .def("_registerThisType", &AtomRadiiTable::registerThisType,
-                doc_AtomRadiiTable__registerThisType)
-        .def("createByType", &AtomRadiiTable::createByType,
-                arg("tp"), doc_AtomRadiiTable_createByType)
-        .staticmethod("createByType")
-        .def("getRegisteredTypes", getAtomRadiiTableTypes_asset,
-                doc_AtomRadiiTable_getRegisteredTypes)
-        .staticmethod("getRegisteredTypes")
+    class_<AtomRadiiTableWrap, noncopyable>
+        atomradiitable("AtomRadiiTable", doc_AtomRadiiTable);
+    wrap_registry_methods(atomradiitable)
         .def("lookup",
                 &AtomRadiiTable::lookup, arg("smbl"),
                 doc_AtomRadiiTable_lookup)

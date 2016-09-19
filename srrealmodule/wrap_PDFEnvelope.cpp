@@ -52,26 +52,6 @@ const char* doc_PDFEnvelope = "\
 Base class and registry for functions that return PDF scaling envelopes.\n\
 ";
 
-const char* doc_PDFEnvelope_create = "\
-Return a new instance of the same type as self.\n\
-\n\
-This method must be overloaded in a derived class.\n\
-";
-
-const char* doc_PDFEnvelope_clone = "\
-Return a new instance that is a copy of self.\n\
-\n\
-This method must be overloaded in a derived class.\n\
-";
-
-const char* doc_PDFEnvelope_type = "\
-Return a unique string type that identifies a PDFEnvelope-derived class.\n\
-The string type is used for class registration and in the createByType\n\
-function.\n\
-\n\
-This method must be overloaded in a derived class.\n\
-";
-
 const char* doc_PDFEnvelope___call__ = "\
 Calculate PDF envelope at the specified r.\n\
 \n\
@@ -79,27 +59,6 @@ r    -- atom distance in Angstroms where the scale envelope is evaluated.\n\
         Float or NumPy array.\n\
 \n\
 Return float or NumPy array.\n\
-";
-
-const char* doc_PDFEnvelope__registerThisType = "\
-Add this class to the global registry of PDFEnvelope types.\n\
-\n\
-This method must be called once after definition of the derived\n\
-class to support pickling and the createByType factory.\n\
-";
-
-const char* doc_PDFEnvelope_createByType = "\
-Return a new PDFEnvelope instance of the specified string type.\n\
-\n\
-tp   -- string type identifying a registered PDFEnvelope class\n\
-        See getRegisteredTypes for the allowed values.\n\
-\n\
-Return a new instance of the PDFEnvelope-derived class.\n\
-";
-
-const char* doc_PDFEnvelope_getRegisteredTypes = "\
-Return a set of string types of the registered PDFEnvelope classes.\n\
-These are the allowed arguments for the createByType factory.\n\
 ";
 
 const char* doc_QResolutionEnvelope = "\
@@ -130,9 +89,6 @@ Returns   0 when x > stepcut.\n\
 ";
 
 // wrappers ------------------------------------------------------------------
-
-DECLARE_PYSET_FUNCTION_WRAPPER(PDFEnvelope::getRegisteredTypes,
-        getPDFEnvelopeTypes_asset)
 
 // Helper class allows overload of the PDFEnvelope methods from Python.
 
@@ -221,27 +177,13 @@ void wrap_PDFEnvelope()
     using diffpy::Attributes;
     namespace bp = boost::python;
 
-    class_<PDFEnvelopeWrap, bases<Attributes>,
-        noncopyable>("PDFEnvelope", doc_PDFEnvelope)
-        .def("create", &PDFEnvelope::create,
-                doc_PDFEnvelope_create)
-        .def("clone", &PDFEnvelope::clone,
-                doc_PDFEnvelope_clone)
-        .def("type", &PDFEnvelope::type,
-                return_value_policy<copy_const_reference>(),
-                doc_PDFEnvelope_type)
+    class_<PDFEnvelopeWrap, bases<Attributes>, noncopyable>
+        pdfenvelope("PDFEnvelope", doc_PDFEnvelope);
+    wrap_registry_methods(pdfenvelope)
         .def("__call__", callnparray,
                 bp::arg("r_array"))
         .def("__call__", &PDFEnvelope::operator(),
                 bp::arg("r"), doc_PDFEnvelope___call__)
-        .def("_registerThisType", &PDFEnvelope::registerThisType,
-                doc_PDFEnvelope__registerThisType)
-        .def("createByType", &PDFEnvelope::createByType,
-                bp::arg("tp"), doc_PDFEnvelope_createByType)
-        .staticmethod("createByType")
-        .def("getRegisteredTypes", getPDFEnvelopeTypes_asset,
-                doc_PDFEnvelope_getRegisteredTypes)
-        .staticmethod("getRegisteredTypes")
         .enable_pickling()
         ;
 

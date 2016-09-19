@@ -47,24 +47,6 @@ Base class for functors that calculate the PDF peak widths.\n\
 Peak width is defined as full width at half maximum (FWHM).\n\
 ";
 
-const char* doc_PeakWidthModel_create = "\
-Return a new instance of the same PeakWidthModel type.\n\
-\n\
-This method must be overridden in a derived class.\n\
-";
-
-const char* doc_PeakWidthModel_clone = "\
-Return a duplicate of this PeakWidthModel instance.\n\
-\n\
-This method must be overridden in a derived class.\n\
-";
-
-const char* doc_PeakWidthModel_type = "\
-Return a unique string name for this PeakWidthModel class.\n\
-\n\
-This method must be overridden in a derived class.\n\
-";
-
 const char* doc_PeakWidthModel_calculate = "\
 Calculate the FWHM peak width for the specified bond.\n\
 \n\
@@ -93,30 +75,6 @@ to be therefore called after every change in PeakWidthModel configuration.\n\
 \n\
 Return EventTicker object.\n\
 This method can be overridden in a Python-derived class.\n\
-";
-
-const char* doc_PeakWidthModel__registerThisType = "\
-Add this instance to the global registry of PeakWidthModel types.\n\
-\n\
-This method must be called once after definition of the derived\n\
-class to support pickling and the createByType factory.\n\
-\n\
-No return value.  No support for Python override.\n\
-";
-
-const char* doc_PeakWidthModel_createByType = "\
-Create a new PeakWidthModel instance of the specified type.\n\
-\n\
-tp   -- string identifier for a registered PeakWidthModel class.\n\
-        Use getRegisteredTypes for a set of allowed values.\n\
-\n\
-Return new PeakWidthModel instance.\n\
-";
-
-const char* doc_PeakWidthModel_getRegisteredTypes = "\
-Set of string identifiers for registered PeakWidthModel classes.\n\
-These are the allowed arguments for the createByType method and\n\
-peakwidthmodel attribute in the PDF calculator classes.\n\
 ";
 
 const char* doc_ConstantPeakWidth = "\
@@ -148,9 +106,6 @@ Use PeakWidthModel.getRegisteredTypes() for a set of registered names.\n\
 ";
 
 // wrappers ------------------------------------------------------------------
-
-DECLARE_PYSET_FUNCTION_WRAPPER(PeakWidthModel::getRegisteredTypes,
-        getPeakWidthModelTypes_asset)
 
 double maxwidthwithpystructure(const PeakWidthModel& pwm,
         python::object stru, double rmin, double rmax)
@@ -272,13 +227,9 @@ void wrap_PeakWidthModel()
     using namespace nswrap_PeakWidthModel;
     using diffpy::Attributes;
 
-    class_<PeakWidthModelWrap, bases<Attributes>,
-        noncopyable>("PeakWidthModel", doc_PeakWidthModel)
-        .def("create", &PeakWidthModel::create, doc_PeakWidthModel_create)
-        .def("clone", &PeakWidthModel::clone, doc_PeakWidthModel_clone)
-        .def("type", &PeakWidthModel::type,
-                return_value_policy<copy_const_reference>(),
-                doc_PeakWidthModel_type)
+    class_<PeakWidthModelWrap, bases<Attributes>, noncopyable>
+        peakwidthmodel("PeakWidthModel", doc_PeakWidthModel);
+    wrap_registry_methods(peakwidthmodel)
         .def("calculate",
                 &PeakWidthModel::calculate,
                 bp::arg("bnds"),
@@ -299,14 +250,6 @@ void wrap_PeakWidthModel()
                 &PeakWidthModelWrap::default_ticker,
                 return_internal_reference<>(),
                 doc_PeakWidthModel_ticker)
-        .def("_registerThisType", &PeakWidthModel::registerThisType,
-                doc_PeakWidthModel__registerThisType)
-        .def("createByType", &PeakWidthModel::createByType,
-                bp::arg("tp"), doc_PeakWidthModel_createByType)
-        .staticmethod("createByType")
-        .def("getRegisteredTypes", getPeakWidthModelTypes_asset,
-                doc_PeakWidthModel_getRegisteredTypes)
-        .staticmethod("getRegisteredTypes")
         .enable_pickling()
         ;
 

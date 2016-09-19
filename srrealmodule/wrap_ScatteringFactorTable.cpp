@@ -63,21 +63,6 @@ Derived class can be added to the global registry of ScatteringFactorTable\n\
 types by calling the _registerThisType method with any instance.\n\
 ";
 
-const char* doc_ScatteringFactorTable_create = "\
-Return a new instance of the same ScatteringFactorTable type.\n\
-This method must be overridden in a derived class.\n\
-";
-
-const char* doc_ScatteringFactorTable_clone = "\
-Return a duplicate of this ScatteringFactorTable instance.\n\
-This method must be overridden in a derived class.\n\
-";
-
-const char* doc_ScatteringFactorTable_type = "\
-Return a unique string name for this ScatteringFactorTable class.\n\
-This method must be overridden in a derived class.\n\
-";
-
 const char* doc_ScatteringFactorTable_radiationType = "\
 Return a string identifying the radiation type.\n\
 'X' for x-rays, 'N' for neutrons.\n\
@@ -160,27 +145,6 @@ Return EventTicker object.\n\
 This method can be overridden in a Python-derived class.\n\
 ";
 
-const char* doc_ScatteringFactorTable__registerThisType = "\
-Add this instance to the global registry of ScatteringFactorTable types.\n\
-\n\
-No return value.  No support for Python override.\n\
-";
-
-const char* doc_ScatteringFactorTable_createByType = "\
-Create a new ScatteringFactorTable instance of the specified type.\n\
-\n\
-tp   -- string identifier for a registered ScatteringFactorTable class.\n\
-        Use getRegisteredTypes for a set of allowed values.\n\
-\n\
-Return new ScatteringFactorTable instance.\n\
-";
-
-const char* doc_ScatteringFactorTable_getRegisteredTypes = "\
-Return a set of string names for the registered ScatteringFactorTable\n\
-types.  These are allowed arguments for the createByType method and\n\
-setScatteringFactorTableByType methods in PDF calculator classes.\n\
-";
-
 const char* doc_ScatteringFactorTableOwner = "\
 Base class for classes that own ScatteringFactorTable instance.\n\
 ";
@@ -231,9 +195,6 @@ Can be used as Q-indendent scattering factors for X-rays.\n\
 // wrappers ------------------------------------------------------------------
 
 DECLARE_PYSET_METHOD_WRAPPER(getCustomSymbols, getCustomSymbols_asset)
-
-DECLARE_PYSET_FUNCTION_WRAPPER(ScatteringFactorTable::getRegisteredTypes,
-        getScatteringFactorTableTypes_asset)
 
 // wrappers for the scatteringfactortable property
 
@@ -363,15 +324,9 @@ void wrap_ScatteringFactorTable()
     using namespace nswrap_ScatteringFactorTable;
     typedef ScatteringFactorTableOwner SFTOwner;
 
-    class_<ScatteringFactorTableWrap, noncopyable>(
-            "ScatteringFactorTable", doc_ScatteringFactorTable)
-        .def("create", &ScatteringFactorTable::create,
-                doc_ScatteringFactorTable_create)
-        .def("clone", &ScatteringFactorTable::clone,
-                doc_ScatteringFactorTable_clone)
-        .def("type", &ScatteringFactorTable::type,
-                return_value_policy<copy_const_reference>(),
-                doc_ScatteringFactorTable_type)
+    class_<ScatteringFactorTableWrap, noncopyable>
+        sftb("ScatteringFactorTable", doc_ScatteringFactorTable);
+    wrap_registry_methods(sftb)
         .def("radiationType",
                 &ScatteringFactorTable::radiationType,
                 return_value_policy<copy_const_reference>(),
@@ -411,14 +366,6 @@ void wrap_ScatteringFactorTable()
                 &ScatteringFactorTableWrap::default_ticker,
                 return_internal_reference<>(),
                 doc_ScatteringFactorTable_ticker)
-        .def("_registerThisType", &ScatteringFactorTable::registerThisType,
-                doc_ScatteringFactorTable__registerThisType)
-        .def("createByType", &ScatteringFactorTable::createByType,
-                bp::arg("tp"), doc_ScatteringFactorTable_createByType)
-        .staticmethod("createByType")
-        .def("getRegisteredTypes", getScatteringFactorTableTypes_asset,
-                doc_ScatteringFactorTable_getRegisteredTypes)
-        .staticmethod("getRegisteredTypes")
         .enable_pickling()
         ;
 

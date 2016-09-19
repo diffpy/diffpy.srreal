@@ -47,26 +47,6 @@ The peak profile functions must be centered at 0 and their integrated\n\
 area must be 1.\n\
 ";
 
-const char* doc_PeakProfile_create = "\
-Return a new default instance of the same type as self.\n\
-\n\
-This method must be overridden in a derived class.\n\
-";
-
-const char* doc_PeakProfile_clone = "\
-Return a new instance that is a copy of self.\n\
-\n\
-This method must be overridden in a derived class.\n\
-";
-
-const char* doc_PeakProfile_type = "\
-Return a unique string type that identifies a PeakProfile-derived class.\n\
-The string type is used for class registration and in the createByType\n\
-function.\n\
-\n\
-This method must be overridden in a derived class.\n\
-";
-
 const char* doc_PeakProfile___call__ = "\
 Evaluate peak profile function for a given position and peak width.\n\
 \n\
@@ -115,20 +95,6 @@ This method must be called once after definition of the derived\n\
 class to support pickling and the createByType factory.\n\
 ";
 
-const char* doc_PeakProfile_createByType = "\
-Return a new PeakProfile instance of the specified string type.\n\
-\n\
-tp   -- string type identifying a registered PeakProfile class\n\
-        See getRegisteredTypes for the allowed values.\n\
-\n\
-Return a new instance of the PeakProfile-derived class.\n\
-";
-
-const char* doc_PeakProfile_getRegisteredTypes = "\
-Set of string identifiers for registered PeakProfile classes.\n\
-These are allowed arguments for the createByType static method.\n\
-";
-
 const char* doc_GaussianProfile = "\
 Gaussian profile function.\n\
 ";
@@ -140,9 +106,6 @@ The profile is also rescaled to keep the integrated area of 1.\n\
 ";
 
 // wrappers ------------------------------------------------------------------
-
-DECLARE_PYSET_FUNCTION_WRAPPER(PeakProfile::getRegisteredTypes,
-        getPeakProfileTypes_asset)
 
 // Support for override of PeakProfile methods from Python.
 
@@ -250,13 +213,9 @@ void wrap_PeakProfile()
     using diffpy::Attributes;
     namespace bp = boost::python;
 
-    class_<PeakProfileWrap, bases<Attributes>,
-        noncopyable>("PeakProfile", doc_PeakProfile)
-        .def("create", &PeakProfile::create, doc_PeakProfile_create)
-        .def("clone", &PeakProfile::clone, doc_PeakProfile_clone)
-        .def("type", &PeakProfile::type,
-                return_value_policy<copy_const_reference>(),
-                doc_PeakProfile_type)
+    class_<PeakProfileWrap, bases<Attributes>, noncopyable>
+        peakprofile("PeakProfile", doc_PeakProfile);
+    wrap_registry_methods(peakprofile)
         .def("__call__", &PeakProfile::operator(),
                 (bp::arg("x"), bp::arg("fwhm")), doc_PeakProfile___call__)
         .def("xboundlo", &PeakProfile::xboundlo,
@@ -268,14 +227,6 @@ void wrap_PeakProfile()
                 &PeakProfileWrap::default_ticker,
                 return_internal_reference<>(),
                 doc_PeakProfile_ticker)
-        .def("_registerThisType", &PeakProfile::registerThisType,
-                doc_PeakProfile__registerThisType)
-        .def("createByType", &PeakProfile::createByType,
-                bp::arg("tp"), doc_PeakProfile_createByType)
-        .staticmethod("createByType")
-        .def("getRegisteredTypes", getPeakProfileTypes_asset,
-                doc_PeakProfile_getRegisteredTypes)
-        .staticmethod("getRegisteredTypes")
         .enable_pickling()
         ;
 
