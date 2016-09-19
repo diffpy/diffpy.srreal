@@ -21,6 +21,10 @@ class TestPDFBaseline(unittest.TestCase):
 
 
     def tearDown(self):
+        for tp in PDFBaseline.getRegisteredTypes():
+            PDFBaseline._deregisterType(tp)
+        self.linear._registerThisType()
+        self.zero._registerThisType()
         return
 
 
@@ -87,10 +91,66 @@ class TestPDFBaseline(unittest.TestCase):
         return
 
 
+    def test__aliasType(self):
+        """check PDFBaseline._aliasType.
+        """
+        self.assertRaises(ValueError, PDFBaseline.createByType, "alias")
+        self.assertRaises(RuntimeError, PDFBaseline._aliasType,
+                          "invalid", "alias")
+        self.assertRaises(RuntimeError, PDFBaseline._aliasType,
+                          "linear", "zero")
+        PDFBaseline._aliasType("linear", "alias")
+        bl = PDFBaseline.createByType("alias")
+        self.assertEqual("linear", bl.type())
+        self.assertTrue(isinstance(bl, LinearBaseline))
+        # second registration is a no-op
+        PDFBaseline._aliasType("linear", "alias")
+        bl1 = PDFBaseline.createByType("alias")
+        self.assertTrue(isinstance(bl1, LinearBaseline))
+        # no other type can be aliased to the existing name.
+        self.assertRaises(RuntimeError, PDFBaseline._aliasType,
+                          "zero", "alias")
+        return
+
+
+    def test__deregisterType(self):
+        """check PDFBaseline._deregisterType.
+        """
+        self.assertEqual(0, PDFBaseline._deregisterType("nonexistent"))
+        PDFBaseline._aliasType("linear", "alias")
+        self.assertEqual(2, PDFBaseline._deregisterType("alias"))
+        self.assertFalse('linear' in PDFBaseline.getRegisteredTypes())
+        self.assertEqual(0, PDFBaseline._deregisterType("alias"))
+        return
+
+
     def test_createByType(self):
         """check PDFBaseline.createByType()
         """
         self.assertRaises(ValueError, PDFBaseline.createByType, 'notregistered')
+        return
+
+
+    def test_isRegisteredType(self):
+        """check PDFBaseline.isRegisteredType()
+        """
+        self.assertTrue(PDFBaseline.isRegisteredType("linear"))
+        self.assertFalse(PDFBaseline.isRegisteredType("nonexistent"))
+        PDFBaseline._deregisterType("linear")
+        self.assertFalse(PDFBaseline.isRegisteredType("linear"))
+        return
+
+
+    def test_getAliasedTypes(self):
+        """check PDFBaseline.getAliasedTypes()
+        """
+        self.assertEqual({}, PDFBaseline.getAliasedTypes())
+        PDFBaseline._aliasType("linear", "foo")
+        PDFBaseline._aliasType("linear", "bar")
+        PDFBaseline._aliasType("linear", "linear")
+        PDFBaseline._aliasType("bar", "foo")
+        self.assertEqual({'bar' : 'linear', 'foo' : 'linear'},
+                         PDFBaseline.getAliasedTypes())
         return
 
 

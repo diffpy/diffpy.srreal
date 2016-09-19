@@ -37,7 +37,11 @@ def get_registry_docstrings(cls):
         ("clone", doc_HasClassRegistry_clone),
         ("type", doc_HasClassRegistry_type),
         ("_registerThisType", doc_HasClassRegistry__registerThisType),
+        ("_aliasType", doc_HasClassRegistry__aliasType),
+        ("_deregisterType", doc_HasClassRegistry__deregisterType),
         ("createByType", doc_HasClassRegistry_createByType),
+        ("isRegisteredType", doc_HasClassRegistry_isRegisteredType),
+        ("getAliasedTypes", doc_HasClassRegistry_getAliasedTypes),
         ("getRegisteredTypes", doc_HasClassRegistry_getRegisteredTypes),
     )}
     return rv
@@ -74,6 +78,40 @@ class to support pickling and the `createByType` factory.
 """
 
 
+doc_HasClassRegistry__aliasType = """\
+Register the specified class type under another string alias.
+
+Parameters
+----------
+tp : str
+    string type identifying a registered @NAME@ class.
+alias : str
+    string alias to be used for the `tp` type.
+
+Raises
+------
+RuntimeError
+    When they `tp` type is unknown or if the `alias` type is already
+    registered.
+"""
+
+
+doc_HasClassRegistry__deregisterType = """\
+Cancel registration of the specified string type and any of its aliases.
+
+Parameters
+----------
+tp : str
+    string type or an alias of a registered @NAME@ class.
+
+Returns
+-------
+count : int
+    Number of unregistered names or aliases.
+    Return 0 if `tp` is not a registered type.
+"""
+
+
 doc_HasClassRegistry_createByType = """\
 Return a new @NAME@ instance of the specified string type.
 
@@ -87,6 +125,30 @@ Returns a new instance of the @NAME@-derived class.
 See Also
 --------
 getRegisteredTypes : Return set of the recognized type strings.
+getAliasedTypes : Return dictionary of string aliases.
+"""
+
+
+doc_HasClassRegistry_isRegisteredType = """\
+Check if the given string is registered as a @NAME@ type.
+
+Parameters
+----------
+tp : str
+    string name or an alias to be checked.
+
+Return ``True`` if `tp` is known to the registry either as
+a standard type or its alias.
+"""
+
+
+doc_HasClassRegistry_getAliasedTypes = """\
+Get all aliases registered for the @NAME@ string types.
+
+Returns
+-------
+dict
+    a map of registered aliases to their corresponding standard names.
 """
 
 

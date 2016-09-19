@@ -72,7 +72,14 @@ class wrapper_registry_configurator
 ::boost::python::object get_registry_docstrings(::boost::python::object& cls);
 
 
-/// helper wrapper function for return value conversion.
+/// helper wrapper functions for return value conversions.
+
+template <class W>
+::boost::python::object getAliasedTypes_asdict()
+{
+    return convertToPythonDict(W::getAliasedTypes());
+}
+
 template <class W>
 ::boost::python::object getRegisteredTypes_asset()
 {
@@ -94,7 +101,11 @@ C& wrap_registry_methods(C& boostpythonclass)
     const char* doc_clone = CString(d["clone"]);
     const char* doc_type = CString(d["type"]);
     const char* doc__registerThisType = CString(d["_registerThisType"]);
+    const char* doc__aliasType = CString(d["_aliasType"]);
+    const char* doc__deregisterType = CString(d["_deregisterType"]);
     const char* doc_createByType = CString(d["createByType"]);
+    const char* doc_isRegisteredType = CString(d["isRegisteredType"]);
+    const char* doc_getAliasedTypes = CString(d["getAliasedTypes"]);
     const char* doc_getRegisteredTypes = CString(d["getRegisteredTypes"]);
     // define the class registry related methods.
     boostpythonclass
@@ -105,9 +116,21 @@ C& wrap_registry_methods(C& boostpythonclass)
                 doc_type)
         .def("_registerThisType", &B::registerThisType,
                 doc__registerThisType)
+        .def("_aliasType", &B::aliasType,
+                (bp::arg("tp"), bp::arg("alias")), doc__aliasType)
+        .staticmethod("_aliasType")
+        .def("_deregisterType", &B::deregisterType,
+                bp::arg("tp"), doc__deregisterType)
+        .staticmethod("_deregisterType")
         .def("createByType", &B::createByType,
                 bp::arg("tp"), doc_createByType)
         .staticmethod("createByType")
+        .def("isRegisteredType", &B::isRegisteredType,
+                bp::arg("tp"), doc_isRegisteredType)
+        .staticmethod("isRegisteredType")
+        .def("getAliasedTypes", getAliasedTypes_asdict<B>,
+                doc_getAliasedTypes)
+        .staticmethod("getAliasedTypes")
         .def("getRegisteredTypes", getRegisteredTypes_asset<B>,
                 doc_getRegisteredTypes)
         .staticmethod("getRegisteredTypes")
