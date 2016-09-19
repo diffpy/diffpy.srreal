@@ -396,7 +396,12 @@ void throwPureVirtualCalled(const char* fncname);
 template <class T>
 class wrapper_srreal : public ::boost::python::wrapper<T>
 {
+    public:
+
+        typedef T base;
+
     protected:
+
         ::boost::python::override
         get_pure_virtual_override(const char* name) const
         {
