@@ -20,6 +20,7 @@
 #define SRREAL_REGISTRY_HPP_INCLUDED
 
 #include <boost/python/object.hpp>
+#include <boost/python/extract.hpp>
 
 namespace srrealmodule {
 
@@ -65,6 +66,55 @@ class wrapper_registry_configurator
         mutable TPtr mcptr;
         mutable PyObject* mpyptr;
 };
+
+
+/// retrieve a dictionary of Python-defined docstrings for the cls class.
+::boost::python::object get_registry_docstrings(::boost::python::object& cls);
+
+
+/// helper wrapper function for return value conversion.
+template <class W>
+::boost::python::object getRegisteredTypes_asset()
+{
+    return convertToPythonSet(W::getRegisteredTypes());
+}
+
+
+/// template function that wraps HasClassRegistry methods
+template <class C>
+C& wrap_registry_methods(C& boostpythonclass)
+{
+    namespace bp = boost::python;
+    using namespace boost::python;
+    typedef typename C::wrapped_type::base B;
+    typedef extract<const char*> CString;
+    // get docstrings for the class registry methods.
+    object d = get_registry_docstrings(boostpythonclass);
+    const char* doc_create = CString(d["create"]);
+    const char* doc_clone = CString(d["clone"]);
+    const char* doc_type = CString(d["type"]);
+    const char* doc__registerThisType = CString(d["_registerThisType"]);
+    const char* doc_createByType = CString(d["createByType"]);
+    const char* doc_getRegisteredTypes = CString(d["getRegisteredTypes"]);
+    // define the class registry related methods.
+    boostpythonclass
+        .def("create", &B::create, doc_create)
+        .def("clone", &B::clone, doc_clone)
+        .def("type", &B::type,
+                return_value_policy<copy_const_reference>(),
+                doc_type)
+        .def("_registerThisType", &B::registerThisType,
+                doc__registerThisType)
+        .def("createByType", &B::createByType,
+                bp::arg("tp"), doc_createByType)
+        .staticmethod("createByType")
+        .def("getRegisteredTypes", getRegisteredTypes_asset<B>,
+                doc_getRegisteredTypes)
+        .staticmethod("getRegisteredTypes")
+        ;
+    return boostpythonclass;
+}
+
 
 }   // namespace srrealmodule
 
