@@ -24,6 +24,10 @@
 
 namespace srrealmodule {
 
+/// helper for remembering instances of Python-derived class.
+void register_for_cleanup(PyObject*);
+
+
 /// template class for handling Python Wrapper classes in C++ class registry
 template <class T>
 class wrapper_registry_configurator
@@ -55,7 +59,7 @@ class wrapper_registry_configurator
         void setup(TSharedPtr ptr) const
         {
             assert(mcptr && mcptr == ptr.get());
-            ::boost::python::incref(mpyptr);
+            register_for_cleanup(mpyptr);
             mcptr = 0;
             mpyptr = 0;
         }

@@ -23,6 +23,13 @@ namespace srrealmodule {
 
 using namespace boost::python;
 
+void register_for_cleanup(PyObject* pobj)
+{
+    object obj(borrowed(pobj));
+    object reg = import("diffpy.srreal._cleanup").attr("registerForCleanUp");
+    reg(obj);
+}
+
 
 /// get dictionary of Python-defined docstrings for the cls class.
 object get_registry_docstrings(object& cls)
