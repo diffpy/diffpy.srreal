@@ -181,6 +181,27 @@ class TestBVSCalculator(unittest.TestCase):
         return
 
 
+    def test_table_atom_valence(self):
+        '''check calculation with defined valences in bvparamtable
+        '''
+        bvc = self.bvc
+        barerutile = Structure(self.rutile)
+        for a in barerutile:
+            a.element = a.element.rstrip('+-012345678')
+        self.assertEqual({"Ti" : 2, "O" : 4}, barerutile.composition)
+        self.assertFalse(any(bvc(barerutile)))
+        bptb = bvc.bvparamtable
+        bptb.setAtomValence("Ti", +4)
+        bptb.setAtomValence("O", -2)
+        vcalc = bvc(barerutile)
+        self.assertEqual(4, bptb.getAtomValence("Ti"))
+        self.assertEqual(-2, bptb.getAtomValence("O"))
+        self.assertEqual(set((+4, -2)), set(round(x) for x in vcalc))
+        self.assertEqual(set((+4, -2)), set(bvc.valences))
+        bptb.resetAtomValences()
+        self.assertFalse(any(bvc(barerutile)))
+        return
+
 # End of class TestBVSCalculator
 
 if __name__ == '__main__':

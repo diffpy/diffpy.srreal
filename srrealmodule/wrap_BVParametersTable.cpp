@@ -108,6 +108,28 @@ Singleton instance of void bond valence parameters.\n\
 Also returned by 'lookup' when valence data do not exist.\n\
 ";
 
+const char* doc_BVParametersTable_getAtomValence = "\
+Return signed valence for the specified atom or ion symbol.\n\
+\n\
+Return valence previously defined by setAtomValence or\n\
+interpret the charge suffix, for example, use -2 for \"S2-\".\n\
+";
+
+const char* doc_BVParametersTable_setAtomValence = "\
+Define custom valence for the specified atom or ion symbol.\n\
+\n\
+smbl     -- string symbol of atom or ion, for example \"F\".\n\
+value    -- signed valence to be used for the symbol, e.g., -1.\n\
+\n\
+No return value.\n\
+";
+
+const char* doc_BVParametersTable_resetAtomValences = "\
+Unset any custom valences defined by setAtomValence.\n\
+\n\
+Valences are thereafter obtained from charge suffixes only.\n\
+";
+
 const char* doc_BVParametersTable_lookup1 = "\
 Lookup bond valence parameters by a BVParam instance.\n\
 \n\
@@ -272,6 +294,14 @@ void wrap_BVParametersTable()
     class_<BVParametersTable>("BVParametersTable", doc_BVParametersTable)
         .def("none", singleton_none, doc_BVParametersTable_none)
         .staticmethod("none")
+        .def("getAtomValence", &BVParametersTable::getAtomValence,
+                arg("smbl"),
+                doc_BVParametersTable_getAtomValence)
+        .def("setAtomValence", &BVParametersTable::setAtomValence,
+                (arg("smbl"), arg("value")),
+                doc_BVParametersTable_setAtomValence)
+        .def("resetAtomValences", &BVParametersTable::resetAtomValences,
+                doc_BVParametersTable_resetAtomValences)
         .def("lookup", bptb_bvparam_1(&BVParametersTable::lookup),
                 arg("bvparam"), doc_BVParametersTable_lookup1,
                 return_value_policy<copy_const_reference>())
