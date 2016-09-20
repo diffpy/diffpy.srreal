@@ -20,10 +20,6 @@
 #include <boost/python/dict.hpp>
 #include <boost/python/def.hpp>
 
-#if DIFFPY_VERSION < 1003000
-#error "diffpy.srreal requires libdiffpy 1.3 or later."
-#endif
-
 namespace srrealmodule {
 namespace nswrap_libdiffpy_version {
 
@@ -48,11 +44,7 @@ python::dict get_libdiffpy_version_info_dict()
     rv["micro"] = libdiffpy_version_info::micro;
     rv["date"] = libdiffpy_version_info::date;
     rv["git_sha"] = libdiffpy_version_info::git_sha;
-#if DIFFPY_VERSION > 1003000
     rv["patch"] = libdiffpy_version_info::patch;
-#else
-    rv["patch"] = 0;
-#endif
     return rv;
 }
 

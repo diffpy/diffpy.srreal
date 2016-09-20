@@ -32,7 +32,11 @@
 #include <diffpy/srreal/forwardtypes.hpp>
 #include <diffpy/srreal/R3linalg.hpp>
 #include <diffpy/srreal/QuantityType.hpp>
+#include <diffpy/version.hpp>
 
+#if DIFFPY_VERSION < 1003002000
+#error "diffpy.srreal requires libdiffpy 1.3.2 or later."
+#endif
 
 /// Conversion function that supports implicit conversions in
 /// PairQuantity::eval and PairQuantity::setStructure
