@@ -102,8 +102,7 @@ def _wrapAsRegisteredUnaryFunction(cls, regname, fnc, **dbattrs):
             '''Evaluate this functor at x.
             '''
             if dbattrs:
-                kw = dict([(n, self._getDoubleAttr(n))
-                        for n in self._namesOfWritableDoubleAttributes()])
+                kw = {n : getattr(self, n) for n in dbattrs}
                 rv = fnc(x, **kw)
             else:
                 rv = fnc(x)
