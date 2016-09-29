@@ -37,6 +37,10 @@ class TestBondCalculator(unittest.TestCase):
         self.assertEqual(0, self.bdc.rmin)
         self.assertEqual(5, self.bdc.rmax)
         self.assertEqual(0, len(self.bdc.distances))
+        bdc1 = BondCalculator(rmin=2, rmax=7)
+        self.assertEqual(2, bdc1.rmin)
+        self.assertEqual(7, bdc1.rmax)
+        self.assertRaises(TypeError, BondCalculator, invalid=55)
         return
 
 
@@ -51,6 +55,9 @@ class TestBondCalculator(unittest.TestCase):
         self.assertEqual(0, len(bdc(self.niprim)))
         bdc.rmax = 2.5
         self.assertEqual(12, len(bdc(self.niprim)))
+        self.assertEqual(0, len(bdc(self.niprim, rmax=2)))
+        self.assertRaises(TypeError, bdc, self.niprim, rmax=5, invalid=7)
+        self.assertEqual(2, bdc.rmax)
         return
 
 
