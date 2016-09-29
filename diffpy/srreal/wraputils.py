@@ -58,7 +58,7 @@ def setattrFromKeywordArguments(obj, **kwargs):
     return
 
 
-def _wrapAsRegisteredUnaryFunction(cls, regname, fnc, **dbattrs):
+def _wrapAsRegisteredUnaryFunction(cls, regname, fnc, replace=False, **dbattrs):
     '''Helper function for wrapping Python function as PDFBaseline or
     PDFEnvelope functor.  Not intended for direct usage, this function
     is rather called from makePDFBaseline or makePDFEnvelope wrappers.
@@ -71,6 +71,9 @@ def _wrapAsRegisteredUnaryFunction(cls, regname, fnc, **dbattrs):
                 float parameters.  The parameters need to be registered as
                 dbattrs in the functor class.  The function fnc
                 must be picklable and it must return a float.
+    replace  -- when set replace any functor already registered under
+                the regname.  Otherwise raise RuntimeError when regname
+                is taken.
     dbattrs  -- optional float parameters of the wrapped function.
                 These will be registered as double attributes in the
                 functor class.  The wrapped function must be callable as
@@ -118,6 +121,9 @@ def _wrapAsRegisteredUnaryFunction(cls, regname, fnc, **dbattrs):
 
     # End of class RegisteredUnaryFunction
 
+    if replace:
+        RegisteredUnaryFunction._deregisterType(regname)
+    RegisteredUnaryFunction.__name__ = 'User' + cls.__name__ + '_' + regname
     RegisteredUnaryFunction()._registerThisType()
     rv = RegisteredUnaryFunction.createByType(regname)
     assert type(rv) is RegisteredUnaryFunction

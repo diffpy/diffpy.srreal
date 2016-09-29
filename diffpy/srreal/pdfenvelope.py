@@ -86,7 +86,7 @@ StepCutEnvelope.stepcut = propertyFromExtDoubleAttr('stepcut',
 
 # Python functions wrapper
 
-def makePDFEnvelope(name, fnc, **dbattrs):
+def makePDFEnvelope(name, fnc, replace=False, **dbattrs):
     '''Helper function for registering Python function as a PDFEnvelope.
     This is required for using Python function as PDFCalculator envelope.
 
@@ -97,6 +97,9 @@ def makePDFEnvelope(name, fnc, **dbattrs):
                 float parameters.  The parameters need to be registered as
                 double attributes in the functor class.  The function fnc
                 must be picklable and it must return a float.
+    replace  -- when set replace any PDFEnvelope type already registered
+                under the name.  Otherwise raise RuntimeError when the
+                name is taken.
     dbattrs  -- optional float parameters of the wrapped function.
                 These will be registered as double attributes in the
                 functor class.  The wrapped function must be callable as
@@ -121,7 +124,9 @@ def makePDFEnvelope(name, fnc, **dbattrs):
         # or pdfc.addEnvelope("expdecay")
     '''
     from diffpy.srreal.wraputils import _wrapAsRegisteredUnaryFunction
-    return _wrapAsRegisteredUnaryFunction(PDFEnvelope, name, fnc, **dbattrs)
+    rv = _wrapAsRegisteredUnaryFunction(PDFEnvelope, name, fnc,
+                                        replace=replace, **dbattrs)
+    return rv
 
 # Import delayed tweaks of the extension classes.
 

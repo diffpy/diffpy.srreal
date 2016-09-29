@@ -200,6 +200,16 @@ class TestPDFBaseline(unittest.TestCase):
                           parabola_baseline, a=1, b=2, c=3)
         self.assertRaises(RuntimeError, makePDFBaseline, 'parabolabaseline',
                           parabola_baseline, a=1, b=2, c=3)
+        # check replacement of an existing type.
+        makePDFBaseline('linear', parabola_baseline, replace=True,
+                        a=1, b=2, c=4)
+        pbl4 = PDFBaseline.createByType('linear')
+        self.assertEqual(set(('a', 'b', 'c')), pbl4._namesOfDoubleAttributes())
+        self.assertEqual(4, pbl4.c)
+        # check baseline with no attributes
+        pbl5 = makePDFBaseline('myzero', lambda x: 0.0)
+        self.assertEqual(0, pbl5(33))
+        self.assertEqual(set(), pbl5._namesOfDoubleAttributes())
         return
 
 # End of class TestPDFBaseline

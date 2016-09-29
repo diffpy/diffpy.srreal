@@ -68,7 +68,7 @@ LinearBaseline.slope = propertyFromExtDoubleAttr('slope',
 
 # Python functions wrapper
 
-def makePDFBaseline(name, fnc, **dbattrs):
+def makePDFBaseline(name, fnc, replace=False, **dbattrs):
     '''Helper function for registering Python function as a PDFBaseline.
     This is required for using Python function as PDFCalculator.baseline.
 
@@ -79,6 +79,9 @@ def makePDFBaseline(name, fnc, **dbattrs):
                 float parameters.  The parameters need to be registered as
                 double attributes in the functor class.  The function fnc
                 must be picklable and it must return a float.
+    replace  -- when set replace any PDFBaseline type already registered
+                under the name.  Otherwise raise RuntimeError when the
+                name is taken.
     dbattrs  -- optional float parameters of the wrapped function.
                 These will be registered as double attributes in the
                 functor class.  The wrapped function must be callable as
@@ -102,7 +105,9 @@ def makePDFBaseline(name, fnc, **dbattrs):
         # or pdfc.baseline = "shiftedline"
     '''
     from diffpy.srreal.wraputils import _wrapAsRegisteredUnaryFunction
-    return _wrapAsRegisteredUnaryFunction(PDFBaseline, name, fnc, **dbattrs)
+    rv = _wrapAsRegisteredUnaryFunction(PDFBaseline, name, fnc,
+                                        replace=replace, **dbattrs)
+    return rv
 
 # Import delayed tweaks of the extension classes.
 
