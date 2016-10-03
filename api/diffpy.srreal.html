@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>diffpy.srreal package &mdash; SrReal 1.1 documentation</title>
+    <title>diffpy.srreal package &#8212; SrReal 1.1.1 documentation</title>
     
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.1',
+        VERSION:     '1.1.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,9 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/sidebar.js"></script>
-    <link rel="top" title="SrReal 1.1 documentation" href="../index.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="SrReal 1.1.1 documentation" href="../index.html" />
     <link rel="prev" title="diffpy.srreal documentation" href="../index.html" /> 
   </head>
   <body role="document">
@@ -40,7 +42,7 @@
         <li class="right" >
           <a href="../index.html" title="diffpy.srreal documentation"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">SrReal 1.1 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">SrReal 1.1.1 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -72,28 +74,10 @@ _standardLookup(self, smbl)</div></blockquote>
 <p>Derived class can be added to the global registry of AtomRadiiTable
 types by calling the _registerThisType method with any instance.</p>
 <dl class="method">
-<dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.__getstate__">
-<code class="descname">__getstate__</code><span class="sig-paren">(</span><em>(object)arg1</em><span class="sig-paren">)</span> &rarr; tuple :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.__getstate__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>boost::python::tuple __getstate__(boost::python::api::object)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.__setstate__">
-<code class="descname">__setstate__</code><span class="sig-paren">(</span><em>(object)arg1</em>, <em>(tuple)arg2</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.__setstate__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>void __setstate__(boost::python::api::object,boost::python::tuple)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.clone">
 <code class="descname">clone</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em><span class="sig-paren">)</span> &rarr; AtomRadiiTable :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.clone" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a duplicate of this AtomRadiiTable instance.
-This method must be overloaded in a derived class.</p>
+<dd><p>Return a new instance that is a copy of self.</p>
+<p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::shared_ptr&lt;diffpy::srreal::AtomRadiiTable&gt; clone(diffpy::srreal::AtomRadiiTable {lvalue})</dd>
@@ -103,8 +87,8 @@ This method must be overloaded in a derived class.</p>
 <dl class="method">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.create">
 <code class="descname">create</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em><span class="sig-paren">)</span> &rarr; AtomRadiiTable :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.create" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a new instance of the same type as this AtomRadiiTable object.
-This method must be overloaded in a derived class.</p>
+<dd><p>Return a new instance of the same type as self.</p>
+<p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::shared_ptr&lt;diffpy::srreal::AtomRadiiTable&gt; create(diffpy::srreal::AtomRadiiTable {lvalue})</dd>
@@ -114,12 +98,28 @@ This method must be overloaded in a derived class.</p>
 <dl class="staticmethod">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.createByType">
 <em class="property">static </em><code class="descname">createByType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; AtomRadiiTable :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.createByType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a new AtomRadiiTable object of the specified type.</p>
-<dl class="docutils">
-<dt>tp   &#8211; string identifier for a registered AtomRadiiTable class.</dt>
-<dd>Use getRegisteredTypes for a set of allowed values.</dd>
+<dd><p>Return a new AtomRadiiTable instance of the specified string type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tp</strong> (<em>str</em>) &#8211; string type identifying a registered AtomRadiiTable class.</li>
+<li><strong>a new instance of the AtomRadiiTable-derived class.</strong> (<em>Returns</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.getRegisteredTypes" title="diffpy.srreal.atomradiitable.AtomRadiiTable.getRegisteredTypes"><code class="xref py py-meth docutils literal"><span class="pre">getRegisteredTypes()</span></code></a></dt>
+<dd>Return set of the recognized type strings.</dd>
+<dt><a class="reference internal" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.getAliasedTypes" title="diffpy.srreal.atomradiitable.AtomRadiiTable.getAliasedTypes"><code class="xref py py-meth docutils literal"><span class="pre">getAliasedTypes()</span></code></a></dt>
+<dd>Return dictionary of string aliases.</dd>
 </dl>
-<p>Return new AtomRadiiTable instance.</p>
+</div>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::shared_ptr&lt;diffpy::srreal::AtomRadiiTable&gt; createByType(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;)</dd>
@@ -139,6 +139,26 @@ Raise ValueError for an invalid string format.</p>
 </dl>
 </dd></dl>
 
+<dl class="staticmethod">
+<dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.getAliasedTypes">
+<em class="property">static </em><code class="descname">getAliasedTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.getAliasedTypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all aliases registered for the AtomRadiiTable string types.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a map of registered aliases to their corresponding standard names.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>C++ signature :</dt>
+<dd>boost::python::api::object getAliasedTypes()</dd>
+</dl>
+</dd></dl>
+
 <dl class="method">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.getAllCustom">
 <code class="descname">getAllCustom</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.getAllCustom" title="Permalink to this definition">¶</a></dt>
@@ -152,11 +172,34 @@ Raise ValueError for an invalid string format.</p>
 <dl class="staticmethod">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.getRegisteredTypes">
 <em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a set of string names for the registered AtomRadiiTable
-types.  These are the supported arguments for the createByType method.</p>
+<dd><p>Return a set of string types of the registered AtomRadiiTable classes.</p>
+<p>These are the allowed arguments for the <cite>createByType</cite> factory.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::python::api::object getRegisteredTypes()</dd>
+</dl>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.isRegisteredType">
+<em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; bool :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.isRegisteredType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the given string is registered as a AtomRadiiTable type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tp</strong> (<em>str</em>) &#8211; string name or an alias to be checked.</li>
+<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) &#8211; </li>
+<li><strong>standard type or its alias.</strong> (<em>a</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>C++ signature :</dt>
+<dd>bool isRegisteredType(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;)</dd>
 </dl>
 </dd></dl>
 
@@ -223,8 +266,10 @@ radius   &#8211; custom radius that will be returned by the lookup method</p>
 <dl class="method">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.type">
 <code class="descname">type</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em><span class="sig-paren">)</span> &rarr; str :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a unique string name for this AtomRadiiTable class.
-This method must be overloaded in a derived class.</p>
+<dd><p>Return a unique string type that identifies a AtomRadiiTable-derived class.
+The string type is used for class registration and in the <cite>createByType</cite>
+function.</p>
+<p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt; type(diffpy::srreal::AtomRadiiTable {lvalue})</dd>
@@ -240,24 +285,6 @@ This method must be overloaded in a derived class.</p>
 <p>Atom radii table with the same radius for all atoms, by default 0.</p>
 <p>See setDefault() for changing the default radius or setCustom()
 and fromString() for setting a special radius for selected atoms.</p>
-<dl class="method">
-<dt id="diffpy.srreal.atomradiitable.ConstantRadiiTable.__getstate__">
-<code class="descname">__getstate__</code><span class="sig-paren">(</span><em>(object)arg1</em><span class="sig-paren">)</span> &rarr; tuple :<a class="headerlink" href="#diffpy.srreal.atomradiitable.ConstantRadiiTable.__getstate__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>boost::python::tuple __getstate__(boost::python::api::object)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.atomradiitable.ConstantRadiiTable.__setstate__">
-<code class="descname">__setstate__</code><span class="sig-paren">(</span><em>(object)arg1</em>, <em>(tuple)arg2</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.atomradiitable.ConstantRadiiTable.__setstate__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>void __setstate__(boost::python::api::object,boost::python::tuple)</dd>
-</dl>
-</dd></dl>
-
 <dl class="method">
 <dt id="diffpy.srreal.atomradiitable.ConstantRadiiTable.clone">
 <code class="descname">clone</code><span class="sig-paren">(</span><em>(ConstantRadiiTable)arg1</em><span class="sig-paren">)</span> &rarr; AtomRadiiTable :<a class="headerlink" href="#diffpy.srreal.atomradiitable.ConstantRadiiTable.clone" title="Permalink to this definition">¶</a></dt>
@@ -341,20 +368,6 @@ A base to PairQuantity and quite a few other classes.</p>
 <p>This class manages named C++ double attributes owned by an instance.
 The derived objects own double attributes that can be looked up from C++
 by name, without having to know a full C++ interface of their classes.</p>
-<dl class="method">
-<dt id="diffpy.srreal.attributes.Attributes.__getattr__">
-<code class="descname">__getattr__</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.attributes.Attributes.__getattr__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Lookup a C++ double attribute if standard Python lookup fails.</p>
-<p>Raise AttributeError if C++ double attribute does not exist.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.attributes.Attributes.__setattr__">
-<code class="descname">__setattr__</code><span class="sig-paren">(</span><em>name</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.attributes.Attributes.__setattr__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Assign to C++ double attribute if it exists.  Use standard Python
-attribute assignment otherwise.</p>
-</dd></dl>
-
 </dd></dl>
 
 </div>
@@ -366,36 +379,6 @@ attribute assignment otherwise.</p>
 <em class="property">class </em><code class="descclassname">diffpy.srreal.bondcalculator.</code><code class="descname">BondCalculator</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.bondcalculator.BondCalculator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.BasePairQuantity</span></code></p>
 <p>Calculator of bond distances in a specified structure.</p>
-<dl class="method">
-<dt id="diffpy.srreal.bondcalculator.BondCalculator.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>structure=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.bondcalculator.BondCalculator.__call__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return sorted bond distances in the specified structure.</p>
-<dl class="docutils">
-<dt>structure    &#8211; structure to be evaluated, an instance of diffpy Structure</dt>
-<dd>or pyobjcryst Crystal.  Reuse the last structure when None.</dd>
-</dl>
-<p>kwargs       &#8211; optional parameter settings for this calculator</p>
-<p>Return a sorted numpy array.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.bondcalculator.BondCalculator.__getstate__">
-<code class="descname">__getstate__</code><span class="sig-paren">(</span><em>(object)arg1</em><span class="sig-paren">)</span> &rarr; tuple :<a class="headerlink" href="#diffpy.srreal.bondcalculator.BondCalculator.__getstate__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>boost::python::tuple __getstate__(boost::python::api::object)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.bondcalculator.BondCalculator.__setstate__">
-<code class="descname">__setstate__</code><span class="sig-paren">(</span><em>(object)arg1</em>, <em>(tuple)arg2</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.bondcalculator.BondCalculator.__setstate__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>void __setstate__(boost::python::api::object,boost::python::tuple)</dd>
-</dl>
-</dd></dl>
-
 <dl class="attribute">
 <dt id="diffpy.srreal.bondcalculator.BondCalculator.directions">
 <code class="descname">directions</code><a class="headerlink" href="#diffpy.srreal.bondcalculator.BondCalculator.directions" title="Permalink to this definition">¶</a></dt>
@@ -500,61 +483,6 @@ class BVParam &#8211; bond valence data associated with specific cation-anion pa
 <dd><p>Bond valence parameter Ro in Angstroms.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="diffpy.srreal.bvparameterstable.BVParam.__eq__">
-<code class="descname">__eq__</code><span class="sig-paren">(</span><em>(BVParam)arg1</em>, <em>(BVParam)arg2</em><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParam.__eq__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>_object* __eq__(diffpy::srreal::BVParam {lvalue},diffpy::srreal::BVParam)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.bvparameterstable.BVParam.__getstate__">
-<code class="descname">__getstate__</code><span class="sig-paren">(</span><em>(object)arg1</em><span class="sig-paren">)</span> &rarr; tuple :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParam.__getstate__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>boost::python::tuple __getstate__(boost::python::api::object)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.bvparameterstable.BVParam.__hash__">
-<code class="descname">__hash__</code><span class="sig-paren">(</span><em>(BVParam)arg1</em><span class="sig-paren">)</span> &rarr; int :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParam.__hash__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>unsigned long __hash__(diffpy::srreal::BVParam)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.bvparameterstable.BVParam.__ne__">
-<code class="descname">__ne__</code><span class="sig-paren">(</span><em>(BVParam)arg1</em>, <em>(BVParam)arg2</em><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParam.__ne__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>_object* __ne__(diffpy::srreal::BVParam {lvalue},diffpy::srreal::BVParam)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.bvparameterstable.BVParam.__repr__">
-<code class="descname">__repr__</code><span class="sig-paren">(</span><em>(BVParam)arg1</em><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParam.__repr__" title="Permalink to this definition">¶</a></dt>
-<dd><p>String representation of the BVParam object</p>
-<dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>boost::python::api::object __repr__(diffpy::srreal::BVParam)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.bvparameterstable.BVParam.__setstate__">
-<code class="descname">__setstate__</code><span class="sig-paren">(</span><em>(object)arg1</em>, <em>(tuple)arg2</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParam.__setstate__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>void __setstate__(boost::python::api::object,boost::python::tuple)</dd>
-</dl>
-</dd></dl>
-
 <dl class="attribute">
 <dt id="diffpy.srreal.bvparameterstable.BVParam.atom0">
 <code class="descname">atom0</code><a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParam.atom0" title="Permalink to this definition">¶</a></dt>
@@ -623,24 +551,6 @@ class BVParam &#8211; bond valence data associated with specific cation-anion pa
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Boost.Python.instance</span></code></p>
 <p>Lookup table for bond valence parameters of a cation-anion pairs.</p>
 <dl class="method">
-<dt id="diffpy.srreal.bvparameterstable.BVParametersTable.__getstate__">
-<code class="descname">__getstate__</code><span class="sig-paren">(</span><em>(object)arg1</em><span class="sig-paren">)</span> &rarr; tuple :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.__getstate__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>boost::python::tuple __getstate__(boost::python::api::object)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.bvparameterstable.BVParametersTable.__setstate__">
-<code class="descname">__setstate__</code><span class="sig-paren">(</span><em>(object)arg1</em>, <em>(tuple)arg2</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.__setstate__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>void __setstate__(boost::python::api::object,boost::python::tuple)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
 <dt id="diffpy.srreal.bvparameterstable.BVParametersTable.getAll">
 <code class="descname">getAll</code><span class="sig-paren">(</span><em>(BVParametersTable)arg1</em><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.getAll" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all bond valence parameter values in this table.</p>
@@ -648,6 +558,18 @@ class BVParam &#8211; bond valence data associated with specific cation-anion pa
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::python::api::object getAll(diffpy::srreal::BVParametersTable)</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="diffpy.srreal.bvparameterstable.BVParametersTable.getAtomValence">
+<code class="descname">getAtomValence</code><span class="sig-paren">(</span><em>(BVParametersTable)arg1</em>, <em>(str)smbl</em><span class="sig-paren">)</span> &rarr; int :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.getAtomValence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return signed valence for the specified atom or ion symbol.</p>
+<p>Return valence previously defined by setAtomValence or
+interpret the charge suffix, for example, use -2 for &#8220;S2-&#8221;.</p>
+<dl class="docutils">
+<dt>C++ signature :</dt>
+<dd>int getAtomValence(diffpy::srreal::BVParametersTable {lvalue},std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;)</dd>
 </dl>
 </dd></dl>
 
@@ -719,6 +641,17 @@ Also returned by &#8216;lookup&#8217; when valence data do not exist.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="diffpy.srreal.bvparameterstable.BVParametersTable.resetAtomValences">
+<code class="descname">resetAtomValences</code><span class="sig-paren">(</span><em>(BVParametersTable)arg1</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.resetAtomValences" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unset any custom valences defined by setAtomValence.</p>
+<p>Valences are thereafter obtained from charge suffixes only.</p>
+<dl class="docutils">
+<dt>C++ signature :</dt>
+<dd>void resetAtomValences(diffpy::srreal::BVParametersTable {lvalue})</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="diffpy.srreal.bvparameterstable.BVParametersTable.resetCustom">
 <code class="descname">resetCustom</code><span class="sig-paren">(</span><em>(BVParametersTable)arg1</em>, <em>(BVParam)arg2</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.resetCustom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove custom bond valence data for the specified cation-anion pair.</p>
@@ -747,6 +680,19 @@ valence1 &#8211; negative integer anion valence</p>
 <dd>void resetCustom(diffpy::srreal::BVParametersTable {lvalue},std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;,int,std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;,int)</dd>
 </dl>
 </dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="diffpy.srreal.bvparameterstable.BVParametersTable.setAtomValence">
+<code class="descname">setAtomValence</code><span class="sig-paren">(</span><em>(BVParametersTable)arg1</em>, <em>(str)smbl</em>, <em>(int)value</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.setAtomValence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define custom valence for the specified atom or ion symbol.</p>
+<p>smbl     &#8211; string symbol of atom or ion, for example &#8220;F&#8221;.
+value    &#8211; signed valence to be used for the symbol, e.g., -1.</p>
+<p>No return value.</p>
+<dl class="docutils">
+<dt>C++ signature :</dt>
+<dd>void setAtomValence(diffpy::srreal::BVParametersTable {lvalue},std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;,int)</dd>
 </dl>
 </dd></dl>
 
@@ -792,37 +738,6 @@ ref_id   &#8211; optional reference code in bvparm2011.cif</p>
 <em class="property">class </em><code class="descclassname">diffpy.srreal.bvscalculator.</code><code class="descname">BVSCalculator</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.bvscalculator.BVSCalculator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.BasePairQuantity</span></code></p>
 <p>Calculator of bond valence sums in the specified structure.</p>
-<dl class="method">
-<dt id="diffpy.srreal.bvscalculator.BVSCalculator.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>structure=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.bvscalculator.BVSCalculator.__call__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return bond valence sums at each atom site in the structure.</p>
-<dl class="docutils">
-<dt>structure    &#8211; structure to be evaluated, an instance of diffpy Structure</dt>
-<dd>or pyobjcryst Crystal.  Reuse the last structure when None.</dd>
-</dl>
-<p>kwargs       &#8211; optional parameter settings for this calculator</p>
-<p>Return an array of calculated valence sums.
-See valences for the expected values.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.bvscalculator.BVSCalculator.__getstate__">
-<code class="descname">__getstate__</code><span class="sig-paren">(</span><em>(object)arg1</em><span class="sig-paren">)</span> &rarr; tuple :<a class="headerlink" href="#diffpy.srreal.bvscalculator.BVSCalculator.__getstate__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>boost::python::tuple __getstate__(boost::python::api::object)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.bvscalculator.BVSCalculator.__setstate__">
-<code class="descname">__setstate__</code><span class="sig-paren">(</span><em>(object)arg1</em>, <em>(tuple)arg2</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.bvscalculator.BVSCalculator.__setstate__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>void __setstate__(boost::python::api::object,boost::python::tuple)</dd>
-</dl>
-</dd></dl>
-
 <dl class="attribute">
 <dt id="diffpy.srreal.bvscalculator.BVSCalculator.bvdiff">
 <code class="descname">bvdiff</code><a class="headerlink" href="#diffpy.srreal.bvscalculator.BVSCalculator.bvdiff" title="Permalink to this definition">¶</a></dt>
@@ -906,88 +821,6 @@ equal to rmax.  The value depends on ions present in the structure.</p>
 <p>Class for storing modification &#8216;times&#8217; of dependent objects
 The default EventTicker object is initialized to a zero time.</p>
 <dl class="method">
-<dt id="diffpy.srreal.eventticker.EventTicker.__eq__">
-<code class="descname">__eq__</code><span class="sig-paren">(</span><em>(EventTicker)arg1</em>, <em>(EventTicker)arg2</em><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.eventticker.EventTicker.__eq__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>_object* __eq__(diffpy::eventticker::EventTicker {lvalue},diffpy::eventticker::EventTicker)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.eventticker.EventTicker.__ge__">
-<code class="descname">__ge__</code><span class="sig-paren">(</span><em>(EventTicker)arg1</em>, <em>(EventTicker)arg2</em><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.eventticker.EventTicker.__ge__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>_object* __ge__(diffpy::eventticker::EventTicker {lvalue},diffpy::eventticker::EventTicker)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.eventticker.EventTicker.__getstate__">
-<code class="descname">__getstate__</code><span class="sig-paren">(</span><em>(object)arg1</em><span class="sig-paren">)</span> &rarr; tuple :<a class="headerlink" href="#diffpy.srreal.eventticker.EventTicker.__getstate__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>boost::python::tuple __getstate__(boost::python::api::object)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.eventticker.EventTicker.__gt__">
-<code class="descname">__gt__</code><span class="sig-paren">(</span><em>(EventTicker)arg1</em>, <em>(EventTicker)arg2</em><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.eventticker.EventTicker.__gt__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>_object* __gt__(diffpy::eventticker::EventTicker {lvalue},diffpy::eventticker::EventTicker)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.eventticker.EventTicker.__le__">
-<code class="descname">__le__</code><span class="sig-paren">(</span><em>(EventTicker)arg1</em>, <em>(EventTicker)arg2</em><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.eventticker.EventTicker.__le__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>_object* __le__(diffpy::eventticker::EventTicker {lvalue},diffpy::eventticker::EventTicker)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.eventticker.EventTicker.__lt__">
-<code class="descname">__lt__</code><span class="sig-paren">(</span><em>(EventTicker)arg1</em>, <em>(EventTicker)arg2</em><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.eventticker.EventTicker.__lt__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>_object* __lt__(diffpy::eventticker::EventTicker {lvalue},diffpy::eventticker::EventTicker)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.eventticker.EventTicker.__ne__">
-<code class="descname">__ne__</code><span class="sig-paren">(</span><em>(EventTicker)arg1</em>, <em>(EventTicker)arg2</em><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.eventticker.EventTicker.__ne__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>_object* __ne__(diffpy::eventticker::EventTicker {lvalue},diffpy::eventticker::EventTicker)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.eventticker.EventTicker.__repr__">
-<code class="descname">__repr__</code><span class="sig-paren">(</span><em>(EventTicker)arg1</em><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.eventticker.EventTicker.__repr__" title="Permalink to this definition">¶</a></dt>
-<dd><p>String representation of the EventTicker object</p>
-<dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>boost::python::api::object __repr__(diffpy::eventticker::EventTicker)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.eventticker.EventTicker.__setstate__">
-<code class="descname">__setstate__</code><span class="sig-paren">(</span><em>(object)arg1</em>, <em>(tuple)arg2</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.eventticker.EventTicker.__setstate__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>void __setstate__(boost::python::api::object,boost::python::tuple)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
 <dt id="diffpy.srreal.eventticker.EventTicker.click">
 <code class="descname">click</code><span class="sig-paren">(</span><em>(EventTicker)arg1</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.eventticker.EventTicker.click" title="Permalink to this definition">¶</a></dt>
 <dd><p>Increment ticker value to the latest unique time.</p>
@@ -1021,36 +854,6 @@ Keep original value if the other ticker is older.</p>
 <em class="property">class </em><code class="descclassname">diffpy.srreal.overlapcalculator.</code><code class="descname">OverlapCalculator</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.overlapcalculator.OverlapCalculator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.BasePairQuantity</span></code></p>
 <p>Calculate the overlap of atom radii and coordination numbers at each site.</p>
-<dl class="method">
-<dt id="diffpy.srreal.overlapcalculator.OverlapCalculator.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>structure=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.overlapcalculator.OverlapCalculator.__call__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return siteSquareOverlaps per each site of the structure.</p>
-<dl class="docutils">
-<dt>structure    &#8211; structure to be evaluated, an instance of diffpy Structure</dt>
-<dd>or pyobjcryst Crystal.  Reuse the last structure when None.</dd>
-</dl>
-<p>kwargs       &#8211; optional parameter settings for this calculator</p>
-<p>Return a numpy array.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.overlapcalculator.OverlapCalculator.__getstate__">
-<code class="descname">__getstate__</code><span class="sig-paren">(</span><em>(object)arg1</em><span class="sig-paren">)</span> &rarr; tuple :<a class="headerlink" href="#diffpy.srreal.overlapcalculator.OverlapCalculator.__getstate__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>boost::python::tuple __getstate__(boost::python::api::object)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.overlapcalculator.OverlapCalculator.__setstate__">
-<code class="descname">__setstate__</code><span class="sig-paren">(</span><em>(object)arg1</em>, <em>(tuple)arg2</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.overlapcalculator.OverlapCalculator.__setstate__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>void __setstate__(boost::python::api::object,boost::python::tuple)</dd>
-</dl>
-</dd></dl>
-
 <dl class="attribute">
 <dt id="diffpy.srreal.overlapcalculator.OverlapCalculator.atomradiitable">
 <code class="descname">atomradiitable</code><a class="headerlink" href="#diffpy.srreal.overlapcalculator.OverlapCalculator.atomradiitable" title="Permalink to this definition">¶</a></dt>
@@ -1285,18 +1088,6 @@ PDFBaseline, ZeroBaseline, LinearBaseline</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.Attributes</span></code></p>
 <p>Base class and registry for functions that calculate PDF baseline.</p>
 <dl class="method">
-<dt id="diffpy.srreal.pdfbaseline.PDFBaseline.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>(PDFBaseline)arg1</em>, <em>(float)r</em><span class="sig-paren">)</span> &rarr; float :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.__call__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate PDF baseline at the specified r.</p>
-<p>r    &#8211; atom distance in Angstroms where the baseline is calculated.</p>
-<p>Return float.</p>
-<dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>double __call__(diffpy::srreal::PDFBaseline {lvalue},double)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
 <dt id="diffpy.srreal.pdfbaseline.PDFBaseline.clone">
 <code class="descname">clone</code><span class="sig-paren">(</span><em>(PDFBaseline)arg1</em><span class="sig-paren">)</span> &rarr; PDFBaseline :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.clone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new instance that is a copy of self.</p>
@@ -1322,11 +1113,27 @@ PDFBaseline, ZeroBaseline, LinearBaseline</p>
 <dt id="diffpy.srreal.pdfbaseline.PDFBaseline.createByType">
 <em class="property">static </em><code class="descname">createByType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; PDFBaseline :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.createByType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new PDFBaseline instance of the specified string type.</p>
-<dl class="docutils">
-<dt>tp   &#8211; string type identifying a registered PDFBaseline class</dt>
-<dd>See getRegisteredTypes for the allowed values.</dd>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tp</strong> (<em>str</em>) &#8211; string type identifying a registered PDFBaseline class.</li>
+<li><strong>a new instance of the PDFBaseline-derived class.</strong> (<em>Returns</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="#diffpy.srreal.pdfbaseline.PDFBaseline.getRegisteredTypes" title="diffpy.srreal.pdfbaseline.PDFBaseline.getRegisteredTypes"><code class="xref py py-meth docutils literal"><span class="pre">getRegisteredTypes()</span></code></a></dt>
+<dd>Return set of the recognized type strings.</dd>
+<dt><a class="reference internal" href="#diffpy.srreal.pdfbaseline.PDFBaseline.getAliasedTypes" title="diffpy.srreal.pdfbaseline.PDFBaseline.getAliasedTypes"><code class="xref py py-meth docutils literal"><span class="pre">getAliasedTypes()</span></code></a></dt>
+<dd>Return dictionary of string aliases.</dd>
 </dl>
-<p>Return a new instance of the PDFBaseline-derived class.</p>
+</div>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::shared_ptr&lt;diffpy::srreal::PDFBaseline&gt; createByType(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;)</dd>
@@ -1334,13 +1141,56 @@ PDFBaseline, ZeroBaseline, LinearBaseline</p>
 </dd></dl>
 
 <dl class="staticmethod">
+<dt id="diffpy.srreal.pdfbaseline.PDFBaseline.getAliasedTypes">
+<em class="property">static </em><code class="descname">getAliasedTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.getAliasedTypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all aliases registered for the PDFBaseline string types.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a map of registered aliases to their corresponding standard names.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>C++ signature :</dt>
+<dd>boost::python::api::object getAliasedTypes()</dd>
+</dl>
+</dd></dl>
+
+<dl class="staticmethod">
 <dt id="diffpy.srreal.pdfbaseline.PDFBaseline.getRegisteredTypes">
 <em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a set of string types of the registered PDFBaseline classes.
-These are the allowed arguments for the createByType factory.</p>
+<dd><p>Return a set of string types of the registered PDFBaseline classes.</p>
+<p>These are the allowed arguments for the <cite>createByType</cite> factory.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::python::api::object getRegisteredTypes()</dd>
+</dl>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="diffpy.srreal.pdfbaseline.PDFBaseline.isRegisteredType">
+<em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; bool :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.isRegisteredType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the given string is registered as a PDFBaseline type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tp</strong> (<em>str</em>) &#8211; string name or an alias to be checked.</li>
+<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) &#8211; </li>
+<li><strong>standard type or its alias.</strong> (<em>a</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>C++ signature :</dt>
+<dd>bool isRegisteredType(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;)</dd>
 </dl>
 </dd></dl>
 
@@ -1348,7 +1198,7 @@ These are the allowed arguments for the createByType factory.</p>
 <dt id="diffpy.srreal.pdfbaseline.PDFBaseline.type">
 <code class="descname">type</code><span class="sig-paren">(</span><em>(PDFBaseline)arg1</em><span class="sig-paren">)</span> &rarr; str :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a unique string type that identifies a PDFBaseline-derived class.
-The string type is used for class registration and in the createByType
+The string type is used for class registration and in the <cite>createByType</cite>
 function.</p>
 <p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
@@ -1361,7 +1211,7 @@ function.</p>
 
 <dl class="function">
 <dt id="diffpy.srreal.pdfbaseline.makePDFBaseline">
-<code class="descclassname">diffpy.srreal.pdfbaseline.</code><code class="descname">makePDFBaseline</code><span class="sig-paren">(</span><em>name</em>, <em>fnc</em>, <em>**dbattrs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.pdfbaseline.makePDFBaseline" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">diffpy.srreal.pdfbaseline.</code><code class="descname">makePDFBaseline</code><span class="sig-paren">(</span><em>name</em>, <em>fnc</em>, <em>replace=False</em>, <em>**dbattrs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.pdfbaseline.makePDFBaseline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function for registering Python function as a PDFBaseline.
 This is required for using Python function as PDFCalculator.baseline.</p>
 <dl class="docutils">
@@ -1372,6 +1222,9 @@ string identifier for the createByType factory.</dd>
 <dd>float parameters.  The parameters need to be registered as
 double attributes in the functor class.  The function fnc
 must be picklable and it must return a float.</dd>
+<dt>replace  &#8211; when set replace any PDFBaseline type already registered</dt>
+<dd>under the name.  Otherwise raise RuntimeError when the
+name is taken.</dd>
 <dt>dbattrs  &#8211; optional float parameters of the wrapped function.</dt>
 <dd>These will be registered as double attributes in the
 functor class.  The wrapped function must be callable as
@@ -1426,40 +1279,6 @@ PDFCalculator      &#8211; calculate PDF by peak summation in real space</p>
 <em class="property">class </em><code class="descclassname">diffpy.srreal.pdfcalculator.</code><code class="descname">DebyePDFCalculator</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.pdfcalculator.DebyePDFCalculator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.BasePairQuantity</span></code>, <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.PeakWidthModelOwner</span></code>, <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.ScatteringFactorTableOwner</span></code></p>
 <p>Calculate PDF using the Debye scattering equation.</p>
-<dl class="method">
-<dt id="diffpy.srreal.pdfcalculator.DebyePDFCalculator.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>structure=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.pdfcalculator.DebyePDFCalculator.__call__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate PDF for the given structure as an (r, G) tuple.
-Keyword arguments can be used to configure calculator attributes,
-these override any properties that may be passed from the structure,
-such as spdiameter.</p>
-<dl class="docutils">
-<dt>structure    &#8211; a structure object to be evaluated.  Reuse the last</dt>
-<dd>structure when None.</dd>
-</dl>
-<p>kwargs       &#8211; optional parameter settings for this calculator</p>
-<p>Example:    pdfcalc(structure, qmax=20, spdiameter=15)</p>
-<p>Return a tuple of (r, G) numpy arrays.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.pdfcalculator.DebyePDFCalculator.__getstate__">
-<code class="descname">__getstate__</code><span class="sig-paren">(</span><em>(object)arg1</em><span class="sig-paren">)</span> &rarr; tuple :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.DebyePDFCalculator.__getstate__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>boost::python::tuple __getstate__(boost::python::api::object)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.pdfcalculator.DebyePDFCalculator.__setstate__">
-<code class="descname">__setstate__</code><span class="sig-paren">(</span><em>(object)arg1</em>, <em>(tuple)arg2</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.DebyePDFCalculator.__setstate__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>void __setstate__(boost::python::api::object,boost::python::tuple)</dd>
-</dl>
-</dd></dl>
-
 <dl class="method">
 <dt id="diffpy.srreal.pdfcalculator.DebyePDFCalculator.addEnvelope">
 <code class="descname">addEnvelope</code><span class="sig-paren">(</span><em>(DebyePDFCalculator)arg1</em>, <em>(object)envlp</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.DebyePDFCalculator.addEnvelope" title="Permalink to this definition">¶</a></dt>
@@ -1713,40 +1532,6 @@ explicit qstep assignment, which makes qstep independent of rmax.</p>
 <em class="property">class </em><code class="descclassname">diffpy.srreal.pdfcalculator.</code><code class="descname">PDFCalculator</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.pdfcalculator.PDFCalculator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.BasePairQuantity</span></code>, <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.PeakWidthModelOwner</span></code>, <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.ScatteringFactorTableOwner</span></code></p>
 <p>Calculate PDF using the real-space summation of PeakProfile functions.</p>
-<dl class="method">
-<dt id="diffpy.srreal.pdfcalculator.PDFCalculator.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>structure=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.pdfcalculator.PDFCalculator.__call__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate PDF for the given structure as an (r, G) tuple.
-Keyword arguments can be used to configure calculator attributes,
-these override any properties that may be passed from the structure,
-such as spdiameter.</p>
-<dl class="docutils">
-<dt>structure    &#8211; a structure object to be evaluated.  Reuse the last</dt>
-<dd>structure when None.</dd>
-</dl>
-<p>kwargs       &#8211; optional parameter settings for this calculator</p>
-<p>Example:    pdfcalc(structure, qmax=20, spdiameter=15)</p>
-<p>Return a tuple of (r, G) numpy arrays.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.pdfcalculator.PDFCalculator.__getstate__">
-<code class="descname">__getstate__</code><span class="sig-paren">(</span><em>(object)arg1</em><span class="sig-paren">)</span> &rarr; tuple :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.PDFCalculator.__getstate__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>boost::python::tuple __getstate__(boost::python::api::object)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="diffpy.srreal.pdfcalculator.PDFCalculator.__setstate__">
-<code class="descname">__setstate__</code><span class="sig-paren">(</span><em>(object)arg1</em>, <em>(tuple)arg2</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.PDFCalculator.__setstate__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>void __setstate__(boost::python::api::object,boost::python::tuple)</dd>
-</dl>
-</dd></dl>
-
 <dl class="method">
 <dt id="diffpy.srreal.pdfcalculator.PDFCalculator.addEnvelope">
 <code class="descname">addEnvelope</code><span class="sig-paren">(</span><em>(PDFCalculator)arg1</em>, <em>(object)envlp</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.PDFCalculator.addEnvelope" title="Permalink to this definition">¶</a></dt>
@@ -2064,18 +1849,6 @@ SphericalShapeEnvelope, StepCutEnvelope</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.Attributes</span></code></p>
 <p>Base class and registry for functions that return PDF scaling envelopes.</p>
 <dl class="method">
-<dt id="diffpy.srreal.pdfenvelope.PDFEnvelope.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>(PDFEnvelope)arg1</em>, <em>(float)r</em><span class="sig-paren">)</span> &rarr; float :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.__call__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate PDF envelope at the specified r.</p>
-<p>r    &#8211; atom distance in Angstroms where the scale envelope is evaluated.</p>
-<p>Return float.</p>
-<dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>double __call__(diffpy::srreal::PDFEnvelope {lvalue},double)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
 <dt id="diffpy.srreal.pdfenvelope.PDFEnvelope.clone">
 <code class="descname">clone</code><span class="sig-paren">(</span><em>(PDFEnvelope)arg1</em><span class="sig-paren">)</span> &rarr; PDFEnvelope :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.clone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new instance that is a copy of self.</p>
@@ -2101,11 +1874,27 @@ SphericalShapeEnvelope, StepCutEnvelope</p>
 <dt id="diffpy.srreal.pdfenvelope.PDFEnvelope.createByType">
 <em class="property">static </em><code class="descname">createByType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; PDFEnvelope :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.createByType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new PDFEnvelope instance of the specified string type.</p>
-<dl class="docutils">
-<dt>tp   &#8211; string type identifying a registered PDFEnvelope class</dt>
-<dd>See getRegisteredTypes for the allowed values.</dd>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tp</strong> (<em>str</em>) &#8211; string type identifying a registered PDFEnvelope class.</li>
+<li><strong>a new instance of the PDFEnvelope-derived class.</strong> (<em>Returns</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.getRegisteredTypes" title="diffpy.srreal.pdfenvelope.PDFEnvelope.getRegisteredTypes"><code class="xref py py-meth docutils literal"><span class="pre">getRegisteredTypes()</span></code></a></dt>
+<dd>Return set of the recognized type strings.</dd>
+<dt><a class="reference internal" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.getAliasedTypes" title="diffpy.srreal.pdfenvelope.PDFEnvelope.getAliasedTypes"><code class="xref py py-meth docutils literal"><span class="pre">getAliasedTypes()</span></code></a></dt>
+<dd>Return dictionary of string aliases.</dd>
 </dl>
-<p>Return a new instance of the PDFEnvelope-derived class.</p>
+</div>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::shared_ptr&lt;diffpy::srreal::PDFEnvelope&gt; createByType(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;)</dd>
@@ -2113,13 +1902,56 @@ SphericalShapeEnvelope, StepCutEnvelope</p>
 </dd></dl>
 
 <dl class="staticmethod">
+<dt id="diffpy.srreal.pdfenvelope.PDFEnvelope.getAliasedTypes">
+<em class="property">static </em><code class="descname">getAliasedTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.getAliasedTypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all aliases registered for the PDFEnvelope string types.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a map of registered aliases to their corresponding standard names.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>C++ signature :</dt>
+<dd>boost::python::api::object getAliasedTypes()</dd>
+</dl>
+</dd></dl>
+
+<dl class="staticmethod">
 <dt id="diffpy.srreal.pdfenvelope.PDFEnvelope.getRegisteredTypes">
 <em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a set of string types of the registered PDFEnvelope classes.
-These are the allowed arguments for the createByType factory.</p>
+<dd><p>Return a set of string types of the registered PDFEnvelope classes.</p>
+<p>These are the allowed arguments for the <cite>createByType</cite> factory.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::python::api::object getRegisteredTypes()</dd>
+</dl>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="diffpy.srreal.pdfenvelope.PDFEnvelope.isRegisteredType">
+<em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; bool :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.isRegisteredType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the given string is registered as a PDFEnvelope type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tp</strong> (<em>str</em>) &#8211; string name or an alias to be checked.</li>
+<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) &#8211; </li>
+<li><strong>standard type or its alias.</strong> (<em>a</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>C++ signature :</dt>
+<dd>bool isRegisteredType(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;)</dd>
 </dl>
 </dd></dl>
 
@@ -2127,7 +1959,7 @@ These are the allowed arguments for the createByType factory.</p>
 <dt id="diffpy.srreal.pdfenvelope.PDFEnvelope.type">
 <code class="descname">type</code><span class="sig-paren">(</span><em>(PDFEnvelope)arg1</em><span class="sig-paren">)</span> &rarr; str :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a unique string type that identifies a PDFEnvelope-derived class.
-The string type is used for class registration and in the createByType
+The string type is used for class registration and in the <cite>createByType</cite>
 function.</p>
 <p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
@@ -2140,7 +1972,7 @@ function.</p>
 
 <dl class="function">
 <dt id="diffpy.srreal.pdfenvelope.makePDFEnvelope">
-<code class="descclassname">diffpy.srreal.pdfenvelope.</code><code class="descname">makePDFEnvelope</code><span class="sig-paren">(</span><em>name</em>, <em>fnc</em>, <em>**dbattrs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.pdfenvelope.makePDFEnvelope" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">diffpy.srreal.pdfenvelope.</code><code class="descname">makePDFEnvelope</code><span class="sig-paren">(</span><em>name</em>, <em>fnc</em>, <em>replace=False</em>, <em>**dbattrs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.pdfenvelope.makePDFEnvelope" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function for registering Python function as a PDFEnvelope.
 This is required for using Python function as PDFCalculator envelope.</p>
 <dl class="docutils">
@@ -2151,6 +1983,9 @@ string identifier for the createByType factory.</dd>
 <dd>float parameters.  The parameters need to be registered as
 double attributes in the functor class.  The function fnc
 must be picklable and it must return a float.</dd>
+<dt>replace  &#8211; when set replace any PDFEnvelope type already registered</dt>
+<dd>under the name.  Otherwise raise RuntimeError when the
+name is taken.</dd>
 <dt>dbattrs  &#8211; optional float parameters of the wrapped function.</dt>
 <dd>These will be registered as double attributes in the
 functor class.  The wrapped function must be callable as
@@ -2247,27 +2082,10 @@ GaussianProfile, CroppedGaussianProfile</p>
 The peak profile functions must be centered at 0 and their integrated
 area must be 1.</p>
 <dl class="method">
-<dt id="diffpy.srreal.peakprofile.PeakProfile.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>(PeakProfile)arg1</em>, <em>(float)x</em>, <em>(float)fwhm</em><span class="sig-paren">)</span> &rarr; float :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.__call__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluate peak profile function for a given position and peak width.</p>
-<dl class="docutils">
-<dt>x    &#8211; coordinate where the profile function is evaluated.</dt>
-<dd>x is always relative to the peak center, i.e., the profile function
-must be centered at 0.</dd>
-</dl>
-<p>fwhm &#8211; Full Width at Half Maximum of the profile function.</p>
-<p>Return float.</p>
-<dl class="docutils">
-<dt>C++ signature :</dt>
-<dd>double __call__(diffpy::srreal::PeakProfile {lvalue},double,double)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
 <dt id="diffpy.srreal.peakprofile.PeakProfile.clone">
 <code class="descname">clone</code><span class="sig-paren">(</span><em>(PeakProfile)arg1</em><span class="sig-paren">)</span> &rarr; PeakProfile :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.clone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new instance that is a copy of self.</p>
-<p>This method must be overridden in a derived class.</p>
+<p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::shared_ptr&lt;diffpy::srreal::PeakProfile&gt; clone(diffpy::srreal::PeakProfile {lvalue})</dd>
@@ -2277,8 +2095,8 @@ must be centered at 0.</dd>
 <dl class="method">
 <dt id="diffpy.srreal.peakprofile.PeakProfile.create">
 <code class="descname">create</code><span class="sig-paren">(</span><em>(PeakProfile)arg1</em><span class="sig-paren">)</span> &rarr; PeakProfile :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.create" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a new default instance of the same type as self.</p>
-<p>This method must be overridden in a derived class.</p>
+<dd><p>Return a new instance of the same type as self.</p>
+<p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::shared_ptr&lt;diffpy::srreal::PeakProfile&gt; create(diffpy::srreal::PeakProfile {lvalue})</dd>
@@ -2289,11 +2107,27 @@ must be centered at 0.</dd>
 <dt id="diffpy.srreal.peakprofile.PeakProfile.createByType">
 <em class="property">static </em><code class="descname">createByType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; PeakProfile :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.createByType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new PeakProfile instance of the specified string type.</p>
-<dl class="docutils">
-<dt>tp   &#8211; string type identifying a registered PeakProfile class</dt>
-<dd>See getRegisteredTypes for the allowed values.</dd>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tp</strong> (<em>str</em>) &#8211; string type identifying a registered PeakProfile class.</li>
+<li><strong>a new instance of the PeakProfile-derived class.</strong> (<em>Returns</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="#diffpy.srreal.peakprofile.PeakProfile.getRegisteredTypes" title="diffpy.srreal.peakprofile.PeakProfile.getRegisteredTypes"><code class="xref py py-meth docutils literal"><span class="pre">getRegisteredTypes()</span></code></a></dt>
+<dd>Return set of the recognized type strings.</dd>
+<dt><a class="reference internal" href="#diffpy.srreal.peakprofile.PeakProfile.getAliasedTypes" title="diffpy.srreal.peakprofile.PeakProfile.getAliasedTypes"><code class="xref py py-meth docutils literal"><span class="pre">getAliasedTypes()</span></code></a></dt>
+<dd>Return dictionary of string aliases.</dd>
 </dl>
-<p>Return a new instance of the PeakProfile-derived class.</p>
+</div>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::shared_ptr&lt;diffpy::srreal::PeakProfile&gt; createByType(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;)</dd>
@@ -2301,13 +2135,56 @@ must be centered at 0.</dd>
 </dd></dl>
 
 <dl class="staticmethod">
+<dt id="diffpy.srreal.peakprofile.PeakProfile.getAliasedTypes">
+<em class="property">static </em><code class="descname">getAliasedTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.getAliasedTypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all aliases registered for the PeakProfile string types.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a map of registered aliases to their corresponding standard names.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>C++ signature :</dt>
+<dd>boost::python::api::object getAliasedTypes()</dd>
+</dl>
+</dd></dl>
+
+<dl class="staticmethod">
 <dt id="diffpy.srreal.peakprofile.PeakProfile.getRegisteredTypes">
 <em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set of string identifiers for registered PeakProfile classes.
-These are allowed arguments for the createByType static method.</p>
+<dd><p>Return a set of string types of the registered PeakProfile classes.</p>
+<p>These are the allowed arguments for the <cite>createByType</cite> factory.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::python::api::object getRegisteredTypes()</dd>
+</dl>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="diffpy.srreal.peakprofile.PeakProfile.isRegisteredType">
+<em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; bool :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.isRegisteredType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the given string is registered as a PeakProfile type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tp</strong> (<em>str</em>) &#8211; string name or an alias to be checked.</li>
+<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) &#8211; </li>
+<li><strong>standard type or its alias.</strong> (<em>a</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>C++ signature :</dt>
+<dd>bool isRegisteredType(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;)</dd>
 </dl>
 </dd></dl>
 
@@ -2347,9 +2224,9 @@ This method can be overridden in a Python-derived class.</p>
 <dt id="diffpy.srreal.peakprofile.PeakProfile.type">
 <code class="descname">type</code><span class="sig-paren">(</span><em>(PeakProfile)arg1</em><span class="sig-paren">)</span> &rarr; str :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a unique string type that identifies a PeakProfile-derived class.
-The string type is used for class registration and in the createByType
+The string type is used for class registration and in the <cite>createByType</cite>
 function.</p>
-<p>This method must be overridden in a derived class.</p>
+<p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt; type(diffpy::srreal::PeakProfile {lvalue})</dd>
@@ -2429,8 +2306,8 @@ This method must be overridden in a derived class.</p>
 <dl class="method">
 <dt id="diffpy.srreal.peakwidthmodel.PeakWidthModel.clone">
 <code class="descname">clone</code><span class="sig-paren">(</span><em>(PeakWidthModel)arg1</em><span class="sig-paren">)</span> &rarr; PeakWidthModel :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.clone" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a duplicate of this PeakWidthModel instance.</p>
-<p>This method must be overridden in a derived class.</p>
+<dd><p>Return a new instance that is a copy of self.</p>
+<p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::shared_ptr&lt;diffpy::srreal::PeakWidthModel&gt; clone(diffpy::srreal::PeakWidthModel {lvalue})</dd>
@@ -2440,8 +2317,8 @@ This method must be overridden in a derived class.</p>
 <dl class="method">
 <dt id="diffpy.srreal.peakwidthmodel.PeakWidthModel.create">
 <code class="descname">create</code><span class="sig-paren">(</span><em>(PeakWidthModel)arg1</em><span class="sig-paren">)</span> &rarr; PeakWidthModel :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.create" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a new instance of the same PeakWidthModel type.</p>
-<p>This method must be overridden in a derived class.</p>
+<dd><p>Return a new instance of the same type as self.</p>
+<p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::shared_ptr&lt;diffpy::srreal::PeakWidthModel&gt; create(diffpy::srreal::PeakWidthModel {lvalue})</dd>
@@ -2451,12 +2328,28 @@ This method must be overridden in a derived class.</p>
 <dl class="staticmethod">
 <dt id="diffpy.srreal.peakwidthmodel.PeakWidthModel.createByType">
 <em class="property">static </em><code class="descname">createByType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; PeakWidthModel :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.createByType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a new PeakWidthModel instance of the specified type.</p>
-<dl class="docutils">
-<dt>tp   &#8211; string identifier for a registered PeakWidthModel class.</dt>
-<dd>Use getRegisteredTypes for a set of allowed values.</dd>
+<dd><p>Return a new PeakWidthModel instance of the specified string type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tp</strong> (<em>str</em>) &#8211; string type identifying a registered PeakWidthModel class.</li>
+<li><strong>a new instance of the PeakWidthModel-derived class.</strong> (<em>Returns</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.getRegisteredTypes" title="diffpy.srreal.peakwidthmodel.PeakWidthModel.getRegisteredTypes"><code class="xref py py-meth docutils literal"><span class="pre">getRegisteredTypes()</span></code></a></dt>
+<dd>Return set of the recognized type strings.</dd>
+<dt><a class="reference internal" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.getAliasedTypes" title="diffpy.srreal.peakwidthmodel.PeakWidthModel.getAliasedTypes"><code class="xref py py-meth docutils literal"><span class="pre">getAliasedTypes()</span></code></a></dt>
+<dd>Return dictionary of string aliases.</dd>
 </dl>
-<p>Return new PeakWidthModel instance.</p>
+</div>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::shared_ptr&lt;diffpy::srreal::PeakWidthModel&gt; createByType(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;)</dd>
@@ -2464,14 +2357,56 @@ This method must be overridden in a derived class.</p>
 </dd></dl>
 
 <dl class="staticmethod">
+<dt id="diffpy.srreal.peakwidthmodel.PeakWidthModel.getAliasedTypes">
+<em class="property">static </em><code class="descname">getAliasedTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.getAliasedTypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all aliases registered for the PeakWidthModel string types.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a map of registered aliases to their corresponding standard names.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>C++ signature :</dt>
+<dd>boost::python::api::object getAliasedTypes()</dd>
+</dl>
+</dd></dl>
+
+<dl class="staticmethod">
 <dt id="diffpy.srreal.peakwidthmodel.PeakWidthModel.getRegisteredTypes">
 <em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set of string identifiers for registered PeakWidthModel classes.
-These are the allowed arguments for the createByType method and
-peakwidthmodel attribute in the PDF calculator classes.</p>
+<dd><p>Return a set of string types of the registered PeakWidthModel classes.</p>
+<p>These are the allowed arguments for the <cite>createByType</cite> factory.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::python::api::object getRegisteredTypes()</dd>
+</dl>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="diffpy.srreal.peakwidthmodel.PeakWidthModel.isRegisteredType">
+<em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; bool :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.isRegisteredType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the given string is registered as a PeakWidthModel type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tp</strong> (<em>str</em>) &#8211; string name or an alias to be checked.</li>
+<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) &#8211; </li>
+<li><strong>standard type or its alias.</strong> (<em>a</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>C++ signature :</dt>
+<dd>bool isRegisteredType(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;)</dd>
 </dl>
 </dd></dl>
 
@@ -2543,8 +2478,10 @@ This method can be overridden in a Python-derived class.</p>
 <dl class="method">
 <dt id="diffpy.srreal.peakwidthmodel.PeakWidthModel.type">
 <code class="descname">type</code><span class="sig-paren">(</span><em>(PeakWidthModel)arg1</em><span class="sig-paren">)</span> &rarr; str :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a unique string name for this PeakWidthModel class.</p>
-<p>This method must be overridden in a derived class.</p>
+<dd><p>Return a unique string type that identifies a PeakWidthModel-derived class.
+The string type is used for class registration and in the <cite>createByType</cite>
+function.</p>
+<p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt; type(diffpy::srreal::PeakWidthModel {lvalue})</dd>
@@ -2625,8 +2562,8 @@ types by calling the _registerThisType method with any instance.</p>
 <dl class="method">
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.clone">
 <code class="descname">clone</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em><span class="sig-paren">)</span> &rarr; ScatteringFactorTable :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.clone" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a duplicate of this ScatteringFactorTable instance.
-This method must be overridden in a derived class.</p>
+<dd><p>Return a new instance that is a copy of self.</p>
+<p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::shared_ptr&lt;diffpy::srreal::ScatteringFactorTable&gt; clone(diffpy::srreal::ScatteringFactorTable {lvalue})</dd>
@@ -2636,8 +2573,8 @@ This method must be overridden in a derived class.</p>
 <dl class="method">
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.create">
 <code class="descname">create</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em><span class="sig-paren">)</span> &rarr; ScatteringFactorTable :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.create" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a new instance of the same ScatteringFactorTable type.
-This method must be overridden in a derived class.</p>
+<dd><p>Return a new instance of the same type as self.</p>
+<p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::shared_ptr&lt;diffpy::srreal::ScatteringFactorTable&gt; create(diffpy::srreal::ScatteringFactorTable {lvalue})</dd>
@@ -2647,15 +2584,51 @@ This method must be overridden in a derived class.</p>
 <dl class="staticmethod">
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.createByType">
 <em class="property">static </em><code class="descname">createByType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; ScatteringFactorTable :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.createByType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a new ScatteringFactorTable instance of the specified type.</p>
-<dl class="docutils">
-<dt>tp   &#8211; string identifier for a registered ScatteringFactorTable class.</dt>
-<dd>Use getRegisteredTypes for a set of allowed values.</dd>
+<dd><p>Return a new ScatteringFactorTable instance of the specified string type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tp</strong> (<em>str</em>) &#8211; string type identifying a registered ScatteringFactorTable class.</li>
+<li><strong>a new instance of the ScatteringFactorTable-derived class.</strong> (<em>Returns</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getRegisteredTypes" title="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getRegisteredTypes"><code class="xref py py-meth docutils literal"><span class="pre">getRegisteredTypes()</span></code></a></dt>
+<dd>Return set of the recognized type strings.</dd>
+<dt><a class="reference internal" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getAliasedTypes" title="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getAliasedTypes"><code class="xref py py-meth docutils literal"><span class="pre">getAliasedTypes()</span></code></a></dt>
+<dd>Return dictionary of string aliases.</dd>
 </dl>
-<p>Return new ScatteringFactorTable instance.</p>
+</div>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::shared_ptr&lt;diffpy::srreal::ScatteringFactorTable&gt; createByType(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;)</dd>
+</dl>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getAliasedTypes">
+<em class="property">static </em><code class="descname">getAliasedTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getAliasedTypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all aliases registered for the ScatteringFactorTable string types.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a map of registered aliases to their corresponding standard names.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>C++ signature :</dt>
+<dd>boost::python::api::object getAliasedTypes()</dd>
 </dl>
 </dd></dl>
 
@@ -2672,12 +2645,34 @@ This method must be overridden in a derived class.</p>
 <dl class="staticmethod">
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getRegisteredTypes">
 <em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a set of string names for the registered ScatteringFactorTable
-types.  These are allowed arguments for the createByType method and
-setScatteringFactorTableByType methods in PDF calculator classes.</p>
+<dd><p>Return a set of string types of the registered ScatteringFactorTable classes.</p>
+<p>These are the allowed arguments for the <cite>createByType</cite> factory.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::python::api::object getRegisteredTypes()</dd>
+</dl>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.isRegisteredType">
+<em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; bool :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.isRegisteredType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the given string is registered as a ScatteringFactorTable type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tp</strong> (<em>str</em>) &#8211; string name or an alias to be checked.</li>
+<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) &#8211; </li>
+<li><strong>standard type or its alias.</strong> (<em>a</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>C++ signature :</dt>
+<dd>bool isRegisteredType(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;)</dd>
 </dl>
 </dd></dl>
 
@@ -2805,8 +2800,10 @@ This method can be overridden in a Python-derived class.</p>
 <dl class="method">
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.type">
 <code class="descname">type</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em><span class="sig-paren">)</span> &rarr; str :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a unique string name for this ScatteringFactorTable class.
-This method must be overridden in a derived class.</p>
+<dd><p>Return a unique string type that identifies a ScatteringFactorTable-derived class.
+The string type is used for class registration and in the <cite>createByType</cite>
+function.</p>
+<p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt; type(diffpy::srreal::ScatteringFactorTable {lvalue})</dd>
@@ -2853,15 +2850,15 @@ to the International Tables Volume C.</p>
 <span id="diffpy-srreal-sfaverage-module"></span><h2>diffpy.srreal.sfaverage module<a class="headerlink" href="#module-diffpy.srreal.sfaverage" title="Permalink to this headline">¶</a></h2>
 <p>Compositional averaging of atom scattering factors.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">diffpy.srreal.scatteringfactortable</span> <span class="kn">import</span> <span class="n">SFTXray</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">diffpy.srreal.scatteringfactortable</span> <span class="k">import</span> <span class="n">SFTXray</span>
 <span class="n">xtb</span> <span class="o">=</span> <span class="n">SFTXray</span><span class="p">()</span>
 <span class="n">qa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
 <span class="n">sfavg1</span> <span class="o">=</span> <span class="n">SFAverage</span><span class="o">.</span><span class="n">fromComposition</span><span class="p">(</span><span class="n">xtb</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;Na&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Cl&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="n">qa</span><span class="p">)</span>
 <span class="n">sfavg2</span> <span class="o">=</span> <span class="n">SFAverage</span><span class="o">.</span><span class="n">fromComposition</span><span class="p">(</span><span class="n">xtb</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;Mn&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)],</span> <span class="n">qa</span><span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">diffpy.Structure</span> <span class="kn">import</span> <span class="n">loadStructure</span>
-<span class="kn">from</span> <span class="nn">diffpy.srreal.pdfcalculator</span> <span class="kn">import</span> <span class="n">DebyePDFCalculator</span>
+<span class="kn">from</span> <span class="nn">diffpy.Structure</span> <span class="k">import</span> <span class="n">loadStructure</span>
+<span class="kn">from</span> <span class="nn">diffpy.srreal.pdfcalculator</span> <span class="k">import</span> <span class="n">DebyePDFCalculator</span>
 <span class="n">dpdfc</span> <span class="o">=</span> <span class="n">DebyePDFCalculator</span><span class="p">()</span>
 <span class="n">dpdfc</span><span class="p">(</span><span class="n">loadStructure</span><span class="p">(</span><span class="s1">&#39;rutile.cif&#39;</span><span class="p">))</span>
 <span class="n">sfavg3</span> <span class="o">=</span> <span class="n">SFAverage</span><span class="o">.</span><span class="n">fromStructure</span><span class="p">(</span><span class="n">dpdfc</span><span class="o">.</span><span class="n">scatteringfactortable</span><span class="p">,</span>
@@ -3132,12 +3129,12 @@ doc      &#8211; docstring for the Python class property</p>
 <dl class="function">
 <dt id="diffpy.srreal.wraputils.setattrFromKeywordArguments">
 <code class="descclassname">diffpy.srreal.wraputils.</code><code class="descname">setattrFromKeywordArguments</code><span class="sig-paren">(</span><em>obj</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.wraputils.setattrFromKeywordArguments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set attributes of the obj according to keywork arguments.
+<dd><p>Set attributes of the obj according to keyword arguments.
 For example:    setattrFromKeywordArguments(obj, qmax=24, scale=2)
 This is a shared helper function used by __init__ and __call__.</p>
 <p>kwargs   &#8211; one or more keyword arguments</p>
 <p>No return value.
-Raise ValueError for invalid keyword argument.</p>
+Raise TypeError for invalid keyword argument.</p>
 </dd></dl>
 
 </div>
@@ -3195,14 +3192,11 @@ Raise ValueError for invalid keyword argument.</p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -3221,12 +3215,12 @@ Raise ValueError for invalid keyword argument.</p>
         <li class="right" >
           <a href="../index.html" title="diffpy.srreal documentation"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">SrReal 1.1 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">SrReal 1.1.1 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, Brookhaven National Laboratory.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.4.
+        &#169; Copyright 2016, Brookhaven National Laboratory.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
     </div>
   </body>
 </html>
