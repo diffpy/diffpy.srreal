@@ -18,18 +18,18 @@ from diffpy.srreal.structureadapter import (
         CrystalStructureAdapter)
 import diffpy.srreal.tests.testutils as testutils
 
+# ----------------------------------------------------------------------------
 
-# useful variables
-nickel = loadDiffPyStructure('Ni.stru')
-rutile_cif = 'TiO2_rutile-fit.cif'
-
-##############################################################################
 class TestRoutines(unittest.TestCase):
+
+    def setUp(self):
+        self.nickel = loadDiffPyStructure('Ni.stru')
+        return
 
     def test_createStructureAdapter(self):
         """check createStructureAdapter() routine.
         """
-        adpt = createStructureAdapter(nickel)
+        adpt = createStructureAdapter(self.nickel)
         self.assertEqual(4, adpt.countSites())
         self.assertTrue(False is adpt.siteAnisotropy(0))
         self.assertTrue(isinstance(adpt, StructureAdapter))
@@ -47,23 +47,23 @@ class TestRoutines(unittest.TestCase):
         from diffpy.srreal.structureconverters import (
             DiffPyStructureAtomicAdapter,
             DiffPyStructurePeriodicAdapter)
-        adpt = createStructureAdapter(nickel)
+        adpt = createStructureAdapter(self.nickel)
         self.assertTrue(type(adpt) is DiffPyStructurePeriodicAdapter)
-        nickel.pdffit = None
-        adpt1 = createStructureAdapter(nickel)
+        self.nickel.pdffit = None
+        adpt1 = createStructureAdapter(self.nickel)
         self.assertTrue(type(adpt1) is PeriodicStructureAdapter)
-        nickel.lattice.setLatPar(1, 1, 1, 90, 90, 90)
-        adpt2 = createStructureAdapter(nickel)
+        self.nickel.lattice.setLatPar(1, 1, 1, 90, 90, 90)
+        adpt2 = createStructureAdapter(self.nickel)
         self.assertTrue(type(adpt2) is AtomicStructureAdapter)
-        nickel.pdffit = dict(scale=1)
-        adpt3 = createStructureAdapter(nickel)
+        self.nickel.pdffit = dict(scale=1)
+        adpt3 = createStructureAdapter(self.nickel)
         self.assertTrue(type(adpt3) is DiffPyStructureAtomicAdapter)
         return
 
     def test_pickling(self):
         '''check pickling of StructureAdapter instances.
         '''
-        adpt = createStructureAdapter(nickel)
+        adpt = createStructureAdapter(self.nickel)
         adpt1 = cPickle.loads(cPickle.dumps(adpt))
         self.assertFalse(adpt is adpt1)
         self.assertEqual(adpt.countSites(), adpt1.countSites())
@@ -89,8 +89,8 @@ class TestRoutines(unittest.TestCase):
 
 # End of class TestStructureAdapter
 
+# ----------------------------------------------------------------------------
 
-##############################################################################
 class TestDerivedAdapter(unittest.TestCase):
     'Check functionality in a Python-derived StructureAdapter class.'
 
@@ -137,15 +137,19 @@ class TestDerivedPeriodicAdapter(TestDerivedAdapter):
 class TestDerivedCrystalAdapter(TestDerivedAdapter):
     DerivedCls = testutils.DerivedCrystalStructureAdapter
 
+# ----------------------------------------------------------------------------
 
-##############################################################################
 class TestNoMeta(unittest.TestCase):
+
+    def setUp(self):
+        self.nickel = loadDiffPyStructure('Ni.stru')
+        return
 
     def test_nometa(self):
         '''check NoMetaStructureAdapter.
         '''
-        r0, g0 = PDFCalculator()(nickel)
-        ni1 = Structure(nickel)
+        r0, g0 = PDFCalculator()(self.nickel)
+        ni1 = Structure(self.nickel)
         ni1.pdffit['scale'] = 2.0
         r1, g1 = PDFCalculator()(ni1)
         self.assertTrue(numpy.array_equal(r0, r1))
@@ -155,7 +159,7 @@ class TestNoMeta(unittest.TestCase):
         r1nm, g1nm = PDFCalculator()(ni1nm)
         self.assertTrue(numpy.array_equal(r0, r1nm))
         self.assertTrue(numpy.allclose(g0, g1nm))
-        ni2 = Structure(nickel)
+        ni2 = Structure(self.nickel)
         ni2.pdffit['delta2'] = 4
         r2, g2 = PDFCalculator()(ni2)
         r2, g2nm = PDFCalculator()(nometa(ni2))
@@ -171,8 +175,8 @@ class TestNoMeta(unittest.TestCase):
     def test_nometa_pickling(self):
         '''check pickling of the NoMetaStructureAdapter wrapper.
         '''
-        r0, g0 = PDFCalculator()(nickel)
-        ni1 = Structure(nickel)
+        r0, g0 = PDFCalculator()(self.nickel)
+        ni1 = Structure(self.nickel)
         ni1.pdffit['scale'] = 2.0
         ni1nm = cPickle.loads(cPickle.dumps(nometa(ni1)))
         self.assertFalse(ni1nm is ni1)
@@ -184,23 +188,27 @@ class TestNoMeta(unittest.TestCase):
     def test_nometa_twice(self):
         '''check that second call of nometa returns the same object.
         '''
-        adpt1 = nometa(nickel)
+        adpt1 = nometa(self.nickel)
         adpt2 = nometa(adpt1)
         self.assertTrue(adpt1 is adpt2)
 
 # End of class TestNoMeta
 
+# ----------------------------------------------------------------------------
 
-##############################################################################
 class TestNoSymmetry(unittest.TestCase):
+
+    def setUp(self):
+        self.nickel = loadDiffPyStructure('Ni.stru')
+        return
 
     def test_nosymmetry(self):
         '''check NoSymmetryStructureAdapter.
         '''
         pdfc0 = PDFCalculator()
-        r0, g0 = pdfc0(nickel)
+        r0, g0 = pdfc0(self.nickel)
         rdf0 = pdfc0.rdf
-        niuc = nosymmetry(nickel)
+        niuc = nosymmetry(self.nickel)
         self.assertTrue(niuc is nosymmetry(niuc))
         pdfc1 = PDFCalculator()
         r1, g1 = pdfc1(niuc)
@@ -213,7 +221,7 @@ class TestNoSymmetry(unittest.TestCase):
         head = r0 < 3.0
         self.assertAlmostEqual(12.0, numpy.sum(rdf0[head] * pdfc0.rstep), 5)
         self.assertAlmostEqual(3.0, numpy.sum(rdf1[head] * pdfc1.rstep), 5)
-        adpt0 = createStructureAdapter(nickel)
+        adpt0 = createStructureAdapter(self.nickel)
         ra2, ga2 = PDFCalculator()(nosymmetry(adpt0))
         self.assertTrue(numpy.array_equal(r0, ra2))
         self.assertTrue(numpy.allclose(g1, ga2))
@@ -222,14 +230,14 @@ class TestNoSymmetry(unittest.TestCase):
     def test_nosymmetry_twice(self):
         '''check that second call of nosymmetry returns the same object.
         '''
-        adpt1 = nosymmetry(nickel)
+        adpt1 = nosymmetry(self.nickel)
         adpt2 = nosymmetry(adpt1)
         self.assertTrue(adpt1 is adpt2)
 
     def test_nosymmetry_pickling(self):
         '''check pickling of the NoSymmetryStructureAdapter wrapper.
         '''
-        ni1ns = nosymmetry(nickel)
+        ni1ns = nosymmetry(self.nickel)
         r1, g1 = PDFCalculator()(ni1ns)
         ni2ns = cPickle.loads(cPickle.dumps(ni1ns))
         self.assertFalse(ni1ns is ni2ns)
@@ -240,12 +248,12 @@ class TestNoSymmetry(unittest.TestCase):
 
 # End of class TestNoSymmetry
 
+# ----------------------------------------------------------------------------
 
-##############################################################################
 class TestPyObjCrystAdapter(TestCaseObjCrystOptional):
 
     def setUp(self):
-        rutile_crystal = loadObjCrystCrystal(rutile_cif)
+        rutile_crystal = loadObjCrystCrystal('TiO2_rutile-fit.cif')
         self.rutile = createStructureAdapter(rutile_crystal)
         return
 
@@ -279,7 +287,8 @@ class TestPyObjCrystAdapter(TestCaseObjCrystOptional):
 
 # End of class TestNoSymmetry
 
-##############################################################################
+# ----------------------------------------------------------------------------
+
 class IndexRangeTests(object):
     'Check error handling for site index arguments.'
 
@@ -354,7 +363,8 @@ class TestAtomicAdapterIndexRange(IndexRangeTests, TestCase):
 class TestCrystalAdapter(IndexRangeTests, TestCase):
     AdptClass = CrystalStructureAdapter
 
-##############################################################################
+# ----------------------------------------------------------------------------
+
 class TestDerivedStructureAdapter(IndexRangeTests, TestCase):
     AdptClass = testutils.DerivedStructureAdapter
 
@@ -414,7 +424,8 @@ class TestDerivedStructureAdapter(IndexRangeTests, TestCase):
 
 # End of class TestDerivedStructureAdapter
 
-##############################################################################
+# ----------------------------------------------------------------------------
+
 class TestStructureAdapter(unittest.TestCase):
 
     def setUp(self):
@@ -486,7 +497,8 @@ class TestStructureAdapter(unittest.TestCase):
 
 # End of class TestStructureAdapter
 
-##############################################################################
+# ----------------------------------------------------------------------------
+
 class TestAtom(unittest.TestCase):
 
     def setUp(self):
@@ -554,6 +566,8 @@ class TestAtom(unittest.TestCase):
         return
 
 # End of class TestAtom
+
+# ----------------------------------------------------------------------------
 
 if __name__ == '__main__':
     unittest.main()
