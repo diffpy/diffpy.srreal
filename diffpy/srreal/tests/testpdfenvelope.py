@@ -24,6 +24,7 @@ class TestPDFEnvelope(unittest.TestCase):
 
 
     def tearDown(self):
+        PDFEnvelope._deregisterType('parabolaenvelope')
         return
 
 
