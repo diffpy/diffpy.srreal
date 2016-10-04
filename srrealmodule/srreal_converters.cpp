@@ -25,6 +25,7 @@
 #include <valarray>
 #include <stdexcept>
 #include <cassert>
+#include <cstdlib>
 
 #include <diffpy/Attributes.hpp>
 #include <diffpy/srreal/StructureAdapter.hpp>
@@ -276,7 +277,7 @@ NumPyArray_DoublePtr extractNumPyDoubleArray(::boost::python::object& obj)
         const char* emsg = "Cannot convert this object to numpy array.";
         PyErr_SetString(PyExc_TypeError, emsg);
         boost::python::throw_error_already_set();
-        assert(false);
+        abort();
     }
     boost::python::object rvobj((boost::python::handle<>(arr)));
     double* rvdata = static_cast<double*>(PyArray_DATA(arr));

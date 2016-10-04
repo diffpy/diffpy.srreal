@@ -20,6 +20,8 @@
 #include <boost/python/class.hpp>
 #include <boost/python/slice.hpp>
 
+#include <cstdlib>
+
 #include <diffpy/srreal/StructureAdapter.hpp>
 #include <diffpy/srreal/StructureDifference.hpp>
 
@@ -123,8 +125,10 @@ std::string get_diffmethod(const StructureDifference& sd)
         case StructureDifference::Method::SORTED:
             return "SORTED";
     }
-    std::string emsg = "Unknown internal value of StructureDifference::Method.";
-    throw std::out_of_range(emsg);
+    const char* emsg = "Unknown internal value of StructureDifference::Method.";
+    PyErr_SetString(PyExc_NotImplementedError, emsg);
+    boost::python::throw_error_already_set();
+    abort();
 }
 
 

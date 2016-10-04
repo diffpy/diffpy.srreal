@@ -19,6 +19,8 @@
 
 #include <boost/python/def.hpp>
 
+#include <cstdlib>
+
 #include <diffpy/features.hpp>
 #include <diffpy/srreal/StructureAdapter.hpp>
 
@@ -82,8 +84,7 @@ StructureAdapterPtr convertObjCrystMolecule(python::object mol)
     std::string emsg = "ObjCryst support not available.";
     PyErr_SetString(PyExc_TypeError, emsg.c_str());
     boost::python::throw_error_already_set();
-    assert(false);
-    return StructureAdapterPtr();
+    abort();
 }
 
 StructureAdapterPtr convertObjCrystCrystal(python::object cryst)

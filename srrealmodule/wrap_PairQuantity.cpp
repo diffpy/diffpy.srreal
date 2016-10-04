@@ -35,6 +35,8 @@
 #include <boost/python/copy_non_const_reference.hpp>
 #include <boost/python/return_internal_reference.hpp>
 
+#include <cstdlib>
+
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
 
@@ -357,8 +359,10 @@ std::string stringevaluatortype(PQEvaluatorType tp)
         case OPTIMIZED:
             return evtp_OPTIMIZED;
     }
-    std::string emsg = "Unknown internal value of PQEvaluatorType.";
-    throw std::out_of_range(emsg);
+    const char* emsg = "Unknown internal value of PQEvaluatorType.";
+    PyErr_SetString(PyExc_NotImplementedError, emsg);
+    throw_error_already_set();
+    abort();
 }
 
 

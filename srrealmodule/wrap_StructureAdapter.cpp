@@ -464,7 +464,8 @@ void checkindex(const StructureAdapter& adpt, int i)
     if (dynamic_cast<const StructureAdapterWrap*>(&adpt))  return;
     // Prevent out-of-bounds crash from C++ objects.
     if (0 <= i && i < adpt.countSites())  return;
-    throw std::out_of_range("Index out of range.");
+    PyErr_SetString(PyExc_IndexError, "Index out of range.");
+    throw_error_already_set();
 }
 
 }   // namespace
