@@ -387,7 +387,8 @@ class atomadapter_indexing : public vector_indexing_suite<
             }
             else  rva->clear();
             // save memory by making a new copy for short slices
-            const bool longslice = ((to - from) > rva->countSites() / 2);
+            const index_type halflength = rva->countSites() / 2;
+            const bool longslice = ((to - from) > halflength);
             object pyrv(longslice ? rv : rv->clone());
             return pyrv;
         }
