@@ -20,7 +20,8 @@ requirements:
     - python
     - setuptools
     - numpy 1.9.2
-    - libdiffpy >=1.3.2,1.3.*
+    # FIXME - adjust for libdiffpy 1.3.3
+    - libdiffpy >=1.3.2.post24
     - pycifrw
     - diffpy.structure
     - scons
@@ -29,7 +30,8 @@ requirements:
     - python
     - setuptools
     - numpy >=1.9.2
-    - libdiffpy >=1.3.2,1.3.*
+    # FIXME - adjust for libdiffpy 1.3.3
+    - libdiffpy >=1.3.2.post24
     - pycifrw
     - diffpy.structure
     - pyobjcryst 2.0*
