@@ -2,6 +2,7 @@
 
 export CPATH="${PREFIX}/include:$CPATH"
 export LIBRARY_PATH="${PREFIX}/lib:$LIBRARY_PATH"
+
 MYNCPU=$(( (CPU_COUNT > 4) ? 4 : CPU_COUNT ))
 
 if [ `uname` == Darwin ]; then
@@ -10,6 +11,10 @@ else
     export LD_LIBRARY_PATH="${PREFIX}/lib"
 fi
 
+# Apply sconscript.local customizations.
+cp ${RECIPE_DIR}/sconscript.local ./
+
+# Install srreal with scons to utilize multiple CPUs.
 scons -j $MYNCPU install prefix=$PREFIX
 
 # Add more build steps here, if they are necessary.
