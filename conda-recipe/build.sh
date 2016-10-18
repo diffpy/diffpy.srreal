@@ -7,8 +7,6 @@ MYNCPU=$(( (CPU_COUNT > 4) ? 4 : CPU_COUNT ))
 
 if [ `uname` == Darwin ]; then
     export DYLD_FALLBACK_LIBRARY_PATH="${PREFIX}/lib"
-else
-    export LD_LIBRARY_PATH="${PREFIX}/lib"
 fi
 
 # Apply sconscript.local customizations.
