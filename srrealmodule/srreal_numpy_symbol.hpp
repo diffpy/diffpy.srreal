@@ -19,6 +19,9 @@
 #ifndef SRREAL_NUMPY_SYMBOL_HPP_INCLUDED
 #define SRREAL_NUMPY_SYMBOL_HPP_INCLUDED
 
+// Specify the version of NumPy API that will be used.
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+
 // This macro is required for extension modules that are in several files.
 // It must be defined before inclusion of numpy/arrayobject.h
 #define PY_ARRAY_UNIQUE_SYMBOL DIFFPY_SRREAL_NUMPY_ARRAY_SYMBOL
