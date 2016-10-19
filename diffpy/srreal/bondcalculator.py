@@ -48,6 +48,7 @@ def _init_kwargs(self, **kwargs):
     Raise ValueError for invalid keyword argument.
     '''
     BondCalculator.__boostpython__init(self)
+    self.evaluatortype = 'BASIC'    # FIXME - remove for libdiffpy 1.3.3
     setattrFromKeywordArguments(self, **kwargs)
     return
 

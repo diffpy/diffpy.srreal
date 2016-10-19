@@ -176,6 +176,7 @@ def _init_kwargs0(self, **kwargs):
     Raise ValueError for invalid keyword argument.
     '''
     DebyePDFCalculator.__boostpython__init(self)
+    self.evaluatortype = 'BASIC'    # FIXME - remove for libdiffpy 1.3.3
     setattrFromKeywordArguments(self, **kwargs)
     return
 
@@ -241,6 +242,7 @@ def _init_kwargs1(self, **kwargs):
     Raise ValueError for invalid keyword argument.
     '''
     PDFCalculator.__boostpython__init(self)
+    self.evaluatortype = 'BASIC'    # FIXME - remove for libdiffpy 1.3.3
     setattrFromKeywordArguments(self, **kwargs)
     return
 
