@@ -61,9 +61,6 @@ before_install:
   - $NOMC || conda create --name=testenv --yes python=${MYPYTHON_VERSION} coverage
   - $NOMC || conda config --add channels diffpy
 
-  # FIXME - remove after libdiffpy release 1.3.3
-  - $NOMC || conda config --add channels pavoljuhas/channel/dev
-
   - $NOAPT || test "${TRAVIS_OS_NAME}" = "linux" || exit $?
   - $NOAPT || sudo apt-get update -qq
   - $NOAPT || sudo apt-get install -y
