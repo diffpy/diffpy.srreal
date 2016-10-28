@@ -167,6 +167,8 @@ def _parallelData(kwd):
     '''Helper for calculating and fetching raw results from a worker node.
     '''
     pqobj = kwd['pqobj']
+    if pqobj.evaluatortype == 'OPTIMIZED':
+        pqobj = copy.copy(pqobj)
     pqobj._setupParallelRun(kwd['cpuindex'], kwd['ncpu'])
     pqobj.eval()
     return pqobj._getParallelData()

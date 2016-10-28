@@ -110,6 +110,7 @@ if env['PLATFORM'] == 'darwin':
     env.Replace(SHLINKFLAGS=darwin_shlinkflags)
     env.AppendUnique(SHLINKFLAGS=['-bundle'])
     env.AppendUnique(SHLINKFLAGS=['-undefined', 'dynamic_lookup'])
+    env.AppendUnique(SHLINKFLAGS=['-headerpad_max_install_names'])
     fast_linkflags[:] = []
 
 # Compiler specific options

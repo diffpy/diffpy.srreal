@@ -359,10 +359,8 @@ std::string stringevaluatortype(PQEvaluatorType tp)
             return evtp_BASIC;
         case OPTIMIZED:
             return evtp_OPTIMIZED;
-#if DIFFPY_VERSION >= 1003002023
         case CHECK:
             return evtp_CHECK;
-#endif
     }
     const char* emsg = "Unknown internal value of PQEvaluatorType.";
     PyErr_SetString(PyExc_NotImplementedError, emsg);
@@ -381,15 +379,10 @@ void setevaluatortype(PairQuantity& pq, const std::string& tp)
 {
     if (tp == evtp_BASIC)  return pq.setEvaluatorType(BASIC);
     if (tp == evtp_OPTIMIZED)  return pq.setEvaluatorType(OPTIMIZED);
-#if DIFFPY_VERSION >= 1003002023
     if (tp == evtp_CHECK)  return pq.setEvaluatorType(CHECK);
     python::object emsg = ("evaluatortype must be one of %r." %
             python::make_tuple(python::make_tuple(
                     evtp_BASIC, evtp_OPTIMIZED, evtp_CHECK)));
-#else
-    python::object emsg = ("evaluatortype must be either %r or %r." %
-            python::make_tuple(evtp_BASIC, evtp_OPTIMIZED));
-#endif
     PyErr_SetObject(PyExc_ValueError, emsg.ptr());
     throw_error_already_set();
 }

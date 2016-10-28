@@ -34,8 +34,8 @@
 #include <diffpy/srreal/QuantityType.hpp>
 #include <diffpy/version.hpp>
 
-#if DIFFPY_VERSION < 1003002000
-#error "diffpy.srreal requires libdiffpy 1.3.2 or later."
+#if DIFFPY_VERSION < 1003003000
+#error "diffpy.srreal requires libdiffpy 1.3.3 or later."
 #endif
 
 /// Conversion function that supports implicit conversions in

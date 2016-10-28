@@ -26,9 +26,13 @@ class TestPairQuantity(unittest.TestCase):
         self.assertRaises(ValueError, setattr, pq, 'evaluatortype', 'invalid')
         self.assertRaises(ValueError, setattr, pq, 'evaluatortype', 'basic')
         self.assertRaises(ValueError, setattr, pq, 'evaluatortype', 'BASic')
-        # check OPTIMIZED setup with PDFCalculator where it is supported
+        # check all supported evaluators in PDFCalculator
         pdfc = PDFCalculator()
+        self.assertEqual('OPTIMIZED', pdfc.evaluatortype)
+        pdfc.evaluatortype = 'BASIC'
         self.assertEqual('BASIC', pdfc.evaluatortype)
+        pdfc.evaluatortype = 'CHECK'
+        self.assertEqual('CHECK', pdfc.evaluatortype)
         pdfc.evaluatortype = 'OPTIMIZED'
         self.assertEqual('OPTIMIZED', pdfc.evaluatortype)
         return
