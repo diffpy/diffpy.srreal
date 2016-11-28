@@ -26,15 +26,15 @@ Examples
     from diffpy.srreal.scatteringfactortable import SFTXray
     xtb = SFTXray()
     qa = np.linspace(0, 25)
-    sfavg1 = SFAverage.fromComposition(xtb, {'Na' : 1, 'Cl' : 1}, qa)
-    sfavg2 = SFAverage.fromComposition(xtb, [('Mn', 1), ('O', 2)], qa)
+    sfavg1 = SFAverage.fromComposition({'Na' : 1, 'Cl' : 1}, xtb, qa)
+    sfavg2 = SFAverage.fromComposition([('Mn', 1), ('O', 2)], xtb, qa)
 
     from diffpy.Structure import loadStructure
     from diffpy.srreal.pdfcalculator import DebyePDFCalculator
     dpdfc = DebyePDFCalculator()
     dpdfc(loadStructure('rutile.cif'))
-    sfavg3 = SFAverage.fromStructure(dpdfc.scatteringfactortable,
-                                     dpdfc.getStructure(), dpdfc.qgrid)
+    sfavg3 = SFAverage.fromStructure(dpdfc.getStructure(),
+                                     dpdfc.scatteringfactortable, dpdfc.qgrid)
 """
 
 
@@ -76,18 +76,18 @@ class SFAverage(object):
     composition = None
 
     @classmethod
-    def fromStructure(cls, sftb, stru, q=0):
+    def fromStructure(cls, stru, sftb, q=0):
         """\
         Calculate average scattering factors from a structure object.
 
         Parameters
         ----------
-        sftb : ScatteringFactorTable
-            The ScatteringFactorTable object for looking up the values.
         stru : diffpy Structure or pyobjcryst Crystal or StructureAdapter
             The structure object that stores the atom species and their
             occupancies.  Can be any type with a registered conversion
             to the StructureAdapter class.
+        sftb : ScatteringFactorTable
+            The ScatteringFactorTable object for looking up the values.
         q : float or NumPy array (optional)
             The Q value in inverse Angstroms for which to lookup
             the scattering factor values.
@@ -105,7 +105,7 @@ class SFAverage(object):
         if hasattr(type(stru), 'composition'):
             composition = stru.composition
             if isinstance(composition, dict):
-                return cls.fromComposition(sftb, composition, q)
+                return cls.fromComposition(composition, sftb, q)
         # otherwise let's convert to a known structure type
         from diffpy.srreal.structureadapter import createStructureAdapter
         adpt = createStructureAdapter(stru)
@@ -114,21 +114,21 @@ class SFAverage(object):
             smbl = adpt.siteAtomType(i)
             cnt = adpt.siteOccupancy(i) * adpt.siteMultiplicity(i)
             composition[smbl] = composition.get(smbl, 0) + cnt
-        return cls.fromComposition(sftb, composition, q)
+        return cls.fromComposition(composition, sftb, q)
 
 
     @classmethod
-    def fromComposition(cls, sftb, composition, q=0):
+    def fromComposition(cls, composition, sftb, q=0):
         """\
         Calculate average scattering factors from atom concentrations.
 
         Parameters
         ----------
-        sftb : ScatteringFactorTable
-            The ScatteringFactorTable object for looking up the values.
         composition : dictionary or a list of (symbol, amount) pairs.
             The chemical composition for evaluating the average.  Atom
             symbols may repeat when it is a list of (symbol, amount) pairs.
+        sftb : ScatteringFactorTable
+            The ScatteringFactorTable object for looking up the values.
         q : float or NumPy array (optional)
             The Q value in inverse Angstroms for which to lookup
             the scattering factor values.
