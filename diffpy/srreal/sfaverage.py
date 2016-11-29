@@ -86,8 +86,10 @@ class SFAverage(object):
             The structure object that stores the atom species and their
             occupancies.  Can be any type with a registered conversion
             to the StructureAdapter class.
-        sftb : ScatteringFactorTable
+        sftb : ScatteringFactorTable or str
             The ScatteringFactorTable object for looking up the values.
+            When string use `ScatteringFactorTable.createByType` to create
+            a new lookup table of the specified type.
         q : float or NumPy array (optional)
             The Q value in inverse Angstroms for which to lookup
             the scattering factor values.
@@ -127,8 +129,10 @@ class SFAverage(object):
         composition : dictionary or a list of (symbol, amount) pairs.
             The chemical composition for evaluating the average.  Atom
             symbols may repeat when it is a list of (symbol, amount) pairs.
-        sftb : ScatteringFactorTable
+        sftb : ScatteringFactorTable or str
             The ScatteringFactorTable object for looking up the values.
+            When string use `ScatteringFactorTable.createByType` to create
+            a new lookup table of the specified type.
         q : float or NumPy array (optional)
             The Q value in inverse Angstroms for which to lookup
             the scattering factor values.
@@ -138,6 +142,7 @@ class SFAverage(object):
         SFAverage
             The calculated scattering factor averages.
         """
+        from diffpy.srreal.scatteringfactortable import ScatteringFactorTable
         sfa = cls()
         sfa.composition = {}
         if isinstance(composition, dict):
@@ -149,8 +154,11 @@ class SFAverage(object):
                 sfa.composition[smbl] += cnt
         sfa.f1sum = 0.0 * q
         sfa.f2sum = 0.0 * q
+        # resolve the lookup table object `tb`
+        tb = (sftb if not isinstance(sftb, basestring)
+              else ScatteringFactorTable.createByType(sftb))
         for smbl, cnt in sfa.composition.items():
-            sfq = sftb.lookup(smbl, q)
+            sfq = tb.lookup(smbl, q)
             sfa.f1sum += cnt * sfq
             sfa.f2sum += cnt * sfq**2
             sfa.count += cnt

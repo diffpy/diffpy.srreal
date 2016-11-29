@@ -46,8 +46,15 @@ class TestSFAverage(unittest.TestCase):
         self.assertEqual(sfavg.f2sum, sfavg2.f2sum[0])
         sfavg3 = SFAverage.fromStructure(cdse, self.sftn, qa)
         self.assertEqual(sfavg3.f1sum[0], sfavg3.f1sum[-1])
+        sfavg4 = SFAverage.fromStructure(cdse, 'N', qa)
+        self.assertTrue(numpy.array_equal(sfavg3.f1sum, sfavg4.f1sum))
+        self.assertTrue(numpy.array_equal(sfavg3.f2sum, sfavg4.f2sum))
+        sfavg5 = SFAverage.fromStructure(cdse, 'EN', qa)
+        self.assertFalse(numpy.array_equal(sfavg3.f1sum, sfavg5.f1sum))
         self.assertRaises(TypeError, SFAverage.fromStructure,
                           'notastructure', self.sftx)
+        self.assertRaises(ValueError, SFAverage.fromStructure,
+                          cdse, 'invalid')
         return
 
 
