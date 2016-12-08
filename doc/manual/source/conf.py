@@ -56,7 +56,7 @@ copyright = u'%Y, Brookhaven National Laboratory'
 sys.path.insert(0, os.path.abspath('../../..'))
 from setup import versiondata
 fullversion = versiondata.get('DEFAULT', 'version')
-# sys.path.remove(os.path.abspath('../../..'))
+sys.path.remove(os.path.abspath('../../..'))
 # The short X.Y version.
 version = '.'.join(fullversion.split('.')[:2])
 # The full version, including alpha/beta/rc tags.
