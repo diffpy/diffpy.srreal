@@ -58,7 +58,7 @@ from setup import versiondata
 fullversion = versiondata.get('DEFAULT', 'version')
 sys.path.remove(os.path.abspath('../../..'))
 # The short X.Y version.
-version = '.'.join(fullversion.split('.')[:2])
+version = ''.join(fullversion.split('.post')[:1])
 # The full version, including alpha/beta/rc tags.
 release = fullversion
 
