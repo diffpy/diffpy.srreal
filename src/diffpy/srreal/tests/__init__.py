@@ -16,54 +16,61 @@
 """Unit tests for diffpy.srreal.
 """
 
-
-# create logger instance for the tests subpackage
+import unittest
 import logging
 
+# create logger instance for the tests subpackage
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 del logging
 
 
-def testsuite():
-    '''Build a unit tests suite for the diffpy.srreal package.
+def testsuite(pattern=''):
+    '''Create a unit tests suite for diffpy.srreal package.
 
-    Return a unittest.TestSuite object.
+    Parameters
+    ----------
+    pattern : str, optional
+        Regular expression pattern for selecting test cases.
+        Select all tests when empty.
+
+    Returns
+    -------
+    suite : `unittest.TestSuite`
+        The TestSuite object containing the matching tests.
     '''
-    import unittest
-    modulenames = '''
-        diffpy.srreal.tests.testatomradiitable
-        diffpy.srreal.tests.testattributes
-        diffpy.srreal.tests.testbondcalculator
-        diffpy.srreal.tests.testbvscalculator
-        diffpy.srreal.tests.testdebyepdfcalculator
-        diffpy.srreal.tests.testoverlapcalculator
-        diffpy.srreal.tests.testpairquantity
-        diffpy.srreal.tests.testparallel
-        diffpy.srreal.tests.testpdfbaseline
-        diffpy.srreal.tests.testpdfcalcobjcryst
-        diffpy.srreal.tests.testpdfcalculator
-        diffpy.srreal.tests.testpdfenvelope
-        diffpy.srreal.tests.testpeakprofile
-        diffpy.srreal.tests.testpeakwidthmodel
-        diffpy.srreal.tests.testscatteringfactortable
-        diffpy.srreal.tests.testsfaverage
-        diffpy.srreal.tests.teststructureadapter
-    '''.split()
-    suite = unittest.TestSuite()
+    import re
+    from os.path import dirname
+    from itertools import chain
+    from pkg_resources import resource_filename
     loader = unittest.defaultTestLoader
-    mobj = None
-    for mname in modulenames:
-        exec ('import %s as mobj' % mname)
-        suite.addTests(loader.loadTestsFromModule(mobj))
+    thisdir = resource_filename(__name__, '')
+    depth = __name__.count('.') + 1
+    topdir = thisdir
+    for i in range(depth):
+        topdir = dirname(topdir)
+    suite_all = loader.discover(thisdir, top_level_dir=topdir)
+    # always filter the suite by pattern to test-cover the selection code.
+    suite = unittest.TestSuite()
+    rx = re.compile(pattern)
+    tcases = chain.from_iterable(chain.from_iterable(suite_all))
+    for tc in tcases:
+        tcwords = tc.id().rsplit('.', 2)
+        shortname = '.'.join(tcwords[-2:])
+        if rx.search(shortname):
+            suite.addTest(tc)
+    # verify all tests are found for an empty pattern.
+    assert pattern or suite_all.countTestCases() == suite.countTestCases()
     return suite
 
 
 def test():
     '''Execute all unit tests for the diffpy.srreal package.
-    Return a unittest TestResult object.
+
+    Returns
+    -------
+    result : `unittest.TestResult`
     '''
-    import unittest
     suite = testsuite()
     runner = unittest.TextTestRunner()
     result = runner.run(suite)
