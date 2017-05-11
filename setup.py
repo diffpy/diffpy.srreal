@@ -129,46 +129,46 @@ versiondata = getversioncfg()
 
 # define distribution
 setup_args = dict(
-        name = "diffpy.srreal",
-        version = versiondata.get('DEFAULT', 'version'),
-        namespace_packages = ['diffpy'],
-        packages = find_packages('src'),
-        package_dir = {'' : 'src'},
-        test_suite = 'diffpy.srreal.tests',
-        include_package_data = True,
-        ext_modules = [],
-        install_requires = [
-            'diffpy.Structure',
-        ],
-        zip_safe = False,
+    name = "diffpy.srreal",
+    version = versiondata.get('DEFAULT', 'version'),
+    namespace_packages = ['diffpy'],
+    packages = find_packages('src'),
+    package_dir = {'' : 'src'},
+    test_suite = 'diffpy.srreal.tests',
+    include_package_data = True,
+    ext_modules = [],
+    install_requires = [
+        'diffpy.Structure',
+    ],
+    zip_safe = False,
 
-        author = "Simon J.L. Billinge group",
-        author_email = "sb2896@columbia.edu",
-        maintainer = "Pavol Juhas",
-        maintainer_email = "pavol.juhas@gmail.com",
-        description = ("calculators for PDF, bond valence sum, and other "
-                       "quantities based on atom pair interaction."),
-        license = 'BSD-style license',
-        url = "https://github.com/diffpy/diffpy.srreal/",
-        keywords = "PDF BVS atom overlap calculator real-space",
-        classifiers = [
-            # List of possible values at
-            # http://pypi.python.org/pypi?:action=list_classifiers
-            'Development Status :: 5 - Production/Stable',
-            'Environment :: Console',
-            'Intended Audience :: Developers',
-            'Intended Audience :: Education',
-            'Intended Audience :: Science/Research',
-            'License :: OSI Approved :: BSD License',
-            'Operating System :: MacOS :: MacOS X',
-            'Operating System :: POSIX',
-            'Operating System :: Unix',
-            'Programming Language :: C++',
-            'Programming Language :: Python :: 2.7',
-            'Topic :: Scientific/Engineering :: Chemistry',
-            'Topic :: Scientific/Engineering :: Physics',
-            'Topic :: Software Development :: Libraries',
-        ],
+    author = "Simon J.L. Billinge group",
+    author_email = "sb2896@columbia.edu",
+    maintainer = "Pavol Juhas",
+    maintainer_email = "pavol.juhas@gmail.com",
+    description = ("calculators for PDF, bond valence sum, and other "
+                   "quantities based on atom pair interaction."),
+    license = 'BSD-style license',
+    url = "https://github.com/diffpy/diffpy.srreal/",
+    keywords = "PDF BVS atom overlap calculator real-space",
+    classifiers = [
+        # List of possible values at
+        # http://pypi.python.org/pypi?:action=list_classifiers
+        'Development Status :: 5 - Production/Stable',
+        'Environment :: Console',
+        'Intended Audience :: Developers',
+        'Intended Audience :: Education',
+        'Intended Audience :: Science/Research',
+        'License :: OSI Approved :: BSD License',
+        'Operating System :: MacOS :: MacOS X',
+        'Operating System :: POSIX',
+        'Operating System :: Unix',
+        'Programming Language :: C++',
+        'Programming Language :: Python :: 2.7',
+        'Topic :: Scientific/Engineering :: Chemistry',
+        'Topic :: Scientific/Engineering :: Physics',
+        'Topic :: Software Development :: Libraries',
+    ],
 )
 
 if __name__ == '__main__':
