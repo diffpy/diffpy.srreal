@@ -49,4 +49,4 @@ config.log
 
 # version information
 setup.cfg
-/diffpy/srreal/version.cfg
+/src/diffpy/*/version.cfg
