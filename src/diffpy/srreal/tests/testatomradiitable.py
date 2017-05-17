@@ -5,7 +5,7 @@
 
 
 import unittest
-import cPickle
+import pickle
 from diffpy.srreal.tests.testutils import TestCasePeriodictableOptional
 from diffpy.srreal.atomradiitable import AtomRadiiTable, CovalentRadiiTable
 from diffpy.srreal.atomradiitable import ConstantRadiiTable
@@ -24,13 +24,13 @@ class TestAtomRadiiTable(unittest.TestCase):
     def test_pickling(self):
         '''check pickling and unpickling of AtomRadiiTable.
         '''
-        ctb1 = cPickle.loads(cPickle.dumps(self.ctb))
+        ctb1 = pickle.loads(pickle.dumps(self.ctb))
         self.assertTrue(type(ctb1) is ConstantRadiiTable)
         self.assertEqual({}, ctb1.getAllCustom())
         self.ctb.setCustom('Na', 1.3)
         self.ctb.foobar = 'foo'
         self.ctb.setDefault(3.7)
-        ctb2 = cPickle.loads(cPickle.dumps(self.ctb))
+        ctb2 = pickle.loads(pickle.dumps(self.ctb))
         self.assertEqual({'Na' : 1.3}, ctb2.getAllCustom())
         self.assertFalse(hasattr(ctb2, 'foobar'))
         self.assertEqual(3.7, ctb2.getDefault())
@@ -121,12 +121,12 @@ class TestCovalentRadiiTable(TestCasePeriodictableOptional):
     def test_pickling(self):
         '''check pickling and unpickling of CovalentRadiiTable.
         '''
-        rtb1 = cPickle.loads(cPickle.dumps(self.rtb))
+        rtb1 = pickle.loads(pickle.dumps(self.rtb))
         self.assertTrue(type(rtb1) is CovalentRadiiTable)
         self.assertEqual({}, rtb1.getAllCustom())
         self.rtb.setCustom('Na', 1.3)
         self.rtb.foobar = 'foo'
-        rtb2 = cPickle.loads(cPickle.dumps(self.rtb))
+        rtb2 = pickle.loads(pickle.dumps(self.rtb))
         self.assertEqual({'Na' : 1.3}, rtb2.getAllCustom())
         self.assertEqual('foo', rtb2.foobar)
         return

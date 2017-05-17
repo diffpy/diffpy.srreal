@@ -5,7 +5,7 @@
 
 
 import unittest
-import cPickle
+import pickle
 import numpy
 from diffpy.Structure import Structure
 from diffpy.srreal.pdfcalculator import PDFCalculator
@@ -36,7 +36,7 @@ class TestRoutines(unittest.TestCase):
         adpt1 = createStructureAdapter(adpt)
         self.assertTrue(adpt is adpt1)
         self.assertRaises(TypeError, createStructureAdapter, 77)
-        self.assertRaises(TypeError, createStructureAdapter, range(8))
+        self.assertRaises(TypeError, createStructureAdapter, list(range(8)))
         self.assertRaises(TypeError, createStructureAdapter, None)
         self.assertRaises(TypeError, createStructureAdapter, {})
         return
@@ -64,7 +64,7 @@ class TestRoutines(unittest.TestCase):
         '''check pickling of StructureAdapter instances.
         '''
         adpt = createStructureAdapter(self.nickel)
-        adpt1 = cPickle.loads(cPickle.dumps(adpt))
+        adpt1 = pickle.loads(pickle.dumps(adpt))
         self.assertFalse(adpt is adpt1)
         self.assertEqual(adpt.countSites(), adpt1.countSites())
         self.assertEqual(adpt.totalOccupancy(), adpt1.totalOccupancy())
@@ -82,8 +82,8 @@ class TestRoutines(unittest.TestCase):
         '''Check if pickling works for non-wrapped C++ object.
         '''
         from diffpy.srreal.structureadapter import EMPTY as e0
-        spkl = cPickle.dumps(e0)
-        e1 = cPickle.loads(spkl)
+        spkl = pickle.dumps(e0)
+        e1 = pickle.loads(spkl)
         self.assertEqual(0, e1.countSites())
         return
 
@@ -115,7 +115,7 @@ class TestDerivedAdapter(unittest.TestCase):
         '''check pickling of DerivedCls instances.
         '''
         self.adpt.cpqcount = 1
-        adpt1 = cPickle.loads(cPickle.dumps(self.adpt))
+        adpt1 = pickle.loads(pickle.dumps(self.adpt))
         self.assertTrue(self.DerivedCls is type(adpt1))
         self.assertFalse(self.adpt is adpt1)
         self.assertEqual(1, adpt1.cpqcount)
@@ -178,7 +178,7 @@ class TestNoMeta(unittest.TestCase):
         r0, g0 = PDFCalculator()(self.nickel)
         ni1 = Structure(self.nickel)
         ni1.pdffit['scale'] = 2.0
-        ni1nm = cPickle.loads(cPickle.dumps(nometa(ni1)))
+        ni1nm = pickle.loads(pickle.dumps(nometa(ni1)))
         self.assertFalse(ni1nm is ni1)
         r1nm, g1nm = PDFCalculator()(ni1nm)
         self.assertTrue(numpy.array_equal(r0, r1nm))
@@ -239,7 +239,7 @@ class TestNoSymmetry(unittest.TestCase):
         '''
         ni1ns = nosymmetry(self.nickel)
         r1, g1 = PDFCalculator()(ni1ns)
-        ni2ns = cPickle.loads(cPickle.dumps(ni1ns))
+        ni2ns = pickle.loads(pickle.dumps(ni1ns))
         self.assertFalse(ni1ns is ni2ns)
         r2, g2 = PDFCalculator()(ni2ns)
         self.assertTrue(numpy.array_equal(r1, r2))
@@ -278,7 +278,7 @@ class TestPyObjCrystAdapter(TestCaseObjCrystOptional):
         '''check pickling of the NoSymmetryStructureAdapter wrapper.
         '''
         r0, g0 = PDFCalculator()(self.rutile)
-        rutile1 = cPickle.loads(cPickle.dumps(self.rutile))
+        rutile1 = pickle.loads(pickle.dumps(self.rutile))
         self.assertFalse(self.rutile is rutile1)
         r1, g1 = PDFCalculator()(rutile1)
         self.assertTrue(numpy.array_equal(r0, r1))
@@ -528,7 +528,7 @@ class TestAtom(unittest.TestCase):
         '''check pickling of Atom instances.
         '''
         self.a.atomtype = "Na"
-        a1 = cPickle.loads(cPickle.dumps(self.a))
+        a1 = pickle.loads(pickle.dumps(self.a))
         self.assertEqual("Na", a1.atomtype)
         self.assertEqual(self.a, a1)
         self.assertFalse(self.a is a1)

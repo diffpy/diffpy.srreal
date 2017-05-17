@@ -155,7 +155,7 @@ class SFAverage(object):
         sfa.f1sum = 0.0 * q
         sfa.f2sum = 0.0 * q
         # resolve the lookup table object `tb`
-        tb = (sftb if not isinstance(sftb, basestring)
+        tb = (sftb if not isinstance(sftb, str)
               else ScatteringFactorTable.createByType(sftb))
         for smbl, cnt in sfa.composition.items():
             sfq = tb.lookup(smbl, q)

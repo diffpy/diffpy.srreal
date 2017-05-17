@@ -56,7 +56,7 @@ t0 = time.time()
 pc0 = PDFCalculator(**cfg)
 r0, g0 = pc0(menthol)
 t0 = time.time() - t0
-print "Calculation time on 1 CPU: %g" % t0
+print("Calculation time on 1 CPU: %g" % t0)
 
 # create a pool of workers
 pool = multiprocessing.Pool(processes=ncpu)
@@ -67,8 +67,8 @@ t1 = time.time()
 pc1 = createParallelCalculator(pc0, ncpu, pool.imap_unordered)
 r1, g1 = pc1(menthol)
 t1 = time.time() - t1
-print "Calculation time on %i CPUs: %g" % (ncpu, t1)
-print "Time ratio: %g" % (t0 / t1)
+print("Calculation time on %i CPUs: %g" % (ncpu, t1))
+print("Time ratio: %g" % (t0 / t1))
 
 # plot both results and the difference curve
 from matplotlib.pyplot import plot, show, clf, draw

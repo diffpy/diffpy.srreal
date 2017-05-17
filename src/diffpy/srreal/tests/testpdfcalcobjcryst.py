@@ -13,7 +13,7 @@ from diffpy.srreal.pdfcalculator import PDFCalculator
 from diffpy.srreal.tests.testutils import TestCaseObjCrystOptional
 from diffpy.srreal.tests.testutils import loadObjCrystCrystal
 from diffpy.srreal.tests.testutils import datafile
-from testpdfcalculator import _maxNormDiff
+from diffpy.srreal.tests.testpdfcalculator import _maxNormDiff
 
 # helper functions
 
@@ -38,12 +38,14 @@ def _loadExpectedPDF(basefilename):
 def _makePDFCalculator(crst, cfgdict):
     '''Return a PDFCalculator object evaluated for a pyobjcryst.Crystal crst.
     '''
-    inpdfcalc = lambda kv: kv[0] not in ('biso', 'type')
-    pdfcargs = dict(filter(inpdfcalc, cfgdict.items()))
+    pdfcargs = {k : v for k, v in cfgdict.items()
+                if k not in ('biso', 'type')}
     pdfc = PDFCalculator(**pdfcargs)
     if 'biso' in cfgdict:
-        setbiso = lambda sc: sc.mpScattPow.SetBiso(cfgdict['biso'])
-        map(setbiso, crst.GetScatteringComponentList())
+        reg = crst.GetScatteringPowerRegistry()
+        for i in range(reg.GetNb()):
+            sp = reg.GetObj(i)
+            sp.SetBiso(cfgdict['biso'])
     if 'type' in cfgdict:
         pdfc.scatteringfactortable = cfgdict['type']
     pdfc.eval(crst)
@@ -58,7 +60,7 @@ class TestPDFCalcObjcryst(TestCaseObjCrystOptional):
 
     def _comparePDFs(self, nickname, pdfbasename, cifbasename):
         def setself(**kwtoset):
-            for n, v in kwtoset.iteritems():
+            for n, v in kwtoset.items():
                 setattr(self, nickname + '_' + n, v)
             return
         r, gobs, cfg = _loadExpectedPDF(pdfbasename)

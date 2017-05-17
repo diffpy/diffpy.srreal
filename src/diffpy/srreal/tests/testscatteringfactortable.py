@@ -5,7 +5,7 @@
 
 
 import unittest
-import cPickle
+import pickle
 import numpy
 
 from diffpy.srreal.scatteringfactortable import ScatteringFactorTable
@@ -86,7 +86,7 @@ class TestScatteringFactorTable(unittest.TestCase):
         self.sftx.setCustomAs('Na', 'Na', 123)
         self.sftx.setCustomAs('Calias', 'C')
         self.assertEqual(2, len(self.sftx.getCustomSymbols()))
-        sftx1 = cPickle.loads(cPickle.dumps(self.sftx))
+        sftx1 = pickle.loads(pickle.dumps(self.sftx))
         self.assertEqual(2, len(sftx1.getCustomSymbols()))
         self.assertAlmostEqual(123, sftx1.lookup('Na'), 12)
         self.assertEqual(self.sftx.lookup('C'), sftx1.lookup('Calias'))
@@ -102,7 +102,7 @@ class TestScatteringFactorTable(unittest.TestCase):
         lsft.foobar = 'asdf'
         lsft.setCustomAs('Na', 'Na', 123)
         self.assertEqual(1, len(lsft.getCustomSymbols()))
-        lsft1 = cPickle.loads(cPickle.dumps(lsft))
+        lsft1 = pickle.loads(pickle.dumps(lsft))
         self.assertEqual(1, len(lsft1.getCustomSymbols()))
         self.assertAlmostEqual(123, lsft1.lookup('Na'), 12)
         self.assertEqual('asdf', lsft1.foobar)

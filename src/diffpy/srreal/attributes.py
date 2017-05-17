@@ -31,7 +31,7 @@ def __getattr__(self, name):
     '''
     try:
         rv = self._getDoubleAttr(name)
-    except Exception, e:
+    except Exception as e:
         raise AttributeError(e)
     return rv
 

@@ -5,7 +5,7 @@
 
 
 import unittest
-import cPickle
+import pickle
 
 from diffpy.srreal.peakprofile import PeakProfile
 from diffpy.srreal.pdfcalculator import PDFCalculator
@@ -131,7 +131,7 @@ class TestPeakProfile(unittest.TestCase):
         '''
         pkg = self.pkgauss
         pkg.peakprecision = 0.0011
-        pkg2 = cPickle.loads(cPickle.dumps(pkg))
+        pkg2 = pickle.loads(pickle.dumps(pkg))
         self.assertEqual('gaussian', pkg2.type())
         self.assertEqual(0.0011, pkg2.peakprecision)
         self.assertEqual(0.0011, pkg2._getDoubleAttr('peakprecision'))
@@ -187,9 +187,9 @@ class TestPeakProfileOwner(unittest.TestCase):
     def test_pickling(self):
         '''Check pickling of an owned PeakProfile instance.
         '''
-        pc1 = cPickle.loads(cPickle.dumps(self.pc))
+        pc1 = pickle.loads(pickle.dumps(self.pc))
         self.pkf.peakprecision = 0.0003
-        pc2 = cPickle.loads(cPickle.dumps(self.pc))
+        pc2 = pickle.loads(pickle.dumps(self.pc))
         self.assertEqual('mysawtooth', pc1.peakprofile.type())
         self.assertEqual(0.0017, pc1.peakprofile.peakprecision)
         self.assertEqual(0.0017, pc1.peakprecision)

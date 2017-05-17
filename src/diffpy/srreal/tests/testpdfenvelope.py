@@ -5,7 +5,7 @@
 
 
 import unittest
-import cPickle
+import pickle
 import numpy
 
 from diffpy.srreal.pdfenvelope import PDFEnvelope, makePDFEnvelope
@@ -112,7 +112,7 @@ class TestPDFEnvelope(unittest.TestCase):
         '''
         stp = self.fstepcut
         stp.stepcut = 11
-        stp2 = cPickle.loads(cPickle.dumps(stp))
+        stp2 = pickle.loads(pickle.dumps(stp))
         self.assertEqual('stepcut', stp2.type())
         self.assertEqual(11, stp2.stepcut)
         self.assertEqual(11, stp2._getDoubleAttr('stepcut'))
@@ -128,24 +128,24 @@ class TestPDFEnvelope(unittest.TestCase):
         self.assertEqual(6, pbl(1))
         self.assertEqual(11, pbl(2))
         pbl.b = 0
-        self.assertEqual([7, 3, 28], map(pbl, [-2, 0, 5]))
+        self.assertEqual([7, 3, 28], [pbl(x) for x in [-2, 0, 5]])
         pbl2 = pbl.clone()
         self.assertEqual(1, pbl2.a)
         self.assertEqual(0, pbl2.b)
         self.assertEqual(3, pbl2.c)
-        self.assertEqual([7, 3, 28], map(pbl2, [-2, 0, 5]))
+        self.assertEqual([7, 3, 28], [pbl2(x) for x in [-2, 0, 5]])
         pbl3 = PDFEnvelope.createByType('parabolaenvelope')
         self.assertEqual(1, pbl3.a)
         self.assertEqual(2, pbl3.b)
         self.assertEqual(3, pbl3.c)
         pbl3.a = 0
         pbl3.foo = 'asdf'
-        pbl3cp = cPickle.loads(cPickle.dumps(pbl3))
+        pbl3cp = pickle.loads(pickle.dumps(pbl3))
         self.assertEqual(0, pbl3cp.a)
         self.assertEqual('asdf', pbl3cp.foo)
         pc = PDFCalculator()
         pc.envelopes = (pbl2,)
-        pc2 = cPickle.loads(cPickle.dumps(pc))
+        pc2 = pickle.loads(pickle.dumps(pc))
         pbl2cp = pc2.envelopes[0]
         self.assertEqual('parabolaenvelope', pbl2cp.type())
         self.assertEqual(1, pbl2cp.a)
@@ -171,7 +171,7 @@ class TestQResolutionEnvelope(unittest.TestCase):
     def test_pickling(self):
         evlp = self.evlp
         evlp.qdamp = 3
-        evlp2 = cPickle.loads(cPickle.dumps(evlp))
+        evlp2 = pickle.loads(pickle.dumps(evlp))
         self.assertEqual(QResolutionEnvelope, type(evlp2))
         self.assertEqual(3, evlp2.qdamp)
         return
@@ -194,7 +194,7 @@ class TestScaleEnvelope(unittest.TestCase):
     def test_pickling(self):
         evlp = self.evlp
         evlp.scale = 3
-        evlp2 = cPickle.loads(cPickle.dumps(evlp))
+        evlp2 = pickle.loads(pickle.dumps(evlp))
         self.assertEqual(ScaleEnvelope, type(evlp2))
         self.assertEqual(3, evlp2.scale)
         return
@@ -217,7 +217,7 @@ class TestSphericalShapeEnvelope(unittest.TestCase):
     def test_pickling(self):
         evlp = self.evlp
         evlp.spdiameter = 3
-        evlp2 = cPickle.loads(cPickle.dumps(evlp))
+        evlp2 = pickle.loads(pickle.dumps(evlp))
         self.assertEqual(SphericalShapeEnvelope, type(evlp2))
         self.assertEqual(3, evlp2.spdiameter)
         return
@@ -240,7 +240,7 @@ class TestStepCutEnvelope(unittest.TestCase):
     def test_pickling(self):
         evlp = self.evlp
         evlp.stepcut = 3
-        evlp2 = cPickle.loads(cPickle.dumps(evlp))
+        evlp2 = pickle.loads(pickle.dumps(evlp))
         self.assertEqual(StepCutEnvelope, type(evlp2))
         self.assertEqual(3, evlp2.stepcut)
         return

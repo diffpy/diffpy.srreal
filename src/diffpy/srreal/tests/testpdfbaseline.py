@@ -5,7 +5,7 @@
 
 
 import unittest
-import cPickle
+import pickle
 import numpy
 
 from diffpy.srreal.pdfbaseline import PDFBaseline, makePDFBaseline
@@ -169,7 +169,7 @@ class TestPDFBaseline(unittest.TestCase):
         '''
         linear = self.linear
         linear.slope = 11
-        linear2 = cPickle.loads(cPickle.dumps(linear))
+        linear2 = pickle.loads(pickle.dumps(linear))
         self.assertEqual('linear', linear2.type())
         self.assertEqual(11, linear2.slope)
         self.assertEqual(11, linear2._getDoubleAttr('slope'))
@@ -185,12 +185,12 @@ class TestPDFBaseline(unittest.TestCase):
         self.assertEqual(6, pbl(1))
         self.assertEqual(11, pbl(2))
         pbl.b = 0
-        self.assertEqual([7, 3, 28], map(pbl, [-2, 0, 5]))
+        self.assertEqual([7, 3, 28], [pbl(x) for x in [-2, 0, 5]])
         pbl2 = pbl.clone()
         self.assertEqual(1, pbl2.a)
         self.assertEqual(0, pbl2.b)
         self.assertEqual(3, pbl2.c)
-        self.assertEqual([7, 3, 28], map(pbl2, [-2, 0, 5]))
+        self.assertEqual([7, 3, 28], [pbl2(x) for x in [-2, 0, 5]])
         pbl3 = PDFBaseline.createByType('parabolabaseline')
         self.assertEqual(1, pbl3.a)
         self.assertEqual(2, pbl3.b)

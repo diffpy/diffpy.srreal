@@ -5,7 +5,7 @@
 
 
 import unittest
-import cPickle
+import pickle
 
 import numpy
 from diffpy.srreal.tests.testutils import loadDiffPyStructure
@@ -218,7 +218,7 @@ class TestPDFCalculator(unittest.TestCase):
         pdfc.maskAllPairs(False)
         r1, g1 = pdfc(rutile)
         self.assertEqual(0.0, numpy.dot(g1, g1))
-        indices = range(len(rutile))
+        indices = list(range(len(rutile)))
         pdfc.setPairMask(indices, indices, True)
         r2, g2 = pdfc(rutile)
         self.assertTrue(numpy.array_equal(g0, g2))
@@ -230,7 +230,7 @@ class TestPDFCalculator(unittest.TestCase):
         pdfc = self.pdfcalc
         pdfc.rstep = 0.1
         rutile = self.tio2rutile
-        indices = range(len(rutile))
+        indices = list(range(len(rutile)))
         for i in indices:
             for j in indices:
                 pdfc.setPairMask(i, j, False)
@@ -262,8 +262,8 @@ class TestPDFCalculator(unittest.TestCase):
         pdfc.slope = 0.1
         pdfc.spdiameter = 13.3
         pdfc.foobar = 'asdf'
-        spkl = cPickle.dumps(pdfc)
-        pdfc1 = cPickle.loads(spkl)
+        spkl = pickle.dumps(pdfc)
+        pdfc1 = pickle.loads(spkl)
         sft = pdfc.scatteringfactortable
         sft1 = pdfc1.scatteringfactortable
         self.assertEqual(sft.type(), sft1.type())
@@ -285,7 +285,7 @@ class TestPDFCalculator(unittest.TestCase):
         self.pdfcalc.setPairMask(0, 1, True)
         self.assertTrue(False is self.pdfcalc.getPairMask(0, 0))
         self.assertTrue(True is self.pdfcalc.getPairMask(0, 1))
-        pdfcalc1 = cPickle.loads(cPickle.dumps(self.pdfcalc))
+        pdfcalc1 = pickle.loads(pickle.dumps(self.pdfcalc))
         self.assertTrue(False is pdfcalc1.getPairMask(0, 0))
         self.assertTrue(True is pdfcalc1.getPairMask(0, 1))
         return
@@ -298,8 +298,8 @@ class TestPDFCalculator(unittest.TestCase):
         stru0 = DerivedStructureAdapter()
         pdfc.setStructure(stru0)
         self.assertEqual(1, stru0.cpqcount)
-        spkl = cPickle.dumps(pdfc)
-        pdfc1 = cPickle.loads(spkl)
+        spkl = pickle.dumps(pdfc)
+        pdfc1 = pickle.loads(spkl)
         self.assertTrue(stru0 is pdfc.getStructure())
         stru1 = pdfc1.getStructure()
         self.assertTrue(type(stru1) is DerivedStructureAdapter)

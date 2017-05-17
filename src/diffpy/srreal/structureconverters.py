@@ -149,7 +149,8 @@ def _fetchDiffPyStructureData(adpt, stru):
         adpt.append(aa)
     if hasattr(adpt, 'setLatPar'):
         adpt.setLatPar(*stru.lattice.abcABG())
-        map(adpt.toCartesian, adpt)
+        for aa in adpt:
+            adpt.toCartesian(aa)
     return
 
 # End of file

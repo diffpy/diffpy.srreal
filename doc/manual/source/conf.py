@@ -22,7 +22,7 @@ import time
 # sys.path.insert(0, os.path.abspath('../../..'))
 
 # abbreviations
-ab_authors = u'Pavol Juhás, Christopher L. Farrow, Simon J.L. Billinge group'
+ab_authors = 'Pavol Juhás, Christopher L. Farrow, Simon J.L. Billinge group'
 
 # -- General configuration -----------------------------------------------------
 
@@ -47,8 +47,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'SrReal'
-copyright = u'%Y, Brookhaven National Laboratory'
+project = 'SrReal'
+copyright = '%Y, Brookhaven National Laboratory'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -201,8 +201,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'SrReal_manual.tex', u'SrReal Documentation',
-   ab_authors, 'manual'),
+    ('index', 'SrReal_manual.tex', 'SrReal Documentation',
+     ab_authors, 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -231,7 +231,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'srreal', u'SrReal Documentation',
+    ('index', 'srreal', 'SrReal Documentation',
      ab_authors, 1)
 ]
 
@@ -245,9 +245,9 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'SrReal', u'SrReal Documentation',
-   ab_authors, 'SrReal', 'One line description of project.',
-   'Miscellaneous'),
+    ('index', 'SrReal', 'SrReal Documentation',
+     ab_authors, 'SrReal', 'One line description of project.',
+     'Miscellaneous'),
 ]
 
 # Documents to append as an appendix to all manuals.

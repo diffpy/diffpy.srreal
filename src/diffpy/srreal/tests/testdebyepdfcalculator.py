@@ -5,12 +5,12 @@
 
 
 import unittest
-import cPickle
+import pickle
 import numpy
 
 from diffpy.srreal.pdfcalculator import DebyePDFCalculator, PDFCalculator
 from diffpy.srreal.tests.testutils import loadDiffPyStructure
-from testpdfcalculator import _maxNormDiff
+from diffpy.srreal.tests.testpdfcalculator import _maxNormDiff
 
 ##############################################################################
 class TestDebyePDFCalculator(unittest.TestCase):
@@ -52,7 +52,7 @@ class TestDebyePDFCalculator(unittest.TestCase):
     def test___setattr__(self):
         """check DebyePDFCalculator.__setattr__()
         """
-        self.assertNotEquals(1.23, self.dpdfc._getDoubleAttr('rmin'))
+        self.assertNotEqual(1.23, self.dpdfc._getDoubleAttr('rmin'))
         self.dpdfc.rmin = 1.23
         self.assertEqual(1.23, self.dpdfc._getDoubleAttr('rmin'))
         return
@@ -168,8 +168,8 @@ class TestDebyePDFCalculator(unittest.TestCase):
         dpdfc.scale = 1.1
         dpdfc.spdiameter = 13.3
         dpdfc.foobar = 'asdf'
-        spkl = cPickle.dumps(dpdfc)
-        dpdfc1 = cPickle.loads(spkl)
+        spkl = pickle.dumps(dpdfc)
+        dpdfc1 = pickle.loads(spkl)
         self.assertFalse(dpdfc is dpdfc1)
         sft = dpdfc.scatteringfactortable
         sft1 = dpdfc1.scatteringfactortable
@@ -195,7 +195,7 @@ class TestDebyePDFCalculator(unittest.TestCase):
         self.assertTrue(False is self.dpdfc.getPairMask(0, 0))
         self.assertTrue(True is self.dpdfc.getPairMask(0, 1))
         self.assertTrue(True is self.dpdfc.getTypeMask("Cl", "Na"))
-        dpdfc1 = cPickle.loads(cPickle.dumps(self.dpdfc))
+        dpdfc1 = pickle.loads(pickle.dumps(self.dpdfc))
         self.assertTrue(False is dpdfc1.getPairMask(0, 0))
         self.assertTrue(True is dpdfc1.getPairMask(0, 1))
         self.assertTrue(True is self.dpdfc.getTypeMask("Cl", "Na"))
@@ -210,8 +210,8 @@ class TestDebyePDFCalculator(unittest.TestCase):
         stru0 = DerivedStructureAdapter()
         dpdfc.setStructure(stru0)
         self.assertEqual(1, stru0.cpqcount)
-        spkl = cPickle.dumps(dpdfc)
-        dpdfc1 = cPickle.loads(spkl)
+        spkl = pickle.dumps(dpdfc)
+        dpdfc1 = pickle.loads(spkl)
         self.assertTrue(stru0 is dpdfc.getStructure())
         stru1 = dpdfc1.getStructure()
         self.assertTrue(type(stru1) is DerivedStructureAdapter)

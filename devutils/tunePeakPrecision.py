@@ -129,7 +129,7 @@ def processCommandLineArguments():
     global qmax, peakprecision, createplot
     argc = len(sys.argv)
     if set(['-h', '--help']).intersection(sys.argv):
-        print __doc__
+        print(__doc__)
         sys.exit()
     if argc > 1:
         qmax = float(sys.argv[1])

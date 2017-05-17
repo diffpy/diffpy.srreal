@@ -5,7 +5,7 @@
 
 
 import unittest
-import cPickle
+import pickle
 import copy
 import numpy
 
@@ -71,8 +71,8 @@ class TestOverlapCalculator(unittest.TestCase):
         olc.rmax = 12.3
         olc.setPairMask(1, 2, False)
         olc.foobar = 'asdf'
-        spkl = cPickle.dumps(olc)
-        olc1 = cPickle.loads(spkl)
+        spkl = pickle.dumps(olc)
+        olc1 = pickle.loads(spkl)
         self.assertFalse(olc is olc1)
         for a in olc._namesOfDoubleAttributes():
             self.assertEqual(getattr(olc, a), getattr(olc1, a))
@@ -89,15 +89,15 @@ class TestOverlapCalculator(unittest.TestCase):
         from diffpy.srreal.atomradiitable import CovalentRadiiTable
         olc = self.olc
         olc.atomradiitable.setDefault(1.3)
-        spkl = cPickle.dumps(olc)
-        olc1 = cPickle.loads(spkl)
+        spkl = pickle.dumps(olc)
+        olc1 = pickle.loads(spkl)
         self.assertFalse(olc is olc1)
         self.assertEqual(1.3, olc1.atomradiitable.getDefault())
         olc.atomradiitable = CovalentRadiiTable()
         olc.atomradiitable.setCustom('Na', 2)
         olc.atomradiitable.foo = 123
-        spkl2 = cPickle.dumps(olc)
-        olc2 = cPickle.loads(spkl2)
+        spkl2 = pickle.dumps(olc)
+        olc2 = pickle.loads(spkl2)
         self.assertEqual(2, olc2.atomradiitable.lookup('Na'))
         self.assertEqual(1, len(olc2.atomradiitable.getAllCustom()))
         self.assertEqual(123, olc2.atomradiitable.foo)
@@ -111,8 +111,8 @@ class TestOverlapCalculator(unittest.TestCase):
         stru0 = DerivedStructureAdapter()
         olc.setStructure(stru0)
         self.assertEqual(1, stru0.cpqcount)
-        spkl = cPickle.dumps(olc)
-        olc1 = cPickle.loads(spkl)
+        spkl = pickle.dumps(olc)
+        olc1 = pickle.loads(spkl)
         self.assertTrue(stru0 is olc.getStructure())
         stru1 = olc1.getStructure()
         self.assertTrue(type(stru1) is DerivedStructureAdapter)
@@ -268,8 +268,9 @@ class TestOverlapCalculator(unittest.TestCase):
         self.assertEqual(set(), olc.getNeighborSites(3))
         olc.atomradiitable.fromString('Ti:1.6, O:0.66')
         olc(self.rutile)
-        self.assertEqual(set([0] + range(2, 6)), olc.getNeighborSites(0))
-        self.assertEqual(set([1] + range(2, 6)), olc.getNeighborSites(1))
+        oxygens = list(range(2, 6))
+        self.assertEqual(set([0] + oxygens), olc.getNeighborSites(0))
+        self.assertEqual(set([1] + oxygens), olc.getNeighborSites(1))
         self.assertEqual(set(range(2)), olc.getNeighborSites(2))
         self.assertEqual(set(range(2)), olc.getNeighborSites(5))
         n5, = numpy.array([5], dtype=int)

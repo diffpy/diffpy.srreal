@@ -52,7 +52,7 @@ def main():
     # create an instance of LennardJonesCalculator
     ljcalc = LennardJonesCalculator()
     # calculate and print the LJ potential.
-    print "LJ potential of %s is %g" % (filename, ljcalc(stru))
+    print("LJ potential of %s is %g" % (filename, ljcalc(stru)))
 
 
 if __name__ == '__main__':

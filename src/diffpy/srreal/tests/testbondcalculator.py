@@ -5,7 +5,7 @@
 
 
 import unittest
-import cPickle
+import pickle
 import numpy
 
 from diffpy.srreal.tests.testutils import TestCaseObjCrystOptional
@@ -70,8 +70,8 @@ class TestBondCalculator(unittest.TestCase):
         bdc.setPairMask(1, 2, False)
         bdc.foobar = 'asdf'
         bdc(self.nickel)
-        spkl = cPickle.dumps(bdc)
-        bdc1 = cPickle.loads(spkl)
+        spkl = pickle.dumps(bdc)
+        bdc1 = pickle.loads(spkl)
         self.assertFalse(bdc is bdc1)
         for a in bdc._namesOfDoubleAttributes():
             self.assertEqual(getattr(bdc, a), getattr(bdc1, a))
@@ -90,8 +90,8 @@ class TestBondCalculator(unittest.TestCase):
         stru0 = DerivedStructureAdapter()
         bdc.setStructure(stru0)
         self.assertEqual(1, stru0.cpqcount)
-        spkl = cPickle.dumps(bdc)
-        bdc1 = cPickle.loads(spkl)
+        spkl = pickle.dumps(bdc)
+        bdc1 = pickle.loads(spkl)
         self.assertTrue(stru0 is bdc.getStructure())
         stru1 = bdc1.getStructure()
         self.assertTrue(type(stru1) is DerivedStructureAdapter)
@@ -330,7 +330,7 @@ class TestBondCalculatorObjCryst(TestCaseObjCrystOptional):
         self.assertEqual(len(dst), len(bdc.types1))
         self.assertEqual(set(('Ti', 'O')), set(bdc.types0))
         self.assertEqual(set(('Ti', 'O')), set(bdc.types1))
-        self.assertNotEquals(bdc.types0.tolist(), bdc.types1.tolist())
+        self.assertNotEqual(bdc.types0.tolist(), bdc.types1.tolist())
         bdc.maskAllPairs(False)
         bdc(self.rutile)
         self.assertEqual(0, bdc.types0.size)

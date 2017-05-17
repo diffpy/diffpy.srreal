@@ -53,7 +53,7 @@ def setattrFromKeywordArguments(obj, **kwargs):
         if not hasattr(obj, n):
             emsg = "Invalid keyword argument %r" % n
             raise TypeError(emsg)
-    for n, v in kwargs.iteritems():
+    for n, v in kwargs.items():
         setattr(obj, n, v)
     return
 

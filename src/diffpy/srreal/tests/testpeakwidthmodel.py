@@ -5,7 +5,7 @@
 
 
 import unittest
-import cPickle
+import pickle
 
 from diffpy.srreal.peakwidthmodel import PeakWidthModel
 from diffpy.srreal.peakwidthmodel import DebyeWallerPeakWidth, JeongPeakWidth
@@ -142,7 +142,7 @@ class TestPeakWidthModel(unittest.TestCase):
         '''
         pwc = self.pwconst
         pwc.width = 11
-        pwc2 = cPickle.loads(cPickle.dumps(pwc))
+        pwc2 = pickle.loads(pickle.dumps(pwc))
         self.assertEqual('constant', pwc2.type())
         self.assertEqual(11, pwc2.width)
         self.assertEqual(11, pwc2._getDoubleAttr('width'))
@@ -170,7 +170,7 @@ class TestDebyeWallerPeakWidth(unittest.TestCase):
         """
         self.assertEqual('debye-waller', self.pwm.type())
         pwm = self.pwm
-        pwm2 = cPickle.loads(cPickle.dumps(pwm))
+        pwm2 = pickle.loads(pickle.dumps(pwm))
         self.assertEqual(DebyeWallerPeakWidth, type(pwm2))
         return
 
@@ -200,7 +200,7 @@ class TestJeongPeakWidth(unittest.TestCase):
         pwm.delta1 = 1
         pwm.delta2 = 2
         pwm.qbroad = 3
-        pwm2 = cPickle.loads(cPickle.dumps(pwm))
+        pwm2 = pickle.loads(pickle.dumps(pwm))
         self.assertEqual(JeongPeakWidth, type(pwm2))
         self.assertEqual(1, pwm2.delta1)
         self.assertEqual(2, pwm2.delta2)
@@ -260,9 +260,9 @@ class TestPeakWidthOwner(unittest.TestCase):
     def test_pickling(self):
         '''Check pickling of an owned PeakWidthModel instance.
         '''
-        pc1 = cPickle.loads(cPickle.dumps(self.pc))
+        pc1 = pickle.loads(pickle.dumps(self.pc))
         self.pwm.pwmscale = 3
-        pc2 = cPickle.loads(cPickle.dumps(self.pc))
+        pc2 = pickle.loads(pickle.dumps(self.pc))
         self.assertEqual('mypwm', pc1.peakwidthmodel.type())
         self.assertEqual(1.5, pc1.peakwidthmodel.pwmscale)
         self.assertEqual(1.5, pc1.pwmscale)

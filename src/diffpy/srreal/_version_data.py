@@ -20,7 +20,7 @@ Does not import any extension module unlike the standard version.
 """
 
 from pkg_resources import resource_filename
-from ConfigParser import RawConfigParser
+from configparser import RawConfigParser
 
 # obtain version information from the version.cfg file
 cp = RawConfigParser(dict(version='', date='', commit='', timestamp=0))

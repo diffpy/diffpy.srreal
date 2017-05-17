@@ -18,8 +18,8 @@ class DistancePrinter(PairQuantity):
 
     def _addPairContribution(self, bnds, sumscale):
         self.count += bnds.multiplicity() * sumscale / 2.0
-        print "%i %g %i %i" % (self.count,
-                bnds.distance(), bnds.site0(), bnds.site1())
+        print("%i %g %i %i" % (
+            self.count, bnds.distance(), bnds.site0(), bnds.site1()))
         return
 
 # class DistancePrinter
@@ -50,29 +50,29 @@ def get_pyobjcryst_sphalerite():
     return crst
 
 def main():
-    s = raw_input('Enter rmin: ')
+    s = input('Enter rmin: ')
     if s.strip():  distprint.rmin = float(s)
-    print "rmin =", distprint.rmin
-    s = raw_input('Enter rmax: ')
+    print("rmin = %g" % distprint.rmin)
+    s = input('Enter rmax: ')
     if s.strip():  distprint.rmax = float(s)
-    print "rmax =", distprint.rmax
-    print
+    print("rmax = %g" % distprint.rmax)
+    print()
     linesep = 78 * '-'
     # C60bucky
-    print linesep
-    raw_input('Press enter for distances in C60 molecule.')
+    print(linesep)
+    input('Press enter for distances in C60 molecule.')
     distprint.eval(bucky)
     # nickel
-    print linesep
-    raw_input('Press enter for distances in a nickel crystal.')
+    print(linesep)
+    input('Press enter for distances in a nickel crystal.')
     distprint.eval(nickel)
     # objcryst sphalerite
-    print linesep
-    raw_input('Press enter for distances in objcryst loaded sphalerite.cif.')
+    print(linesep)
+    input('Press enter for distances in objcryst loaded sphalerite.cif.')
     crst = get_pyobjcryst_sphalerite()
     distprint.eval(crst)
-    print linesep
-    raw_input('Press enter for distances in diffpy.Structure sphalerite.cif.')
+    print(linesep)
+    input('Press enter for distances in diffpy.Structure sphalerite.cif.')
     crst = Structure(filename='datafiles/sphalerite.cif')
     distprint.eval(crst)
     return

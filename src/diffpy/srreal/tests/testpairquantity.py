@@ -4,7 +4,7 @@
 """
 
 import unittest
-import cPickle
+import pickle
 from diffpy.srreal.pairquantity import PairQuantity
 from diffpy.srreal.pdfcalculator import PDFCalculator
 
@@ -125,7 +125,7 @@ class TestPairQuantity(unittest.TestCase):
         # pqd does not support OPTIMIZED evaluation.  Its use will
         # raise ValueError or RuntimeError for older libdiffpy.
         # Here we check for StandardError that covers them both.
-        self.assertRaises(StandardError,
+        self.assertRaises(Exception,
                           eval_as, 'OPTIMIZED', pqd, c8)
         # PQCounter supports OPTIMIZED evaluation mode.
         ocnt = PQCounter()
@@ -147,8 +147,8 @@ class TestPairQuantity(unittest.TestCase):
         stru0 = DerivedStructureAdapter()
         self.pq.setStructure(stru0)
         self.assertEqual(1, stru0.cpqcount)
-        spkl = cPickle.dumps(self.pq)
-        pq1 = cPickle.loads(spkl)
+        spkl = pickle.dumps(self.pq)
+        pq1 = pickle.loads(spkl)
         self.assertTrue(stru0 is self.pq.getStructure())
         stru1 = pq1.getStructure()
         self.assertTrue(type(stru1) is DerivedStructureAdapter)

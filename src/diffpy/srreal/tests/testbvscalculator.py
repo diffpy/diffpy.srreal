@@ -5,7 +5,7 @@
 
 
 import unittest
-import cPickle
+import pickle
 
 from diffpy.srreal.bvscalculator import BVSCalculator
 from diffpy.Structure import Structure
@@ -126,8 +126,8 @@ class TestBVSCalculator(unittest.TestCase):
         bvsc.rmax = 12.3
         bvsc.valenceprecision = 0.3e-4
         bvsc.foobar = 'asdf'
-        spkl = cPickle.dumps(bvsc)
-        bvsc1 = cPickle.loads(spkl)
+        spkl = pickle.dumps(bvsc)
+        bvsc1 = pickle.loads(spkl)
         self.assertFalse(bvsc is bvsc1)
         for a in bvsc._namesOfDoubleAttributes():
             self.assertEqual(getattr(bvsc, a), getattr(bvsc1, a))
@@ -142,7 +142,7 @@ class TestBVSCalculator(unittest.TestCase):
         self.bvc.setPairMask(0, 1, True)
         self.assertTrue(False is self.bvc.getPairMask(0, 0))
         self.assertTrue(True is self.bvc.getPairMask(0, 1))
-        bvc1 = cPickle.loads(cPickle.dumps(self.bvc))
+        bvc1 = pickle.loads(pickle.dumps(self.bvc))
         self.assertTrue(False is bvc1.getPairMask(0, 0))
         self.assertTrue(True is bvc1.getPairMask(0, 1))
         return
@@ -152,7 +152,7 @@ class TestBVSCalculator(unittest.TestCase):
         '''Check if bvparamtable gets correctly pickled and restored.
         '''
         self.bvc.bvparamtable.setCustom('A', 1, 'B', -2, 7, 8)
-        bvc1 = cPickle.loads(cPickle.dumps(self.bvc))
+        bvc1 = pickle.loads(pickle.dumps(self.bvc))
         bpab = bvc1.bvparamtable.lookup('A+', 'B2-')
         self.assertEqual("A", bpab.atom0)
         self.assertEqual(1, bpab.valence0)
@@ -171,8 +171,8 @@ class TestBVSCalculator(unittest.TestCase):
         stru0 = DerivedStructureAdapter()
         bvc.setStructure(stru0)
         self.assertEqual(1, stru0.cpqcount)
-        spkl = cPickle.dumps(bvc)
-        bvc1 = cPickle.loads(spkl)
+        spkl = pickle.dumps(bvc)
+        bvc1 = pickle.loads(spkl)
         self.assertTrue(stru0 is bvc.getStructure())
         stru1 = bvc1.getStructure()
         self.assertTrue(type(stru1) is DerivedStructureAdapter)
