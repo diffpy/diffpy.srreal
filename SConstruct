@@ -40,7 +40,7 @@ def pyoutput(cmd):
 def pyconfigvar(name):
     cmd = '\n'.join((
             'from distutils.sysconfig import get_config_var',
-            'print get_config_var(%r)' % name))
+            'print(get_config_var(%r))' % name))
     return pyoutput(cmd)
 
 # copy system environment variables related to compilation
