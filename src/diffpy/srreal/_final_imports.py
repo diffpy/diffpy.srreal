@@ -31,16 +31,17 @@ def import_now():
     '''
     Import all Python modules that tweak extension-defined classes.
     '''
-    import diffpy.srreal.attributes
-    import diffpy.srreal.atomradiitable
-    import diffpy.srreal.bondcalculator
-    import diffpy.srreal.bvscalculator
-    import diffpy.srreal.overlapcalculator
-    import diffpy.srreal.pdfbaseline
-    import diffpy.srreal.pdfenvelope
-    import diffpy.srreal.peakprofile
-    import diffpy.srreal.peakwidthmodel
-    import diffpy.srreal.scatteringfactortable
-    import diffpy.srreal.pdfcalculator
-    import diffpy.srreal.structureconverters
+    from importlib import import_module
+    import_module('diffpy.srreal.attributes')
+    import_module('diffpy.srreal.atomradiitable')
+    import_module('diffpy.srreal.bondcalculator')
+    import_module('diffpy.srreal.bvscalculator')
+    import_module('diffpy.srreal.overlapcalculator')
+    import_module('diffpy.srreal.pdfbaseline')
+    import_module('diffpy.srreal.pdfenvelope')
+    import_module('diffpy.srreal.peakprofile')
+    import_module('diffpy.srreal.peakwidthmodel')
+    import_module('diffpy.srreal.scatteringfactortable')
+    import_module('diffpy.srreal.pdfcalculator')
+    import_module('diffpy.srreal.structureconverters')
     return
