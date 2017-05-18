@@ -113,8 +113,7 @@ env.AppendUnique(CPPPATH=cpppath)
 # ignore it in the system environment.
 env.PrependUnique(LIBPATH=getsyspaths('LIBRARY_PATH'))
 # Add shared libraries.
-# Note: boost_python is added from SConscript.configure
-env.AppendUnique(LIBS=['diffpy'])
+# Note: libdiffpy and boost_python are added from SConscript.configure.
 
 fast_linkflags = ['-s']
 fast_shlinkflags = pyconfigvar('LDSHARED').split()[1:]
