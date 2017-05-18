@@ -29,7 +29,7 @@ Examples
     sfavg1 = SFAverage.fromComposition({'Na' : 1, 'Cl' : 1}, xtb, qa)
     sfavg2 = SFAverage.fromComposition([('Mn', 1), ('O', 2)], xtb, qa)
 
-    from diffpy.Structure import loadStructure
+    from diffpy.structure import loadStructure
     from diffpy.srreal.pdfcalculator import DebyePDFCalculator
     dpdfc = DebyePDFCalculator()
     dpdfc(loadStructure('rutile.cif'))
@@ -103,7 +103,7 @@ class SFAverage(object):
         SFAverage
             The calculated scattering factor averages.
         """
-        # a bit of duck-typing for faster handling of diffpy.Structure
+        # a bit of duck-typing for faster handling of diffpy.structure
         if hasattr(type(stru), 'composition'):
             composition = stru.composition
             if isinstance(composition, dict):

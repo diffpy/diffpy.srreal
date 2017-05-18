@@ -7,7 +7,7 @@
 import unittest
 import pickle
 import numpy
-from diffpy.Structure import Structure
+from diffpy.structure import Structure
 from diffpy.srreal.pdfcalculator import PDFCalculator
 from diffpy.srreal.tests.testutils import TestCaseObjCrystOptional
 from diffpy.srreal.tests.testutils import loadObjCrystCrystal
@@ -42,7 +42,7 @@ class TestRoutines(unittest.TestCase):
         return
 
     def test_createStructureAdapterTypes(self):
-        '''Check types returned by conversion from diffpy.Structure.
+        '''Check types returned by conversion from diffpy.structure.
         '''
         from diffpy.srreal.structureconverters import (
             DiffPyStructureAtomicAdapter,

@@ -145,7 +145,7 @@ setup_args = dict(
     include_package_data = True,
     ext_modules = [],
     install_requires = [
-        'diffpy.Structure',
+        'diffpy.structure',
     ],
     zip_safe = False,
 

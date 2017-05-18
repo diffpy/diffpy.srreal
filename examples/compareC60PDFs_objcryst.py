@@ -5,13 +5,13 @@ The C60 molecule are stored in a pyobjcryst object.
 """
 
 from matplotlib.pyplot import plot, show, clf, draw
-from diffpy.Structure import Structure
+from diffpy.structure import Structure
 from pyobjcryst.crystal import Crystal
 from pyobjcryst.molecule import Molecule
 from pyobjcryst.scatteringpower import ScatteringPowerAtom
 from diffpy.srreal.pdfcalculator import PDFCalculator, DebyePDFCalculator
 
-# load C60 molecule as a diffpy.Structure object
+# load C60 molecule as a diffpy.structure object
 bucky_diffpy = Structure(filename='datafiles/C60bucky.stru')
 
 # convert to an ObjCryst molecule

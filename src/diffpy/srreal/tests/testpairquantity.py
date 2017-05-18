@@ -41,7 +41,7 @@ class TestPairQuantity(unittest.TestCase):
     def test_setStructure(self):
         """check PairQuantity.setStructure()
         """
-        from diffpy.Structure import Structure, Atom
+        from diffpy.structure import Structure, Atom
         from diffpy.srreal.structureadapter import EMPTY
         stru = Structure([Atom("Ar", [0.1, 0.2, 0.3])])
         self.pq.setStructure(stru)
@@ -201,7 +201,7 @@ class PQCounter(PQDerived):
 
 def carbonzchain(n):
     "Helper function that returns a z-chain of Carbon atoms."
-    from diffpy.Structure import Structure, Atom
+    from diffpy.structure import Structure, Atom
     rv = Structure([Atom('C', [0, 0, z]) for z in range(n)])
     return rv
 

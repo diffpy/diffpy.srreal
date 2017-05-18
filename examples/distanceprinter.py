@@ -5,7 +5,7 @@ of pair distances in periodic and non-periodic structures.
 """
 
 from diffpy.srreal.pairquantity import PairQuantity
-from diffpy.Structure import Structure
+from diffpy.structure import Structure
 
 class DistancePrinter(PairQuantity):
 
@@ -72,7 +72,7 @@ def main():
     crst = get_pyobjcryst_sphalerite()
     distprint.eval(crst)
     print(linesep)
-    input('Press enter for distances in diffpy.Structure sphalerite.cif.')
+    input('Press enter for distances in diffpy.structure sphalerite.cif.')
     crst = Structure(filename='datafiles/sphalerite.cif')
     distprint.eval(crst)
     return

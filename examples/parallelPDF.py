@@ -11,7 +11,7 @@ import sys
 import optparse
 import time
 import multiprocessing
-from diffpy.Structure import Structure
+from diffpy.structure import Structure
 from diffpy.srreal.pdfcalculator import PDFCalculator
 from diffpy.srreal.parallel import createParallelCalculator
 
@@ -37,7 +37,7 @@ if opts.pyobjcryst:
         sp = sc.mpScattPow
         sp.Biso = sp.Biso or 8 * pi**2 * Uisodefault
 else:
-    # or use diffpy.Structure by default
+    # or use diffpy.structure by default
     menthol = Structure(filename=mentholcif)
     for a in menthol:
         a.Uisoequiv = a.Uisoequiv or Uisodefault

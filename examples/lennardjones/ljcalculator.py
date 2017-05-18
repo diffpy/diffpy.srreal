@@ -8,7 +8,7 @@ Vij = 4 * ( rij ** -12  -  rij ** -6 )
 
 import sys
 from diffpy.srreal.pairquantity import PairQuantity
-from diffpy.Structure import Structure
+from diffpy.structure import Structure
 
 class LennardJonesCalculator(PairQuantity):
 

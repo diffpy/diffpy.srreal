@@ -56,7 +56,7 @@ class TestPDFCalculator(unittest.TestCase):
     def test___call__(self):
         """Check PDFCalculator.__call__()
         """
-        from diffpy.Structure import Structure
+        from diffpy.structure import Structure
         r0, g0 = self.pdfcalc(self.tio2rutile, rmin=2)
         self.assertEqual(2.0, r0[0])
         r1, g1 = self.pdfcalc(self.tio2rutile, scale=7)

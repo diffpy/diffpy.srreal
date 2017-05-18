@@ -56,7 +56,7 @@ def loadObjCrystCrystal(filename):
 
 
 def loadDiffPyStructure(filename):
-    from diffpy.Structure import Structure
+    from diffpy.structure import Structure
     fullpath = datafile(filename)
     stru = Structure(filename=fullpath)
     return stru
