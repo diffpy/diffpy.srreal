@@ -49,13 +49,23 @@ void wrap_OverlapCalculator();
 
 }   // namespace srrealmodule
 
+namespace {
+
+#if PY_MAJOR_VERSION >= 3
+    void* initialize_numpy() { import_array(); return NULL; }
+#else
+    void initialize_numpy() { import_array(); }
+#endif
+
+}   // namespace
+
 // Module Definitions --------------------------------------------------------
 
 BOOST_PYTHON_MODULE(srreal_ext)
 {
     using namespace srrealmodule;
     // initialize numpy module
-    import_array();
+    initialize_numpy();
     // execute external wrappers
     wrap_libdiffpy_version();
     wrap_exceptions();
