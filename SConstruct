@@ -93,7 +93,17 @@ env.MergeFlags([os.environ.get(n, '') for n in flagnames])
 good_python_flag = lambda n : (
     not isinstance(n, basestring) or
     not re.match(r'(-g|-Wstrict-prototypes|-O\d)$', n))
-env.ParseConfig("python-config --cflags")
+# Determine python-config script name.
+pyversion = pyoutput('import sys; print("%i.%i" % sys.version_info[:2])')
+pythonconfig = 'python%s-config' % (pyversion if pyversion[0] == '3' else '')
+# Verify python-config comes from the same path as the target python.
+xpython = env.WhereIs(env['python'])
+xpythonconfig = env.WhereIs(pythonconfig)
+if os.path.dirname(xpython) != os.path.dirname(xpythonconfig):
+    print("Inconsistent paths of %r and %r" % (xpython, xpythonconfig))
+    Exit(1)
+# Process the python-config flags here.
+env.ParseConfig(pythonconfig + " --cflags")
 env.Replace(CCFLAGS=[f for f in env['CCFLAGS'] if good_python_flag(f)])
 env.Replace(CPPDEFINES='')
 # the CPPPATH directories are checked by scons dependency scanner
