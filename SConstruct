@@ -10,7 +10,7 @@ Targets:
 
 module      build Python extension module srreal_ext.so [default]
 install     install to default Python package location
-develop     copy extension module to diffpy/srreal/ directory
+develop     copy extension module to src/diffpy/srreal/ directory
 test        execute unit tests
 
 Build configuration variables:
@@ -28,19 +28,19 @@ def subdictionary(d, keyset):
     return dict([kv for kv in d.items() if kv[0] in keyset])
 
 def getsyspaths(*names):
-    s = os.pathsep.join(filter(None, map(os.environ.get, names)))
-    return filter(os.path.exists, s.split(os.pathsep))
+    pall = sum((os.environ.get(n, '').split(os.pathsep) for n in names), [])
+    rv = [p for p in pall if os.path.exists(p)]
+    return rv
 
 def pyoutput(cmd):
     proc = subprocess.Popen([env['python'], '-c', cmd],
-            stdout=subprocess.PIPE)
+                            stdout=subprocess.PIPE)
     out = proc.communicate()[0]
     return out.rstrip()
 
 def pyconfigvar(name):
-    cmd = '\n'.join((
-            'from distutils.sysconfig import get_config_var',
-            'print(get_config_var(%r))' % name))
+    cmd = ('from distutils.sysconfig import get_config_var\n'
+           'print(get_config_var(%r))\n') % name
     return pyoutput(cmd)
 
 # copy system environment variables related to compilation
@@ -90,11 +90,11 @@ flagnames = 'CFLAGS CXXFLAGS LDFLAGS'.split()
 env.MergeFlags([os.environ.get(n, '') for n in flagnames])
 
 # Figure out compilation switches, filter away C-related items.
-good_python_flags = lambda n : (
+good_python_flag = lambda n : (
     not isinstance(n, basestring) or
     not re.match(r'(-g|-Wstrict-prototypes|-O\d)$', n))
 env.ParseConfig("python-config --cflags")
-env.Replace(CCFLAGS=filter(good_python_flags, env['CCFLAGS']))
+env.Replace(CCFLAGS=[f for f in env['CCFLAGS'] if good_python_flag(f)])
 env.Replace(CPPDEFINES='')
 # the CPPPATH directories are checked by scons dependency scanner
 cpppath = getsyspaths('CPLUS_INCLUDE_PATH', 'CPATH')
