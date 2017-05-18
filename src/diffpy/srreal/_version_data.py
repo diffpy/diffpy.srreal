@@ -20,7 +20,13 @@ Does not import any extension module unlike the standard version.
 """
 
 from pkg_resources import resource_filename
-from configparser import RawConfigParser
+
+import sys
+if sys.version_info[0] >= 3:
+    from configparser import RawConfigParser
+else:
+    from ConfigParser import RawConfigParser
+del sys
 
 # obtain version information from the version.cfg file
 cp = RawConfigParser(dict(version='', date='', commit='', timestamp=0))

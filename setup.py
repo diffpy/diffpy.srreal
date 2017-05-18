@@ -9,6 +9,8 @@ Packages:   diffpy.srreal
 """
 
 import os
+import re
+import sys
 import glob
 from setuptools import setup, find_packages
 from setuptools import Extension
@@ -28,6 +30,8 @@ ext_kws = {
         'include_dirs' : get_numpy_include_dirs(),
 }
 
+# determine if we run with Python 3.
+PY3 = (sys.version_info[0] == 3)
 
 # Figure out which boost library to use. This doesn't appear to consult
 # LD_LIBRARY_PATH.
@@ -54,7 +58,7 @@ def get_boost_libraries():
         if platform.system() == 'Darwin':
             ldevname = 'DYLD_FALLBACK_LIBRARY_PATH'
         wmsg = ("Cannot detect name suffix for the %r library.  "
-            "Consider setting %s.") % (baselib, ldevname)
+                "Consider setting %s.") % (baselib, ldevname)
         warnings.warn(wmsg)
 
     libs = [lib]
@@ -78,9 +82,10 @@ MYDIR = os.path.dirname(os.path.abspath(__file__))
 versioncfgfile = os.path.join(MYDIR, 'src/diffpy/srreal/version.cfg')
 gitarchivecfgfile = versioncfgfile.replace('version.cfg', 'gitarchive.cfg')
 
+
 def gitinfo():
     from subprocess import Popen, PIPE
-    kw = dict(stdout=PIPE, cwd=MYDIR)
+    kw = dict(stdout=PIPE, cwd=MYDIR, universal_newlines=True)
     proc = Popen(['git', 'describe', '--match=v[[:digit:]]*'], **kw)
     desc = proc.stdout.read()
     proc = Popen(['git', 'log', '-1', '--format=%H %at %ai'], **kw)
@@ -92,8 +97,10 @@ def gitinfo():
 
 
 def getversioncfg():
-    import re
-    from ConfigParser import RawConfigParser
+    if PY3:
+        from configparser import RawConfigParser
+    else:
+        from ConfigParser import RawConfigParser
     vd0 = dict(version=FALLBACK_VERSION, commit='', date='', timestamp=0)
     # first fetch data from gitarchivecfgfile, ignore if it is unexpanded
     g = vd0.copy()
@@ -122,7 +129,8 @@ def getversioncfg():
         cp.set('DEFAULT', 'commit', g['commit'])
         cp.set('DEFAULT', 'date', g['date'])
         cp.set('DEFAULT', 'timestamp', g['timestamp'])
-        cp.write(open(versioncfgfile, 'w'))
+        with open(versioncfgfile, 'w') as fp:
+            cp.write(fp)
     return cp
 
 versiondata = getversioncfg()
