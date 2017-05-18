@@ -154,7 +154,7 @@ if env['profile']:
 
 builddir = env.Dir('build/%s-%s' % (env['build'], platform.machine()))
 
-Export('env', 'pyconfigvar', 'pyoutput')
+Export('env', 'pyconfigvar', 'pyoutput', 'pyversion')
 
 def GlobSources(pattern):
     """Same as Glob but also require that source node is a valid file.
