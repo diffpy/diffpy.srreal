@@ -49,9 +49,9 @@ def datafile(filename):
 
 
 def loadObjCrystCrystal(filename):
-    from pyobjcryst.crystal import CreateCrystalFromCIF
+    from pyobjcryst import loadCrystal
     fullpath = datafile(filename)
-    crst = CreateCrystalFromCIF(open(fullpath))
+    crst = loadCrystal(fullpath)
     return crst
 
 
