@@ -44,6 +44,19 @@ void ensure_tuple_length(boost::python::tuple state, const int statelen)
     throw_error_already_set();
 }
 
+
+template <typename T>
+::boost::python::object serialization_tobytes(const T& tobj)
+{
+    std::string s = diffpy::serialization_tostring(tobj);
+    std::string::const_pointer pfirst = s.empty() ? NULL : &(s[0]);
+    boost::python::object rv(
+            boost::python::handle<>(
+                PyBytes_FromStringAndSize(pfirst, s.size()))
+            );
+    return rv;
+}
+
 enum {DICT_IGNORE=false, DICT_PICKLE=true};
 
 template <class T, bool pickledict=DICT_PICKLE>
@@ -55,7 +68,7 @@ class SerializationPickleSuite : public boost::python::pickle_suite
         {
             using namespace std;
             const T& tobj = boost::python::extract<const T&>(obj);
-            string content = diffpy::serialization_tostring(tobj);
+            boost::python::object content = serialization_tobytes(tobj);
             boost::python::tuple rv = pickledict ?
                 boost::python::make_tuple(content, obj.attr("__dict__")) :
                 boost::python::make_tuple(content);
@@ -148,7 +161,7 @@ class StructureAdapterPickleSuite : public boost::python::pickle_suite
             if (frompython(adpt))  return rv;
             // otherwise the instance is from a non-wrapped C++ adapter,
             // and we need to reconstruct it using boost::serialization
-            std::string content = diffpy::serialization_tostring(adpt);
+            python::object content = serialization_tobytes(adpt);
             rv = python::make_tuple(content);
             return rv;
         }
@@ -166,7 +179,7 @@ class StructureAdapterPickleSuite : public boost::python::pickle_suite
             if (frompython(adpt))
             {
                 const T& tobj = boost::python::extract<const T&>(obj);
-                content = python::str(diffpy::serialization_tostring(tobj));
+                content = serialization_tobytes(tobj);
             }
             python::tuple rv =
                 python::make_tuple(content, obj.attr("__dict__"));

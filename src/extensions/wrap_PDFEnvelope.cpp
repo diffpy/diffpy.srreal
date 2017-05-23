@@ -154,13 +154,13 @@ object callnparray(const PDFEnvelope* obj, object& x)
 }
 
 
-std::string envelope_tostring(PDFEnvelopePtr obj)
+python::object envelope_tobytes(PDFEnvelopePtr obj)
 {
-    return diffpy::serialization_tostring(obj);
+    return serialization_tobytes(obj);
 }
 
 
-PDFEnvelopePtr envelope_fromstring(std::string content)
+PDFEnvelopePtr envelope_frombytes(const std::string& content)
 {
     PDFEnvelopePtr rv;
     diffpy::serialization_fromstring(rv, content);
@@ -199,8 +199,8 @@ void wrap_PDFEnvelope()
             "StepCutEnvelope", doc_StepCutEnvelope);
 
     // pickling support functions
-    def("_PDFEnvelope_tostring", envelope_tostring);
-    def("_PDFEnvelope_fromstring", envelope_fromstring);
+    def("_PDFEnvelope_tobytes", envelope_tobytes);
+    def("_PDFEnvelope_frombytes", envelope_frombytes);
 
 }
 

@@ -42,12 +42,12 @@ from diffpy.srreal.wraputils import _pickle_getstate, _pickle_setstate
 # pickling support
 
 def _envelope_create(s):
-    from diffpy.srreal.srreal_ext import _PDFEnvelope_fromstring
-    return _PDFEnvelope_fromstring(s)
+    from diffpy.srreal.srreal_ext import _PDFEnvelope_frombytes
+    return _PDFEnvelope_frombytes(s)
 
 def _envelope_reduce(self):
-    from diffpy.srreal.srreal_ext import _PDFEnvelope_tostring
-    args = (_PDFEnvelope_tostring(self),)
+    from diffpy.srreal.srreal_ext import _PDFEnvelope_tobytes
+    args = (_PDFEnvelope_tobytes(self),)
     rv = (_envelope_create, args)
     return rv
 

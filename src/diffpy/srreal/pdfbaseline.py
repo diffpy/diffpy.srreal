@@ -38,12 +38,12 @@ from diffpy.srreal.wraputils import _pickle_getstate, _pickle_setstate
 # pickling support
 
 def _baseline_create(s):
-    from diffpy.srreal.srreal_ext import _PDFBaseline_fromstring
-    return _PDFBaseline_fromstring(s)
+    from diffpy.srreal.srreal_ext import _PDFBaseline_frombytes
+    return _PDFBaseline_frombytes(s)
 
 def _baseline_reduce(self):
-    from diffpy.srreal.srreal_ext import _PDFBaseline_tostring
-    args = (_PDFBaseline_tostring(self),)
+    from diffpy.srreal.srreal_ext import _PDFBaseline_tobytes
+    args = (_PDFBaseline_tobytes(self),)
     rv = (_baseline_create, args)
     return rv
 

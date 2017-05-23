@@ -40,12 +40,12 @@ from diffpy.srreal.wraputils import _pickle_getstate, _pickle_setstate
 # pickling support
 
 def _peakwidthmodel_create(s):
-    from diffpy.srreal.srreal_ext import _PeakWidthModel_fromstring
-    return _PeakWidthModel_fromstring(s)
+    from diffpy.srreal.srreal_ext import _PeakWidthModel_frombytes
+    return _PeakWidthModel_frombytes(s)
 
 def _peakwidthmodel_reduce(self):
-    from diffpy.srreal.srreal_ext import _PeakWidthModel_tostring
-    args = (_PeakWidthModel_tostring(self),)
+    from diffpy.srreal.srreal_ext import _PeakWidthModel_tobytes
+    args = (_PeakWidthModel_tobytes(self),)
     rv = (_peakwidthmodel_create, args)
     return rv
 
