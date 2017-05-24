@@ -136,7 +136,7 @@ def createParallelCalculator(pqobj, ncpu, pmap):
         proxymethod.__doc__ = f.__doc__
         return proxymethod
 
-    for n, f in inspect.getmembers(pqtype, inspect.ismethod):
+    for n, f in inspect.getmembers(pqtype, inspect.isroutine):
         ignore = n not in proxy_forced and (n.startswith('_') or
                 hasattr(ParallelPairQuantity, n))
         if ignore:  continue
