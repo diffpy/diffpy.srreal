@@ -10,11 +10,22 @@ TestCasePeriodictableOptional -- use this as a TestCase base class to
 """
 
 
+import sys
 import copy
 import numpy
 
 from diffpy.srreal.structureconverters import convertObjCrystCrystal
 from diffpy.srreal.tests import logger
+
+# Handle renamed diffpy.structure module by importing it to a common name.
+# TODO simplify when Python 2 support is dropped.
+
+if sys.version_info[0] >= 3:
+    import diffpy.structure as mod_structure
+else:
+    import diffpy.Structure as mod_structure
+
+# Resolve availability of optional packages.
 
 # class TestCaseObjCrystOptional
 
@@ -56,9 +67,8 @@ def loadObjCrystCrystal(filename):
 
 
 def loadDiffPyStructure(filename):
-    from diffpy.structure import Structure
     fullpath = datafile(filename)
-    stru = Structure(filename=fullpath)
+    stru = mod_structure.loadStructure(fullpath)
     return stru
 
 # helper class for testing overloading of StructureAdapter

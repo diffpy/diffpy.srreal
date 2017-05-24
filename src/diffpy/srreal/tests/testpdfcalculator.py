@@ -56,13 +56,12 @@ class TestPDFCalculator(unittest.TestCase):
     def test___call__(self):
         """Check PDFCalculator.__call__()
         """
-        from diffpy.structure import Structure
         r0, g0 = self.pdfcalc(self.tio2rutile, rmin=2)
         self.assertEqual(2.0, r0[0])
         r1, g1 = self.pdfcalc(self.tio2rutile, scale=7)
         self.assertAlmostEqual(7.0, g1[0] / g0[0])
         # check application of spdiameter
-        rutile2 = Structure(self.tio2rutile)
+        rutile2 = self.tio2rutile.copy()
         # work around Structure bug of shared pdffit dictionary
         rutile2.pdffit = dict(self.tio2rutile.pdffit)
         rutile2.pdffit['spdiameter'] = 5.0

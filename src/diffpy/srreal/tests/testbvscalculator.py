@@ -8,7 +8,6 @@ import unittest
 import pickle
 
 from diffpy.srreal.bvscalculator import BVSCalculator
-from diffpy.structure import Structure
 from diffpy.srreal.tests.testutils import loadDiffPyStructure
 
 ##############################################################################
@@ -83,7 +82,7 @@ class TestBVSCalculator(unittest.TestCase):
                 self.bvc.bvrmsdiff, 12)
         bvrmsd0 = self.bvc.bvrmsdiff
         # check mixed occupancy
-        rutilemix = Structure(self.rutile)
+        rutilemix = self.rutile.copy()
         for a in self.rutile:
             rutilemix.addNewAtom(a)
         for a in rutilemix:
@@ -185,7 +184,7 @@ class TestBVSCalculator(unittest.TestCase):
         '''check calculation with defined valences in bvparamtable
         '''
         bvc = self.bvc
-        barerutile = Structure(self.rutile)
+        barerutile = self.rutile.copy()
         for a in barerutile:
             a.element = a.element.rstrip('+-012345678')
         self.assertEqual({"Ti" : 2, "O" : 4}, barerutile.composition)
