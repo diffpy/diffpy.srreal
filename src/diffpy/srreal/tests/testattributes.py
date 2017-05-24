@@ -6,6 +6,7 @@
 
 import unittest
 import weakref
+import gc
 
 from diffpy.srreal.attributes import Attributes
 from diffpy.srreal.pairquantity import PairQuantity
@@ -140,7 +141,6 @@ class TestAttributes(unittest.TestCase):
             return
         a = Attributes()
         wa = weakref.ref(a)
-        self.assertFalse(wa() is None)
         a._registerDoubleAttribute('a1', g, s)
         self.assertFalse('a1' in a.__dict__)
         self.assertFalse(d['g_called'])
@@ -160,7 +160,9 @@ class TestAttributes(unittest.TestCase):
         self.assertEqual(47, a.a1readonly)
         a.a1 = 9
         self.assertEqual(9, a.a1readonly)
+        self.assertFalse(wa() is None)
         del a
+        gc.collect()
         self.assertTrue(wa() is None)
         return
 
