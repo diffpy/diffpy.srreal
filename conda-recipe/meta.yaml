@@ -20,7 +20,7 @@ requirements:
     - python
     - setuptools
     - numpy 1.11.2
-    - libdiffpy >=1.3.3,1.3.*
+    - libdiffpy >=1.3.4,1.3.*
     - pycifrw
     - diffpy.structure
 
@@ -28,7 +28,7 @@ requirements:
     - python
     - setuptools
     - numpy >=1.11.2
-    - libdiffpy >=1.3.3,1.3.*
+    - libdiffpy >=1.3.4,1.3.*
     - pycifrw
     - diffpy.structure
     - pyobjcryst 2.0*
