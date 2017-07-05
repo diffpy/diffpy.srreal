@@ -40,6 +40,22 @@ class TestRoutines(unittest.TestCase):
             self._pool = multiprocessing.Pool(processes=self.ncpu)
         return self._pool
 
+
+    def test_parallel_evaluatortype(self):
+        """check handling of the evaluatortype property
+        """
+        from diffpy.srreal.pdfcalculator import PDFCalculator
+        pdfc = PDFCalculator()
+        self.assertEqual('OPTIMIZED', pdfc.evaluatortype)
+        ppdfc = createParallelCalculator(pdfc, 2, map)
+        self.assertEqual('BASIC', ppdfc.evaluatortype)
+        self.assertEqual('BASIC', pdfc.evaluatortype)
+        ppdfc.evaluatortype = 'BASIC'
+        self.assertRaises(ValueError,
+                          setattr, ppdfc, 'evaluatortype', 'OPTIMIZED')
+        return
+
+
     def test_parallel_pdf(self):
         """check parallel PDFCalculator
         """
@@ -67,6 +83,7 @@ class TestRoutines(unittest.TestCase):
         self.assertTrue(numpy.array_equal(r0a, r2a))
         self.assertTrue(numpy.allclose(g0a, g2a))
         return
+
 
     def test_parallel_bonds(self):
         """check parallel BondCalculator
