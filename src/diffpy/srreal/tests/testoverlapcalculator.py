@@ -9,12 +9,13 @@ import pickle
 import copy
 import numpy
 
-from diffpy.srreal.tests.testutils import TestCaseObjCrystOptional
+from diffpy.srreal.tests.testutils import has_pyobjcryst, _msg_nopyobjcryst
 from diffpy.srreal.tests.testutils import loadDiffPyStructure
 from diffpy.srreal.tests.testutils import loadObjCrystCrystal
 from diffpy.srreal.overlapcalculator import OverlapCalculator
 
-##############################################################################
+# ----------------------------------------------------------------------------
+
 class TestOverlapCalculator(unittest.TestCase):
 
     pool = None
@@ -329,8 +330,10 @@ class TestOverlapCalculator(unittest.TestCase):
 
 # End of class TestOverlapCalculator
 
-##############################################################################
-class TestOverlapCalculatorObjCryst(TestCaseObjCrystOptional):
+# ----------------------------------------------------------------------------
+
+@unittest.skipUnless(has_pyobjcryst, _msg_nopyobjcryst)
+class TestOverlapCalculatorObjCryst(unittest.TestCase):
 
     def setUp(self):
         self.olc = OverlapCalculator()
@@ -456,6 +459,8 @@ class TestOverlapCalculatorObjCryst(TestCaseObjCrystOptional):
         return
 
 # End of class TestOverlapCalculatorObjCryst
+
+# ----------------------------------------------------------------------------
 
 if __name__ == '__main__':
     unittest.main()

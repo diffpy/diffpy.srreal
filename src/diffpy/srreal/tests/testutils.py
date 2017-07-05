@@ -1,12 +1,6 @@
 #!/usr/bin/env python
 
 """Helper routines for running other unit tests.
-
-TestCaseObjCrystOptional -- use this as a TestCase base class that
-    disables unit tests when pyobjcryst is not installed.
-
-TestCasePeriodictableOptional -- use this as a TestCase base class to
-    skip unit tests when periodictable is not installed.
 """
 
 
@@ -16,28 +10,32 @@ import numpy
 from diffpy.srreal.structureconverters import convertObjCrystCrystal
 from diffpy.srreal.tests import logger
 
-# class TestCaseObjCrystOptional
+# Resolve availability of optional packages.
 
+# pyobjcryst
+
+_msg_nopyobjcryst = "No module named 'pyobjcryst'"
 try:
     import pyobjcryst.crystal
-    from unittest import TestCase as TestCaseObjCrystOptional
     convertObjCrystCrystal(pyobjcryst.crystal.Crystal())
+    has_pyobjcryst = True
 except ImportError:
-    TestCaseObjCrystOptional = object
+    has_pyobjcryst = False
     logger.warning('Cannot import pyobjcryst, pyobjcryst tests skipped.')
 except TypeError:
-    TestCaseObjCrystOptional = object
+    has_pyobjcryst = False
     logger.warning('Compiled without ObjCryst, pyobjcryst tests skipped.')
 
-# class TestCasePeriodictableOptional
+# periodictable
 
+_msg_noperiodictable = "No module named 'periodictable'"
 try:
     import periodictable
-    from unittest import TestCase as TestCasePeriodictableOptional
+    has_periodictable = True
     # silence the pyflakes syntax checker
     del periodictable
 except ImportError:
-    TestCasePeriodictableOptional = object
+    has_periodictable = False
     logger.warning('Cannot import periodictable, periodictable tests skipped.')
 
 # helper functions

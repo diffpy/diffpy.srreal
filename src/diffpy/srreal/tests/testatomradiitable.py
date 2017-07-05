@@ -6,11 +6,12 @@
 
 import unittest
 import pickle
-from diffpy.srreal.tests.testutils import TestCasePeriodictableOptional
+from diffpy.srreal.tests.testutils import has_periodictable, _msg_noperiodictable
 from diffpy.srreal.atomradiitable import AtomRadiiTable, CovalentRadiiTable
 from diffpy.srreal.atomradiitable import ConstantRadiiTable
 
-##############################################################################
+# ----------------------------------------------------------------------------
+
 class TestAtomRadiiTable(unittest.TestCase):
 
     def setUp(self):
@@ -108,8 +109,10 @@ class TestAtomRadiiTable(unittest.TestCase):
 
 # End of class TestAtomRadiiTable
 
-##############################################################################
-class TestCovalentRadiiTable(TestCasePeriodictableOptional):
+# ----------------------------------------------------------------------------
+
+@unittest.skipUnless(has_periodictable, _msg_noperiodictable)
+class TestCovalentRadiiTable(unittest.TestCase):
 
     def setUp(self):
         self.rtb = CovalentRadiiTable()
@@ -204,6 +207,8 @@ class TestCovalentRadiiTable(TestCasePeriodictableOptional):
         return
 
 # End of class TestCovalentRadiiTable
+
+# ----------------------------------------------------------------------------
 
 if __name__ == '__main__':
     unittest.main()

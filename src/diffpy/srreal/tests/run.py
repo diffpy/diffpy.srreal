@@ -19,7 +19,6 @@ python -m diffpy.srreal.tests.run
 """
 
 
-
 if __name__ == '__main__':
     import sys
     from diffpy.srreal.tests import test

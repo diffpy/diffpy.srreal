@@ -10,11 +10,11 @@ import numpy
 from diffpy.srreal.sfaverage import SFAverage
 from diffpy.srreal.scatteringfactortable import ScatteringFactorTable
 from diffpy.srreal.tests.testutils import loadDiffPyStructure
-from diffpy.srreal.tests.testutils import TestCaseObjCrystOptional
+from diffpy.srreal.tests.testutils import has_pyobjcryst, _msg_nopyobjcryst
 from diffpy.srreal.tests.testutils import loadObjCrystCrystal
 
+# ----------------------------------------------------------------------------
 
-##############################################################################
 class TestSFAverage(unittest.TestCase):
 
     def setUp(self):
@@ -76,8 +76,10 @@ class TestSFAverage(unittest.TestCase):
 
 # End of class TestSFAverage
 
-##############################################################################
-class TestSFAverageObjCryst(TestCaseObjCrystOptional):
+# ----------------------------------------------------------------------------
+
+@unittest.skipUnless(has_pyobjcryst, _msg_nopyobjcryst)
+class TestSFAverageObjCryst(unittest.TestCase):
 
     def setUp(self):
         self.sftx = ScatteringFactorTable.createByType('X')
@@ -101,6 +103,8 @@ class TestSFAverageObjCryst(TestCaseObjCrystOptional):
         self.assertEqual(6, sfavg.count)
 
 # End of class TestSFAverageObjCryst
+
+# ----------------------------------------------------------------------------
 
 if __name__ == '__main__':
     unittest.main()

@@ -10,7 +10,7 @@ import unittest
 import numpy
 from diffpy.srreal.pdfcalculator import PDFCalculator
 
-from diffpy.srreal.tests.testutils import TestCaseObjCrystOptional
+from diffpy.srreal.tests.testutils import has_pyobjcryst, _msg_nopyobjcryst
 from diffpy.srreal.tests.testutils import loadObjCrystCrystal
 from diffpy.srreal.tests.testutils import datafile
 from diffpy.srreal.tests.testpdfcalculator import _maxNormDiff
@@ -54,9 +54,10 @@ def _makePDFCalculator(crst, cfgdict):
         setattr(pdfc, k, v)
     return pdfc
 
+# ----------------------------------------------------------------------------
 
-##############################################################################
-class TestPDFCalcObjcryst(TestCaseObjCrystOptional):
+@unittest.skipUnless(has_pyobjcryst, _msg_nopyobjcryst)
+class TestPDFCalcObjcryst(unittest.TestCase):
 
     def _comparePDFs(self, nickname, pdfbasename, cifbasename):
         def setself(**kwtoset):
@@ -100,9 +101,11 @@ class TestPDFCalcObjcryst(TestCaseObjCrystOptional):
         self.assertTrue(self.rutileaniso_mxnd < 0.057)
         return
 
-
 # End of class TestPDFCalcObjcryst
 
+# ----------------------------------------------------------------------------
 
 if __name__ == '__main__':
     unittest.main()
+
+# End of file

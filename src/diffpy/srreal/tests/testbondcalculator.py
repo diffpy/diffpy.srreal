@@ -8,12 +8,13 @@ import unittest
 import pickle
 import numpy
 
-from diffpy.srreal.tests.testutils import TestCaseObjCrystOptional
+from diffpy.srreal.tests.testutils import has_pyobjcryst, _msg_nopyobjcryst
 from diffpy.srreal.tests.testutils import loadDiffPyStructure
 from diffpy.srreal.tests.testutils import loadObjCrystCrystal
 from diffpy.srreal.bondcalculator import BondCalculator
 
-##############################################################################
+# ----------------------------------------------------------------------------
+
 class TestBondCalculator(unittest.TestCase):
 
     def setUp(self):
@@ -267,9 +268,10 @@ class TestBondCalculator(unittest.TestCase):
 
 # End of class TestBondCalculator
 
+# ----------------------------------------------------------------------------
 
-##############################################################################
-class TestBondCalculatorObjCryst(TestCaseObjCrystOptional):
+@unittest.skipUnless(has_pyobjcryst, _msg_nopyobjcryst)
+class TestBondCalculatorObjCryst(unittest.TestCase):
 
     def setUp(self):
         self.bdc = BondCalculator()
@@ -372,6 +374,9 @@ class TestBondCalculatorObjCryst(TestCaseObjCrystOptional):
         self.assertEqual(12, len(bdc(self.nickel)))
         return
 
+# End of class TestBondCalculatorObjCryst
+
+# ----------------------------------------------------------------------------
 
 if __name__ == '__main__':
     unittest.main()

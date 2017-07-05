@@ -9,7 +9,7 @@ import pickle
 import numpy
 from diffpy.Structure import Structure
 from diffpy.srreal.pdfcalculator import PDFCalculator
-from diffpy.srreal.tests.testutils import TestCaseObjCrystOptional
+from diffpy.srreal.tests.testutils import has_pyobjcryst, _msg_nopyobjcryst
 from diffpy.srreal.tests.testutils import loadObjCrystCrystal
 from diffpy.srreal.tests.testutils import loadDiffPyStructure
 from diffpy.srreal.structureadapter import (
@@ -250,7 +250,8 @@ class TestNoSymmetry(unittest.TestCase):
 
 # ----------------------------------------------------------------------------
 
-class TestPyObjCrystAdapter(TestCaseObjCrystOptional):
+@unittest.skipUnless(has_pyobjcryst, _msg_nopyobjcryst)
+class TestPyObjCrystAdapter(unittest.TestCase):
 
     def setUp(self):
         rutile_crystal = loadObjCrystCrystal('TiO2_rutile-fit.cif')
@@ -285,7 +286,7 @@ class TestPyObjCrystAdapter(TestCaseObjCrystOptional):
         self.assertTrue(numpy.array_equal(g0, g1))
         return
 
-# End of class TestNoSymmetry
+# End of class TestPyObjCrystAdapter
 
 # ----------------------------------------------------------------------------
 
