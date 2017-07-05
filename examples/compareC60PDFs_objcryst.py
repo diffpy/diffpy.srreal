@@ -4,7 +4,7 @@
 The C60 molecule are stored in a pyobjcryst object.
 """
 
-from matplotlib.pyplot import plot, show, clf, draw
+from matplotlib.pyplot import plot, show, clf
 from diffpy.structure import Structure
 from pyobjcryst.crystal import Crystal
 from pyobjcryst.molecule import Molecule

@@ -6,7 +6,7 @@ The C60 molecule is held in a diffpy Structure object.
 
 import sys
 import os
-from matplotlib.pyplot import plot, show, clf, draw
+from matplotlib.pyplot import plot, show, clf
 from diffpy.structure import Structure
 from diffpy.srreal.pdfcalculator import PDFCalculator, DebyePDFCalculator
 

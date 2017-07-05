@@ -71,7 +71,7 @@ print("Calculation time on %i CPUs: %g" % (ncpu, t1))
 print("Time ratio: %g" % (t0 / t1))
 
 # plot both results and the difference curve
-from matplotlib.pyplot import plot, show, clf, draw
+from matplotlib.pyplot import plot, show, clf
 clf()
 gd = g0 - g1
 plot(r0, g0, r1, g1, r0, gd - 3)
