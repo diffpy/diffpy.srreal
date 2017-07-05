@@ -35,6 +35,9 @@ def createParallelCalculator(pqobj, ncpu, pmap):
     ncpu     -- number of parallel jobs
     pmap     -- a parallel map function used to submit job to workers
 
+    The ``pqobj.evaluatortype`` is reset to 'BASIC' because other
+    evaluator types are not supported within parallel calculations.
+
     Return a proxy calculator instance that has the same interface,
     but executes the calculation in parallel split among ncpu jobs.
     '''
@@ -63,6 +66,8 @@ def createParallelCalculator(pqobj, ncpu, pmap):
             object.__setattr__(self, 'pqobj', pqobj)
             object.__setattr__(self, 'ncpu', ncpu)
             object.__setattr__(self, 'pmap', pmap)
+            # parallel calculations support only the BASIC evaluation
+            self.pqobj.evaluatortype = 'BASIC'
             return
 
 
@@ -116,6 +121,23 @@ def createParallelCalculator(pqobj, ncpu, pmap):
                 restore_eval()
             return rv
 
+
+        @property
+        def evaluatortype(self):
+            """str : Type of evaluation procedure.
+
+            Parallel calculations allow only the 'BASIC' type.
+            """
+            return self.pqobj.evaluatortype
+
+        @evaluatortype.setter
+        def evaluatortype(self, value):
+            if value != "BASIC":
+                emsg = "Parallel calculations require 'BASIC' evaluatortype."
+                raise ValueError(emsg)
+            self.pqobj.evaluatortype = value
+            return
+
     # class ParallelPairQuantity
 
     # Create proxy method and properties to the wrapped PairQuantity
@@ -167,8 +189,6 @@ def _parallelData(kwd):
     '''Helper for calculating and fetching raw results from a worker node.
     '''
     pqobj = kwd['pqobj']
-    if pqobj.evaluatortype == 'OPTIMIZED':
-        pqobj = copy.copy(pqobj)
     pqobj._setupParallelRun(kwd['cpuindex'], kwd['ncpu'])
     pqobj.eval()
     return pqobj._getParallelData()
