@@ -21,7 +21,7 @@ Routines:
 
 createStructureAdapter -- create StructureAdapter from a Python object
 nometa       -- create StructureAdapter with disabled _customPQConfig method
-                this prevents copying of diffpy.Structure pdffit metadata
+                this prevents copying of diffpy.structure pdffit metadata
                 to PDFCalculator object
 nosymmetry   -- create StructureAdapter with disabled symmetry expansion.
 

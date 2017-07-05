@@ -23,11 +23,13 @@ from diffpy.srreal.structureadapter import RegisterStructureAdapter
 from diffpy.srreal.srreal_ext import AtomicStructureAdapter
 from diffpy.srreal.srreal_ext import PeriodicStructureAdapter
 
-# Converter for Structure class from diffpy.Structure ------------------------
+# Converter for Structure class from diffpy.structure ------------------------
 
+# TODO prune when Python 2 support is dropped.
 @RegisterStructureAdapter('diffpy.Structure.structure.Structure')
+@RegisterStructureAdapter('diffpy.structure.structure.Structure')
 def convertDiffPyStructure(stru):
-    'Adapt Structure class from diffpy.Structure package.'
+    'Adapt Structure class from diffpy.structure package.'
     haslattice = ((1, 1, 1, 90, 90, 90) != stru.lattice.abcABG())
     isperiodic = haslattice
     hasmeta = _DiffPyStructureMetadata.hasMetadata(stru)
@@ -55,7 +57,7 @@ from diffpy.srreal.srreal_ext import convertObjCrystCrystal
 RegisterStructureAdapter(
         'pyobjcryst._pyobjcryst.Crystal', convertObjCrystCrystal)
 
-# Adapter classes and helpers for diffpy.Structure class ---------------------
+# Adapter classes and helpers for diffpy.structure class ---------------------
 
 class _DiffPyStructureMetadata(object):
 
@@ -100,9 +102,9 @@ class _DiffPyStructureMetadata(object):
 
 
     def _fetchMetadata(self, stru):
-        """Copy data from the pdffit attribute of diffpy.Structure object
+        """Copy data from the pdffit attribute of diffpy Structure object
 
-        stru -- instance of Structure class from diffpy.Structure
+        stru -- instance of Structure class from diffpy.structure
 
         No return value.
         """
@@ -127,10 +129,10 @@ class DiffPyStructurePeriodicAdapter(
 
 
 def _fetchDiffPyStructureData(adpt, stru):
-    """Copy structure data from diffpy.Structure object to this Adapter.
+    """Copy structure data from diffpy Structure object to this Adapter.
 
     adpt -- instance of AtomicStructureAdapter or PeriodicStructureAdapter
-    stru -- instance of Structure class from diffpy.Structure
+    stru -- instance of Structure class from diffpy.structure
 
     No return value.
     """

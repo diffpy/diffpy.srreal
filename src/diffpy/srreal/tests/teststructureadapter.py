@@ -7,7 +7,6 @@
 import unittest
 import pickle
 import numpy
-from diffpy.Structure import Structure
 from diffpy.srreal.pdfcalculator import PDFCalculator
 from diffpy.srreal.tests.testutils import has_pyobjcryst, _msg_nopyobjcryst
 from diffpy.srreal.tests.testutils import loadObjCrystCrystal
@@ -42,7 +41,7 @@ class TestRoutines(unittest.TestCase):
         return
 
     def test_createStructureAdapterTypes(self):
-        '''Check types returned by conversion from diffpy.Structure.
+        '''Check types returned by conversion from diffpy.structure.
         '''
         from diffpy.srreal.structureconverters import (
             DiffPyStructureAtomicAdapter,
@@ -149,7 +148,7 @@ class TestNoMeta(unittest.TestCase):
         '''check NoMetaStructureAdapter.
         '''
         r0, g0 = PDFCalculator()(self.nickel)
-        ni1 = Structure(self.nickel)
+        ni1 = self.nickel.copy()
         ni1.pdffit['scale'] = 2.0
         r1, g1 = PDFCalculator()(ni1)
         self.assertTrue(numpy.array_equal(r0, r1))
@@ -159,7 +158,7 @@ class TestNoMeta(unittest.TestCase):
         r1nm, g1nm = PDFCalculator()(ni1nm)
         self.assertTrue(numpy.array_equal(r0, r1nm))
         self.assertTrue(numpy.allclose(g0, g1nm))
-        ni2 = Structure(self.nickel)
+        ni2 = self.nickel.copy()
         ni2.pdffit['delta2'] = 4
         r2, g2 = PDFCalculator()(ni2)
         r2, g2nm = PDFCalculator()(nometa(ni2))
@@ -176,7 +175,7 @@ class TestNoMeta(unittest.TestCase):
         '''check pickling of the NoMetaStructureAdapter wrapper.
         '''
         r0, g0 = PDFCalculator()(self.nickel)
-        ni1 = Structure(self.nickel)
+        ni1 = self.nickel.copy()
         ni1.pdffit['scale'] = 2.0
         ni1nm = pickle.loads(pickle.dumps(nometa(ni1)))
         self.assertFalse(ni1nm is ni1)

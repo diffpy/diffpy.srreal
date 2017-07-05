@@ -39,12 +39,12 @@ from diffpy.srreal.wraputils import _pickle_getstate, _pickle_setstate
 # pickling support
 
 def _peakprofile_create(s):
-    from diffpy.srreal.srreal_ext import _PeakProfile_fromstring
-    return _PeakProfile_fromstring(s)
+    from diffpy.srreal.srreal_ext import _PeakProfile_frombytes
+    return _PeakProfile_frombytes(s)
 
 def _peakprofile_reduce(self):
-    from diffpy.srreal.srreal_ext import _PeakProfile_tostring
-    args = (_PeakProfile_tostring(self),)
+    from diffpy.srreal.srreal_ext import _PeakProfile_tobytes
+    args = (_PeakProfile_tobytes(self),)
     rv = (_peakprofile_create, args)
     return rv
 

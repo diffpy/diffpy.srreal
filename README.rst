@@ -14,7 +14,7 @@ function (PDF), bond valence sums (BVS), atom overlaps for a hard-sphere
 model, bond distances and directions up to specified maximum distance.   The
 atomic structure models are represented with internal classes as non-periodic,
 periodic or structures with space group symmetries.  The package provides
-implicit adapters from diffpy.Structure class or from Crystal or Molecule
+implicit adapters from diffpy.structure classes or from Crystal or Molecule
 objects from pyobjcryst.  Adapters can be easily defined for any other
 structure representations in Python allowing their direct use with the
 calculators.  Calculators support two evaluation models - BASIC, which
@@ -46,18 +46,18 @@ http://diffpy.github.io/diffpy.srreal.
 REQUIREMENTS
 ------------------------------------------------------------------------
 
-The diffpy.srreal requires Python 2.7, C++ compiler and
-the following software:
+The diffpy.srreal package requires Python 3.6, 3.5, 3.4 or 2.7,
+C++ compiler and the following software:
 
 * ``setuptools`` - tools for installing Python packages
 * ``NumPy`` - library for scientific computing with Python
-* ``scons`` - software constructions tool (1.0 or later)
 * ``python-dev`` - header files for interfacing Python with C
 * ``libboost-all-dev`` - Boost C++ libraries and development files (1.43 or later)
 * ``libdiffpy`` - C++ library for PDF, bond valence sum and other pair
   quantity calculators https://github.com/diffpy/libdiffpy
-* ``diffpy.Structure`` - simple storage and manipulation of atomic structures
-  https://github.com/diffpy/diffpy.Structure
+* ``diffpy.structure`` - simple storage and manipulation of atomic structures
+  https://github.com/diffpy/diffpy.structure
+* ``scons`` - software construction tool (optional)
 
 Optional software:
 
@@ -103,13 +103,14 @@ You may need to use ``sudo`` with system Python so the process is
 allowed to copy files to the system directories.  If administrator (root)
 access is not available, see the output from
 ``python setup.py install --help`` for options to install to
-a user-writable location.  The installation integrity can be verified by
-changing to the HOME directory and running ::
+a user-writable location.  The installation integrity can be
+verified by executing the included tests with ::
 
    python -m diffpy.srreal.tests.run
 
 An alternative way of installing diffpy.srreal is to use the SCons tool,
-which can speed up the process by compiling the C++ files in parallel (-j4) ::
+which can speed up the process by compiling C++ files in several
+parallel jobs (-j4) ::
 
    sudo scons -j4 install
 

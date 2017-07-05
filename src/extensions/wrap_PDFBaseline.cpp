@@ -133,13 +133,13 @@ object callnparray(const PDFBaseline* obj, object& x)
 }
 
 
-std::string baseline_tostring(PDFBaselinePtr obj)
+python::object baseline_tobytes(PDFBaselinePtr obj)
 {
-    return diffpy::serialization_tostring(obj);
+    return serialization_tobytes(obj);
 }
 
 
-PDFBaselinePtr baseline_fromstring(std::string content)
+PDFBaselinePtr baseline_frombytes(const std::string& content)
 {
     PDFBaselinePtr rv;
     diffpy::serialization_fromstring(rv, content);
@@ -174,8 +174,8 @@ void wrap_PDFBaseline()
             "LinearBaseline", doc_ZeroBaseline);
 
     // pickling support functions
-    def("_PDFBaseline_tostring", baseline_tostring);
-    def("_PDFBaseline_fromstring", baseline_fromstring);
+    def("_PDFBaseline_tobytes", baseline_tobytes);
+    def("_PDFBaseline_frombytes", baseline_frombytes);
 
 }
 

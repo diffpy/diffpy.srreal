@@ -8,12 +8,10 @@ os:
 
 env:
   - MYUSEMC=true MYPYTHON_VERSION=2.7
+  - MYUSEMC=true MYPYTHON_VERSION=3.4
+  - MYUSEMC=true MYPYTHON_VERSION=3.5
+  - MYUSEMC=true MYPYTHON_VERSION=3.6
   - MYUSEMC=false
-
-matrix:
-  exclude:
-    - os: osx
-      env: MYUSEMC=false
 
 git:
   depth: 999999
@@ -26,10 +24,17 @@ before_install:
   - MYNAME=diffpy.srreal
   - umask 022
   - git fetch origin --tags
+  - MYPYTHON=python; MYPIP=pip
+  - NOSYS=true; NOAPT=true; NOBREW=true; NOMC=true
   - if ${MYUSEMC}; then
-        NOAPT=true; NOMC=false;
-    else
-        NOAPT=false; NOMC=true;
+        NOMC=false;
+    elif [[ ${TRAVIS_OS_NAME} == linux ]]; then
+        NOAPT=false; NOSYS=false;
+        MYPIPFLAGS="--user";
+    elif [[ ${TRAVIS_OS_NAME} == osx ]]; then
+        NOBREW=false; NOSYS=false;
+        MYPYTHON=python3;
+        MYPIP=pip3;
         MYPIPFLAGS="--user";
     fi
   - MYMCREPO=https://repo.continuum.io/miniconda
@@ -54,9 +59,14 @@ before_install:
   - $NOMC || popd
   - $NOMC || source ~/mc/bin/activate root
   - $NOMC || conda update --yes conda
-  - $NOMC || conda install --yes conda-build jinja2
+  - $NOMC || conda install --yes conda-build jinja2 scons numpy
+  # Make scons available globally.
+  - $NOMC || mkdir -p ~/bin
+  - $NOMC || cp ~/mc/bin/scons ~/bin/
   - $NOMC || conda create --name=testenv --yes python=${MYPYTHON_VERSION} coverage
   - $NOMC || conda config --add channels diffpy
+  # FIXME - keep just the "diffpy" channel for public release.
+  - $NOMC || conda config --add channels diffpy/channel/dev
 
   - $NOAPT || test "${TRAVIS_OS_NAME}" = "linux" || exit $?
   - $NOAPT || sudo apt-get update -qq
@@ -64,13 +74,21 @@ before_install:
                   libgsl0-dev libboost-all-dev python-dev
                   python-setuptools python-numpy python-pyparsing
                   python-lxml python-pip build-essential scons
-  - $NOAPT || devutils/makesdist
-  - $NOAPT || MYTARBUNDLE="$(ls -t "${PWD}"/dist/*.tar.gz | head -1)"
-  - $NOAPT || pushd ~/pkgs
-  - $NOAPT || git clone https://github.com/diffpy/libObjCryst.git
-  - $NOAPT || git clone https://github.com/diffpy/libdiffpy.git
-  - $NOAPT || popd
 
+  - $NOBREW || test "${TRAVIS_OS_NAME}" = "osx" || exit $?
+  - $NOBREW || brew update
+  - $NOBREW || brew install gsl
+  - $NOBREW || brew install scons
+  - $NOBREW || brew install python3
+  - $NOBREW || brew install boost-python --with-python3
+  - $NOBREW || brew install numpy --without-python --with-python3
+
+  - $NOSYS || devutils/makesdist
+  - $NOSYS || MYTARBUNDLE="$(ls -t "${PWD}"/dist/*.tar.gz | head -1)"
+  - $NOSYS || pushd ~/pkgs
+  - $NOSYS || git clone https://github.com/diffpy/libObjCryst.git
+  - $NOSYS || git clone https://github.com/diffpy/libdiffpy.git
+  - $NOSYS || popd
 
 install:
   - $NOMC || conda build --python=${MYPYTHON_VERSION} --dirty conda-recipe
@@ -80,25 +98,40 @@ install:
   - $NOMC || source activate testenv
   - $NOMC || conda install --yes --use-local --file=/tmp/mypackage.txt
 
-  - $NOAPT || pip install $MYPIPFLAGS coverage
-  - $NOAPT || pip install $MYPIPFLAGS periodictable
-  - $NOAPT || easy_install --user "pycifrw==4.2.1"
-  - $NOAPT || easy_install --user diffpy.Structure
+  - $NOAPT || $MYPIP install $MYPIPFLAGS coverage
+  - $NOAPT || $MYPIP install $MYPIPFLAGS periodictable
+  - $NOAPT || $MYPIP install $MYPIPFLAGS "pycifrw==4.2.1"
+  - $NOAPT || $MYPIP install $MYPIPFLAGS diffpy.structure
   - $NOAPT || sudo scons -C ~/pkgs/libObjCryst install
-  - $NOAPT || easy_install --user pyobjcryst
+  - $NOAPT || $MYPIP install $MYPIPFLAGS pyobjcryst
   - $NOAPT || sudo scons -C ~/pkgs/libdiffpy install
-  - $NOAPT || easy_install --user "${MYTARBUNDLE}"
+  - $NOAPT || $MYPIP install $MYPIPFLAGS "${MYTARBUNDLE}"
+
+  - $NOBREW || $MYPIP install $MYPIPFLAGS coverage
+  - $NOBREW || $MYPIP install $MYPIPFLAGS periodictable
+  - $NOBREW || $MYPIP install $MYPIPFLAGS pycifrw
+  # install diffpy.structure from the python3 development branch.
+  # TODO - replace with PyPI version later.
+  - $NOBREW || $MYPIP install $MYPIPFLAGS https://github.com/diffpy/diffpy.structure/archive/python3.tar.gz
+  - $NOBREW || scons -C ~/pkgs/libObjCryst install
+  - $NOBREW || $MYPIP install $MYPIPFLAGS pyobjcryst
+  - $NOBREW || scons -C ~/pkgs/libdiffpy install
+  - $NOBREW || $MYPIP install $MYPIPFLAGS "${MYTARBUNDLE}"
 
   - cd ${MYRUNDIR}
-  - MYGIT_REV=$(python -c "import ${MYNAME}.version as v; print(v.__gitsha__)")
+  - MYGIT_REV=$($MYPYTHON -c "import ${MYNAME}.version as v; print(v.__gitsha__)")
   - if [[ "${TRAVIS_COMMIT}" != "${MYGIT_REV}" ]]; then
         echo "Version mismatch ${TRAVIS_COMMIT} vs ${MYGIT_REV}.";
         exit 1;
     fi
 
+before_script:
+  - $NOBREW || USER_BASE="$(python3 -c 'import site; print(site.USER_BASE)')"
+  - $NOBREW || PATH="${USER_BASE}/bin:${PATH}"
+
 script:
   - coverage run --source ${MYNAME} -m ${MYNAME}.tests.run
 
 after_success:
-  - pip install $MYPIPFLAGS codecov
+  - $MYPIP install $MYPIPFLAGS codecov
   - codecov

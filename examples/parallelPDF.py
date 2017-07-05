@@ -11,7 +11,7 @@ import sys
 import optparse
 import time
 import multiprocessing
-from diffpy.Structure import Structure
+from diffpy.structure import Structure
 from diffpy.srreal.pdfcalculator import PDFCalculator
 from diffpy.srreal.parallel import createParallelCalculator
 
@@ -30,14 +30,14 @@ opts, args = parser.parse_args(sys.argv[1:])
 # load menthol structure and make sure Uiso values are non-zero
 if opts.pyobjcryst:
     # use pyobjcryst if requested by the user
-    from pyobjcryst.crystal import CreateCrystalFromCIF
+    from pyobjcryst import loadCrystal
     from numpy import pi
-    menthol = CreateCrystalFromCIF(open(mentholcif))
+    menthol = loadCrystal(mentholcif)
     for sc in menthol.GetScatteringComponentList():
         sp = sc.mpScattPow
         sp.Biso = sp.Biso or 8 * pi**2 * Uisodefault
 else:
-    # or use diffpy.Structure by default
+    # or use diffpy.structure by default
     menthol = Structure(filename=mentholcif)
     for a in menthol:
         a.Uisoequiv = a.Uisoequiv or Uisodefault

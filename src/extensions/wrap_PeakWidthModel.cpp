@@ -31,6 +31,7 @@
 #include <diffpy/serialization.hpp>
 
 #include "srreal_converters.hpp"
+#include "srreal_pickling.hpp"
 #include "srreal_registry.hpp"
 
 namespace srrealmodule {
@@ -203,13 +204,13 @@ class PeakWidthModelWrap :
 };  // class PeakWidthModelWrap
 
 
-std::string peakwidthmodel_tostring(PeakWidthModelPtr obj)
+python::object peakwidthmodel_tobytes(PeakWidthModelPtr obj)
 {
-    return diffpy::serialization_tostring(obj);
+    return serialization_tobytes(obj);
 }
 
 
-PeakWidthModelPtr peakwidthmodel_fromstring(const std::string& content)
+PeakWidthModelPtr peakwidthmodel_frombytes(const std::string& content)
 {
     PeakWidthModelPtr rv;
     diffpy::serialization_fromstring(rv, content);
@@ -268,8 +269,8 @@ void wrap_PeakWidthModel()
         ;
 
     // pickling support functions
-    def("_PeakWidthModel_tostring", peakwidthmodel_tostring);
-    def("_PeakWidthModel_fromstring", peakwidthmodel_fromstring);
+    def("_PeakWidthModel_tobytes", peakwidthmodel_tobytes);
+    def("_PeakWidthModel_frombytes", peakwidthmodel_frombytes);
 
     class_<PeakWidthModelOwner>("PeakWidthModelOwner", doc_PeakWidthModelOwner)
         .add_property("peakwidthmodel",

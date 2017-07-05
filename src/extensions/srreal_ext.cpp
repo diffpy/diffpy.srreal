@@ -18,6 +18,9 @@
 
 #include <boost/python/module.hpp>
 #include <boost/python/import.hpp>
+#include <boost/python/scope.hpp>
+#include <boost/python/extract.hpp>
+#include <boost/python/dict.hpp>
 #include "srreal_numpy_symbol.hpp"
 #include <numpy/arrayobject.h>
 
@@ -91,9 +94,14 @@ BOOST_PYTHON_MODULE(srreal_ext)
     // load Python modules that tweak the wrapped classes
     using boost::python::object;
     using boost::python::import;
+    using boost::python::scope;
+    using boost::python::extract;
+    using boost::python::dict;
     object srreal = import("diffpy.srreal");
     if (!PyObject_HasAttrString(srreal.ptr(), "_final_imports"))
     {
+        dict sysmods = extract<dict>(import("sys").attr("modules"));
+        sysmods.setdefault("diffpy.srreal.srreal_ext", scope());
         object import_now =
             import("diffpy.srreal._final_imports").attr("import_now");
         import_now();

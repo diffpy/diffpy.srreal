@@ -4,11 +4,20 @@
 """
 
 
+import sys
 import copy
 import numpy
 
 from diffpy.srreal.structureconverters import convertObjCrystCrystal
 from diffpy.srreal.tests import logger
+
+# Handle renamed diffpy.structure module by importing it to a common name.
+# TODO simplify when Python 2 support is dropped.
+
+if sys.version_info[0] >= 3:
+    import diffpy.structure as mod_structure
+else:
+    import diffpy.Structure as mod_structure
 
 # Resolve availability of optional packages.
 
@@ -47,16 +56,15 @@ def datafile(filename):
 
 
 def loadObjCrystCrystal(filename):
-    from pyobjcryst.crystal import CreateCrystalFromCIF
+    from pyobjcryst import loadCrystal
     fullpath = datafile(filename)
-    crst = CreateCrystalFromCIF(open(fullpath))
+    crst = loadCrystal(fullpath)
     return crst
 
 
 def loadDiffPyStructure(filename):
-    from diffpy.Structure import Structure
     fullpath = datafile(filename)
-    stru = Structure(filename=fullpath)
+    stru = mod_structure.loadStructure(fullpath)
     return stru
 
 # helper class for testing overloading of StructureAdapter

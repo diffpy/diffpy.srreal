@@ -138,14 +138,13 @@ versiondata = getversioncfg()
 setup_args = dict(
     name = "diffpy.srreal",
     version = versiondata.get('DEFAULT', 'version'),
-    namespace_packages = ['diffpy'],
-    packages = find_packages('src'),
+    packages = find_packages(os.path.join(MYDIR, 'src')),
     package_dir = {'' : 'src'},
     test_suite = 'diffpy.srreal.tests',
     include_package_data = True,
     ext_modules = [],
     install_requires = [
-        'diffpy.Structure',
+        'diffpy.structure',
     ],
     zip_safe = False,
 
@@ -172,6 +171,9 @@ setup_args = dict(
         'Operating System :: Unix',
         'Programming Language :: C++',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Scientific/Engineering :: Chemistry',
         'Topic :: Scientific/Engineering :: Physics',
         'Topic :: Software Development :: Libraries',

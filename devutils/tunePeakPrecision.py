@@ -27,7 +27,7 @@ import time
 
 import numpy
 
-from diffpy.Structure import Structure
+from diffpy.structure import Structure
 from diffpy.srreal.pdf_ext import PDFCalculator
 import diffpy.pdffit2
 # make PdfFit silent

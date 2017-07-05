@@ -189,13 +189,13 @@ class PeakProfileWrap :
 
 };  // class PeakProfileWrap
 
-std::string peakprofile_tostring(PeakProfilePtr obj)
+python::object peakprofile_tobytes(PeakProfilePtr obj)
 {
-    return diffpy::serialization_tostring(obj);
+    return serialization_tobytes(obj);
 }
 
 
-PeakProfilePtr peakprofile_fromstring(const std::string& content)
+PeakProfilePtr peakprofile_frombytes(const std::string& content)
 {
     PeakProfilePtr rv;
     diffpy::serialization_fromstring(rv, content);
@@ -241,8 +241,8 @@ void wrap_PeakProfile()
         ;
 
     // pickling support functions
-    def("_PeakProfile_tostring", peakprofile_tostring);
-    def("_PeakProfile_fromstring", peakprofile_fromstring);
+    def("_PeakProfile_tobytes", peakprofile_tobytes);
+    def("_PeakProfile_frombytes", peakprofile_frombytes);
 
 }
 

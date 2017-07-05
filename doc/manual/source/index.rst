@@ -19,7 +19,7 @@ function (PDF), bond valence sums (BVS), atom overlaps for a hard-sphere
 model, bond distances and directions up to specified maximum distance.   The
 atomic structure models are represented with internal classes as non-periodic,
 periodic or structures with space group symmetries.  The package provides
-implicit adapters from diffpy.Structure class or from Crystal or Molecule
+implicit adapters from diffpy.structure classes or from Crystal or Molecule
 objects from pyobjcryst.  Adapters can be easily defined for any other
 structure representations in Python allowing their direct use with the
 calculators.  Calculators support two evaluation models - BASIC, which

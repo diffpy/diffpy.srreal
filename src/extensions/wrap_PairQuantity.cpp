@@ -42,6 +42,41 @@
 
 #include <diffpy/srreal/PairQuantity.hpp>
 
+namespace boost {
+namespace python {
+
+struct make_pybytes
+{
+    PyObject* operator()(const std::string& s) const
+    {
+        std::string::const_pointer pfirst = s.empty() ? NULL : &(s[0]);
+        PyObject* rv = PyBytes_FromStringAndSize(pfirst, s.size());
+        return rv;
+    }
+
+
+    const PyTypeObject* get_pytype() const
+    {
+        return &PyBytes_Type;
+    }
+};
+
+
+struct copy_string_to_pybytes
+{
+    template <typename T>
+    struct apply
+    {
+        // Fail if this result conversion is used for function
+        // that does not return std::string.
+        BOOST_MPL_ASSERT(( is_same<T, std::string> ));
+        typedef make_pybytes type;
+    };
+};
+
+}   // namespace python
+}   // namespace boost
+
 namespace srrealmodule {
 namespace nswrap_PairQuantity {
 
@@ -754,6 +789,7 @@ void wrap_PairQuantity()
                 (python::arg("pdata"), python::arg("ncpu")),
                 doc_BasePairQuantity__mergeParallelData)
         .def("_getParallelData", &PairQuantity::getParallelData,
+                return_value_policy<copy_string_to_pybytes>(),
                 doc_BasePairQuantity__getParallelData)
         .def("setStructure", &PairQuantity::setStructure<object>,
                 python::arg("stru"),
@@ -807,6 +843,7 @@ void wrap_PairQuantity()
         .def("_getParallelData",
                 &PairQuantityExposed::getParallelData,
                 &PairQuantityWrap::default_getParallelData,
+                return_value_policy<copy_string_to_pybytes>(),
                 doc_PairQuantity__getParallelData)
         .def("_resizeValue",
                 &PairQuantityExposed::resizeValue,

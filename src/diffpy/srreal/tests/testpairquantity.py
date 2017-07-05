@@ -5,8 +5,10 @@
 
 import unittest
 import pickle
+
 from diffpy.srreal.pairquantity import PairQuantity
 from diffpy.srreal.pdfcalculator import PDFCalculator
+from diffpy.srreal.tests.testutils import mod_structure
 
 
 ##############################################################################
@@ -41,7 +43,8 @@ class TestPairQuantity(unittest.TestCase):
     def test_setStructure(self):
         """check PairQuantity.setStructure()
         """
-        from diffpy.Structure import Structure, Atom
+        Structure = mod_structure.Structure
+        Atom = mod_structure.Atom
         from diffpy.srreal.structureadapter import EMPTY
         stru = Structure([Atom("Ar", [0.1, 0.2, 0.3])])
         self.pq.setStructure(stru)
@@ -201,7 +204,8 @@ class PQCounter(PQDerived):
 
 def carbonzchain(n):
     "Helper function that returns a z-chain of Carbon atoms."
-    from diffpy.Structure import Structure, Atom
+    Structure = mod_structure.Structure
+    Atom = mod_structure.Atom
     rv = Structure([Atom('C', [0, 0, z]) for z in range(n)])
     return rv
 
