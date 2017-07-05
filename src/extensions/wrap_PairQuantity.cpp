@@ -109,10 +109,12 @@ No return value.\n\
 const char* doc_BasePairQuantity_evaluatortype = "\
 String type of preferred evaluation procedure.\n\
 \n\
-Possible values are 'BASIC' and 'OPTIMIZED'.  The value is always\n\
-calculated from scratch when 'BASIC'.  The 'OPTIMIZED' evaluation\n\
+Possible values are 'BASIC', 'OPTIMIZED', and 'CHECK'.  The value is\n\
+always calculated from scratch when 'BASIC'.  The 'OPTIMIZED' evaluation\n\
 updates the existing results by recalculating only the contributions\n\
-from changed atoms.\n\
+from changed atoms.  The 'CHECK' evaluation verifies that 'OPTIMIZED'\n\
+and 'BASIC' results are equal.  It is intended only for debugging\n\
+purposes.\n\
 \n\
 See also evaluatortypeused.\n\
 ";
@@ -120,8 +122,8 @@ See also evaluatortypeused.\n\
 const char* doc_BasePairQuantity_evaluatortypeused = "\
 String type of evaluation procedure used in the last calculation.\n\
 \n\
-Possible values are 'BASIC', 'OPTIMIZED', and 'NONE' for calculator\n\
-that has not been used yet.\n\
+Possible values are 'BASIC', 'OPTIMIZED', 'CHECK', and 'NONE'\n\
+when calculator that has not been used yet.\n\
 ";
 
 const char* doc_BasePairQuantity_maskAllPairs = "\
