@@ -100,6 +100,7 @@ install:
 
   - $NOAPT || $MYPIP install $MYPIPFLAGS coverage
   - $NOAPT || $MYPIP install $MYPIPFLAGS periodictable
+  # TODO - remove after fixup release of PyCifRW following 4.3.
   - $NOAPT || $MYPIP install $MYPIPFLAGS "pycifrw==4.2.1"
   - $NOAPT || $MYPIP install $MYPIPFLAGS diffpy.structure
   - $NOAPT || sudo scons -C ~/pkgs/libObjCryst install
