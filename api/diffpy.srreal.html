@@ -1,12 +1,12 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>diffpy.srreal package &#8212; SrReal 1.1.3 documentation</title>
+    <title>diffpy.srreal package &#8212; SrReal 1.2 documentation</title>
     
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,10 +14,11 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.1.3',
+        VERSION:     '1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
@@ -26,10 +27,9 @@
     <script type="text/javascript" src="../_static/sidebar.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="SrReal 1.1.3 documentation" href="../index.html" />
     <link rel="prev" title="diffpy.srreal documentation" href="../index.html" /> 
   </head>
-  <body role="document">
+  <body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -42,7 +42,7 @@
         <li class="right" >
           <a href="../index.html" title="diffpy.srreal documentation"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">SrReal 1.1.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">SrReal 1.2 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -58,7 +58,7 @@
 </div>
 <div class="section" id="module-diffpy.srreal.atomradiitable">
 <span id="diffpy-srreal-atomradiitable-module"></span><h2>diffpy.srreal.atomradiitable module<a class="headerlink" href="#module-diffpy.srreal.atomradiitable" title="Permalink to this headline">¶</a></h2>
-<p>class AtomRadiiTable &#8211; storage of empirical atom radii.</p>
+<p>class AtomRadiiTable – storage of empirical atom radii.</p>
 <dl class="class">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.atomradiitable.</code><code class="descname">AtomRadiiTable</code><a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable" title="Permalink to this definition">¶</a></dt>
@@ -75,7 +75,7 @@ _standardLookup(self, smbl)</div></blockquote>
 types by calling the _registerThisType method with any instance.</p>
 <dl class="method">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.clone">
-<code class="descname">clone</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em><span class="sig-paren">)</span> &rarr; AtomRadiiTable :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.clone" title="Permalink to this definition">¶</a></dt>
+<code class="descname">clone</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em><span class="sig-paren">)</span> &#x2192; AtomRadiiTable :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.clone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new instance that is a copy of self.</p>
 <p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
@@ -86,7 +86,7 @@ types by calling the _registerThisType method with any instance.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.create">
-<code class="descname">create</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em><span class="sig-paren">)</span> &rarr; AtomRadiiTable :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.create" title="Permalink to this definition">¶</a></dt>
+<code class="descname">create</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em><span class="sig-paren">)</span> &#x2192; AtomRadiiTable :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new instance of the same type as self.</p>
 <p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
@@ -97,15 +97,15 @@ types by calling the _registerThisType method with any instance.</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.createByType">
-<em class="property">static </em><code class="descname">createByType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; AtomRadiiTable :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.createByType" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">createByType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &#x2192; AtomRadiiTable :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.createByType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new AtomRadiiTable instance of the specified string type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) &#8211; string type identifying a registered AtomRadiiTable class.</li>
-<li><strong>a new instance of the AtomRadiiTable-derived class.</strong> (<em>Returns</em>) &#8211; </li>
+<li><strong>tp</strong> (<em>str</em>) – string type identifying a registered AtomRadiiTable class.</li>
+<li><strong>a new instance of the AtomRadiiTable-derived class.</strong> (<em>Returns</em>) – </li>
 </ul>
 </td>
 </tr>
@@ -128,9 +128,9 @@ types by calling the _registerThisType method with any instance.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.fromString">
-<code class="descname">fromString</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em>, <em>(str)arg2</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.fromString" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fromString</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em>, <em>(str)arg2</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.fromString" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define custom radius for one or more atom types from string.</p>
-<p>s    &#8211; string with custom atom radii in &#8216;A1:r1, A2:r2, ...&#8217; format.</p>
+<p>s    – string with custom atom radii in ‘A1:r1, A2:r2, …’ format.</p>
 <p>No return value.
 Raise ValueError for an invalid string format.</p>
 <dl class="docutils">
@@ -141,7 +141,7 @@ Raise ValueError for an invalid string format.</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.getAliasedTypes">
-<em class="property">static </em><code class="descname">getAliasedTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.getAliasedTypes" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">getAliasedTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.getAliasedTypes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all aliases registered for the AtomRadiiTable string types.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -161,7 +161,7 @@ Raise ValueError for an invalid string format.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.getAllCustom">
-<code class="descname">getAllCustom</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.getAllCustom" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getAllCustom</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.getAllCustom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dictionary of all custom atom radii defined in this table.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -171,7 +171,7 @@ Raise ValueError for an invalid string format.</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.getRegisteredTypes">
-<em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a set of string types of the registered AtomRadiiTable classes.</p>
 <p>These are the allowed arguments for the <cite>createByType</cite> factory.</p>
 <dl class="docutils">
@@ -182,16 +182,16 @@ Raise ValueError for an invalid string format.</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.isRegisteredType">
-<em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; bool :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.isRegisteredType" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &#x2192; bool :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.isRegisteredType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the given string is registered as a AtomRadiiTable type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) &#8211; string name or an alias to be checked.</li>
-<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) &#8211; </li>
-<li><strong>standard type or its alias.</strong> (<em>a</em>) &#8211; </li>
+<li><strong>tp</strong> (<em>str</em>) – string name or an alias to be checked.</li>
+<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) – </li>
+<li><strong>standard type</strong><strong> or </strong><strong>its alias.</strong> (<em>a</em>) – </li>
 </ul>
 </td>
 </tr>
@@ -205,9 +205,9 @@ Raise ValueError for an invalid string format.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.lookup">
-<code class="descname">lookup</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em>, <em>(str)smbl</em><span class="sig-paren">)</span> &rarr; float :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.lookup" title="Permalink to this definition">¶</a></dt>
+<code class="descname">lookup</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em>, <em>(str)smbl</em><span class="sig-paren">)</span> &#x2192; float :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.lookup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return empirical radius of an atom in Angstroms.</p>
-<p>smbl &#8211; string symbol for atom, ion or isotope</p>
+<p>smbl – string symbol for atom, ion or isotope</p>
 <p>Return atom radius in Angstroms.
 This method cannot be overloaded in Python.</p>
 <dl class="docutils">
@@ -218,7 +218,7 @@ This method cannot be overloaded in Python.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.resetAll">
-<code class="descname">resetAll</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.resetAll" title="Permalink to this definition">¶</a></dt>
+<code class="descname">resetAll</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.resetAll" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset all custom radii defined in this table.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -228,9 +228,9 @@ This method cannot be overloaded in Python.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.resetCustom">
-<code class="descname">resetCustom</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em>, <em>(str)smbl</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.resetCustom" title="Permalink to this definition">¶</a></dt>
+<code class="descname">resetCustom</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em>, <em>(str)smbl</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.resetCustom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove custom radius for the specified atom type.</p>
-<p>smbl &#8211; string symbol for atom, ion or isotope</p>
+<p>smbl – string symbol for atom, ion or isotope</p>
 <p>No return value.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -240,10 +240,10 @@ This method cannot be overloaded in Python.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.setCustom">
-<code class="descname">setCustom</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em>, <em>(str)smbl</em>, <em>(float)radius</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.setCustom" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setCustom</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em>, <em>(str)smbl</em>, <em>(float)radius</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.setCustom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define custom radius for a specified atom type.</p>
-<p>smbl     &#8211; string symbol for atom, ion or isotope
-radius   &#8211; custom radius that will be returned by the lookup method</p>
+<p>smbl     – string symbol for atom, ion or isotope
+radius   – custom radius that will be returned by the lookup method</p>
 <p>No return value.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -253,19 +253,19 @@ radius   &#8211; custom radius that will be returned by the lookup method</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.toString">
-<code class="descname">toString</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em><span class="optional">[</span>, <em>(str)separator='</em>, <em>'</em><span class="optional">]</span><span class="sig-paren">)</span> &rarr; str :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.toString" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return string of all custom atom radii in &#8216;A1:r1, A2:r2, ...&#8217; format.</p>
-<p>separator    &#8211; string separator between &#8216;A1:r1&#8217; entries, by default &#8216;,&#8217;</p>
+<code class="descname">toString</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em><span class="optional">[</span>, <em>(str)separator=’</em>, <em>’</em><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; str :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.toString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return string of all custom atom radii in ‘A1:r1, A2:r2, …’ format.</p>
+<p>separator    – string separator between ‘A1:r1’ entries, by default ‘,’</p>
 <p>Return string.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
-<dd>std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt; toString(diffpy::srreal::AtomRadiiTable {lvalue} [,std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;=&#8217;,&#8217;])</dd>
+<dd>std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt; toString(diffpy::srreal::AtomRadiiTable {lvalue} [,std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;=’,’])</dd>
 </dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.type">
-<code class="descname">type</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em><span class="sig-paren">)</span> &rarr; str :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">type</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em><span class="sig-paren">)</span> &#x2192; str :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a unique string type that identifies a AtomRadiiTable-derived class.
 The string type is used for class registration and in the <cite>createByType</cite>
 function.</p>
@@ -287,7 +287,7 @@ function.</p>
 and fromString() for setting a special radius for selected atoms.</p>
 <dl class="method">
 <dt id="diffpy.srreal.atomradiitable.ConstantRadiiTable.clone">
-<code class="descname">clone</code><span class="sig-paren">(</span><em>(ConstantRadiiTable)arg1</em><span class="sig-paren">)</span> &rarr; AtomRadiiTable :<a class="headerlink" href="#diffpy.srreal.atomradiitable.ConstantRadiiTable.clone" title="Permalink to this definition">¶</a></dt>
+<code class="descname">clone</code><span class="sig-paren">(</span><em>(ConstantRadiiTable)arg1</em><span class="sig-paren">)</span> &#x2192; AtomRadiiTable :<a class="headerlink" href="#diffpy.srreal.atomradiitable.ConstantRadiiTable.clone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a duplicate of this ConstantRadiiTable object</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -297,7 +297,7 @@ and fromString() for setting a special radius for selected atoms.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.atomradiitable.ConstantRadiiTable.create">
-<code class="descname">create</code><span class="sig-paren">(</span><em>(ConstantRadiiTable)arg1</em><span class="sig-paren">)</span> &rarr; AtomRadiiTable :<a class="headerlink" href="#diffpy.srreal.atomradiitable.ConstantRadiiTable.create" title="Permalink to this definition">¶</a></dt>
+<code class="descname">create</code><span class="sig-paren">(</span><em>(ConstantRadiiTable)arg1</em><span class="sig-paren">)</span> &#x2192; AtomRadiiTable :<a class="headerlink" href="#diffpy.srreal.atomradiitable.ConstantRadiiTable.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new instance of ConstantRadiiTable.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -307,7 +307,7 @@ and fromString() for setting a special radius for selected atoms.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.atomradiitable.ConstantRadiiTable.getDefault">
-<code class="descname">getDefault</code><span class="sig-paren">(</span><em>(ConstantRadiiTable)arg1</em><span class="sig-paren">)</span> &rarr; float :<a class="headerlink" href="#diffpy.srreal.atomradiitable.ConstantRadiiTable.getDefault" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getDefault</code><span class="sig-paren">(</span><em>(ConstantRadiiTable)arg1</em><span class="sig-paren">)</span> &#x2192; float :<a class="headerlink" href="#diffpy.srreal.atomradiitable.ConstantRadiiTable.getDefault" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the value of the default atom radius.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -317,7 +317,7 @@ and fromString() for setting a special radius for selected atoms.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.atomradiitable.ConstantRadiiTable.setDefault">
-<code class="descname">setDefault</code><span class="sig-paren">(</span><em>(ConstantRadiiTable)arg1</em>, <em>(float)radius</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.atomradiitable.ConstantRadiiTable.setDefault" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setDefault</code><span class="sig-paren">(</span><em>(ConstantRadiiTable)arg1</em>, <em>(float)radius</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.atomradiitable.ConstantRadiiTable.setDefault" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set radius that is by default returned for all atoms.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -359,7 +359,7 @@ createByType function.</p>
 </div>
 <div class="section" id="module-diffpy.srreal.attributes">
 <span id="diffpy-srreal-attributes-module"></span><h2>diffpy.srreal.attributes module<a class="headerlink" href="#module-diffpy.srreal.attributes" title="Permalink to this headline">¶</a></h2>
-<p>class Attributes  &#8211; wrapper to C++ class diffpy::Attributes
+<p>class Attributes  – wrapper to C++ class diffpy::Attributes
 A base to PairQuantity and quite a few other classes.</p>
 <dl class="class">
 <dt id="diffpy.srreal.attributes.Attributes">
@@ -373,7 +373,7 @@ by name, without having to know a full C++ interface of their classes.</p>
 </div>
 <div class="section" id="module-diffpy.srreal.bondcalculator">
 <span id="diffpy-srreal-bondcalculator-module"></span><h2>diffpy.srreal.bondcalculator module<a class="headerlink" href="#module-diffpy.srreal.bondcalculator" title="Permalink to this headline">¶</a></h2>
-<p>class BondCalculator &#8211; distances between atoms in the structure.</p>
+<p>class BondCalculator – distances between atoms in the structure.</p>
 <dl class="class">
 <dt id="diffpy.srreal.bondcalculator.BondCalculator">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.bondcalculator.</code><code class="descname">BondCalculator</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.bondcalculator.BondCalculator" title="Permalink to this definition">¶</a></dt>
@@ -393,15 +393,15 @@ by name, without having to know a full C++ interface of their classes.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.bondcalculator.BondCalculator.filterCone">
-<code class="descname">filterCone</code><span class="sig-paren">(</span><em>(BondCalculator)arg1</em>, <em>(object)cartesiandir</em>, <em>(float)degrees</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.bondcalculator.BondCalculator.filterCone" title="Permalink to this definition">¶</a></dt>
+<code class="descname">filterCone</code><span class="sig-paren">(</span><em>(BondCalculator)arg1</em>, <em>(object)cartesiandir</em>, <em>(float)degrees</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.bondcalculator.BondCalculator.filterCone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Setup an additive bond filter in a specified direction cone.
 Second and further calls create more filters that permit more bonds.
 Use filterOff to create exclusive filter in a new direction.</p>
 <dl class="docutils">
-<dt>cartesiandir &#8211; cone axis in Cartesian coordinates,</dt>
+<dt>cartesiandir – cone axis in Cartesian coordinates,</dt>
 <dd>list, tuple or array.</dd>
 </dl>
-<p>degrees      &#8211; cone angle in degrees</p>
+<p>degrees      – cone angle in degrees</p>
 <p>No return value.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -411,7 +411,7 @@ Use filterOff to create exclusive filter in a new direction.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.bondcalculator.BondCalculator.filterOff">
-<code class="descname">filterOff</code><span class="sig-paren">(</span><em>(BondCalculator)arg1</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.bondcalculator.BondCalculator.filterOff" title="Permalink to this definition">¶</a></dt>
+<code class="descname">filterOff</code><span class="sig-paren">(</span><em>(BondCalculator)arg1</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.bondcalculator.BondCalculator.filterOff" title="Permalink to this definition">¶</a></dt>
 <dd><p>Turn off bond filtering and destroy all cone filters.
 Permit all bonds in further calculations.  Also used to create
 exclusive cone filter in a new direction.</p>
@@ -464,8 +464,8 @@ exclusive cone filter in a new direction.</p>
 </div>
 <div class="section" id="module-diffpy.srreal.bvparameterstable">
 <span id="diffpy-srreal-bvparameterstable-module"></span><h2>diffpy.srreal.bvparameterstable module<a class="headerlink" href="#module-diffpy.srreal.bvparameterstable" title="Permalink to this headline">¶</a></h2>
-<p>class BVParametersTable &#8211; storage of bond valence parameters
-class BVParam &#8211; bond valence data associated with specific cation-anion pair</p>
+<p>class BVParametersTable – storage of bond valence parameters
+class BVParam – bond valence data associated with specific cation-anion pair</p>
 <dl class="class">
 <dt id="diffpy.srreal.bvparameterstable.BVParam">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.bvparameterstable.</code><code class="descname">BVParam</code><a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParam" title="Permalink to this definition">¶</a></dt>
@@ -497,7 +497,7 @@ class BVParam &#8211; bond valence data associated with specific cation-anion pa
 
 <dl class="method">
 <dt id="diffpy.srreal.bvparameterstable.BVParam.bondvalence">
-<code class="descname">bondvalence</code><span class="sig-paren">(</span><em>(BVParam)arg1</em>, <em>(float)distance</em><span class="sig-paren">)</span> &rarr; float :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParam.bondvalence" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bondvalence</code><span class="sig-paren">(</span><em>(BVParam)arg1</em>, <em>(float)distance</em><span class="sig-paren">)</span> &#x2192; float :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParam.bondvalence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bond valence of the specified distance in Angstroms.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -507,7 +507,7 @@ class BVParam &#8211; bond valence data associated with specific cation-anion pa
 
 <dl class="method">
 <dt id="diffpy.srreal.bvparameterstable.BVParam.bondvalenceToDistance">
-<code class="descname">bondvalenceToDistance</code><span class="sig-paren">(</span><em>(BVParam)arg1</em>, <em>(float)valence</em><span class="sig-paren">)</span> &rarr; float :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParam.bondvalenceToDistance" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bondvalenceToDistance</code><span class="sig-paren">(</span><em>(BVParam)arg1</em>, <em>(float)valence</em><span class="sig-paren">)</span> &#x2192; float :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParam.bondvalenceToDistance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Distance in Angstroms corresponding to specified bond valence.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -523,7 +523,7 @@ class BVParam &#8211; bond valence data associated with specific cation-anion pa
 
 <dl class="method">
 <dt id="diffpy.srreal.bvparameterstable.BVParam.setFromCifLine">
-<code class="descname">setFromCifLine</code><span class="sig-paren">(</span><em>(BVParam)arg1</em>, <em>(str)arg2</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParam.setFromCifLine" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setFromCifLine</code><span class="sig-paren">(</span><em>(BVParam)arg1</em>, <em>(str)arg2</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParam.setFromCifLine" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update bond valence data from a string formatted as in bvparm2011.cif.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -552,7 +552,7 @@ class BVParam &#8211; bond valence data associated with specific cation-anion pa
 <p>Lookup table for bond valence parameters of a cation-anion pairs.</p>
 <dl class="method">
 <dt id="diffpy.srreal.bvparameterstable.BVParametersTable.getAll">
-<code class="descname">getAll</code><span class="sig-paren">(</span><em>(BVParametersTable)arg1</em><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.getAll" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getAll</code><span class="sig-paren">(</span><em>(BVParametersTable)arg1</em><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.getAll" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all bond valence parameter values in this table.</p>
 <p>Return a set of BVParam objects.</p>
 <dl class="docutils">
@@ -563,10 +563,10 @@ class BVParam &#8211; bond valence data associated with specific cation-anion pa
 
 <dl class="method">
 <dt id="diffpy.srreal.bvparameterstable.BVParametersTable.getAtomValence">
-<code class="descname">getAtomValence</code><span class="sig-paren">(</span><em>(BVParametersTable)arg1</em>, <em>(str)smbl</em><span class="sig-paren">)</span> &rarr; int :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.getAtomValence" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getAtomValence</code><span class="sig-paren">(</span><em>(BVParametersTable)arg1</em>, <em>(str)smbl</em><span class="sig-paren">)</span> &#x2192; int :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.getAtomValence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return signed valence for the specified atom or ion symbol.</p>
 <p>Return valence previously defined by setAtomValence or
-interpret the charge suffix, for example, use -2 for &#8220;S2-&#8221;.</p>
+interpret the charge suffix, for example, use -2 for “S2-“.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>int getAtomValence(diffpy::srreal::BVParametersTable {lvalue},std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;)</dd>
@@ -575,11 +575,11 @@ interpret the charge suffix, for example, use -2 for &#8220;S2-&#8221;.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.bvparameterstable.BVParametersTable.lookup">
-<code class="descname">lookup</code><span class="sig-paren">(</span><em>(BVParametersTable)arg1</em>, <em>(BVParam)bvparam</em><span class="sig-paren">)</span> &rarr; BVParam :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.lookup" title="Permalink to this definition">¶</a></dt>
+<code class="descname">lookup</code><span class="sig-paren">(</span><em>(BVParametersTable)arg1</em>, <em>(BVParam)bvparam</em><span class="sig-paren">)</span> &#x2192; BVParam :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.lookup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Lookup bond valence parameters by a BVParam instance.</p>
 <blockquote>
 <div><dl class="docutils">
-<dt>bvparam  &#8211; BVParam object.  The only attributes considered for</dt>
+<dt>bvparam  – BVParam object.  The only attributes considered for</dt>
 <dd>lookup are atom0, valence0, atom1, valence1.</dd>
 </dl>
 <p>Return a BVParam object with the looked up data.
@@ -593,8 +593,8 @@ Return BVParametersTable.none() if bond valence data do not exist.</p>
 <dt>lookup( (BVParametersTable)arg1, (str)smbl0, (str)smbl1) -&gt; BVParam :</dt>
 <dd><p class="first">Lookup bond valence parameters by cation-anion pair.
 The cation-anion order may be flipped.</p>
-<p>smbl0    &#8211; symbol of the first ion with charge, e.g., &#8220;Na+&#8221;
-smbl1    &#8211; symbol of the second ion with charge, e.g., &#8220;O2-&#8220;</p>
+<p>smbl0    – symbol of the first ion with charge, e.g., “Na+”
+smbl1    – symbol of the second ion with charge, e.g., “O2-“</p>
 <p>Return a BVParam object with the looked up data.
 Return BVParametersTable.none() if bond valence data do not exist.</p>
 <dl class="last docutils">
@@ -605,10 +605,10 @@ Return BVParametersTable.none() if bond valence data do not exist.</p>
 <dt>lookup( (BVParametersTable)arg1, (str)atom0, (int)valence0, (str)atom1, (int)valence1) -&gt; BVParam :</dt>
 <dd><p class="first">Lookup bond valence parameters by cation-anion pair.
 The cation-anion order may be flipped.</p>
-<p>atom0    &#8211; bare symbol of the cation atom
-valence0 &#8211; positive integer cation valence
-atom1    &#8211; bare symbol of the anion atom
-valence1 &#8211; negative integer anion valence</p>
+<p>atom0    – bare symbol of the cation atom
+valence0 – positive integer cation valence
+atom1    – bare symbol of the anion atom
+valence1 – negative integer anion valence</p>
 <p>Return a BVParam object with the looked up data.
 Return BVParametersTable.none() if bond valence data do not exist.</p>
 <dl class="last docutils">
@@ -621,9 +621,9 @@ Return BVParametersTable.none() if bond valence data do not exist.</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.bvparameterstable.BVParametersTable.none">
-<em class="property">static </em><code class="descname">none</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.none" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">none</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.none" title="Permalink to this definition">¶</a></dt>
 <dd><p>Singleton instance of void bond valence parameters.
-Also returned by &#8216;lookup&#8217; when valence data do not exist.</p>
+Also returned by ‘lookup’ when valence data do not exist.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::python::api::object none()</dd>
@@ -632,7 +632,7 @@ Also returned by &#8216;lookup&#8217; when valence data do not exist.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.bvparameterstable.BVParametersTable.resetAll">
-<code class="descname">resetAll</code><span class="sig-paren">(</span><em>(BVParametersTable)arg1</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.resetAll" title="Permalink to this definition">¶</a></dt>
+<code class="descname">resetAll</code><span class="sig-paren">(</span><em>(BVParametersTable)arg1</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.resetAll" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove all custom bond valence data defined in this table.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -642,7 +642,7 @@ Also returned by &#8216;lookup&#8217; when valence data do not exist.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.bvparameterstable.BVParametersTable.resetAtomValences">
-<code class="descname">resetAtomValences</code><span class="sig-paren">(</span><em>(BVParametersTable)arg1</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.resetAtomValences" title="Permalink to this definition">¶</a></dt>
+<code class="descname">resetAtomValences</code><span class="sig-paren">(</span><em>(BVParametersTable)arg1</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.resetAtomValences" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unset any custom valences defined by setAtomValence.</p>
 <p>Valences are thereafter obtained from charge suffixes only.</p>
 <dl class="docutils">
@@ -653,11 +653,11 @@ Also returned by &#8216;lookup&#8217; when valence data do not exist.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.bvparameterstable.BVParametersTable.resetCustom">
-<code class="descname">resetCustom</code><span class="sig-paren">(</span><em>(BVParametersTable)arg1</em>, <em>(BVParam)arg2</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.resetCustom" title="Permalink to this definition">¶</a></dt>
+<code class="descname">resetCustom</code><span class="sig-paren">(</span><em>(BVParametersTable)arg1</em>, <em>(BVParam)arg2</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.resetCustom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove custom bond valence data for the specified cation-anion pair.</p>
 <blockquote>
 <div><dl class="docutils">
-<dt>bvparam  &#8211; BVParam object.  The only attributes considered for</dt>
+<dt>bvparam  – BVParam object.  The only attributes considered for</dt>
 <dd>custom entry lookup are atom0, valence0, atom1, valence1.</dd>
 </dl>
 <p>No return value.</p>
@@ -670,10 +670,10 @@ Also returned by &#8216;lookup&#8217; when valence data do not exist.</p>
 <dt>resetCustom( (BVParametersTable)arg1, (str)atom0, (int)valence0, (str)atom1, (int)valence1) -&gt; None :</dt>
 <dd><p class="first">Remove custom bond valence data for the specified cation-anion pair.
 The cation-anion order may be flipped.</p>
-<p>atom0    &#8211; bare symbol of the cation atom
-valence0 &#8211; positive integer cation valence
-atom1    &#8211; bare symbol of the anion atom
-valence1 &#8211; negative integer anion valence</p>
+<p>atom0    – bare symbol of the cation atom
+valence0 – positive integer cation valence
+atom1    – bare symbol of the anion atom
+valence1 – negative integer anion valence</p>
 <p>No return value.</p>
 <dl class="last docutils">
 <dt>C++ signature :</dt>
@@ -685,10 +685,10 @@ valence1 &#8211; negative integer anion valence</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.bvparameterstable.BVParametersTable.setAtomValence">
-<code class="descname">setAtomValence</code><span class="sig-paren">(</span><em>(BVParametersTable)arg1</em>, <em>(str)smbl</em>, <em>(int)value</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.setAtomValence" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setAtomValence</code><span class="sig-paren">(</span><em>(BVParametersTable)arg1</em>, <em>(str)smbl</em>, <em>(int)value</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.setAtomValence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define custom valence for the specified atom or ion symbol.</p>
-<p>smbl     &#8211; string symbol of atom or ion, for example &#8220;F&#8221;.
-value    &#8211; signed valence to be used for the symbol, e.g., -1.</p>
+<p>smbl     – string symbol of atom or ion, for example “F”.
+value    – signed valence to be used for the symbol, e.g., -1.</p>
 <p>No return value.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -698,10 +698,10 @@ value    &#8211; signed valence to be used for the symbol, e.g., -1.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.bvparameterstable.BVParametersTable.setCustom">
-<code class="descname">setCustom</code><span class="sig-paren">(</span><em>(BVParametersTable)arg1</em>, <em>(BVParam)bvparm</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.setCustom" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setCustom</code><span class="sig-paren">(</span><em>(BVParametersTable)arg1</em>, <em>(BVParam)bvparm</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable.setCustom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Insert custom bond valence data to the table.</p>
 <blockquote>
-<div><p>bvparam  &#8211; BVParam object with the custom bond valence data.</p>
+<div><p>bvparam  – BVParam object with the custom bond valence data.</p>
 <p>No return value.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -709,19 +709,19 @@ value    &#8211; signed valence to be used for the symbol, e.g., -1.</p>
 </dl>
 </div></blockquote>
 <dl class="docutils">
-<dt>setCustom( (BVParametersTable)arg1, (str)atom0, (int)valence0, (str)atom1, (int)valence1, (float)Ro, (float)B [, (str)ref_id=&#8217;&#8216;]) -&gt; None :</dt>
+<dt>setCustom( (BVParametersTable)arg1, (str)atom0, (int)valence0, (str)atom1, (int)valence1, (float)Ro, (float)B [, (str)ref_id=”]) -&gt; None :</dt>
 <dd><p class="first">Insert custom bond valence data to the table.</p>
-<p>atom0    &#8211; bare symbol of the cation atom
-valence0 &#8211; positive integer cation valence
-atom1    &#8211; bare symbol of the anion atom
-valence1 &#8211; negative integer anion valence
-Ro       &#8211; valence parameter Ro in Angstroms
-B        &#8211; valence parameter B in Angstroms
-ref_id   &#8211; optional reference code in bvparm2011.cif</p>
+<p>atom0    – bare symbol of the cation atom
+valence0 – positive integer cation valence
+atom1    – bare symbol of the anion atom
+valence1 – negative integer anion valence
+Ro       – valence parameter Ro in Angstroms
+B        – valence parameter B in Angstroms
+ref_id   – optional reference code in bvparm2011.cif</p>
 <p>No return value.</p>
 <dl class="last docutils">
 <dt>C++ signature :</dt>
-<dd>void setCustom(diffpy::srreal::BVParametersTable {lvalue},std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;,int,std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;,int,double,double [,std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;=&#8217;&#8216;])</dd>
+<dd>void setCustom(diffpy::srreal::BVParametersTable {lvalue},std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;,int,std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;,int,double,double [,std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;=”])</dd>
 </dl>
 </dd>
 </dl>
@@ -732,7 +732,7 @@ ref_id   &#8211; optional reference code in bvparm2011.cif</p>
 </div>
 <div class="section" id="module-diffpy.srreal.bvscalculator">
 <span id="diffpy-srreal-bvscalculator-module"></span><h2>diffpy.srreal.bvscalculator module<a class="headerlink" href="#module-diffpy.srreal.bvscalculator" title="Permalink to this headline">¶</a></h2>
-<p>class BVSCalculator &#8211; bond valence sums calculator</p>
+<p>class BVSCalculator – bond valence sums calculator</p>
 <dl class="class">
 <dt id="diffpy.srreal.bvscalculator.BVSCalculator">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.bvscalculator.</code><code class="descname">BVSCalculator</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.bvscalculator.BVSCalculator" title="Permalink to this definition">¶</a></dt>
@@ -813,16 +813,16 @@ equal to rmax.  The value depends on ions present in the structure.</p>
 </div>
 <div class="section" id="module-diffpy.srreal.eventticker">
 <span id="diffpy-srreal-eventticker-module"></span><h2>diffpy.srreal.eventticker module<a class="headerlink" href="#module-diffpy.srreal.eventticker" title="Permalink to this headline">¶</a></h2>
-<p>class EventTicker &#8211; storage of modification times of dependent objects</p>
+<p>class EventTicker – storage of modification times of dependent objects</p>
 <dl class="class">
 <dt id="diffpy.srreal.eventticker.EventTicker">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.eventticker.</code><code class="descname">EventTicker</code><a class="headerlink" href="#diffpy.srreal.eventticker.EventTicker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Boost.Python.instance</span></code></p>
-<p>Class for storing modification &#8216;times&#8217; of dependent objects
+<p>Class for storing modification ‘times’ of dependent objects
 The default EventTicker object is initialized to a zero time.</p>
 <dl class="method">
 <dt id="diffpy.srreal.eventticker.EventTicker.click">
-<code class="descname">click</code><span class="sig-paren">(</span><em>(EventTicker)arg1</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.eventticker.EventTicker.click" title="Permalink to this definition">¶</a></dt>
+<code class="descname">click</code><span class="sig-paren">(</span><em>(EventTicker)arg1</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.eventticker.EventTicker.click" title="Permalink to this definition">¶</a></dt>
 <dd><p>Increment ticker value to the latest unique time.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -832,10 +832,10 @@ The default EventTicker object is initialized to a zero time.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.eventticker.EventTicker.updateFrom">
-<code class="descname">updateFrom</code><span class="sig-paren">(</span><em>(EventTicker)arg1</em>, <em>(EventTicker)other</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.eventticker.EventTicker.updateFrom" title="Permalink to this definition">¶</a></dt>
+<code class="descname">updateFrom</code><span class="sig-paren">(</span><em>(EventTicker)arg1</em>, <em>(EventTicker)other</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.eventticker.EventTicker.updateFrom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update ticker time to the value of other, newer ticker.
 Keep original value if the other ticker is older.</p>
-<p>other    &#8211; instance of another EventTicker object</p>
+<p>other    – instance of another EventTicker object</p>
 <p>No return value.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -848,7 +848,7 @@ Keep original value if the other ticker is older.</p>
 </div>
 <div class="section" id="module-diffpy.srreal.overlapcalculator">
 <span id="diffpy-srreal-overlapcalculator-module"></span><h2>diffpy.srreal.overlapcalculator module<a class="headerlink" href="#module-diffpy.srreal.overlapcalculator" title="Permalink to this headline">¶</a></h2>
-<p>class OverlapCalculator &#8211; calculator of atom overlaps in a structure.</p>
+<p>class OverlapCalculator – calculator of atom overlaps in a structure.</p>
 <dl class="class">
 <dt id="diffpy.srreal.overlapcalculator.OverlapCalculator">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.overlapcalculator.</code><code class="descname">OverlapCalculator</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.overlapcalculator.OverlapCalculator" title="Permalink to this definition">¶</a></dt>
@@ -862,9 +862,9 @@ Keep original value if the other ticker is older.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.overlapcalculator.OverlapCalculator.coordinationByTypes">
-<code class="descname">coordinationByTypes</code><span class="sig-paren">(</span><em>(OverlapCalculator)arg1</em>, <em>(int)i</em><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.overlapcalculator.OverlapCalculator.coordinationByTypes" title="Permalink to this definition">¶</a></dt>
+<code class="descname">coordinationByTypes</code><span class="sig-paren">(</span><em>(OverlapCalculator)arg1</em>, <em>(int)i</em><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.overlapcalculator.OverlapCalculator.coordinationByTypes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate neighbor types and their occupancies at the specified site.</p>
-<p>i    &#8211; zero-based index of the evaluated site</p>
+<p>i    – zero-based index of the evaluated site</p>
 <p>Return a dictionary where the keys are atom type strings and the values
 their total occupancies.</p>
 <dl class="docutils">
@@ -895,11 +895,11 @@ Returns an Nx3 array.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.overlapcalculator.OverlapCalculator.flipDiffMean">
-<code class="descname">flipDiffMean</code><span class="sig-paren">(</span><em>(OverlapCalculator)arg1</em>, <em>(object)arg2</em>, <em>(object)arg3</em><span class="sig-paren">)</span> &rarr; float :<a class="headerlink" href="#diffpy.srreal.overlapcalculator.OverlapCalculator.flipDiffMean" title="Permalink to this definition">¶</a></dt>
+<code class="descname">flipDiffMean</code><span class="sig-paren">(</span><em>(OverlapCalculator)arg1</em>, <em>(object)arg2</em>, <em>(object)arg3</em><span class="sig-paren">)</span> &#x2192; float :<a class="headerlink" href="#diffpy.srreal.overlapcalculator.OverlapCalculator.flipDiffMean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate change of the meansquareoverlap after flipping the atom types
 at the i and j sites.</p>
-<p>i    &#8211; zero-based index of the first site
-j    &#8211; zero-based index of the second site</p>
+<p>i    – zero-based index of the first site
+j    – zero-based index of the second site</p>
 <p>Return float.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -909,11 +909,11 @@ j    &#8211; zero-based index of the second site</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.overlapcalculator.OverlapCalculator.flipDiffTotal">
-<code class="descname">flipDiffTotal</code><span class="sig-paren">(</span><em>(OverlapCalculator)arg1</em>, <em>(object)i</em>, <em>(object)j</em><span class="sig-paren">)</span> &rarr; float :<a class="headerlink" href="#diffpy.srreal.overlapcalculator.OverlapCalculator.flipDiffTotal" title="Permalink to this definition">¶</a></dt>
+<code class="descname">flipDiffTotal</code><span class="sig-paren">(</span><em>(OverlapCalculator)arg1</em>, <em>(object)i</em>, <em>(object)j</em><span class="sig-paren">)</span> &#x2192; float :<a class="headerlink" href="#diffpy.srreal.overlapcalculator.OverlapCalculator.flipDiffTotal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate change of the totalsquareoverlap after flipping the atom types
 at the i and j sites.</p>
-<p>i    &#8211; zero-based index of the first site
-j    &#8211; zero-based index of the second site</p>
+<p>i    – zero-based index of the first site
+j    – zero-based index of the second site</p>
 <p>Return float.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -923,11 +923,11 @@ j    &#8211; zero-based index of the second site</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.overlapcalculator.OverlapCalculator.getNeighborSites">
-<code class="descname">getNeighborSites</code><span class="sig-paren">(</span><em>(OverlapCalculator)arg1</em>, <em>(object)i</em><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.overlapcalculator.OverlapCalculator.getNeighborSites" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getNeighborSites</code><span class="sig-paren">(</span><em>(OverlapCalculator)arg1</em>, <em>(object)i</em><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.overlapcalculator.OverlapCalculator.getNeighborSites" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get indices of all sites that neighbor with the specified site,
 either directly or as periodic or symmetry images.  Atoms are
 assumed neighbors if they have non-zero overlap.</p>
-<p>i    &#8211; zero-based index of the evaluated site</p>
+<p>i    – zero-based index of the evaluated site</p>
 <p>Return a set of integer indices, this may include i.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -1028,7 +1028,7 @@ for site multiplicities and occupancies.</p>
 </div>
 <div class="section" id="module-diffpy.srreal.pairquantity">
 <span id="diffpy-srreal-pairquantity-module"></span><h2>diffpy.srreal.pairquantity module<a class="headerlink" href="#module-diffpy.srreal.pairquantity" title="Permalink to this headline">¶</a></h2>
-<p>class PairQuantity    &#8211; base class for Python defined calculators.</p>
+<p>class PairQuantity    – base class for Python defined calculators.</p>
 <dl class="class">
 <dt id="diffpy.srreal.pairquantity.PairQuantity">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.pairquantity.</code><code class="descname">PairQuantity</code><a class="headerlink" href="#diffpy.srreal.pairquantity.PairQuantity" title="Permalink to this definition">¶</a></dt>
@@ -1038,7 +1038,7 @@ No action by default.  Concrete calculators must override the
 _addPairContribution method to get some results.</p>
 <dl class="method">
 <dt id="diffpy.srreal.pairquantity.PairQuantity.ticker">
-<code class="descname">ticker</code><span class="sig-paren">(</span><em>(PairQuantity)arg1</em><span class="sig-paren">)</span> &rarr; EventTicker :<a class="headerlink" href="#diffpy.srreal.pairquantity.PairQuantity.ticker" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ticker</code><span class="sig-paren">(</span><em>(PairQuantity)arg1</em><span class="sig-paren">)</span> &#x2192; EventTicker :<a class="headerlink" href="#diffpy.srreal.pairquantity.PairQuantity.ticker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return EventTicker object with the last configuration change time.</p>
 <blockquote>
 <div><p>The ticker should be clicked on every configuration change that
@@ -1064,15 +1064,17 @@ structure.</p>
 </div>
 <div class="section" id="module-diffpy.srreal.parallel">
 <span id="diffpy-srreal-parallel-module"></span><h2>diffpy.srreal.parallel module<a class="headerlink" href="#module-diffpy.srreal.parallel" title="Permalink to this headline">¶</a></h2>
-<p>ParallelPairQuantity  &#8211; proxy class for converting PairQuantity types
+<p>ParallelPairQuantity  – proxy class for converting PairQuantity types
 into parallel calculators.</p>
 <dl class="function">
 <dt id="diffpy.srreal.parallel.createParallelCalculator">
 <code class="descclassname">diffpy.srreal.parallel.</code><code class="descname">createParallelCalculator</code><span class="sig-paren">(</span><em>pqobj</em>, <em>ncpu</em>, <em>pmap</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.parallel.createParallelCalculator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a proxy parallel calculator to a PairQuantity instance.</p>
-<p>pqobj    &#8211; instance of PairQuantity calculator to be run in parallel
-ncpu     &#8211; number of parallel jobs
-pmap     &#8211; a parallel map function used to submit job to workers</p>
+<p>pqobj    – instance of PairQuantity calculator to be run in parallel
+ncpu     – number of parallel jobs
+pmap     – a parallel map function used to submit job to workers</p>
+<p>The <code class="docutils literal"><span class="pre">pqobj.evaluatortype</span></code> is reset to ‘BASIC’ because other
+evaluator types are not supported within parallel calculations.</p>
 <p>Return a proxy calculator instance that has the same interface,
 but executes the calculation in parallel split among ncpu jobs.</p>
 </dd></dl>
@@ -1089,7 +1091,7 @@ PDFBaseline, ZeroBaseline, LinearBaseline</p>
 <p>Base class and registry for functions that calculate PDF baseline.</p>
 <dl class="method">
 <dt id="diffpy.srreal.pdfbaseline.PDFBaseline.clone">
-<code class="descname">clone</code><span class="sig-paren">(</span><em>(PDFBaseline)arg1</em><span class="sig-paren">)</span> &rarr; PDFBaseline :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.clone" title="Permalink to this definition">¶</a></dt>
+<code class="descname">clone</code><span class="sig-paren">(</span><em>(PDFBaseline)arg1</em><span class="sig-paren">)</span> &#x2192; PDFBaseline :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.clone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new instance that is a copy of self.</p>
 <p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
@@ -1100,7 +1102,7 @@ PDFBaseline, ZeroBaseline, LinearBaseline</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.pdfbaseline.PDFBaseline.create">
-<code class="descname">create</code><span class="sig-paren">(</span><em>(PDFBaseline)arg1</em><span class="sig-paren">)</span> &rarr; PDFBaseline :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.create" title="Permalink to this definition">¶</a></dt>
+<code class="descname">create</code><span class="sig-paren">(</span><em>(PDFBaseline)arg1</em><span class="sig-paren">)</span> &#x2192; PDFBaseline :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new instance of the same type as self.</p>
 <p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
@@ -1111,15 +1113,15 @@ PDFBaseline, ZeroBaseline, LinearBaseline</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.pdfbaseline.PDFBaseline.createByType">
-<em class="property">static </em><code class="descname">createByType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; PDFBaseline :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.createByType" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">createByType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &#x2192; PDFBaseline :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.createByType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new PDFBaseline instance of the specified string type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) &#8211; string type identifying a registered PDFBaseline class.</li>
-<li><strong>a new instance of the PDFBaseline-derived class.</strong> (<em>Returns</em>) &#8211; </li>
+<li><strong>tp</strong> (<em>str</em>) – string type identifying a registered PDFBaseline class.</li>
+<li><strong>a new instance of the PDFBaseline-derived class.</strong> (<em>Returns</em>) – </li>
 </ul>
 </td>
 </tr>
@@ -1142,7 +1144,7 @@ PDFBaseline, ZeroBaseline, LinearBaseline</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.pdfbaseline.PDFBaseline.getAliasedTypes">
-<em class="property">static </em><code class="descname">getAliasedTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.getAliasedTypes" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">getAliasedTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.getAliasedTypes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all aliases registered for the PDFBaseline string types.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1162,7 +1164,7 @@ PDFBaseline, ZeroBaseline, LinearBaseline</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.pdfbaseline.PDFBaseline.getRegisteredTypes">
-<em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a set of string types of the registered PDFBaseline classes.</p>
 <p>These are the allowed arguments for the <cite>createByType</cite> factory.</p>
 <dl class="docutils">
@@ -1173,16 +1175,16 @@ PDFBaseline, ZeroBaseline, LinearBaseline</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.pdfbaseline.PDFBaseline.isRegisteredType">
-<em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; bool :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.isRegisteredType" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &#x2192; bool :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.isRegisteredType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the given string is registered as a PDFBaseline type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) &#8211; string name or an alias to be checked.</li>
-<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) &#8211; </li>
-<li><strong>standard type or its alias.</strong> (<em>a</em>) &#8211; </li>
+<li><strong>tp</strong> (<em>str</em>) – string name or an alias to be checked.</li>
+<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) – </li>
+<li><strong>standard type</strong><strong> or </strong><strong>its alias.</strong> (<em>a</em>) – </li>
 </ul>
 </td>
 </tr>
@@ -1196,7 +1198,7 @@ PDFBaseline, ZeroBaseline, LinearBaseline</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.pdfbaseline.PDFBaseline.type">
-<code class="descname">type</code><span class="sig-paren">(</span><em>(PDFBaseline)arg1</em><span class="sig-paren">)</span> &rarr; str :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">type</code><span class="sig-paren">(</span><em>(PDFBaseline)arg1</em><span class="sig-paren">)</span> &#x2192; str :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a unique string type that identifies a PDFBaseline-derived class.
 The string type is used for class registration and in the <cite>createByType</cite>
 function.</p>
@@ -1215,17 +1217,17 @@ function.</p>
 <dd><p>Helper function for registering Python function as a PDFBaseline.
 This is required for using Python function as PDFCalculator.baseline.</p>
 <dl class="docutils">
-<dt>name     &#8211; unique string name for registering Python function in the</dt>
+<dt>name     – unique string name for registering Python function in the</dt>
 <dd>global registry of PDFBaseline types.  This will be the
 string identifier for the createByType factory.</dd>
-<dt>fnc      &#8211; Python function of a floating point argument and optional</dt>
+<dt>fnc      – Python function of a floating point argument and optional</dt>
 <dd>float parameters.  The parameters need to be registered as
 double attributes in the functor class.  The function fnc
 must be picklable and it must return a float.</dd>
-<dt>replace  &#8211; when set replace any PDFBaseline type already registered</dt>
+<dt>replace  – when set replace any PDFBaseline type already registered</dt>
 <dd>under the name.  Otherwise raise RuntimeError when the
 name is taken.</dd>
-<dt>dbattrs  &#8211; optional float parameters of the wrapped function.</dt>
+<dt>dbattrs  – optional float parameters of the wrapped function.</dt>
 <dd>These will be registered as double attributes in the
 functor class.  The wrapped function must be callable as
 fnc(x, <a href="#id1"><span class="problematic" id="id2">**</span></a>dbattrs).  Make sure to pick attribute names that
@@ -1237,14 +1239,14 @@ do not conflict with other PDFCalculator attributes.</dd>
 def fshiftedline(x, aline, bline):</p>
 <blockquote>
 <div>return aline * x + bline</div></blockquote>
-<p># wrap it as a PDFBaseline and register as a &#8220;shiftedline&#8221; type
-makePDFBaseline(&#8220;shiftedline&#8221;, fshiftedline, aline=-1, bline=0)
-baseline = PDFBaseline.createByType(&#8220;shiftedline&#8221;)
+<p># wrap it as a PDFBaseline and register as a “shiftedline” type
+makePDFBaseline(“shiftedline”, fshiftedline, aline=-1, bline=0)
+baseline = PDFBaseline.createByType(“shiftedline”)
 print map(baseline, range(5))
 # use it in PDFCalculator
 pdfc = PDFCalculator()
 pdfc.baseline = baseline
-# or pdfc.baseline = &#8220;shiftedline&#8221;</p>
+# or pdfc.baseline = “shiftedline”</p>
 </dd></dl>
 
 <dl class="class">
@@ -1272,8 +1274,8 @@ is preset to (-4 * pi * rho0).</p>
 <div class="section" id="module-diffpy.srreal.pdfcalculator">
 <span id="diffpy-srreal-pdfcalculator-module"></span><h2>diffpy.srreal.pdfcalculator module<a class="headerlink" href="#module-diffpy.srreal.pdfcalculator" title="Permalink to this headline">¶</a></h2>
 <p>Top-level classes for PDF calculation:
-DebyePDFCalculator &#8211; simulate PDF by evaluating Debye sum in Q-space
-PDFCalculator      &#8211; calculate PDF by peak summation in real space</p>
+DebyePDFCalculator – simulate PDF by evaluating Debye sum in Q-space
+PDFCalculator      – calculate PDF by peak summation in real space</p>
 <dl class="class">
 <dt id="diffpy.srreal.pdfcalculator.DebyePDFCalculator">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.pdfcalculator.</code><code class="descname">DebyePDFCalculator</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.pdfcalculator.DebyePDFCalculator" title="Permalink to this definition">¶</a></dt>
@@ -1281,11 +1283,11 @@ PDFCalculator      &#8211; calculate PDF by peak summation in real space</p>
 <p>Calculate PDF using the Debye scattering equation.</p>
 <dl class="method">
 <dt id="diffpy.srreal.pdfcalculator.DebyePDFCalculator.addEnvelope">
-<code class="descname">addEnvelope</code><span class="sig-paren">(</span><em>(DebyePDFCalculator)arg1</em>, <em>(object)envlp</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.DebyePDFCalculator.addEnvelope" title="Permalink to this definition">¶</a></dt>
+<code class="descname">addEnvelope</code><span class="sig-paren">(</span><em>(DebyePDFCalculator)arg1</em>, <em>(object)envlp</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.DebyePDFCalculator.addEnvelope" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a PDFEnvelope object as another scaling function.
 This replaces any existing PDFEnvelope of the same string type.</p>
 <dl class="docutils">
-<dt>envlp    &#8211; instance of PDFEnvelope that defines the scaling function or</dt>
+<dt>envlp    – instance of PDFEnvelope that defines the scaling function or</dt>
 <dd>a string type for a registered PDFEnvelope class.
 Use PDFEnvelope.getRegisteredTypes for the available
 string values.</dd>
@@ -1299,7 +1301,7 @@ string values.</dd>
 
 <dl class="method">
 <dt id="diffpy.srreal.pdfcalculator.DebyePDFCalculator.clearEnvelopes">
-<code class="descname">clearEnvelopes</code><span class="sig-paren">(</span><em>(DebyePDFCalculator)arg1</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.DebyePDFCalculator.clearEnvelopes" title="Permalink to this definition">¶</a></dt>
+<code class="descname">clearEnvelopes</code><span class="sig-paren">(</span><em>(DebyePDFCalculator)arg1</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.DebyePDFCalculator.clearEnvelopes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove all PDFEnvelope scaling functions from the calculator.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -1359,11 +1361,11 @@ This property can be assigned an iterable of PDFEnvelope objects.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.pdfcalculator.DebyePDFCalculator.getEnvelope">
-<code class="descname">getEnvelope</code><span class="sig-paren">(</span><em>(DebyePDFCalculator)arg1</em>, <em>(str)tp</em><span class="sig-paren">)</span> &rarr; PDFEnvelope :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.DebyePDFCalculator.getEnvelope" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getEnvelope</code><span class="sig-paren">(</span><em>(DebyePDFCalculator)arg1</em>, <em>(str)tp</em><span class="sig-paren">)</span> &#x2192; PDFEnvelope :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.DebyePDFCalculator.getEnvelope" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve an active PDFEnvelope object by its string type.</p>
 <dl class="docutils">
-<dt>tp   &#8211; string type of a PDFEnvelope object that is present in</dt>
-<dd>the calculator.  See the &#8216;usedenvelopetypes&#8217; attribute
+<dt>tp   – string type of a PDFEnvelope object that is present in</dt>
+<dd>the calculator.  See the ‘usedenvelopetypes’ attribute
 for the present string types.</dd>
 </dl>
 <p>Return a PDFEnvelope instance.
@@ -1376,7 +1378,7 @@ Raise ValueError it type tp is not present.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.pdfcalculator.DebyePDFCalculator.isOptimumQstep">
-<code class="descname">isOptimumQstep</code><span class="sig-paren">(</span><em>(DebyePDFCalculator)arg1</em><span class="sig-paren">)</span> &rarr; bool :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.DebyePDFCalculator.isOptimumQstep" title="Permalink to this definition">¶</a></dt>
+<code class="descname">isOptimumQstep</code><span class="sig-paren">(</span><em>(DebyePDFCalculator)arg1</em><span class="sig-paren">)</span> &#x2192; bool :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.DebyePDFCalculator.isOptimumQstep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return True if qstep is set to an optimum, rmax-dependent value.
 Return False if qstep was overridden by the user.</p>
 <dl class="docutils">
@@ -1401,13 +1403,13 @@ from the out of range peaks.
 
 <dl class="method">
 <dt id="diffpy.srreal.pdfcalculator.DebyePDFCalculator.popEnvelope">
-<code class="descname">popEnvelope</code><span class="sig-paren">(</span><em>(DebyePDFCalculator)arg1</em>, <em>(object)arg2</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.DebyePDFCalculator.popEnvelope" title="Permalink to this definition">¶</a></dt>
+<code class="descname">popEnvelope</code><span class="sig-paren">(</span><em>(DebyePDFCalculator)arg1</em>, <em>(object)arg2</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.DebyePDFCalculator.popEnvelope" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove PDFEnvelope object from an internal list of scaling functions.</p>
 <dl class="docutils">
-<dt>envlp    &#8211; instance of PDFEnvelope object or a string type of a registered</dt>
+<dt>envlp    – instance of PDFEnvelope object or a string type of a registered</dt>
 <dd>PDFEnvelope class to be removed.  No action if envlp is not
-present in the calculator.  See the &#8216;envelopes&#8217; attribute for a
-tuple of active PDFEnvelope instances or the &#8216;usedenvelopetypes&#8217;
+present in the calculator.  See the ‘envelopes’ attribute for a
+tuple of active PDFEnvelope instances or the ‘usedenvelopetypes’
 attribute for the corresponding string types.</dd>
 </dl>
 <p>No return value.</p>
@@ -1508,7 +1510,7 @@ multiples of rstep.
 
 <dl class="method">
 <dt id="diffpy.srreal.pdfcalculator.DebyePDFCalculator.setOptimumQstep">
-<code class="descname">setOptimumQstep</code><span class="sig-paren">(</span><em>(DebyePDFCalculator)arg1</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.DebyePDFCalculator.setOptimumQstep" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setOptimumQstep</code><span class="sig-paren">(</span><em>(DebyePDFCalculator)arg1</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.DebyePDFCalculator.setOptimumQstep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Use the optimum qstep value equal to the Nyquist step of pi/rmaxext,
 where rmaxext is rmax extended for termination ripples and peak tails.
 The qstep value depends on rmax when active.  This is disabled after
@@ -1534,11 +1536,11 @@ explicit qstep assignment, which makes qstep independent of rmax.</p>
 <p>Calculate PDF using the real-space summation of PeakProfile functions.</p>
 <dl class="method">
 <dt id="diffpy.srreal.pdfcalculator.PDFCalculator.addEnvelope">
-<code class="descname">addEnvelope</code><span class="sig-paren">(</span><em>(PDFCalculator)arg1</em>, <em>(object)envlp</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.PDFCalculator.addEnvelope" title="Permalink to this definition">¶</a></dt>
+<code class="descname">addEnvelope</code><span class="sig-paren">(</span><em>(PDFCalculator)arg1</em>, <em>(object)envlp</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.PDFCalculator.addEnvelope" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a PDFEnvelope object as another scaling function.
 This replaces any existing PDFEnvelope of the same string type.</p>
 <dl class="docutils">
-<dt>envlp    &#8211; instance of PDFEnvelope that defines the scaling function or</dt>
+<dt>envlp    – instance of PDFEnvelope that defines the scaling function or</dt>
 <dd>a string type for a registered PDFEnvelope class.
 Use PDFEnvelope.getRegisteredTypes for the available
 string values.</dd>
@@ -1561,7 +1563,7 @@ Use PDFBaseline.getRegisteredTypes() for the set of allowed values.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.pdfcalculator.PDFCalculator.clearEnvelopes">
-<code class="descname">clearEnvelopes</code><span class="sig-paren">(</span><em>(PDFCalculator)arg1</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.PDFCalculator.clearEnvelopes" title="Permalink to this definition">¶</a></dt>
+<code class="descname">clearEnvelopes</code><span class="sig-paren">(</span><em>(PDFCalculator)arg1</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.PDFCalculator.clearEnvelopes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove all PDFEnvelope scaling functions from the calculator.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -1614,11 +1616,11 @@ This property can be assigned an iterable of PDFEnvelope objects.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.pdfcalculator.PDFCalculator.getEnvelope">
-<code class="descname">getEnvelope</code><span class="sig-paren">(</span><em>(PDFCalculator)arg1</em>, <em>(str)tp</em><span class="sig-paren">)</span> &rarr; PDFEnvelope :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.PDFCalculator.getEnvelope" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getEnvelope</code><span class="sig-paren">(</span><em>(PDFCalculator)arg1</em>, <em>(str)tp</em><span class="sig-paren">)</span> &#x2192; PDFEnvelope :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.PDFCalculator.getEnvelope" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve an active PDFEnvelope object by its string type.</p>
 <dl class="docutils">
-<dt>tp   &#8211; string type of a PDFEnvelope object that is present in</dt>
-<dd>the calculator.  See the &#8216;usedenvelopetypes&#8217; attribute
+<dt>tp   – string type of a PDFEnvelope object that is present in</dt>
+<dd>the calculator.  See the ‘usedenvelopetypes’ attribute
 for the present string types.</dd>
 </dl>
 <p>Return a PDFEnvelope instance.
@@ -1661,13 +1663,13 @@ class.  Use PeakProfile.getRegisteredTypes() for the allowed values.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.pdfcalculator.PDFCalculator.popEnvelope">
-<code class="descname">popEnvelope</code><span class="sig-paren">(</span><em>(PDFCalculator)arg1</em>, <em>(object)arg2</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.PDFCalculator.popEnvelope" title="Permalink to this definition">¶</a></dt>
+<code class="descname">popEnvelope</code><span class="sig-paren">(</span><em>(PDFCalculator)arg1</em>, <em>(object)arg2</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.PDFCalculator.popEnvelope" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove PDFEnvelope object from an internal list of scaling functions.</p>
 <dl class="docutils">
-<dt>envlp    &#8211; instance of PDFEnvelope object or a string type of a registered</dt>
+<dt>envlp    – instance of PDFEnvelope object or a string type of a registered</dt>
 <dd>PDFEnvelope class to be removed.  No action if envlp is not
-present in the calculator.  See the &#8216;envelopes&#8217; attribute for a
-tuple of active PDFEnvelope instances or the &#8216;usedenvelopetypes&#8217;
+present in the calculator.  See the ‘envelopes’ attribute for a
+tuple of active PDFEnvelope instances or the ‘usedenvelopetypes’
 attribute for the corresponding string types.</dd>
 </dl>
 <p>No return value.</p>
@@ -1803,14 +1805,14 @@ Not used when zero.  Active for StepCutEnvelope.
 
 <dl class="function">
 <dt id="diffpy.srreal.pdfcalculator.fftftog">
-<code class="descclassname">diffpy.srreal.pdfcalculator.</code><code class="descname">fftftog</code><span class="sig-paren">(</span><em>(object)f</em>, <em>(float)qstep</em><span class="optional">[</span>, <em>(float)qmin=0.0</em><span class="optional">]</span><span class="sig-paren">)</span> &rarr; tuple :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.fftftog" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">diffpy.srreal.pdfcalculator.</code><code class="descname">fftftog</code><span class="sig-paren">(</span><em>(object)f</em>, <em>(float)qstep</em><span class="optional">[</span>, <em>(float)qmin=0.0</em><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; tuple :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.fftftog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform sine-fast Fourier transform from F(Q) to G(r).
 The length of the output array is padded to the next power of 2.</p>
-<p>f        &#8211; array of the F values on a regular Q-space grid.
-qstep    &#8211; spacing in the Q-space grid, this is used for proper</p>
+<p>f        – array of the F values on a regular Q-space grid.
+qstep    – spacing in the Q-space grid, this is used for proper</p>
 <blockquote>
 <div>scaling of the output array.</div></blockquote>
-<p>qmin     &#8211; optional starting point of the Q-space grid.</p>
+<p>qmin     – optional starting point of the Q-space grid.</p>
 <p>Return a tuple of (g, rstep).  These can be used with the complementary
 fftgtof function to recover the original signal f.</p>
 <dl class="docutils">
@@ -1821,14 +1823,14 @@ fftgtof function to recover the original signal f.</p>
 
 <dl class="function">
 <dt id="diffpy.srreal.pdfcalculator.fftgtof">
-<code class="descclassname">diffpy.srreal.pdfcalculator.</code><code class="descname">fftgtof</code><span class="sig-paren">(</span><em>(object)g</em>, <em>(float)rstep</em><span class="optional">[</span>, <em>(float)rmin=0.0</em><span class="optional">]</span><span class="sig-paren">)</span> &rarr; tuple :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.fftgtof" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">diffpy.srreal.pdfcalculator.</code><code class="descname">fftgtof</code><span class="sig-paren">(</span><em>(object)g</em>, <em>(float)rstep</em><span class="optional">[</span>, <em>(float)rmin=0.0</em><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; tuple :<a class="headerlink" href="#diffpy.srreal.pdfcalculator.fftgtof" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform sine-fast Fourier transform from G(r) to F(Q).
 The length of the output array is padded to the next power of 2.</p>
-<p>g        &#8211; array of the G values on a regular r-space grid.
-rstep    &#8211; spacing in the r-space grid, this is used for proper</p>
+<p>g        – array of the G values on a regular r-space grid.
+rstep    – spacing in the r-space grid, this is used for proper</p>
 <blockquote>
 <div>scaling of the output array.</div></blockquote>
-<p>rmin     &#8211; optional starting point of the r-space grid.</p>
+<p>rmin     – optional starting point of the r-space grid.</p>
 <p>Return a tuple of (f, qstep).  These can be used with the complementary
 fftftog function to recover the original signal g.</p>
 <dl class="docutils">
@@ -1850,7 +1852,7 @@ SphericalShapeEnvelope, StepCutEnvelope</p>
 <p>Base class and registry for functions that return PDF scaling envelopes.</p>
 <dl class="method">
 <dt id="diffpy.srreal.pdfenvelope.PDFEnvelope.clone">
-<code class="descname">clone</code><span class="sig-paren">(</span><em>(PDFEnvelope)arg1</em><span class="sig-paren">)</span> &rarr; PDFEnvelope :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.clone" title="Permalink to this definition">¶</a></dt>
+<code class="descname">clone</code><span class="sig-paren">(</span><em>(PDFEnvelope)arg1</em><span class="sig-paren">)</span> &#x2192; PDFEnvelope :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.clone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new instance that is a copy of self.</p>
 <p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
@@ -1861,7 +1863,7 @@ SphericalShapeEnvelope, StepCutEnvelope</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.pdfenvelope.PDFEnvelope.create">
-<code class="descname">create</code><span class="sig-paren">(</span><em>(PDFEnvelope)arg1</em><span class="sig-paren">)</span> &rarr; PDFEnvelope :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.create" title="Permalink to this definition">¶</a></dt>
+<code class="descname">create</code><span class="sig-paren">(</span><em>(PDFEnvelope)arg1</em><span class="sig-paren">)</span> &#x2192; PDFEnvelope :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new instance of the same type as self.</p>
 <p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
@@ -1872,15 +1874,15 @@ SphericalShapeEnvelope, StepCutEnvelope</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.pdfenvelope.PDFEnvelope.createByType">
-<em class="property">static </em><code class="descname">createByType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; PDFEnvelope :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.createByType" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">createByType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &#x2192; PDFEnvelope :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.createByType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new PDFEnvelope instance of the specified string type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) &#8211; string type identifying a registered PDFEnvelope class.</li>
-<li><strong>a new instance of the PDFEnvelope-derived class.</strong> (<em>Returns</em>) &#8211; </li>
+<li><strong>tp</strong> (<em>str</em>) – string type identifying a registered PDFEnvelope class.</li>
+<li><strong>a new instance of the PDFEnvelope-derived class.</strong> (<em>Returns</em>) – </li>
 </ul>
 </td>
 </tr>
@@ -1903,7 +1905,7 @@ SphericalShapeEnvelope, StepCutEnvelope</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.pdfenvelope.PDFEnvelope.getAliasedTypes">
-<em class="property">static </em><code class="descname">getAliasedTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.getAliasedTypes" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">getAliasedTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.getAliasedTypes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all aliases registered for the PDFEnvelope string types.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1923,7 +1925,7 @@ SphericalShapeEnvelope, StepCutEnvelope</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.pdfenvelope.PDFEnvelope.getRegisteredTypes">
-<em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a set of string types of the registered PDFEnvelope classes.</p>
 <p>These are the allowed arguments for the <cite>createByType</cite> factory.</p>
 <dl class="docutils">
@@ -1934,16 +1936,16 @@ SphericalShapeEnvelope, StepCutEnvelope</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.pdfenvelope.PDFEnvelope.isRegisteredType">
-<em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; bool :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.isRegisteredType" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &#x2192; bool :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.isRegisteredType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the given string is registered as a PDFEnvelope type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) &#8211; string name or an alias to be checked.</li>
-<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) &#8211; </li>
-<li><strong>standard type or its alias.</strong> (<em>a</em>) &#8211; </li>
+<li><strong>tp</strong> (<em>str</em>) – string name or an alias to be checked.</li>
+<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) – </li>
+<li><strong>standard type</strong><strong> or </strong><strong>its alias.</strong> (<em>a</em>) – </li>
 </ul>
 </td>
 </tr>
@@ -1957,7 +1959,7 @@ SphericalShapeEnvelope, StepCutEnvelope</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.pdfenvelope.PDFEnvelope.type">
-<code class="descname">type</code><span class="sig-paren">(</span><em>(PDFEnvelope)arg1</em><span class="sig-paren">)</span> &rarr; str :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">type</code><span class="sig-paren">(</span><em>(PDFEnvelope)arg1</em><span class="sig-paren">)</span> &#x2192; str :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a unique string type that identifies a PDFEnvelope-derived class.
 The string type is used for class registration and in the <cite>createByType</cite>
 function.</p>
@@ -1976,17 +1978,17 @@ function.</p>
 <dd><p>Helper function for registering Python function as a PDFEnvelope.
 This is required for using Python function as PDFCalculator envelope.</p>
 <dl class="docutils">
-<dt>name     &#8211; unique string name for registering Python function in the</dt>
+<dt>name     – unique string name for registering Python function in the</dt>
 <dd>global registry of PDFEnvelope types.  This will be the
 string identifier for the createByType factory.</dd>
-<dt>fnc      &#8211; Python function of a floating point argument and optional</dt>
+<dt>fnc      – Python function of a floating point argument and optional</dt>
 <dd>float parameters.  The parameters need to be registered as
 double attributes in the functor class.  The function fnc
 must be picklable and it must return a float.</dd>
-<dt>replace  &#8211; when set replace any PDFEnvelope type already registered</dt>
+<dt>replace  – when set replace any PDFEnvelope type already registered</dt>
 <dd>under the name.  Otherwise raise RuntimeError when the
 name is taken.</dd>
-<dt>dbattrs  &#8211; optional float parameters of the wrapped function.</dt>
+<dt>dbattrs  – optional float parameters of the wrapped function.</dt>
 <dd>These will be registered as double attributes in the
 functor class.  The wrapped function must be callable as
 fnc(x, <a href="#id3"><span class="problematic" id="id4">**</span></a>dbattrs).  Make sure to pick attribute names that
@@ -1999,14 +2001,14 @@ def fexpdecay(x, expscale, exptail):</p>
 <blockquote>
 <div>from math import exp
 return expscale * exp(-x / exptail)</div></blockquote>
-<p># wrap it as a PDFEnvelope and register as a &#8220;expdecay&#8221; type
-makePDFEnvelope(&#8220;expdecay&#8221;, fexpdecay, expscale=5, exptail=4)
-envelope = PDFEnvelope.createByType(&#8220;expdecay&#8221;)
+<p># wrap it as a PDFEnvelope and register as a “expdecay” type
+makePDFEnvelope(“expdecay”, fexpdecay, expscale=5, exptail=4)
+envelope = PDFEnvelope.createByType(“expdecay”)
 print map(envelope, range(9))
 # use it in PDFCalculator
 pdfc = PDFCalculator()
 pdfc.addEnvelope(envelope)
-# or pdfc.addEnvelope(&#8220;expdecay&#8221;)</p>
+# or pdfc.addEnvelope(“expdecay”)</p>
 </dd></dl>
 
 <dl class="class">
@@ -2083,7 +2085,7 @@ The peak profile functions must be centered at 0 and their integrated
 area must be 1.</p>
 <dl class="method">
 <dt id="diffpy.srreal.peakprofile.PeakProfile.clone">
-<code class="descname">clone</code><span class="sig-paren">(</span><em>(PeakProfile)arg1</em><span class="sig-paren">)</span> &rarr; PeakProfile :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.clone" title="Permalink to this definition">¶</a></dt>
+<code class="descname">clone</code><span class="sig-paren">(</span><em>(PeakProfile)arg1</em><span class="sig-paren">)</span> &#x2192; PeakProfile :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.clone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new instance that is a copy of self.</p>
 <p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
@@ -2094,7 +2096,7 @@ area must be 1.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.peakprofile.PeakProfile.create">
-<code class="descname">create</code><span class="sig-paren">(</span><em>(PeakProfile)arg1</em><span class="sig-paren">)</span> &rarr; PeakProfile :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.create" title="Permalink to this definition">¶</a></dt>
+<code class="descname">create</code><span class="sig-paren">(</span><em>(PeakProfile)arg1</em><span class="sig-paren">)</span> &#x2192; PeakProfile :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new instance of the same type as self.</p>
 <p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
@@ -2105,15 +2107,15 @@ area must be 1.</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.peakprofile.PeakProfile.createByType">
-<em class="property">static </em><code class="descname">createByType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; PeakProfile :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.createByType" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">createByType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &#x2192; PeakProfile :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.createByType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new PeakProfile instance of the specified string type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) &#8211; string type identifying a registered PeakProfile class.</li>
-<li><strong>a new instance of the PeakProfile-derived class.</strong> (<em>Returns</em>) &#8211; </li>
+<li><strong>tp</strong> (<em>str</em>) – string type identifying a registered PeakProfile class.</li>
+<li><strong>a new instance of the PeakProfile-derived class.</strong> (<em>Returns</em>) – </li>
 </ul>
 </td>
 </tr>
@@ -2136,7 +2138,7 @@ area must be 1.</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.peakprofile.PeakProfile.getAliasedTypes">
-<em class="property">static </em><code class="descname">getAliasedTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.getAliasedTypes" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">getAliasedTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.getAliasedTypes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all aliases registered for the PeakProfile string types.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2156,7 +2158,7 @@ area must be 1.</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.peakprofile.PeakProfile.getRegisteredTypes">
-<em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a set of string types of the registered PeakProfile classes.</p>
 <p>These are the allowed arguments for the <cite>createByType</cite> factory.</p>
 <dl class="docutils">
@@ -2167,16 +2169,16 @@ area must be 1.</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.peakprofile.PeakProfile.isRegisteredType">
-<em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; bool :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.isRegisteredType" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &#x2192; bool :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.isRegisteredType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the given string is registered as a PeakProfile type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) &#8211; string name or an alias to be checked.</li>
-<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) &#8211; </li>
-<li><strong>standard type or its alias.</strong> (<em>a</em>) &#8211; </li>
+<li><strong>tp</strong> (<em>str</em>) – string name or an alias to be checked.</li>
+<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) – </li>
+<li><strong>standard type</strong><strong> or </strong><strong>its alias.</strong> (<em>a</em>) – </li>
 </ul>
 </td>
 </tr>
@@ -2197,7 +2199,7 @@ bounds xboundlo and xboundhi. [3.33e-6 unitless]</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.peakprofile.PeakProfile.ticker">
-<code class="descname">ticker</code><span class="sig-paren">(</span><em>(PeakProfile)arg1</em><span class="sig-paren">)</span> &rarr; EventTicker :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.ticker" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ticker</code><span class="sig-paren">(</span><em>(PeakProfile)arg1</em><span class="sig-paren">)</span> &#x2192; EventTicker :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.ticker" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>Return EventTicker that marks last modification time of this object.</dt>
 <dd><p class="first">This ticker object is used in fast PDF update, to check if PeakProfile
@@ -2222,7 +2224,7 @@ This method can be overridden in a Python-derived class.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.peakprofile.PeakProfile.type">
-<code class="descname">type</code><span class="sig-paren">(</span><em>(PeakProfile)arg1</em><span class="sig-paren">)</span> &rarr; str :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">type</code><span class="sig-paren">(</span><em>(PeakProfile)arg1</em><span class="sig-paren">)</span> &#x2192; str :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a unique string type that identifies a PeakProfile-derived class.
 The string type is used for class registration and in the <cite>createByType</cite>
 function.</p>
@@ -2235,11 +2237,11 @@ function.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.peakprofile.PeakProfile.xboundhi">
-<code class="descname">xboundhi</code><span class="sig-paren">(</span><em>(PeakProfile)arg1</em>, <em>(float)fwhm</em><span class="sig-paren">)</span> &rarr; float :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.xboundhi" title="Permalink to this definition">¶</a></dt>
+<code class="descname">xboundhi</code><span class="sig-paren">(</span><em>(PeakProfile)arg1</em>, <em>(float)fwhm</em><span class="sig-paren">)</span> &#x2192; float :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.xboundhi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Upper x-bound where profile function becomes smaller than precision.
 The bound is evaluated relative to profile maximum, i.e., for each x above
 xboundhi the profile function must be smaller than (peakprecision * maximum).</p>
-<p>fwhm &#8211; Full Width at Half Maximum of the profile function</p>
+<p>fwhm – Full Width at Half Maximum of the profile function</p>
 <p>Return float.  See also the peakprecision property.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -2249,11 +2251,11 @@ xboundhi the profile function must be smaller than (peakprecision * maximum).</p
 
 <dl class="method">
 <dt id="diffpy.srreal.peakprofile.PeakProfile.xboundlo">
-<code class="descname">xboundlo</code><span class="sig-paren">(</span><em>(PeakProfile)arg1</em>, <em>(float)fwhm</em><span class="sig-paren">)</span> &rarr; float :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.xboundlo" title="Permalink to this definition">¶</a></dt>
+<code class="descname">xboundlo</code><span class="sig-paren">(</span><em>(PeakProfile)arg1</em>, <em>(float)fwhm</em><span class="sig-paren">)</span> &#x2192; float :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.xboundlo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Lower x-bound where profile function becomes smaller than precision.
 The bound is evaluated relative to profile maximum, i.e., for each x below
 xboundlo the profile function must be smaller than (peakprecision * maximum).</p>
-<p>fwhm &#8211; Full Width at Half Maximum of the profile function</p>
+<p>fwhm – Full Width at Half Maximum of the profile function</p>
 <p>Return float.  See also the peakprecision property.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -2292,9 +2294,9 @@ ConstantPeakWidth, DebyeWallerPeakWidth, JeongPeakWidth</p>
 Peak width is defined as full width at half maximum (FWHM).</p>
 <dl class="method">
 <dt id="diffpy.srreal.peakwidthmodel.PeakWidthModel.calculate">
-<code class="descname">calculate</code><span class="sig-paren">(</span><em>(PeakWidthModel)arg1</em>, <em>(BaseBondGenerator)bnds</em><span class="sig-paren">)</span> &rarr; float :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.calculate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">calculate</code><span class="sig-paren">(</span><em>(PeakWidthModel)arg1</em>, <em>(BaseBondGenerator)bnds</em><span class="sig-paren">)</span> &#x2192; float :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.calculate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the FWHM peak width for the specified bond.</p>
-<p>bnds &#8211; instance of BaseBondGenerator with the current bond data.</p>
+<p>bnds – instance of BaseBondGenerator with the current bond data.</p>
 <p>Return float.
 This method must be overridden in a derived class.</p>
 <dl class="docutils">
@@ -2305,7 +2307,7 @@ This method must be overridden in a derived class.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.peakwidthmodel.PeakWidthModel.clone">
-<code class="descname">clone</code><span class="sig-paren">(</span><em>(PeakWidthModel)arg1</em><span class="sig-paren">)</span> &rarr; PeakWidthModel :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.clone" title="Permalink to this definition">¶</a></dt>
+<code class="descname">clone</code><span class="sig-paren">(</span><em>(PeakWidthModel)arg1</em><span class="sig-paren">)</span> &#x2192; PeakWidthModel :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.clone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new instance that is a copy of self.</p>
 <p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
@@ -2316,7 +2318,7 @@ This method must be overridden in a derived class.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.peakwidthmodel.PeakWidthModel.create">
-<code class="descname">create</code><span class="sig-paren">(</span><em>(PeakWidthModel)arg1</em><span class="sig-paren">)</span> &rarr; PeakWidthModel :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.create" title="Permalink to this definition">¶</a></dt>
+<code class="descname">create</code><span class="sig-paren">(</span><em>(PeakWidthModel)arg1</em><span class="sig-paren">)</span> &#x2192; PeakWidthModel :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new instance of the same type as self.</p>
 <p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
@@ -2327,15 +2329,15 @@ This method must be overridden in a derived class.</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.peakwidthmodel.PeakWidthModel.createByType">
-<em class="property">static </em><code class="descname">createByType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; PeakWidthModel :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.createByType" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">createByType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &#x2192; PeakWidthModel :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.createByType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new PeakWidthModel instance of the specified string type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) &#8211; string type identifying a registered PeakWidthModel class.</li>
-<li><strong>a new instance of the PeakWidthModel-derived class.</strong> (<em>Returns</em>) &#8211; </li>
+<li><strong>tp</strong> (<em>str</em>) – string type identifying a registered PeakWidthModel class.</li>
+<li><strong>a new instance of the PeakWidthModel-derived class.</strong> (<em>Returns</em>) – </li>
 </ul>
 </td>
 </tr>
@@ -2358,7 +2360,7 @@ This method must be overridden in a derived class.</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.peakwidthmodel.PeakWidthModel.getAliasedTypes">
-<em class="property">static </em><code class="descname">getAliasedTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.getAliasedTypes" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">getAliasedTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.getAliasedTypes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all aliases registered for the PeakWidthModel string types.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2378,7 +2380,7 @@ This method must be overridden in a derived class.</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.peakwidthmodel.PeakWidthModel.getRegisteredTypes">
-<em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a set of string types of the registered PeakWidthModel classes.</p>
 <p>These are the allowed arguments for the <cite>createByType</cite> factory.</p>
 <dl class="docutils">
@@ -2389,16 +2391,16 @@ This method must be overridden in a derived class.</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.peakwidthmodel.PeakWidthModel.isRegisteredType">
-<em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; bool :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.isRegisteredType" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &#x2192; bool :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.isRegisteredType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the given string is registered as a PeakWidthModel type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) &#8211; string name or an alias to be checked.</li>
-<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) &#8211; </li>
-<li><strong>standard type or its alias.</strong> (<em>a</em>) &#8211; </li>
+<li><strong>tp</strong> (<em>str</em>) – string name or an alias to be checked.</li>
+<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) – </li>
+<li><strong>standard type</strong><strong> or </strong><strong>its alias.</strong> (<em>a</em>) – </li>
 </ul>
 </td>
 </tr>
@@ -2412,12 +2414,12 @@ This method must be overridden in a derived class.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.peakwidthmodel.PeakWidthModel.maxWidth">
-<code class="descname">maxWidth</code><span class="sig-paren">(</span><em>(PeakWidthModel)arg1</em>, <em>(StructureAdapter)stru</em>, <em>(float)rmin</em>, <em>(float)rmax</em><span class="sig-paren">)</span> &rarr; float :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.maxWidth" title="Permalink to this definition">¶</a></dt>
+<code class="descname">maxWidth</code><span class="sig-paren">(</span><em>(PeakWidthModel)arg1</em>, <em>(StructureAdapter)stru</em>, <em>(float)rmin</em>, <em>(float)rmax</em><span class="sig-paren">)</span> &#x2192; float :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.maxWidth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return maximum peak width for the specified structure and distance range</p>
 <blockquote>
-<div><p>stru &#8211; StructureAdapter object or an object convertible to StructureAdapter.
-rmin &#8211; lower bound for the PDF calculation
-rmax &#8211; upper bound for the PDF calculation</p>
+<div><p>stru – StructureAdapter object or an object convertible to StructureAdapter.
+rmin – lower bound for the PDF calculation
+rmax – upper bound for the PDF calculation</p>
 <blockquote>
 <div>isotropically vibrating atoms this</div></blockquote>
 <p>Return float.</p>
@@ -2436,9 +2438,9 @@ rmax &#8211; upper bound for the PDF calculation</p>
 <dl class="docutils">
 <dt>maxWidth( (PeakWidthModel)arg1, (StructureAdapter)stru, (float)rmin, (float)rmax) -&gt; float :</dt>
 <dd><p class="first">Return maximum peak width for the specified structure and distance range</p>
-<p>stru &#8211; StructureAdapter object or an object convertible to StructureAdapter.
-rmin &#8211; lower bound for the PDF calculation
-rmax &#8211; upper bound for the PDF calculation</p>
+<p>stru – StructureAdapter object or an object convertible to StructureAdapter.
+rmin – lower bound for the PDF calculation
+rmax – upper bound for the PDF calculation</p>
 <blockquote>
 <div>isotropically vibrating atoms this</div></blockquote>
 <p>Return float.</p>
@@ -2452,7 +2454,7 @@ rmax &#8211; upper bound for the PDF calculation</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.peakwidthmodel.PeakWidthModel.ticker">
-<code class="descname">ticker</code><span class="sig-paren">(</span><em>(PeakWidthModel)arg1</em><span class="sig-paren">)</span> &rarr; EventTicker :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.ticker" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ticker</code><span class="sig-paren">(</span><em>(PeakWidthModel)arg1</em><span class="sig-paren">)</span> &#x2192; EventTicker :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.ticker" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>Return EventTicker that marks last modification time of this object.</dt>
 <dd><p class="first">This ticker object is used in fast PDF update, to check if PeakWidthModel
@@ -2477,7 +2479,7 @@ This method can be overridden in a Python-derived class.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.peakwidthmodel.PeakWidthModel.type">
-<code class="descname">type</code><span class="sig-paren">(</span><em>(PeakWidthModel)arg1</em><span class="sig-paren">)</span> &rarr; str :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">type</code><span class="sig-paren">(</span><em>(PeakWidthModel)arg1</em><span class="sig-paren">)</span> &#x2192; str :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a unique string type that identifies a PeakWidthModel-derived class.
 The string type is used for class registration and in the <cite>createByType</cite>
 function.</p>
@@ -2543,7 +2545,7 @@ factor  sqrt(1 - delta1/r - delta2/r**2 + (qbroad * r)**2).</p>
 </div>
 <div class="section" id="module-diffpy.srreal.scatteringfactortable">
 <span id="diffpy-srreal-scatteringfactortable-module"></span><h2>diffpy.srreal.scatteringfactortable module<a class="headerlink" href="#module-diffpy.srreal.scatteringfactortable" title="Permalink to this headline">¶</a></h2>
-<p>class ScatteringFactorTable &#8211; scattering factors for atoms, ions and isotopes.</p>
+<p>class ScatteringFactorTable – scattering factors for atoms, ions and isotopes.</p>
 <dl class="class">
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.scatteringfactortable.</code><code class="descname">ScatteringFactorTable</code><a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable" title="Permalink to this definition">¶</a></dt>
@@ -2561,7 +2563,7 @@ _standardLookup(self, smbl, q)</div></blockquote>
 types by calling the _registerThisType method with any instance.</p>
 <dl class="method">
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.clone">
-<code class="descname">clone</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em><span class="sig-paren">)</span> &rarr; ScatteringFactorTable :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.clone" title="Permalink to this definition">¶</a></dt>
+<code class="descname">clone</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em><span class="sig-paren">)</span> &#x2192; ScatteringFactorTable :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.clone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new instance that is a copy of self.</p>
 <p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
@@ -2572,7 +2574,7 @@ types by calling the _registerThisType method with any instance.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.create">
-<code class="descname">create</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em><span class="sig-paren">)</span> &rarr; ScatteringFactorTable :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.create" title="Permalink to this definition">¶</a></dt>
+<code class="descname">create</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em><span class="sig-paren">)</span> &#x2192; ScatteringFactorTable :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new instance of the same type as self.</p>
 <p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
@@ -2583,15 +2585,15 @@ types by calling the _registerThisType method with any instance.</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.createByType">
-<em class="property">static </em><code class="descname">createByType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; ScatteringFactorTable :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.createByType" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">createByType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &#x2192; ScatteringFactorTable :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.createByType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new ScatteringFactorTable instance of the specified string type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) &#8211; string type identifying a registered ScatteringFactorTable class.</li>
-<li><strong>a new instance of the ScatteringFactorTable-derived class.</strong> (<em>Returns</em>) &#8211; </li>
+<li><strong>tp</strong> (<em>str</em>) – string type identifying a registered ScatteringFactorTable class.</li>
+<li><strong>a new instance of the ScatteringFactorTable-derived class.</strong> (<em>Returns</em>) – </li>
 </ul>
 </td>
 </tr>
@@ -2614,7 +2616,7 @@ types by calling the _registerThisType method with any instance.</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getAliasedTypes">
-<em class="property">static </em><code class="descname">getAliasedTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getAliasedTypes" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">getAliasedTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getAliasedTypes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all aliases registered for the ScatteringFactorTable string types.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2634,7 +2636,7 @@ types by calling the _registerThisType method with any instance.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getCustomSymbols">
-<code class="descname">getCustomSymbols</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getCustomSymbols" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getCustomSymbols</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getCustomSymbols" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a set of all atom symbols with custom scattering factors.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -2644,7 +2646,7 @@ types by calling the _registerThisType method with any instance.</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getRegisteredTypes">
-<em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a set of string types of the registered ScatteringFactorTable classes.</p>
 <p>These are the allowed arguments for the <cite>createByType</cite> factory.</p>
 <dl class="docutils">
@@ -2655,16 +2657,16 @@ types by calling the _registerThisType method with any instance.</p>
 
 <dl class="staticmethod">
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.isRegisteredType">
-<em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &rarr; bool :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.isRegisteredType" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &#x2192; bool :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.isRegisteredType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the given string is registered as a ScatteringFactorTable type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) &#8211; string name or an alias to be checked.</li>
-<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) &#8211; </li>
-<li><strong>standard type or its alias.</strong> (<em>a</em>) &#8211; </li>
+<li><strong>tp</strong> (<em>str</em>) – string name or an alias to be checked.</li>
+<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) – </li>
+<li><strong>standard type</strong><strong> or </strong><strong>its alias.</strong> (<em>a</em>) – </li>
 </ul>
 </td>
 </tr>
@@ -2678,7 +2680,7 @@ types by calling the _registerThisType method with any instance.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.lookup">
-<code class="descname">lookup</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em>, <em>(str)smbl</em>, <em>(object)qarray</em><span class="sig-paren">)</span> &rarr; object :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.lookup" title="Permalink to this definition">¶</a></dt>
+<code class="descname">lookup</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em>, <em>(str)smbl</em>, <em>(object)qarray</em><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.lookup" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><dl class="docutils">
 <dt>C++ signature :</dt>
@@ -2689,8 +2691,8 @@ types by calling the _registerThisType method with any instance.</p>
 <dt>lookup( (ScatteringFactorTable)arg1, (str)smbl [, (float)q=0.0]) -&gt; float :</dt>
 <dd><p class="first">Scattering factor of a specified atom at Q in 1/A.  The standard value
 can be redefined using the setCustomAs method.</p>
-<p>smbl &#8211; string symbol for atom, ion or isotope.
-Q    &#8211; Q value in inverse Angstroms, by default 0.</p>
+<p>smbl – string symbol for atom, ion or isotope.
+Q    – Q value in inverse Angstroms, by default 0.</p>
 <blockquote>
 <div>Q can be either float or NumPy array.</div></blockquote>
 <p>Return float or NumPy array of the same shape as Q.
@@ -2705,9 +2707,9 @@ No support for Python override.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.radiationType">
-<code class="descname">radiationType</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em><span class="sig-paren">)</span> &rarr; str :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.radiationType" title="Permalink to this definition">¶</a></dt>
+<code class="descname">radiationType</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em><span class="sig-paren">)</span> &#x2192; str :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.radiationType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a string identifying the radiation type.
-&#8216;X&#8217; for x-rays, &#8216;N&#8217; for neutrons.
+‘X’ for x-rays, ‘N’ for neutrons.
 This method must be overridden in a derived class.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -2717,7 +2719,7 @@ This method must be overridden in a derived class.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.resetAll">
-<code class="descname">resetAll</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.resetAll" title="Permalink to this definition">¶</a></dt>
+<code class="descname">resetAll</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.resetAll" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset all custom scattering factor values.</p>
 <p>No return value.  No support for Python override.</p>
 <dl class="docutils">
@@ -2728,9 +2730,9 @@ This method must be overridden in a derived class.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.resetCustom">
-<code class="descname">resetCustom</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em>, <em>(str)smbl</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.resetCustom" title="Permalink to this definition">¶</a></dt>
+<code class="descname">resetCustom</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em>, <em>(str)smbl</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.resetCustom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Revert scattering factor for the specified symbol to a standard value.</p>
-<p>smbl &#8211; string symbol for atom, ion or isotope.</p>
+<p>smbl – string symbol for atom, ion or isotope.</p>
 <p>No return value.  No support for Python override.</p>
 <dl class="docutils">
 <dt>C++ signature :</dt>
@@ -2740,13 +2742,13 @@ This method must be overridden in a derived class.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.setCustomAs">
-<code class="descname">setCustomAs</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em>, <em>(str)smbl</em>, <em>(str)src</em><span class="sig-paren">)</span> &rarr; None :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.setCustomAs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setCustomAs</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em>, <em>(str)smbl</em>, <em>(str)src</em><span class="sig-paren">)</span> &#x2192; None :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.setCustomAs" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>Define custom alias for the specified atom symbol.</dt>
-<dd><p class="first">Example: setCustomAs(&#8216;12-C&#8217;, &#8216;C&#8217;)  will declare the same
-scattering factors for &#8216;12-C&#8217; as for &#8216;C&#8217;.</p>
-<p>smbl &#8211; custom string alias for an existing standard symbol.
-src  &#8211; standard atom symbol (cannot be another alias).</p>
+<dd><p class="first">Example: setCustomAs(‘12-C’, ‘C’)  will declare the same
+scattering factors for ‘12-C’ as for ‘C’.</p>
+<p>smbl – custom string alias for an existing standard symbol.
+src  – standard atom symbol (cannot be another alias).</p>
 <p>No return value.  No support for Python override.</p>
 <dl class="last docutils">
 <dt>C++ signature :</dt>
@@ -2757,10 +2759,10 @@ src  &#8211; standard atom symbol (cannot be another alias).</p>
 <dd><p class="first">Define custom scattering factor for the specified atom symbol.
 The custom value is calculated by rescaling standard value
 from a source atom type.</p>
-<p>smbl &#8211; string symbol of the atom with custom scattering factor.
-src  &#8211; atom symbol for the source standard scattering factor.
-sf   &#8211; new scattering factor value, defaults to the standard src factor.
-q    &#8211; optional Q value for the new custom scattering factor.</p>
+<p>smbl – string symbol of the atom with custom scattering factor.
+src  – atom symbol for the source standard scattering factor.
+sf   – new scattering factor value, defaults to the standard src factor.
+q    – optional Q value for the new custom scattering factor.</p>
 <blockquote>
 <div>The internal scaling of the standard value is calculated at this Q.</div></blockquote>
 <p>No return value.  No support for Python override.</p>
@@ -2774,7 +2776,7 @@ q    &#8211; optional Q value for the new custom scattering factor.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.ticker">
-<code class="descname">ticker</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em><span class="sig-paren">)</span> &rarr; EventTicker :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.ticker" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ticker</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em><span class="sig-paren">)</span> &#x2192; EventTicker :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.ticker" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>Return EventTicker that marks last modification time of this object.</dt>
 <dd><p class="first">This ticker object is used in fast PDF update, to check if scattering
@@ -2799,7 +2801,7 @@ This method can be overridden in a Python-derived class.</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.type">
-<code class="descname">type</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em><span class="sig-paren">)</span> &rarr; str :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">type</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em><span class="sig-paren">)</span> &#x2192; str :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a unique string type that identifies a ScatteringFactorTable-derived class.
 The string type is used for class registration and in the <cite>createByType</cite>
 function.</p>
@@ -2857,7 +2859,7 @@ to the International Tables Volume C.</p>
 <span class="n">sfavg1</span> <span class="o">=</span> <span class="n">SFAverage</span><span class="o">.</span><span class="n">fromComposition</span><span class="p">({</span><span class="s1">&#39;Na&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Cl&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="n">xtb</span><span class="p">,</span> <span class="n">qa</span><span class="p">)</span>
 <span class="n">sfavg2</span> <span class="o">=</span> <span class="n">SFAverage</span><span class="o">.</span><span class="n">fromComposition</span><span class="p">([(</span><span class="s1">&#39;Mn&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)],</span> <span class="n">xtb</span><span class="p">,</span> <span class="n">qa</span><span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">diffpy.Structure</span> <span class="k">import</span> <span class="n">loadStructure</span>
+<span class="kn">from</span> <span class="nn">diffpy.structure</span> <span class="k">import</span> <span class="n">loadStructure</span>
 <span class="kn">from</span> <span class="nn">diffpy.srreal.pdfcalculator</span> <span class="k">import</span> <span class="n">DebyePDFCalculator</span>
 <span class="n">dpdfc</span> <span class="o">=</span> <span class="n">DebyePDFCalculator</span><span class="p">()</span>
 <span class="n">dpdfc</span><span class="p">(</span><span class="n">loadStructure</span><span class="p">(</span><span class="s1">&#39;rutile.cif&#39;</span><span class="p">))</span>
@@ -2951,12 +2953,12 @@ Float or NumPy array.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>composition</strong> (<em>dictionary or a list of (symbol, amount) pairs.</em>) &#8211; The chemical composition for evaluating the average.  Atom
+<li><strong>composition</strong> (<em>dictionary</em><em> or </em><em>a list of</em><em> (</em><em>symbol</em><em>, </em><em>amount</em><em>) </em><em>pairs.</em>) – The chemical composition for evaluating the average.  Atom
 symbols may repeat when it is a list of (symbol, amount) pairs.</li>
-<li><strong>sftb</strong> (<em>ScatteringFactorTable or str</em>) &#8211; The ScatteringFactorTable object for looking up the values.
+<li><strong>sftb</strong> (<a class="reference internal" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable" title="diffpy.srreal.scatteringfactortable.ScatteringFactorTable"><em>ScatteringFactorTable</em></a><em> or </em><em>str</em>) – The ScatteringFactorTable object for looking up the values.
 When string use <cite>ScatteringFactorTable.createByType</cite> to create
 a new lookup table of the specified type.</li>
-<li><strong>q</strong> (<em>float or NumPy array (optional)</em>) &#8211; The Q value in inverse Angstroms for which to lookup
+<li><strong>q</strong> (<em>float</em><em> or </em><em>NumPy array</em><em> (</em><em>optional</em><em>)</em>) – The Q value in inverse Angstroms for which to lookup
 the scattering factor values.</li>
 </ul>
 </td>
@@ -2980,13 +2982,13 @@ the scattering factor values.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>stru</strong> (<em>diffpy Structure or pyobjcryst Crystal or StructureAdapter</em>) &#8211; The structure object that stores the atom species and their
+<li><strong>stru</strong> (<em>diffpy Structure</em><em> or </em><em>pyobjcryst Crystal</em><em> or </em><em>StructureAdapter</em>) – The structure object that stores the atom species and their
 occupancies.  Can be any type with a registered conversion
 to the StructureAdapter class.</li>
-<li><strong>sftb</strong> (<em>ScatteringFactorTable or str</em>) &#8211; The ScatteringFactorTable object for looking up the values.
+<li><strong>sftb</strong> (<a class="reference internal" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable" title="diffpy.srreal.scatteringfactortable.ScatteringFactorTable"><em>ScatteringFactorTable</em></a><em> or </em><em>str</em>) – The ScatteringFactorTable object for looking up the values.
 When string use <cite>ScatteringFactorTable.createByType</cite> to create
 a new lookup table of the specified type.</li>
-<li><strong>q</strong> (<em>float or NumPy array (optional)</em>) &#8211; The Q value in inverse Angstroms for which to lookup
+<li><strong>q</strong> (<em>float</em><em> or </em><em>NumPy array</em><em> (</em><em>optional</em><em>)</em>) – The Q value in inverse Angstroms for which to lookup
 the scattering factor values.</li>
 </ul>
 </td>
@@ -3018,18 +3020,18 @@ the scattering factor values.</li>
 <div class="section" id="module-diffpy.srreal.structureadapter">
 <span id="diffpy-srreal-structureadapter-module"></span><h2>diffpy.srreal.structureadapter module<a class="headerlink" href="#module-diffpy.srreal.structureadapter" title="Permalink to this headline">¶</a></h2>
 <dl class="docutils">
-<dt>class StructureAdapter &#8211; adapter of any structure object to the interface</dt>
+<dt>class StructureAdapter – adapter of any structure object to the interface</dt>
 <dd>expected by srreal PairQuantity calculators</dd>
 </dl>
 <p>Routines:</p>
-<p>createStructureAdapter &#8211; create StructureAdapter from a Python object
-nometa       &#8211; create StructureAdapter with disabled _customPQConfig method</p>
+<p>createStructureAdapter – create StructureAdapter from a Python object
+nometa       – create StructureAdapter with disabled _customPQConfig method</p>
 <blockquote>
-<div>this prevents copying of diffpy.Structure pdffit metadata
+<div>this prevents copying of diffpy.structure pdffit metadata
 to PDFCalculator object</div></blockquote>
-<p>nosymmetry   &#8211; create StructureAdapter with disabled symmetry expansion.</p>
+<p>nosymmetry   – create StructureAdapter with disabled symmetry expansion.</p>
 <p>Constants:</p>
-<p>EMPTY        &#8211; singleton instance of an empty structure.</p>
+<p>EMPTY        – singleton instance of an empty structure.</p>
 <dl class="function">
 <dt id="diffpy.srreal.structureadapter.RegisterStructureAdapter">
 <code class="descclassname">diffpy.srreal.structureadapter.</code><code class="descname">RegisterStructureAdapter</code><span class="sig-paren">(</span><em>fqname</em>, <em>fnc=None</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.structureadapter.RegisterStructureAdapter" title="Permalink to this definition">¶</a></dt>
@@ -3039,19 +3041,19 @@ structure object types can be afterwards directly used with calculators
 in diffpy.srreal as they would be implicitly converted to the internal
 diffpy.srreal structure type.</p>
 <dl class="docutils">
-<dt>fqname   &#8211; fully qualified class name for the convertible objects.</dt>
-<dd>This is the quoted string included in &#8220;str(type(obj))&#8221;.
+<dt>fqname   – fully qualified class name for the convertible objects.</dt>
+<dd>This is the quoted string included in “str(type(obj))”.
 The converter function would be called for object of the
 same or derived types.</dd>
 </dl>
-<p>fnc      &#8211; function that converts the fqname type to StructureAdapter.</p>
+<p>fnc      – function that converts the fqname type to StructureAdapter.</p>
 <p>Note: When fnc is None RegisterStructureAdapter works as a decorator
 and the conversion function can be specified below, i.e.,</p>
 <blockquote>
-<div><p>&#64;RegisterStructureAdapter(&#8216;my.structure.Type&#8217;)
+<div><p>&#64;RegisterStructureAdapter(‘my.structure.Type’)
 def convertMyStructure(stru):</p>
 <blockquote>
-<div>...</div></blockquote>
+<div>…</div></blockquote>
 </div></blockquote>
 <p>See diffpy.srreal.structureconverters module for usage example.</p>
 </dd></dl>
@@ -3061,7 +3063,7 @@ def convertMyStructure(stru):</p>
 <code class="descclassname">diffpy.srreal.structureadapter.</code><code class="descname">createStructureAdapter</code><span class="sig-paren">(</span><em>stru</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.structureadapter.createStructureAdapter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create StructureAdapter from a Python object.</p>
 <dl class="docutils">
-<dt>stru &#8211; an object that is convertible to StructureAdapter, i.e., it has</dt>
+<dt>stru – an object that is convertible to StructureAdapter, i.e., it has</dt>
 <dd>a registered factory that converts Python structure object to
 StructureAdapter.  Return stru if already a StructureAdapter.</dd>
 </dl>
@@ -3089,7 +3091,7 @@ StructureAdapter classes.</p>
 <dl class="function">
 <dt id="diffpy.srreal.structureconverters.convertDiffPyStructure">
 <code class="descclassname">diffpy.srreal.structureconverters.</code><code class="descname">convertDiffPyStructure</code><span class="sig-paren">(</span><em>stru</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.structureconverters.convertDiffPyStructure" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adapt Structure class from diffpy.Structure package.</p>
+<dd><p>Adapt Structure class from diffpy.structure package.</p>
 </dd></dl>
 
 </div>
@@ -3125,8 +3127,8 @@ StructureAdapter classes.</p>
 <dt id="diffpy.srreal.wraputils.propertyFromExtDoubleAttr">
 <code class="descclassname">diffpy.srreal.wraputils.</code><code class="descname">propertyFromExtDoubleAttr</code><span class="sig-paren">(</span><em>attrname</em>, <em>doc</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.wraputils.propertyFromExtDoubleAttr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create property wrapper to a DoubleAttr in C++ extension object.</p>
-<p>attrname &#8211; string name of the double attribute
-doc      &#8211; docstring for the Python class property</p>
+<p>attrname – string name of the double attribute
+doc      – docstring for the Python class property</p>
 <p>Return a property object.</p>
 </dd></dl>
 
@@ -3136,7 +3138,7 @@ doc      &#8211; docstring for the Python class property</p>
 <dd><p>Set attributes of the obj according to keyword arguments.
 For example:    setattrFromKeywordArguments(obj, qmax=24, scale=2)
 This is a shared helper function used by __init__ and __call__.</p>
-<p>kwargs   &#8211; one or more keyword arguments</p>
+<p>kwargs   – one or more keyword arguments</p>
 <p>No return value.
 Raise TypeError for invalid keyword argument.</p>
 </dd></dl>
@@ -3189,7 +3191,7 @@ Raise TypeError for invalid keyword argument.</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/api/diffpy.srreal.txt"
+      <li><a href="../_sources/api/diffpy.srreal.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -3219,12 +3221,12 @@ Raise TypeError for invalid keyword argument.</p>
         <li class="right" >
           <a href="../index.html" title="diffpy.srreal documentation"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">SrReal 1.1.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">SrReal 1.2 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Brookhaven National Laboratory.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.9.
+        &#169; Copyright 2017, Brookhaven National Laboratory.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
     </div>
   </body>
 </html>
