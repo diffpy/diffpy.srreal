@@ -86,7 +86,7 @@ before_install:
   - $NOSYS || devutils/makesdist
   - $NOSYS || MYTARBUNDLE="$(ls -t "${PWD}"/dist/*.tar.gz | head -1)"
   - $NOSYS || pushd ~/pkgs
-  - $NOSYS || git clone https://github.com/diffpy/libObjCryst.git
+  - $NOSYS || git clone https://github.com/diffpy/libobjcryst.git
   - $NOSYS || git clone https://github.com/diffpy/libdiffpy.git
   - $NOSYS || popd
 
@@ -103,7 +103,7 @@ install:
   # TODO - remove after fixup release of PyCifRW following 4.3.
   - $NOAPT || $MYPIP install $MYPIPFLAGS "pycifrw==4.2.1"
   - $NOAPT || $MYPIP install $MYPIPFLAGS diffpy.structure
-  - $NOAPT || sudo scons -C ~/pkgs/libObjCryst install
+  - $NOAPT || sudo scons -C ~/pkgs/libobjcryst install
   - $NOAPT || $MYPIP install $MYPIPFLAGS pyobjcryst
   - $NOAPT || sudo scons -C ~/pkgs/libdiffpy install
   - $NOAPT || $MYPIP install $MYPIPFLAGS "${MYTARBUNDLE}"
@@ -114,7 +114,7 @@ install:
   # install diffpy.structure from the python3 development branch.
   # TODO - replace with PyPI version later.
   - $NOBREW || $MYPIP install $MYPIPFLAGS https://github.com/diffpy/diffpy.structure/archive/python3.tar.gz
-  - $NOBREW || scons -C ~/pkgs/libObjCryst install
+  - $NOBREW || scons -C ~/pkgs/libobjcryst install
   - $NOBREW || $MYPIP install $MYPIPFLAGS pyobjcryst
   - $NOBREW || scons -C ~/pkgs/libdiffpy install
   - $NOBREW || $MYPIP install $MYPIPFLAGS "${MYTARBUNDLE}"
