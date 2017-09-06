@@ -13,6 +13,12 @@ env:
   - MYUSEMC=true MYPYTHON_VERSION=3.6
   - MYUSEMC=false
 
+# TODO - remove this block after fixup release of pyobjcryst 2.0.2.
+matrix:
+  exclude:
+    - os: osx
+      env: MYUSEMC=false
+
 git:
   depth: 999999
 
