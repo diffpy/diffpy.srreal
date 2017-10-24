@@ -25,7 +25,7 @@ import subprocess
 import platform
 
 def subdictionary(d, keyset):
-    return dict([kv for kv in d.items() if kv[0] in keyset])
+    return dict(kv for kv in d.items() if kv[0] in keyset)
 
 def getsyspaths(*names):
     pall = sum((os.environ.get(n, '').split(os.pathsep) for n in names), [])
