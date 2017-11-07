@@ -108,26 +108,24 @@ install:
   - $NOMC || source activate testenv
   - $NOMC || conda install --yes --use-local --file=/tmp/mypackage.txt
 
-  - $NOAPT || $MYPIP install $MYPIPFLAGS coverage
-  - $NOAPT || $MYPIP install $MYPIPFLAGS periodictable
-  # TODO - remove after fixup release of PyCifRW following 4.3.
-  - $NOAPT || $MYPIP install $MYPIPFLAGS "pycifrw==4.2.1"
-  - $NOAPT || $MYPIP install $MYPIPFLAGS diffpy.structure
-  - $NOAPT || sudo scons -C ~/pkgs/libobjcryst install
-  - $NOAPT || $MYPIP install $MYPIPFLAGS pyobjcryst
-  - $NOAPT || sudo scons -C ~/pkgs/libdiffpy install
-  - $NOAPT || $MYPIP install $MYPIPFLAGS "${MYTARBUNDLE}"
+  - MYSUDO=
+  - $NOAPT || MYSUDO=sudo
+  - $NOSYS || $MYPIP install $MYPIPFLAGS coverage
+  - $NOSYS || $MYPIP install $MYPIPFLAGS periodictable
 
-  - $NOBREW || $MYPIP install $MYPIPFLAGS coverage
-  - $NOBREW || $MYPIP install $MYPIPFLAGS periodictable
+  # TODO - combine after fixup release of PyCifRW following 4.3.
+  - $NOAPT || $MYPIP install $MYPIPFLAGS "pycifrw==4.2.1"
   - $NOBREW || $MYPIP install $MYPIPFLAGS pycifrw
+
+  - $NOAPT || $MYPIP install $MYPIPFLAGS diffpy.structure
   # install diffpy.structure from the python3 development branch.
   # TODO - replace with PyPI version later.
   - $NOBREW || $MYPIP install $MYPIPFLAGS https://github.com/diffpy/diffpy.structure/archive/python3.tar.gz
-  - $NOBREW || scons -C ~/pkgs/libobjcryst install
-  - $NOBREW || $MYPIP install $MYPIPFLAGS pyobjcryst
-  - $NOBREW || scons -C ~/pkgs/libdiffpy install
-  - $NOBREW || $MYPIP install $MYPIPFLAGS "${MYTARBUNDLE}"
+
+  - $NOSYS || $MYSUDO scons -C ~/pkgs/libobjcryst install
+  - $NOSYS || $MYPIP install $MYPIPFLAGS pyobjcryst
+  - $NOSYS || $MYSUDO scons -C ~/pkgs/libdiffpy install
+  - $NOSYS || $MYPIP install $MYPIPFLAGS "${MYTARBUNDLE}"
 
   - cd ${MYRUNDIR}
   - MYGIT_REV=$($MYPYTHON -c "import ${MYNAME}.version as v; print(v.__gitsha__)")
