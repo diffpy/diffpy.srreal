@@ -14,16 +14,26 @@
 ##############################################################################
 
 
-"""Definitions of version-related constants and of libdiffpy_version_info.
 """
+Definitions of version-related constants and of libdiffpy_version_info.
+
+Notes
+-----
+Variable `__gitsha__` is deprecated as of version 1.3.
+Use `__git_commit__` instead.
+"""
+
+__all__ = ['__date__', '__git_commit__', '__timestamp__', '__version__',
+           'libdiffpy_version_info']
+
 
 from diffpy.srreal._version_data import __version__
 from diffpy.srreal._version_data import __date__
-from diffpy.srreal._version_data import __gitsha__
+from diffpy.srreal._version_data import __git_commit__
 from diffpy.srreal._version_data import __timestamp__
 
-# silence the pyflakes syntax checker
-assert all((__version__, __date__, __gitsha__, __timestamp__)) or True
+# TODO remove deprecated __gitsha__ in version 1.4.
+__gitsha__ = __git_commit__
 
 # version information on the active libdiffpy shared library -----------------
 
@@ -56,7 +66,7 @@ def get_libdiffpy_version_info():
 
 
     .. note:: Deprecated in diffpy.srreal 1.1
-          `libdiffpy_version_info` will be removed in diffpy.srreal 1.2.
+          `libdiffpy_version_info` will be removed in diffpy.srreal 1.3.
     """
     from warnings import warn
     warn("get_libdiffpy_version_info is deprecated, "
