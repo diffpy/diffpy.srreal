@@ -13,7 +13,6 @@
 #
 ##############################################################################
 
-
 """class Attributes  -- wrapper to C++ class diffpy::Attributes
     A base to PairQuantity and quite a few other classes.
 """

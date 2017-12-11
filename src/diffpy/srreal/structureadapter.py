@@ -13,7 +13,6 @@
 #
 ##############################################################################
 
-
 """class StructureAdapter -- adapter of any structure object to the interface
     expected by srreal PairQuantity calculators
 

@@ -13,8 +13,7 @@
 #
 ##############################################################################
 
-
-"""\
+"""
 Converters from other structure representations in Python to diffpy.srreal
 StructureAdapter classes.
 """

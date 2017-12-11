@@ -13,8 +13,7 @@
 #
 ##############################################################################
 
-
-"""\
+"""
 Cancel registration of Python-extended C++ classes when Python exits.
 
 Note

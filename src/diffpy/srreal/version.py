@@ -13,7 +13,6 @@
 #
 ##############################################################################
 
-
 """
 Definitions of version-related constants and of libdiffpy_version_info.
 

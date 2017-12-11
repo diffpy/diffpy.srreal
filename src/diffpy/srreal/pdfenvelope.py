@@ -13,8 +13,7 @@
 #
 ##############################################################################
 
-
-"""\
+"""
 Classes for configuring PDF scaling envelope:
     PDFEnvelope, ScaleEnvelope, QResolutionEnvelope,
     SphericalShapeEnvelope, StepCutEnvelope

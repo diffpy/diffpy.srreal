@@ -13,8 +13,7 @@
 #
 ##############################################################################
 
-
-"""\
+"""
 Classes for configuring PDF baseline:
     PDFBaseline, ZeroBaseline, LinearBaseline
 """

@@ -13,8 +13,7 @@
 #
 ##############################################################################
 
-
-"""\
+"""
 class ScatteringFactorTable -- scattering factors for atoms, ions and isotopes.
 """
 

@@ -13,8 +13,7 @@
 #
 ##############################################################################
 
-
-"""\
+"""
 Class for configuring PDF profile function:
     PeakProfile
     GaussianProfile, CroppedGaussianProfile

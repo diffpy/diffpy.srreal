@@ -13,7 +13,6 @@
 #
 ##############################################################################
 
-
 """class AtomRadiiTable -- storage of empirical atom radii.
 """
 

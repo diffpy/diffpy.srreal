@@ -13,7 +13,6 @@
 #
 ##############################################################################
 
-
 """class BVParametersTable -- storage of bond valence parameters
 class BVParam -- bond valence data associated with specific cation-anion pair
 """

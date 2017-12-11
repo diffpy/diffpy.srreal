@@ -13,7 +13,6 @@
 #
 ##############################################################################
 
-
 """ParallelPairQuantity  -- proxy class for converting PairQuantity types
 into parallel calculators.
 """

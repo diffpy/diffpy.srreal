@@ -13,7 +13,6 @@
 #
 ##############################################################################
 
-
 """class BondCalculator -- distances between atoms in the structure.
 """
 

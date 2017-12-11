@@ -13,8 +13,7 @@
 #
 ##############################################################################
 
-
-"""\
+"""
 Classes for configuring peak width evaluation in PDF calculations:
     PeakWidthModel,
     ConstantPeakWidth, DebyeWallerPeakWidth, JeongPeakWidth

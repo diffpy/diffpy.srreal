@@ -13,8 +13,7 @@
 #
 ##############################################################################
 
-
-"""\
+"""
 Docstrings for classes and functions in srreal_ext module.
 """
 

@@ -13,7 +13,6 @@
 #
 ##############################################################################
 
-
 """Local utilities helpful for tweaking interfaces to boost python classes.
 """
 

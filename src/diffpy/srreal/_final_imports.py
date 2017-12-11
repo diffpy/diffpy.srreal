@@ -13,8 +13,7 @@
 #
 ##############################################################################
 
-
-"""\
+"""
 Finalize tweak of classes from the extension module srreal_ext.
 
 This private module handles loading of Python-level tweaks of the

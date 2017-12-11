@@ -13,8 +13,7 @@
 #
 ##############################################################################
 
-
-"""\
+"""
 class PairQuantity    -- base class for Python defined calculators.
 """
 

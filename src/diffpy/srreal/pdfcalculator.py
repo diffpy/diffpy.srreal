@@ -13,8 +13,7 @@
 #
 ##############################################################################
 
-
-"""\
+"""
 Top-level classes for PDF calculation:
     DebyePDFCalculator -- simulate PDF by evaluating Debye sum in Q-space
     PDFCalculator      -- calculate PDF by peak summation in real space

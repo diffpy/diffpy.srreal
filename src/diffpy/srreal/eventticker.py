@@ -13,8 +13,7 @@
 #
 ##############################################################################
 
-
-"""\
+"""
 class EventTicker -- storage of modification times of dependent objects
 """
 

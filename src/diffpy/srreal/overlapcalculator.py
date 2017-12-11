@@ -13,7 +13,6 @@
 #
 ##############################################################################
 
-
 """class OverlapCalculator -- calculator of atom overlaps in a structure.
 """
 
