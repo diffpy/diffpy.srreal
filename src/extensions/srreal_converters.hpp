@@ -150,6 +150,17 @@ using diffpy::srreal::createStructureAdapter;
     } \
 
 
+/// this macro defines wrapper for a C++ method with one argument,
+/// that convert the result to python list
+#define DECLARE_PYLIST_METHOD_WRAPPER1(method, wrapper) \
+    template <class T, class T1> \
+    ::boost::python::object wrapper(const T& obj, const T1& a1) \
+    { \
+        ::boost::python::object rv = convertToPythonList(obj.method(a1)); \
+        return rv; \
+    } \
+
+
 /// this macro defines a wrapper function for a C++ method,
 /// that converts the result to a python list of NumPy arrays
 #define DECLARE_PYLISTARRAY_METHOD_WRAPPER(method, wrapper) \
