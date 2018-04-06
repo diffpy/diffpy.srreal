@@ -13,12 +13,6 @@ env:
   - MYUSEMC=true MYPYTHON_VERSION=3.6
   - MYUSEMC=false
 
-# TODO - remove this block after fixup release of pyobjcryst 2.0.2.
-matrix:
-  exclude:
-    - os: osx
-      env: MYUSEMC=false
-
 git:
   depth: 999999
 
@@ -125,7 +119,9 @@ install:
   - $NOBREW || $MYPIP install $MYPIPFLAGS https://github.com/diffpy/diffpy.structure/archive/python3.tar.gz
 
   - $NOSYS || $MYSUDO scons -C ~/pkgs/libobjcryst install
-  - $NOSYS || $MYPIP install $MYPIPFLAGS pyobjcryst
+  # TODO - restore PyPI version after fixup release of pyobjcryst > 2.0.2
+  - $NOSYS || $MYPIP install $MYPIPFLAGS https://github.com/diffpy/pyobjcryst/archive/master.tar.gz
+  # - $NOSYS || $MYPIP install $MYPIPFLAGS pyobjcryst
   - $NOSYS || $MYSUDO scons -C ~/pkgs/libdiffpy install
   - $NOSYS || $MYPIP install $MYPIPFLAGS "${MYTARBUNDLE}"
 
