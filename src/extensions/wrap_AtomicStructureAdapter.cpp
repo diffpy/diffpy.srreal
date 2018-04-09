@@ -220,9 +220,8 @@ Return symmetry equivalent atoms for a site in the asymmetric unit.\n\
 \n\
 index    -- zero-based index of an atom in the asymmetric unit.\n\
 \n\
-Return all symmetry equivalent atoms in the periodic unit cell\n\
-as an AtomicStructureAdapter type.  Atom positions and displacement\n\
-parameters are in Cartesian coordinates.\n\
+Return a list of all symmetry equivalent atoms in the periodic unit cell\n\
+Atom positions and displacement parameters are in Cartesian coordinates.\n\
 ";
 
 const char* doc_CrystalStructureAdapter_expandLatticeAtom = "\
@@ -231,9 +230,8 @@ Perform symmetry expansion for an Atom in fractional coordinates.\n\
 atom -- Atom object with xyz_cartn and uij_cartn referring to position\n\
         and displacement parameters in fractional coordinates\n\
 \n\
-Return all symmetry equivalent atoms in the periodic unit cell\n\
-as an AtomicStructureAdapter type.  Positions and displacement\n\
-parameters are all in fractional coordinates.\n\
+Return a list of all symmetry equivalent atoms in the periodic unit cell\n\
+Positions and displacement parameters are in fractional coordinates.\n\
 ";
 
 const char* doc_CrystalStructureAdapter_updateSymmetryPositions = "\
@@ -473,26 +471,17 @@ crystaladapter_getsymop(const CrystalStructureAdapter& adpt, int idx)
 }
 
 
-AtomicStructureAdapterPtr
-crystaladapter_getequivalentatoms(const CrystalStructureAdapter& adpt, int idx)
+DECLARE_PYLIST_METHOD_WRAPPER1(getEquivalentAtoms, getEquivalentAtoms_aslist)
+
+python::object crystaladapter_getequivalentatoms(
+        const CrystalStructureAdapter& adpt, int idx)
 {
     ensure_index_bounds(idx, 0, adpt.countSymOps());
-    const CrystalStructureAdapter::AtomVector& av =
-        adpt.getEquivalentAtoms(idx);
-    AtomicStructureAdapterPtr rv(new AtomicStructureAdapter);
-    rv->assign(av.begin(), av.end());
-    return rv;
+    return getEquivalentAtoms_aslist(adpt, idx);
 }
 
 
-AtomicStructureAdapterPtr crystaladapter_expandlatticeatom(
-        const CrystalStructureAdapter& adpt, const Atom& a)
-{
-    CrystalStructureAdapter::AtomVector av = adpt.expandLatticeAtom(a);
-    AtomicStructureAdapterPtr rv(new AtomicStructureAdapter);
-    rv->assign(av.begin(), av.end());
-    return rv;
-}
+DECLARE_PYLIST_METHOD_WRAPPER1(expandLatticeAtom, expandLatticeAtom_aslist)
 
 }   // namespace nswrap_AtomicStructureAdapter
 
@@ -663,7 +652,8 @@ void wrap_AtomicStructureAdapter()
                 crystaladapter_getequivalentatoms, bp::arg("index"),
                 doc_CrystalStructureAdapter_getEquivalentAtoms)
         .def("expandLatticeAtom",
-                crystaladapter_expandlatticeatom, bp::arg("atom"),
+                expandLatticeAtom_aslist<CrystalStructureAdapter, Atom>,
+                bp::arg("atom"),
                 doc_CrystalStructureAdapter_expandLatticeAtom)
         .def("updateSymmetryPositions",
                 &CrystalStructureAdapter::updateSymmetryPositions,
