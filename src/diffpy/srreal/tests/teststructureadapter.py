@@ -11,6 +11,7 @@ from diffpy.srreal.pdfcalculator import PDFCalculator
 from diffpy.srreal.tests.testutils import has_pyobjcryst, _msg_nopyobjcryst
 from diffpy.srreal.tests.testutils import loadObjCrystCrystal
 from diffpy.srreal.tests.testutils import loadDiffPyStructure
+from diffpy.srreal.tests.testutils import loadCrystalStructureAdapter
 from diffpy.srreal.structureadapter import (
         createStructureAdapter, nometa, nosymmetry, StructureAdapter,
         AtomicStructureAdapter, Atom, PeriodicStructureAdapter,
@@ -362,6 +363,29 @@ class TestAtomicAdapterIndexRange(IndexRangeTests, TestCase):
 
 class TestCrystalAdapter(IndexRangeTests, TestCase):
     AdptClass = CrystalStructureAdapter
+
+    def test_expandLatticeAtom(self):
+        """Check CrystalStructureAdapter.expandLatticeAtom."""
+        cdse = loadCrystalStructureAdapter('CdSe_cadmoselite.cif')
+        a = Atom()
+        a.xyz_cartn = (0.1, 0.13, 0.17)
+        asymsites = cdse.expandLatticeAtom(a)
+        self.assertTrue(type(asymsites) is list)
+        self.assertEqual(12, len(asymsites))
+        self.assertEqual(12, cdse.countSymOps())
+        return
+
+    def test_getEquivalentAtoms(self):
+        """Check CrystalStructureAdapter.getEquivalentAtoms."""
+        cdse = loadCrystalStructureAdapter('CdSe_cadmoselite.cif')
+        eqatoms0 = cdse.getEquivalentAtoms(0)
+        eqatoms1 = cdse.getEquivalentAtoms(1)
+        self.assertTrue(type(eqatoms1) is list)
+        self.assertEqual(2, len(eqatoms0))
+        self.assertEqual(2, len(eqatoms1))
+        self.assertTrue(all(a.atomtype == "Cd" for  a in eqatoms0))
+        self.assertTrue(all(a.atomtype == "Se" for  a in eqatoms1))
+        return
 
 # ----------------------------------------------------------------------------
 

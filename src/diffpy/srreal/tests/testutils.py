@@ -16,8 +16,10 @@ from diffpy.srreal.tests import logger
 
 if sys.version_info[0] >= 3:
     import diffpy.structure as mod_structure
+    from diffpy.structure.parsers import getParser
 else:
     import diffpy.Structure as mod_structure
+    from diffpy.Structure.Parsers import getParser
 
 # Resolve availability of optional packages.
 
@@ -66,6 +68,19 @@ def loadDiffPyStructure(filename):
     fullpath = datafile(filename)
     stru = mod_structure.loadStructure(fullpath)
     return stru
+
+
+def loadCrystalStructureAdapter(filename):
+    from diffpy.srreal.structureconverters import _fetchDiffPyStructureData
+    fullpath = datafile(filename)
+    pcif = getParser('cif')
+    stru = pcif.parseFile(fullpath)
+    asu = stru[:0] + pcif.asymmetric_unit
+    adpt = CrystalStructureAdapter()
+    _fetchDiffPyStructureData(adpt, asu)
+    for op in pcif.spacegroup.iter_symops():
+        adpt.addSymOp(op.R, op.t)
+    return adpt
 
 # helper class for testing overloading of StructureAdapter
 
