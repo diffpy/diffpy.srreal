@@ -220,9 +220,8 @@ Return symmetry equivalent atoms for a site in the asymmetric unit.\n\
 \n\
 index    -- zero-based index of an atom in the asymmetric unit.\n\
 \n\
-Return all symmetry equivalent atoms in the periodic unit cell\n\
-as an AtomicStructureAdapter type.  Atom positions and displacement\n\
-parameters are in Cartesian coordinates.\n\
+Return a list of all symmetry equivalent atoms in the periodic unit cell\n\
+Atom positions and displacement parameters are in Cartesian coordinates.\n\
 ";
 
 const char* doc_CrystalStructureAdapter_expandLatticeAtom = "\
@@ -231,9 +230,8 @@ Perform symmetry expansion for an Atom in fractional coordinates.\n\
 atom -- Atom object with xyz_cartn and uij_cartn referring to position\n\
         and displacement parameters in fractional coordinates\n\
 \n\
-Return all symmetry equivalent atoms in the periodic unit cell\n\
-as an AtomicStructureAdapter type.  Positions and displacement\n\
-parameters are all in fractional coordinates.\n\
+Return a list of all symmetry equivalent atoms in the periodic unit cell\n\
+Positions and displacement parameters are in fractional coordinates.\n\
 ";
 
 const char* doc_CrystalStructureAdapter_updateSymmetryPositions = "\
