@@ -23,7 +23,7 @@ from diffpy.srreal.srreal_ext import Attributes
 
 # Inject the __getattr__ and __setattr__ methods to the Attributes class
 
-def __getattr__(self, name):
+def _getattr(self, name):
     '''Lookup a C++ double attribute if standard Python lookup fails.
 
     Raise AttributeError if C++ double attribute does not exist.
@@ -34,10 +34,10 @@ def __getattr__(self, name):
         raise AttributeError(e)
     return rv
 
-Attributes.__getattr__ = __getattr__
+Attributes.__getattr__ = _getattr
 
 
-def __setattr__(self, name, value):
+def _setattr(self, name, value):
     '''Assign to C++ double attribute if Python attribute does not exist.
     '''
     try:
@@ -49,7 +49,7 @@ def __setattr__(self, name, value):
     object.__setattr__(self, name, value)
     return
 
-Attributes.__setattr__ = __setattr__
+Attributes.__setattr__ = _setattr
 
 # Helper accessor functions used by the _registerDoubleAttribute method
 
