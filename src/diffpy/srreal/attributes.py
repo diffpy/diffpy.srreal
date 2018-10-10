@@ -28,10 +28,7 @@ def _getattr(self, name):
 
     Raise AttributeError if C++ double attribute does not exist.
     '''
-    try:
-        rv = self._getDoubleAttr(name)
-    except Exception as e:
-        raise AttributeError(e)
+    rv = self._getDoubleAttr(name)
     return rv
 
 Attributes.__getattr__ = _getattr
