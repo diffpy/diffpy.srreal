@@ -66,7 +66,7 @@ Optional software:
 * ``pyobjcryst`` - Python bindings to ObjCryst++, the Object Oriented
   Crystallographic library for C++, https://github.com/diffpy/pyobjcryst.
 
-We recommend to use `Anaconda Python <https://www.continuum.io/downloads>`_
+We recommend to use `Anaconda Python <https://www.anaconda.com/download>`_
 as it allows to install all software dependencies together with
 diffpy.srreal.  For other Python distributions it is necessary to
 install the required software separately.  As an example, on Ubuntu
