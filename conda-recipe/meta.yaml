@@ -29,11 +29,11 @@ requirements:
     - boost 1.67.0
 
   run:
+    # NOTE libdiffpy is added implicitly from libdiffpy run_exports
     - python
     - setuptools
     - {{ pin_compatible('numpy', min_pin='x.x', max_pin='x') }}
     - boost 1.67.0
-    - libdiffpy >=1.3.4,1.3.*
     - pycifrw
     - diffpy.structure
     - pyobjcryst 2.0*
