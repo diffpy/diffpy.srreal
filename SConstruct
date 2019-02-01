@@ -86,10 +86,6 @@ if env['tool'] == 'intelc':
         Exit(1)
     env.Tool('intelc', topdir=icpc[:icpc.rfind('/bin')])
 
-# Apply CFLAGS, CXXFLAGS, LDFLAGS from the system environment.
-flagnames = 'CFLAGS CXXFLAGS LDFLAGS'.split()
-env.MergeFlags([os.environ.get(n, '') for n in flagnames])
-
 # Figure out compilation switches, filter away C-related items.
 good_python_flag = lambda n : (
     not isinstance(n, str) or
