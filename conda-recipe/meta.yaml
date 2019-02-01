@@ -19,10 +19,10 @@ requirements:
   build:
     - {{ compiler('cxx') }}
   host:
-    - python
+    - python {{ python }}
     - setuptools
     - scons
-    - numpy 1.11.2
+    - numpy {{ numpy }}
     - libdiffpy >=1.3.4,1.3.*
     - pycifrw
     - diffpy.structure
@@ -31,7 +31,7 @@ requirements:
   run:
     - python
     - setuptools
-    - numpy >=1.11.2
+    - {{ pin_compatible('numpy', min_pin='x.x', max_pin='x') }}
     - boost 1.67.0
     - libdiffpy >=1.3.4,1.3.*
     - pycifrw
