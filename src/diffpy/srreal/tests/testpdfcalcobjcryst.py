@@ -23,13 +23,15 @@ def _loadExpectedPDF(basefilename):
     rxf = re.compile(r'[-+]?(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?')
     fullpath = datafile(basefilename)
     cfgdict = {}
-    for line in open(fullpath):
+    fp = open(fullpath)
+    for line in fp:
         if line[:1] != '#':  break
         w = line.split()
         has_cfgdata = (len(w) == 4 and w[2] == '=')
         if not has_cfgdata:  continue
         cfgdict[w[1]] = w[3]
         if rxf.match(w[3]):  cfgdict[w[1]] = float(w[3])
+    fp.close()
     r, g = numpy.loadtxt(fullpath, usecols=(0, 1), unpack=True)
     rv = (r, g, cfgdict)
     return rv
