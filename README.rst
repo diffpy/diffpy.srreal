@@ -46,7 +46,7 @@ http://diffpy.github.io/diffpy.srreal.
 REQUIREMENTS
 ------------------------------------------------------------------------
 
-The diffpy.srreal package requires Python 3.6, 3.5, 3.4 or 2.7,
+The diffpy.srreal package requires Python 3.7, 3.6, 3.5 or 2.7,
 C++ compiler and the following software:
 
 * ``setuptools`` - tools for installing Python packages

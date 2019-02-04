@@ -17,18 +17,23 @@ build:
 
 requirements:
   build:
-    - python
+    - {{ compiler('cxx') }}
+  host:
+    - python {{ python }}
     - setuptools
-    - numpy 1.11.2
-    - libdiffpy >=1.3.4,1.3.*
+    - scons
+    - numpy {{ numpy }}
+    - libdiffpy {{ libdiffpy }}
     - pycifrw
     - diffpy.structure
+    - boost {{ boost }}
 
   run:
+    # NOTE libdiffpy is added implicitly from libdiffpy run_exports
     - python
     - setuptools
-    - numpy >=1.11.2
-    - libdiffpy >=1.3.4,1.3.*
+    - {{ pin_compatible('numpy', min_pin='x.x', max_pin='x') }}
+    - boost
     - pycifrw
     - diffpy.structure
     - pyobjcryst 2.0*
