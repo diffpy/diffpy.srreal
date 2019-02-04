@@ -7,6 +7,9 @@ python:
 numpy:
   - 1.11
 
+libdiffpy:
+  - 1.3.4
+
 boost:
   - 1.67
 

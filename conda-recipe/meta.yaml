@@ -23,7 +23,7 @@ requirements:
     - setuptools
     - scons
     - numpy {{ numpy }}
-    - libdiffpy >=1.3.4,1.3.*
+    - libdiffpy {{ libdiffpy }}
     - pycifrw
     - diffpy.structure
     - boost {{ boost }}
