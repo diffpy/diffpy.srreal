@@ -50,9 +50,9 @@ def resolve_distutils_target(target, source, env):
     env['distsofile'] = env.File(tgt)
     return 0
 
-cmd_install = '$python setup.py install'
-if 'prefix' in env:
-    cmd_install += ' --prefix=$prefix'
+c = '$python setup.py easy_install --no-deps {} .'
+p = '--prefix=$prefix' if 'prefix' in env else ''
+cmd_install = c.format(p)
 
 install = env.Alias('install', module, [
     resolve_distutils_target,
