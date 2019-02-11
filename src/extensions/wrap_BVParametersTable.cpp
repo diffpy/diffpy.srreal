@@ -251,7 +251,6 @@ object singleton_none()
 void wrap_BVParametersTable()
 {
     using namespace nswrap_BVParametersTable;
-    using diffpy::srreal::hash_value;
     using std::string;
 
     class_<BVParam>("BVParam", doc_BVParam)
@@ -263,7 +262,6 @@ void wrap_BVParametersTable()
         .def("__repr__", repr_BVParam, doc_BVParam___repr__)
         .def(self == self)
         .def(self != self)
-        .def("__hash__", hash_value)
         .def("bondvalence", &BVParam::bondvalence,
                 arg("distance"), doc_BVParam_bondvalence)
         .def("bondvalenceToDistance", &BVParam::bondvalenceToDistance,
