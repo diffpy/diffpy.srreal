@@ -32,37 +32,8 @@ from diffpy.srreal import _final_imports
 from diffpy.srreal.srreal_ext import PeakWidthModel, ConstantPeakWidth
 from diffpy.srreal.srreal_ext import DebyeWallerPeakWidth, JeongPeakWidth
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
-from diffpy.srreal.wraputils import _pickle_getstate, _pickle_setstate
 
 # class PeakWidthModel -------------------------------------------------------
-
-# pickling support
-
-def _peakwidthmodel_create(s):
-    from diffpy.srreal.srreal_ext import _PeakWidthModel_frombytes
-    return _PeakWidthModel_frombytes(s)
-
-def _peakwidthmodel_reduce(self):
-    from diffpy.srreal.srreal_ext import _PeakWidthModel_tobytes
-    args = (_PeakWidthModel_tobytes(self),)
-    rv = (_peakwidthmodel_create, args)
-    return rv
-
-def _peakwidthmodel_reduce_with_state(self):
-    rv = _peakwidthmodel_reduce(self) + (self.__getstate__(),)
-    return rv
-
-# inject pickle methods to the base class
-
-PeakWidthModel.__reduce__ = _peakwidthmodel_reduce_with_state
-PeakWidthModel.__getstate__ = _pickle_getstate
-PeakWidthModel.__setstate__ = _pickle_setstate
-
-# Derived C++ classes are pickled without dictionary
-
-ConstantPeakWidth.__reduce__ = _peakwidthmodel_reduce
-DebyeWallerPeakWidth.__reduce__ = _peakwidthmodel_reduce
-JeongPeakWidth.__reduce__ = _peakwidthmodel_reduce
 
 # add attribute wrappers for the derived classes
 

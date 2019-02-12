@@ -21,6 +21,7 @@
 #include <boost/python/def.hpp>
 #include <boost/python/copy_const_reference.hpp>
 #include <boost/python/register_ptr_to_python.hpp>
+#include <boost/serialization/export.hpp>
 
 #include <string>
 
@@ -201,22 +202,16 @@ class PeakWidthModelWrap :
         mutable std::string mtype;
         wrapper_registry_configurator<PeakWidthModel> mconfigurator;
 
+        // serialization
+        friend class boost::serialization::access;
+        template<class Archive>
+            void serialize(Archive& ar, const unsigned int version)
+        {
+            using boost::serialization::base_object;
+            ar & base_object<PeakWidthModel>(*this);
+        }
+
 };  // class PeakWidthModelWrap
-
-
-python::object peakwidthmodel_tobytes(PeakWidthModelPtr obj)
-{
-    return serialization_tobytes(obj);
-}
-
-
-PeakWidthModelPtr peakwidthmodel_frombytes(const std::string& content)
-{
-    PeakWidthModelPtr rv;
-    diffpy::serialization_fromstring(rv, content);
-    return rv;
-}
-
 
 }   // namespace nswrap_PeakWidthModel
 
@@ -251,26 +246,25 @@ void wrap_PeakWidthModel()
                 &PeakWidthModelWrap::default_ticker,
                 return_internal_reference<>(),
                 doc_PeakWidthModel_ticker)
-        .enable_pickling()
+        .def_pickle(SerializationPickleSuite<PeakWidthModel,DICT_PICKLE>())
         ;
 
     register_ptr_to_python<PeakWidthModelPtr>();
 
     class_<ConstantPeakWidth, bases<PeakWidthModel> >(
             "ConstantPeakWidth", doc_ConstantPeakWidth)
+        .def_pickle(SerializationPickleSuite<ConstantPeakWidth,DICT_IGNORE>())
         ;
 
     class_<DebyeWallerPeakWidth, bases<PeakWidthModel> >(
             "DebyeWallerPeakWidth", doc_DebyeWallerPeakWidth)
+        .def_pickle(SerializationPickleSuite<DebyeWallerPeakWidth,DICT_IGNORE>())
         ;
 
     class_<JeongPeakWidth, bases<DebyeWallerPeakWidth> >(
             "JeongPeakWidth", doc_JeongPeakWidth)
+        .def_pickle(SerializationPickleSuite<JeongPeakWidth,DICT_IGNORE>())
         ;
-
-    // pickling support functions
-    def("_PeakWidthModel_tobytes", peakwidthmodel_tobytes);
-    def("_PeakWidthModel_frombytes", peakwidthmodel_frombytes);
 
     class_<PeakWidthModelOwner>("PeakWidthModelOwner", doc_PeakWidthModelOwner)
         .add_property("peakwidthmodel",
@@ -281,5 +275,9 @@ void wrap_PeakWidthModel()
 }
 
 }   // namespace srrealmodule
+
+// Serialization -------------------------------------------------------------
+
+BOOST_CLASS_EXPORT(srrealmodule::nswrap_PeakWidthModel::PeakWidthModelWrap)
 
 // End of file
