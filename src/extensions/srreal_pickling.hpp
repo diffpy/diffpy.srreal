@@ -110,6 +110,13 @@ class PairQuantityPickleSuite :
 
     public:
 
+        static T* getcptr(boost::python::object obj)
+        {
+            T* rv = boost::python::extract<T*>(obj);
+            return rv;
+        }
+
+
         static boost::python::tuple getstate(boost::python::object obj)
         {
             using namespace boost::python;

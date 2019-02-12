@@ -426,6 +426,15 @@ class wrapper_srreal : public ::boost::python::wrapper<T>
         }
 };
 
+
+template <class T>
+bool is_wrapper(boost::shared_ptr<T> ptr)
+{
+    typedef ::boost::python::wrapper<T> W;
+    bool rv = (boost::dynamic_pointer_cast<W>(ptr) != NULL);
+    return rv;
+}
+
 }   // namespace srrealmodule
 
 // Include shared wrapper definitions ----------------------------------------
