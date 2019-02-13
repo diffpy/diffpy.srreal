@@ -13,6 +13,7 @@ from diffpy.srreal.tests.testutils import has_pyobjcryst, _msg_nopyobjcryst
 from diffpy.srreal.tests.testutils import loadDiffPyStructure
 from diffpy.srreal.tests.testutils import loadObjCrystCrystal
 from diffpy.srreal.overlapcalculator import OverlapCalculator
+from diffpy.srreal.atomradiitable import CovalentRadiiTable
 
 # ----------------------------------------------------------------------------
 
@@ -64,6 +65,18 @@ class TestOverlapCalculator(unittest.TestCase):
         self.assertEqual(1.93, olc.rmaxused)
         return
 
+    def test___getstate__(self):
+        """check OverlapCalculator.__getstate__()
+        """
+        olc = self.olc
+        self.assertIs(None, olc.__getstate__()[-1])
+        tb = CovalentRadiiTable()
+        olc.atomradiitable = tb
+        self.assertIs(tb, olc.__getstate__()[-1])
+        olc.atomradiitable = "constant"
+        self.assertIs(None, olc.__getstate__()[-1])
+        return
+
     def test_pickling(self):
         '''check pickling and unpickling of OverlapCalculator.
         '''
@@ -87,7 +100,6 @@ class TestOverlapCalculator(unittest.TestCase):
     def test_pickling_artb(self):
         '''check pickling and unpickling of OverlapCalculator.atomradiitable.
         '''
-        from diffpy.srreal.atomradiitable import CovalentRadiiTable
         olc = self.olc
         olc.atomradiitable.setDefault(1.3)
         spkl = pickle.dumps(olc)
