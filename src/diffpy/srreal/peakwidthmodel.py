@@ -21,12 +21,12 @@ Classes for configuring peak width evaluation in PDF calculations:
 
 
 # exported items
-__all__ = '''
-    PeakWidthModel
-    ConstantPeakWidth
-    DebyeWallerPeakWidth
-    JeongPeakWidth
-    '''.split()
+__all__ = [
+    'PeakWidthModel',
+    'ConstantPeakWidth',
+    'DebyeWallerPeakWidth',
+    'JeongPeakWidth'
+]
 
 from diffpy.srreal import _final_imports
 from diffpy.srreal.srreal_ext import PeakWidthModel, ConstantPeakWidth
