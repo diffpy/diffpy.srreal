@@ -329,22 +329,11 @@ tuple fftgtof_array_step(object g, double rstep, double rmin)
 
 // pickling support ----------------------------------------------------------
 
-template <class K>
-object resolve_state_object(object o)
+tuple getstate_common(object& obj)
 {
-    typedef boost::shared_ptr<K> KPtr;
-    KPtr p = extract<KPtr>(o);
-    object rv;
-    if (is_wrapper(p))  rv = o;
-    return rv;
-}
-
-
-list getstate_common(object& obj)
-{
-    list rv;
-    object pwm = obj.attr("peakwidthmodel");
-    rv.append(resolve_state_object<PeakWidthModel>(pwm));
+    tuple rv = make_tuple(
+            resolve_state_object<PeakWidthModel>(obj.attr("peakwidthmodel"))
+            );
     return rv;
 }
 
@@ -352,8 +341,7 @@ list getstate_common(object& obj)
 template <class Iter>
 void setstate_common(object& obj, Iter& st)
 {
-    auto isset = [](Iter& i) { return i->ptr() != Py_None; };
-    if (isset(++st))  obj.attr("peakwidthmodel") = *st;
+    assign_state_object(obj.attr("peakwidthmodel"), *(++st));
 }
 
 
@@ -368,9 +356,10 @@ class DebyePDFCalculatorPickleSuite :
 
         static tuple getstate(object obj)
         {
-            list state = getstate_common(obj);
-            state.insert(0, Super::getstate(obj));
-            tuple rv(state);
+            tuple rv(
+                    make_tuple(Super::getstate(obj)) +
+                    getstate_common(obj)
+                    );
             return rv;
         }
 
@@ -399,9 +388,10 @@ class PDFCalculatorPickleSuite :
 
         static tuple getstate(object obj)
         {
-            list state = getstate_common(obj);
-            state.insert(0, Super::getstate(obj));
-            tuple rv(state);
+            tuple rv(
+                    make_tuple(Super::getstate(obj)) +
+                    getstate_common(obj)
+                    );
             return rv;
         }
 
