@@ -13,7 +13,8 @@ from diffpy.srreal.pdfcalculator import DebyePDFCalculator, PDFCalculator
 from diffpy.srreal.structureadapter import createStructureAdapter
 from diffpy.srreal.tests.testutils import loadDiffPyStructure
 
-##############################################################################
+# ----------------------------------------------------------------------------
+
 class TestPeakWidthModel(unittest.TestCase):
 
     tio2stru = None
@@ -30,6 +31,15 @@ class TestPeakWidthModel(unittest.TestCase):
 
     def tearDown(self):
         return
+
+
+    def _genbonds(self, rmin, rmax):
+        "Return ready-to-use BondGenerator for rutile."
+        bnds = self.tio2adpt.createBondGenerator()
+        bnds.setRmin(rmin)
+        bnds.setRmax(rmax)
+        bnds.rewind()
+        return bnds
 
 
     def test___init__(self):
@@ -78,7 +88,7 @@ class TestPeakWidthModel(unittest.TestCase):
         """check PeakWidthModel.calculate()
         """
         pwm = PeakWidthModel()
-        bnds = self.tio2adpt.createBondGenerator()
+        bnds = self._genbonds(1, 2)
         self.assertRaises(RuntimeError, pwm.calculate, bnds)
         self.assertEqual(2.0, self.pwconst.calculate(bnds))
         return
@@ -278,7 +288,6 @@ class TestPeakWidthOwner(unittest.TestCase):
         return
 
 # ----------------------------------------------------------------------------
-
 
 if __name__ == '__main__':
     unittest.main()
