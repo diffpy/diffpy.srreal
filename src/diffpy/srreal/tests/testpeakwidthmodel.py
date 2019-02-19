@@ -94,6 +94,20 @@ class TestPeakWidthModel(unittest.TestCase):
         return
 
 
+    def test_isowidths(self):
+        """check ConstantPeakWidth properties bisowidth, uisowidth.
+        """
+        from numpy import pi
+        cnpw = self.pwconst
+        dwpw = DebyeWallerPeakWidth()
+        bnds = self._genbonds(1, 2)
+        w0 = dwpw.calculate(bnds)
+        cnpw.uisowidth = self.tio2stru[[0, -1]].Uisoequiv.mean()
+        self.assertAlmostEqual(w0, cnpw.calculate(bnds), 12)
+        self.assertAlmostEqual(cnpw.bisowidth, 8 * pi**2 * cnpw.uisowidth, 12)
+        return
+
+
     def test_maxWidth(self):
         """check PeakWidthModel.maxWidth()
         """

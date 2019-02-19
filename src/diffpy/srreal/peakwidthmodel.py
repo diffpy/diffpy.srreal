@@ -41,6 +41,14 @@ ConstantPeakWidth.width = propertyFromExtDoubleAttr('width',
     '''Constant FWHM value returned by this model.
     ''')
 
+ConstantPeakWidth.bisowidth = propertyFromExtDoubleAttr('bisowidth',
+    '''Equivalent uniform Biso for this constant `width`.
+    ''')
+
+ConstantPeakWidth.uisowidth = propertyFromExtDoubleAttr('uisowidth',
+    '''Equivalent uniform Uiso for this constant `width`.
+    ''')
+
 JeongPeakWidth.delta1 = propertyFromExtDoubleAttr('delta1',
         'Coefficient for (1/r) contribution to the peak sharpening.')
 
