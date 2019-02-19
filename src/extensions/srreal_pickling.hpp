@@ -57,6 +57,34 @@ template <typename T>
     return rv;
 }
 
+
+template <class T>
+bool is_wrapper(::boost::python::object& obj)
+{
+    T* p = ::boost::python::extract<T*>(obj);
+    typedef ::boost::python::wrapper<T> W;
+    bool rv = (dynamic_cast<W*>(p) != NULL);
+    return rv;
+}
+
+
+template <class T>
+::boost::python::object resolve_state_object(::boost::python::object value)
+{
+    // return None if value holds a pristine C++ instance of T
+    ::boost::python::object rv;
+    if (is_wrapper<T>(value))  rv = value;
+    return rv;
+}
+
+
+template <class T>
+void assign_state_object(T target, ::boost::python::object value)
+{
+    if (value.ptr() != Py_None)  target = value;
+}
+
+
 enum {DICT_IGNORE=false, DICT_PICKLE=true};
 
 template <class T, bool pickledict=DICT_PICKLE>

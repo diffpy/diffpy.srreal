@@ -25,7 +25,7 @@ FALLBACK_VERSION = '1.2.post0'
 # define extension arguments here
 ext_kws = {
         'libraries' : ['diffpy'],
-        'extra_compile_args' : [],
+        'extra_compile_args' : ['-std=c++11'],
         'extra_link_args' : [],
         'include_dirs' : get_numpy_include_dirs(),
 }

@@ -191,8 +191,12 @@ class OverlapCalculatorPickleSuite :
 
         static boost::python::tuple getstate(boost::python::object obj)
         {
-            boost::python::tuple rv = boost::python::make_tuple(
-                    Super::getstate(obj), obj.attr("atomradiitable"));
+            namespace bp = boost::python;
+            bp::object tb = obj.attr("atomradiitable");
+            bp::tuple rv = bp::make_tuple(
+                    Super::getstate(obj),
+                    resolve_state_object<AtomRadiiTable>(tb)
+                    );
             return rv;
         }
 
@@ -200,13 +204,13 @@ class OverlapCalculatorPickleSuite :
         static void setstate(
                 boost::python::object obj, boost::python::tuple state)
         {
+            namespace bp = boost::python;
             ensure_tuple_length(state, 2);
             // restore the state using boost serialization
-            boost::python::tuple st0 =
-                boost::python::extract<boost::python::tuple>(state[0]);
+            bp::tuple st0 = bp::extract<bp::tuple>(state[0]);
             Super::setstate(obj, st0);
-            // boost serialization sets atomradiitable to the base class
-            obj.attr("atomradiitable") = state[1];
+            // atomradiitable is present only when restoring Python class
+            assign_state_object(obj.attr("atomradiitable"), state[1]);
         }
 };
 

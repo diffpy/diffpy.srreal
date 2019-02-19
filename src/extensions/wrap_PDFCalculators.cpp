@@ -327,6 +327,87 @@ tuple fftgtof_array_step(object g, double rstep, double rmin)
     return make_tuple(fa, qstep);
 }
 
+// pickling support ----------------------------------------------------------
+
+tuple getstate_common(object& obj)
+{
+    tuple rv = make_tuple(
+            resolve_state_object<PeakWidthModel>(obj.attr("peakwidthmodel"))
+            );
+    return rv;
+}
+
+
+template <class Iter>
+void setstate_common(object& obj, Iter& st)
+{
+    assign_state_object(obj.attr("peakwidthmodel"), *(++st));
+}
+
+
+class DebyePDFCalculatorPickleSuite :
+    public PairQuantityPickleSuite<DebyePDFCalculator, DICT_IGNORE>
+{
+    private:
+
+        typedef PairQuantityPickleSuite<DebyePDFCalculator> Super;
+
+    public:
+
+        static tuple getstate(object obj)
+        {
+            tuple rv(
+                    make_tuple(Super::getstate(obj)) +
+                    getstate_common(obj)
+                    );
+            return rv;
+        }
+
+
+        static void setstate(object obj, tuple state)
+        {
+            ensure_tuple_length(state, 2);
+            // restore the state using boost serialization
+            tuple st0 = extract<tuple>(state[0]);
+            Super::setstate(obj, st0);
+            // other items are non-None only when restoring Python class
+            stl_input_iterator<object> st(state);
+            setstate_common(obj, st);
+        }
+};
+
+
+class PDFCalculatorPickleSuite :
+    public PairQuantityPickleSuite<PDFCalculator, DICT_IGNORE>
+{
+    private:
+
+        typedef PairQuantityPickleSuite<PDFCalculator> Super;
+
+    public:
+
+        static tuple getstate(object obj)
+        {
+            tuple rv(
+                    make_tuple(Super::getstate(obj)) +
+                    getstate_common(obj)
+                    );
+            return rv;
+        }
+
+
+        static void setstate(object obj, tuple state)
+        {
+            ensure_tuple_length(state, 2);
+            // restore the state using boost serialization
+            tuple st0 = extract<tuple>(state[0]);
+            Super::setstate(obj, st0);
+            // other items are non-None only when restoring Python class
+            stl_input_iterator<object> st(state);
+            setstate_common(obj, st);
+        }
+};
+
 }   // namespace nswrap_PDFCalculators
 
 // Wrapper definition --------------------------------------------------------
@@ -345,7 +426,7 @@ void wrap_PDFCalculators()
                 doc_DebyePDFCalculator_setOptimumQstep)
         .def("isOptimumQstep", &DebyePDFCalculator::isOptimumQstep,
                 doc_DebyePDFCalculator_isOptimumQstep)
-        .def_pickle(PairQuantityPickleSuite<DebyePDFCalculator>())
+        .def_pickle(DebyePDFCalculatorPickleSuite())
         ;
 
     // PDFCalculator
@@ -363,7 +444,7 @@ void wrap_PDFCalculators()
                 getbaseline,
                 setbaseline<PDFCalculator,PDFBaseline>,
                 doc_PDFCalculator_baseline)
-        .def_pickle(PairQuantityPickleSuite<PDFCalculator>())
+        .def_pickle(PDFCalculatorPickleSuite())
         ;
 
     // FFT functions

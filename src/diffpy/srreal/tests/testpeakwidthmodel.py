@@ -9,7 +9,7 @@ import pickle
 
 from diffpy.srreal.peakwidthmodel import PeakWidthModel
 from diffpy.srreal.peakwidthmodel import DebyeWallerPeakWidth, JeongPeakWidth
-from diffpy.srreal.pdfcalculator import PDFCalculator
+from diffpy.srreal.pdfcalculator import DebyePDFCalculator, PDFCalculator
 from diffpy.srreal.structureadapter import createStructureAdapter
 from diffpy.srreal.tests.testutils import loadDiffPyStructure
 
@@ -245,8 +245,10 @@ class TestPeakWidthOwner(unittest.TestCase):
 
     def setUp(self):
         self.pc = PDFCalculator()
+        self.dbpc = DebyePDFCalculator()
         self.pwm = MyPWM()
         self.pc.peakwidthmodel = self.pwm
+        self.dbpc.peakwidthmodel = self.pwm
         return
 
 
@@ -254,6 +256,7 @@ class TestPeakWidthOwner(unittest.TestCase):
         '''Check type of the owned PeakWidthModel instance.
         '''
         self.assertEqual('mypwm', self.pc.peakwidthmodel.type())
+        self.assertEqual('mypwm', self.dbpc.peakwidthmodel.type())
         return
 
 
@@ -269,6 +272,9 @@ class TestPeakWidthOwner(unittest.TestCase):
         self.assertEqual('mypwm', pc2.peakwidthmodel.type())
         self.assertEqual(3, pc2.peakwidthmodel.pwmscale)
         self.assertEqual(3, pc2.pwmscale)
+        dbpc2 = pickle.loads(pickle.dumps(self.dbpc))
+        self.assertEqual(3, dbpc2.peakwidthmodel.pwmscale)
+        self.assertEqual(3, dbpc2.pwmscale)
         return
 
 # ----------------------------------------------------------------------------
