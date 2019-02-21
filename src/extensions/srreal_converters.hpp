@@ -39,6 +39,9 @@
 #ifndef DIFFPY_DEV_PEAKWIDTHMODEL_SERIALIZATION
 #error "diffpy.srreal requires PEAKWIDTHMODEL_SERIALIZATION feature"
 #endif
+#ifndef DIFFPY_DEV_DIRECT_SERIALIZATION
+#error "diffpy.srreal requires DIRECT_SERIALIZATION feature"
+#endif
 
 #if DIFFPY_VERSION < 1003003000
 #error "diffpy.srreal requires libdiffpy 1.3.3 or later."
