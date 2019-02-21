@@ -830,7 +830,6 @@ void wrap_PairQuantity()
                 doc_BasePairQuantity_ticker)
         .def("copy", pqcopy,
                 doc_BasePairQuantity_copy)
-        .def_pickle(PairQuantityPickleSuite<PairQuantity>())
         ;
 
     class_<PairQuantityWrap, bases<PairQuantity>,
@@ -884,6 +883,9 @@ void wrap_PairQuantity()
         .add_property("_value", make_function(&PairQuantityWrap::value,
                     return_internal_reference<>()),
                 doc_PairQuantity__value)
+        // classes PairQuantityExposed, PairQuantityWrap add no members,
+        // therefore we can create pickle suite from C++ base class.
+        .def_pickle(PairQuantityPickleSuite<PairQuantity, DICT_PICKLE>())
         ;
 
 }

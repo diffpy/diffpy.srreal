@@ -7,16 +7,35 @@ import unittest
 import pickle
 
 from diffpy.srreal.pairquantity import PairQuantity
+from diffpy.srreal.srreal_ext import BasePairQuantity
 from diffpy.srreal.pdfcalculator import PDFCalculator
 from diffpy.srreal.tests.testutils import mod_structure
 
 
-##############################################################################
+# ----------------------------------------------------------------------------
+
+class TestBasePairQuantity(unittest.TestCase):
+
+    def setUp(self):
+        self.bpq = BasePairQuantity()
+        return
+
+
+    def test_pickling(self):
+        "verify pickling is disabled for the C++ base class."
+        self.assertRaises(RuntimeError, pickle.dumps, self.bpq)
+        return
+
+# End of class TestBasePairQuantity
+
+# ----------------------------------------------------------------------------
+
 class TestPairQuantity(unittest.TestCase):
 
     def setUp(self):
         self.pq = PairQuantity()
         return
+
 
     def test_evaluatortype(self):
         """check PairQuantity.evaluatortype property.
@@ -157,9 +176,17 @@ class TestPairQuantity(unittest.TestCase):
         self.assertTrue(type(stru1) is DerivedStructureAdapter)
         self.assertFalse(stru1 is stru0)
         self.assertEqual(1, stru1.cpqcount)
+        # check pickling of attributes
+        pcnt = PQCounter()
+        pcnt.foo = "asdf"
+        pcnt2 = pickle.loads(pickle.dumps(pcnt))
+        self.assertTrue(isinstance(pcnt2, PQCounter))
+        self.assertEqual("asdf", pcnt2.foo)
         return
 
 # End of class TestPairQuantity
+
+# ----------------------------------------------------------------------------
 
 # helper for testing PairQuantity overrides
 
