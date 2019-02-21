@@ -87,7 +87,7 @@ void assign_state_object(T target, ::boost::python::object value)
 
 enum {DICT_IGNORE=false, DICT_PICKLE=true};
 
-template <class T, bool pickledict=DICT_PICKLE>
+template <class T, bool pickledict=DICT_IGNORE>
 class SerializationPickleSuite : public boost::python::pickle_suite
 {
     public:
@@ -128,7 +128,7 @@ class SerializationPickleSuite : public boost::python::pickle_suite
 };  // class SerializationPickleSuite
 
 
-template <class T, bool pickledict=DICT_PICKLE>
+template <class T, bool pickledict=DICT_IGNORE>
 class PairQuantityPickleSuite :
     public SerializationPickleSuite<T, pickledict>
 {

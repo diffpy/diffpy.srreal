@@ -167,7 +167,6 @@ class TestDebyePDFCalculator(unittest.TestCase):
         dpdfc.rstep = 0.02
         dpdfc.scale = 1.1
         dpdfc.spdiameter = 13.3
-        dpdfc.foobar = 'asdf'
         spkl = pickle.dumps(dpdfc)
         dpdfc1 = pickle.loads(spkl)
         self.assertFalse(dpdfc is dpdfc1)
@@ -182,7 +181,8 @@ class TestDebyePDFCalculator(unittest.TestCase):
         self.assertEqual(dpdfc._namesOfDoubleAttributes(),
                 dpdfc1._namesOfDoubleAttributes())
         self.assertEqual(dpdfc.usedenvelopetypes, dpdfc1.usedenvelopetypes)
-        self.assertEqual('asdf', dpdfc1.foobar)
+        dpdfc.foobar = 'asdf'
+        self.assertRaises(RuntimeError, pickle.dumps, dpdfc)
         return
 
 

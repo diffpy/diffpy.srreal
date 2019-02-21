@@ -124,13 +124,13 @@ class TestBVSCalculator(unittest.TestCase):
         bvsc.rmin = 0.1
         bvsc.rmax = 12.3
         bvsc.valenceprecision = 0.3e-4
-        bvsc.foobar = 'asdf'
         spkl = pickle.dumps(bvsc)
         bvsc1 = pickle.loads(spkl)
         self.assertFalse(bvsc is bvsc1)
         for a in bvsc._namesOfDoubleAttributes():
             self.assertEqual(getattr(bvsc, a), getattr(bvsc1, a))
-        self.assertEqual('asdf', bvsc1.foobar)
+        bvsc.foobar = 'asdf'
+        self.assertRaises(RuntimeError, pickle.dumps, bvsc)
         return
 
 

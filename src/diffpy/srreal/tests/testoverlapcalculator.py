@@ -84,7 +84,6 @@ class TestOverlapCalculator(unittest.TestCase):
         olc.rmin = 0.1
         olc.rmax = 12.3
         olc.setPairMask(1, 2, False)
-        olc.foobar = 'asdf'
         spkl = pickle.dumps(olc)
         olc1 = pickle.loads(spkl)
         self.assertFalse(olc is olc1)
@@ -92,9 +91,10 @@ class TestOverlapCalculator(unittest.TestCase):
             self.assertEqual(getattr(olc, a), getattr(olc1, a))
         self.assertFalse(olc1.getPairMask(1, 2))
         self.assertTrue(olc1.getPairMask(0, 0))
-        self.assertEqual('asdf', olc1.foobar)
         self.assertTrue(numpy.array_equal(
             olc.sitesquareoverlaps, olc1.sitesquareoverlaps))
+        olc.foobar = 'asdf'
+        self.assertRaises(RuntimeError, pickle.dumps, olc)
         return
 
     def test_pickling_artb(self):

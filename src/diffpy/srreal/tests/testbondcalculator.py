@@ -69,7 +69,6 @@ class TestBondCalculator(unittest.TestCase):
         bdc.rmin = 0.1
         bdc.rmax = 12.3
         bdc.setPairMask(1, 2, False)
-        bdc.foobar = 'asdf'
         bdc(self.nickel)
         spkl = pickle.dumps(bdc)
         bdc1 = pickle.loads(spkl)
@@ -78,8 +77,9 @@ class TestBondCalculator(unittest.TestCase):
             self.assertEqual(getattr(bdc, a), getattr(bdc1, a))
         self.assertFalse(bdc1.getPairMask(1, 2))
         self.assertTrue(bdc1.getPairMask(0, 0))
-        self.assertEqual('asdf', bdc1.foobar)
         self.assertTrue(numpy.array_equal(bdc.distances, bdc1.distances))
+        bdc.foobar = 'asdf'
+        self.assertRaises(RuntimeError, pickle.dumps, bdc)
         return
 
 

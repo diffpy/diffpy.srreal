@@ -260,7 +260,6 @@ class TestPDFCalculator(unittest.TestCase):
         pdfc.scale = 1.1
         pdfc.slope = 0.1
         pdfc.spdiameter = 13.3
-        pdfc.foobar = 'asdf'
         spkl = pickle.dumps(pdfc)
         pdfc1 = pickle.loads(spkl)
         sft = pdfc.scatteringfactortable
@@ -274,7 +273,8 @@ class TestPDFCalculator(unittest.TestCase):
         self.assertEqual(pdfc._namesOfDoubleAttributes(),
                 pdfc1._namesOfDoubleAttributes())
         self.assertEqual(pdfc.usedenvelopetypes, pdfc1.usedenvelopetypes)
-        self.assertEqual('asdf', pdfc1.foobar)
+        pdfc.foobar = 'asdf'
+        self.assertRaises(RuntimeError, pickle.dumps, pdfc)
         return
 
     def test_mask_pickling(self):
