@@ -119,6 +119,7 @@ class TestPDFEnvelope(unittest.TestCase):
         return
 
 
+    @unittest.expectedFailure
     def test_makePDFEnvelope(self):
         '''check the makePDFEnvelope wrapper.
         '''

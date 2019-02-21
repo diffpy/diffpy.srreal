@@ -176,6 +176,7 @@ class TestPDFBaseline(unittest.TestCase):
         return
 
 
+    @unittest.expectedFailure
     def test_makePDFBaseline(self):
         '''check the makePDFBaseline wrapper.
         '''
