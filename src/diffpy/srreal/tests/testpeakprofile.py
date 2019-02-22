@@ -184,7 +184,6 @@ class TestPeakProfileOwner(unittest.TestCase):
         return
 
 
-    @unittest.expectedFailure
     def test_pickling(self):
         '''Check pickling of an owned PeakProfile instance.
         '''

@@ -21,46 +21,18 @@ Class for configuring PDF profile function:
 
 
 # exported items
-__all__ = '''
-    PeakProfile
-    GaussianProfile
-    CroppedGaussianProfile
-    '''.split()
+__all__ = [
+    'PeakProfile',
+    'GaussianProfile',
+    'CroppedGaussianProfile'
+]
 
 from diffpy.srreal import _final_imports
 from diffpy.srreal.srreal_ext import PeakProfile
 from diffpy.srreal.srreal_ext import GaussianProfile, CroppedGaussianProfile
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
-from diffpy.srreal.wraputils import _pickle_getstate, _pickle_setstate
 
 # class PeakProfile ----------------------------------------------------------
-
-# pickling support
-
-def _peakprofile_create(s):
-    from diffpy.srreal.srreal_ext import _PeakProfile_frombytes
-    return _PeakProfile_frombytes(s)
-
-def _peakprofile_reduce(self):
-    from diffpy.srreal.srreal_ext import _PeakProfile_tobytes
-    args = (_PeakProfile_tobytes(self),)
-    rv = (_peakprofile_create, args)
-    return rv
-
-def _peakprofile_reduce_with_state(self):
-    rv = _peakprofile_reduce(self) + (self.__getstate__(),)
-    return rv
-
-# inject pickle methods to the base class
-
-PeakProfile.__reduce__ = _peakprofile_reduce_with_state
-PeakProfile.__getstate__ = _pickle_getstate
-PeakProfile.__setstate__ = _pickle_setstate
-
-# Derived C++ classes are pickled without dictionary
-
-GaussianProfile.__reduce__ = _peakprofile_reduce
-CroppedGaussianProfile.__reduce__ = _peakprofile_reduce
 
 # add attribute wrappers for PeakProfile and derived classes
 

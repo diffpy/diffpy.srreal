@@ -187,21 +187,16 @@ class PeakProfileWrap :
         mutable std::string mtype;
         wrapper_registry_configurator<PeakProfile> mconfigurator;
 
+        // serialization
+        friend class boost::serialization::access;
+        template<class Archive>
+            void serialize(Archive& ar, const unsigned int version)
+        {
+            using boost::serialization::base_object;
+            ar & base_object<PeakProfile>(*this);
+        }
+
 };  // class PeakProfileWrap
-
-python::object peakprofile_tobytes(PeakProfilePtr obj)
-{
-    return serialization_tobytes(obj);
-}
-
-
-PeakProfilePtr peakprofile_frombytes(const std::string& content)
-{
-    PeakProfilePtr rv;
-    diffpy::serialization_fromstring(rv, content);
-    return rv;
-}
-
 
 }   // namespace nswrap_PeakProfile
 
@@ -227,25 +222,27 @@ void wrap_PeakProfile()
                 &PeakProfileWrap::default_ticker,
                 return_internal_reference<>(),
                 doc_PeakProfile_ticker)
-        .enable_pickling()
+        .def_pickle(SerializationPickleSuite<PeakProfile,DICT_PICKLE>())
         ;
 
     register_ptr_to_python<PeakProfilePtr>();
 
     class_<GaussianProfile, bases<PeakProfile> >(
             "GaussianProfile", doc_GaussianProfile)
+        .def_pickle(SerializationPickleSuite<GaussianProfile>())
         ;
 
     class_<CroppedGaussianProfile, bases<GaussianProfile> >(
             "CroppedGaussianProfile", doc_CroppedGaussianProfile)
+        .def_pickle(SerializationPickleSuite<CroppedGaussianProfile>())
         ;
-
-    // pickling support functions
-    def("_PeakProfile_tobytes", peakprofile_tobytes);
-    def("_PeakProfile_frombytes", peakprofile_frombytes);
 
 }
 
 }   // namespace srrealmodule
+
+// Serialization -------------------------------------------------------------
+
+BOOST_CLASS_EXPORT(srrealmodule::nswrap_PeakProfile::PeakProfileWrap)
 
 // End of file
