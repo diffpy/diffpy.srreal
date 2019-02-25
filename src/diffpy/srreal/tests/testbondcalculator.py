@@ -11,6 +11,7 @@ import numpy
 from diffpy.srreal.tests.testutils import has_pyobjcryst, _msg_nopyobjcryst
 from diffpy.srreal.tests.testutils import loadDiffPyStructure
 from diffpy.srreal.tests.testutils import loadObjCrystCrystal
+from diffpy.srreal.tests.testutils import pickle_with_attr
 from diffpy.srreal.bondcalculator import BondCalculator
 
 # ----------------------------------------------------------------------------
@@ -78,8 +79,7 @@ class TestBondCalculator(unittest.TestCase):
         self.assertFalse(bdc1.getPairMask(1, 2))
         self.assertTrue(bdc1.getPairMask(0, 0))
         self.assertTrue(numpy.array_equal(bdc.distances, bdc1.distances))
-        bdc.foobar = 'asdf'
-        self.assertRaises(RuntimeError, pickle.dumps, bdc)
+        self.assertRaises(RuntimeError, pickle_with_attr, bdc, foo='bar')
         return
 
 

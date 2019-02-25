@@ -10,6 +10,7 @@ import pickle
 import numpy
 from diffpy.srreal.tests.testutils import loadDiffPyStructure
 from diffpy.srreal.tests.testutils import datafile
+from diffpy.srreal.tests.testutils import pickle_with_attr
 from diffpy.srreal.pdfcalculator import PDFCalculator
 from diffpy.srreal.pdfcalculator import fftgtof, fftftog
 
@@ -273,8 +274,7 @@ class TestPDFCalculator(unittest.TestCase):
         self.assertEqual(pdfc._namesOfDoubleAttributes(),
                 pdfc1._namesOfDoubleAttributes())
         self.assertEqual(pdfc.usedenvelopetypes, pdfc1.usedenvelopetypes)
-        pdfc.foobar = 'asdf'
-        self.assertRaises(RuntimeError, pickle.dumps, pdfc)
+        self.assertRaises(RuntimeError, pickle_with_attr, pdfc, foo='bar')
         return
 
     def test_mask_pickling(self):

@@ -10,6 +10,7 @@ import numpy
 
 from diffpy.srreal.pdfcalculator import DebyePDFCalculator, PDFCalculator
 from diffpy.srreal.tests.testutils import loadDiffPyStructure
+from diffpy.srreal.tests.testutils import pickle_with_attr
 from diffpy.srreal.tests.testpdfcalculator import _maxNormDiff
 
 ##############################################################################
@@ -181,8 +182,7 @@ class TestDebyePDFCalculator(unittest.TestCase):
         self.assertEqual(dpdfc._namesOfDoubleAttributes(),
                 dpdfc1._namesOfDoubleAttributes())
         self.assertEqual(dpdfc.usedenvelopetypes, dpdfc1.usedenvelopetypes)
-        dpdfc.foobar = 'asdf'
-        self.assertRaises(RuntimeError, pickle.dumps, dpdfc)
+        self.assertRaises(RuntimeError, pickle_with_attr, dpdfc, foo='bar')
         return
 
 
