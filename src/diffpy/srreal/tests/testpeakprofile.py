@@ -7,6 +7,7 @@
 import unittest
 import pickle
 
+from diffpy.srreal.tests.testutils import pickle_with_attr
 from diffpy.srreal.peakprofile import PeakProfile
 from diffpy.srreal.pdfcalculator import PDFCalculator
 
@@ -135,6 +136,9 @@ class TestPeakProfile(unittest.TestCase):
         self.assertEqual('gaussian', pkg2.type())
         self.assertEqual(0.0011, pkg2.peakprecision)
         self.assertEqual(0.0011, pkg2._getDoubleAttr('peakprecision'))
+        self.assertRaises(RuntimeError, pickle_with_attr, pkg, foo='bar')
+        pkc = self.pkcropped
+        self.assertRaises(RuntimeError, pickle_with_attr, pkc, foo='bar')
         return
 
 # ----------------------------------------------------------------------------
@@ -163,8 +167,6 @@ class MySawTooth(PeakProfile):
         if rv < 0:  rv = 0
         return rv
 
-MySawTooth()._registerThisType()
-
 # End of class MySawTooth
 
 class TestPeakProfileOwner(unittest.TestCase):
@@ -189,17 +191,19 @@ class TestPeakProfileOwner(unittest.TestCase):
         '''
         pc1 = pickle.loads(pickle.dumps(self.pc))
         self.pkf.peakprecision = 0.0003
+        self.pkf.foo = 'bar'
         pc2 = pickle.loads(pickle.dumps(self.pc))
         self.assertEqual('mysawtooth', pc1.peakprofile.type())
         self.assertEqual(0.0017, pc1.peakprofile.peakprecision)
         self.assertEqual(0.0017, pc1.peakprecision)
+        self.assertFalse(hasattr(pc1.peakprofile, 'foo'))
         self.assertEqual('mysawtooth', pc2.peakprofile.type())
         self.assertEqual(0.0003, pc2.peakprofile.peakprecision)
         self.assertEqual(0.0003, pc2.peakprecision)
+        self.assertEqual('bar', pc2.peakprofile.foo)
         return
 
 # ----------------------------------------------------------------------------
-
 
 if __name__ == '__main__':
     unittest.main()

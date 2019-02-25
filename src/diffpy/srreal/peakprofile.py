@@ -34,6 +34,11 @@ from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
 
 # class PeakProfile ----------------------------------------------------------
 
+# disable dictionary pickling for wrapped C++ classes
+
+GaussianProfile.__getstate_manages_dict__ = None
+CroppedGaussianProfile.__getstate_manages_dict__ = None
+
 # add attribute wrappers for PeakProfile and derived classes
 
 PeakProfile.peakprecision = propertyFromExtDoubleAttr('peakprecision',
