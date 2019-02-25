@@ -329,10 +329,25 @@ tuple fftgtof_array_step(object g, double rstep, double rmin)
 
 // pickling support ----------------------------------------------------------
 
+template <class Super>
+tuple getstate_super(object& obj)
+{
+    // obtain C++ state without PDFEnvelopes
+    object envlps = obj.attr("envelopes");
+    obj.attr("clearEnvelopes")();
+    assert(len(obj.attr("envelopes")) == 0);
+    tuple rv(make_tuple(Super::getstate(obj)));
+    obj.attr("envelopes") = envlps;
+    assert(len(obj.attr("envelopes")) == len(envlps));
+    return rv;
+}
+
+
 tuple getstate_common(object& obj)
 {
     tuple rv = make_tuple(
-            resolve_state_object<PeakWidthModel>(obj.attr("peakwidthmodel"))
+            resolve_state_object<PeakWidthModel>(obj.attr("peakwidthmodel")),
+            obj.attr("envelopes")
             );
     return rv;
 }
@@ -342,6 +357,8 @@ template <class Iter>
 void setstate_common(object& obj, Iter& st)
 {
     assign_state_object(obj.attr("peakwidthmodel"), *(++st));
+    assert(len(obj.attr("envelopes")) == 0);
+    obj.attr("envelopes") = *(++st);
 }
 
 
@@ -357,7 +374,7 @@ class DebyePDFCalculatorPickleSuite :
         static tuple getstate(object obj)
         {
             tuple rv(
-                    make_tuple(Super::getstate(obj)) +
+                    getstate_super<Super>(obj) +
                     getstate_common(obj)
                     );
             return rv;
@@ -366,7 +383,7 @@ class DebyePDFCalculatorPickleSuite :
 
         static void setstate(object obj, tuple state)
         {
-            ensure_tuple_length(state, 2);
+            ensure_tuple_length(state, 3);
             // restore the state using boost serialization
             tuple st0 = extract<tuple>(state[0]);
             Super::setstate(obj, st0);
@@ -392,7 +409,7 @@ class PDFCalculatorPickleSuite :
                     resolve_state_object<PeakProfile>(obj.attr("peakprofile"))
                     );
             tuple rv(
-                    make_tuple(Super::getstate(obj)) +
+                    getstate_super<Super>(obj) +
                     getstate_common(obj) +
                     mystate
                     );
@@ -402,7 +419,7 @@ class PDFCalculatorPickleSuite :
 
         static void setstate(object obj, tuple state)
         {
-            ensure_tuple_length(state, 3);
+            ensure_tuple_length(state, 4);
             // restore the state using boost serialization
             tuple st0 = extract<tuple>(state[0]);
             Super::setstate(obj, st0);
