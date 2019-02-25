@@ -81,7 +81,7 @@ template <class T>
 template <class T>
 void assign_state_object(T target, ::boost::python::object value)
 {
-    if (value.ptr() != Py_None)  target = value;
+    if (!value.is_none())  target = value;
 }
 
 
@@ -225,10 +225,10 @@ class StructureAdapterPickleSuite : public boost::python::pickle_suite
             // state[0] is None for C++ objects and there is no need to do
             // anything as those were already restored by string constructor.
             object st0 = state[0];
-            if (st0.ptr() != Py_None)
+            if (!st0.is_none())
             {
                 T& tobj = extract<T&>(obj);
-                string content = extract<string>(state[0]);
+                string content = extract<string>(st0);
                 diffpy::serialization_fromstring(tobj, content);
             }
             // restore the object's __dict__

@@ -139,7 +139,7 @@ class PythonDoubleAttribute : public BaseDoubleAttribute
 
         bool isreadonly() const
         {
-            return (msetter.ptr() == Py_None);
+            return (msetter.is_none());
         }
 
     private:
@@ -157,7 +157,7 @@ void registerPythonDoubleAttribute(python::object owner,
 {
     // when neither getter no setter are specified,
     // make it use normal python attribute access
-    if (g.ptr() == Py_None && s.ptr() == Py_None)
+    if (g.is_none() && s.is_none())
     {
         python::object mod = python::import("diffpy.srreal.attributes");
         g = mod.attr("_pyattrgetter")(name);

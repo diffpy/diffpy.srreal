@@ -75,7 +75,7 @@ from stru0 atoms at indices pop0 and addition of add1 atoms in stru1.\n\
 python::list get_pop0(python::object obj)
 {
     python::object pypop0 = obj.attr("_pop0");
-    if (pypop0.ptr() == Py_None)
+    if (pypop0.is_none())
     {
         const StructureDifference& sd =
             python::extract<const StructureDifference&>(obj);
@@ -96,7 +96,7 @@ void set_pop0(python::object obj, python::object value)
 python::list get_add1(python::object obj)
 {
     python::object pyadd1 = obj.attr("_add1");
-    if (pyadd1.ptr() == Py_None)
+    if (pyadd1.is_none())
     {
         const StructureDifference& sd =
             python::extract<const StructureDifference&>(obj);
@@ -150,9 +150,9 @@ void sync_StructureDifference(boost::python::object obj)
     using diffpy::srreal::StructureDifference;
     StructureDifference& sd = extract<StructureDifference&>(obj);
     object pypop0 = obj.attr("_pop0");
-    if (pypop0.ptr() != Py_None)  sd.pop0 = extractintvector(pypop0);
+    if (!pypop0.is_none())  sd.pop0 = extractintvector(pypop0);
     object pyadd1 = obj.attr("_add1");
-    if (pyadd1.ptr() != Py_None)  sd.add1 = extractintvector(pyadd1);
+    if (!pyadd1.is_none())  sd.add1 = extractintvector(pyadd1);
 }
 
 // Wrapper definitions -------------------------------------------------------
