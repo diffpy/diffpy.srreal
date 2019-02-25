@@ -8,12 +8,14 @@ import unittest
 import pickle
 import numpy
 
+from diffpy.srreal.tests.testutils import pickle_with_attr
 from diffpy.srreal.pdfenvelope import PDFEnvelope, makePDFEnvelope
 from diffpy.srreal.pdfenvelope import QResolutionEnvelope, ScaleEnvelope
 from diffpy.srreal.pdfenvelope import SphericalShapeEnvelope, StepCutEnvelope
 from diffpy.srreal.pdfcalculator import PDFCalculator
 
-##############################################################################
+# ----------------------------------------------------------------------------
+
 class TestPDFEnvelope(unittest.TestCase):
 
     def setUp(self):
@@ -177,6 +179,7 @@ class TestQResolutionEnvelope(unittest.TestCase):
         evlp2 = pickle.loads(pickle.dumps(evlp))
         self.assertEqual(QResolutionEnvelope, type(evlp2))
         self.assertEqual(3, evlp2.qdamp)
+        self.assertRaises(RuntimeError, pickle_with_attr, evlp, foo='bar')
         return
 
 # ----------------------------------------------------------------------------
@@ -200,6 +203,7 @@ class TestScaleEnvelope(unittest.TestCase):
         evlp2 = pickle.loads(pickle.dumps(evlp))
         self.assertEqual(ScaleEnvelope, type(evlp2))
         self.assertEqual(3, evlp2.scale)
+        self.assertRaises(RuntimeError, pickle_with_attr, evlp, foo='bar')
         return
 
 # ----------------------------------------------------------------------------
@@ -223,6 +227,7 @@ class TestSphericalShapeEnvelope(unittest.TestCase):
         evlp2 = pickle.loads(pickle.dumps(evlp))
         self.assertEqual(SphericalShapeEnvelope, type(evlp2))
         self.assertEqual(3, evlp2.spdiameter)
+        self.assertRaises(RuntimeError, pickle_with_attr, evlp, foo='bar')
         return
 
 # ----------------------------------------------------------------------------
@@ -246,6 +251,7 @@ class TestStepCutEnvelope(unittest.TestCase):
         evlp2 = pickle.loads(pickle.dumps(evlp))
         self.assertEqual(StepCutEnvelope, type(evlp2))
         self.assertEqual(3, evlp2.stepcut)
+        self.assertRaises(RuntimeError, pickle_with_attr, evlp, foo='bar')
         return
 
 # ----------------------------------------------------------------------------

@@ -37,6 +37,13 @@ from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
 
 # class PDFEnvelope ----------------------------------------------------------
 
+# disable dictionary pickling for wrapped C++ classes
+
+QResolutionEnvelope.__getstate_manages_dict__ = None
+ScaleEnvelope.__getstate_manages_dict__ = None
+SphericalShapeEnvelope.__getstate_manages_dict__ = None
+StepCutEnvelope.__getstate_manages_dict__ = None
+
 # attribute wrappers
 
 QResolutionEnvelope.qdamp = propertyFromExtDoubleAttr('qdamp',
