@@ -11,7 +11,8 @@ import numpy
 from diffpy.srreal.pdfbaseline import PDFBaseline, makePDFBaseline
 from diffpy.srreal.pdfbaseline import ZeroBaseline, LinearBaseline
 
-##############################################################################
+# ----------------------------------------------------------------------------
+
 class TestPDFBaseline(unittest.TestCase):
 
     def setUp(self):
@@ -176,7 +177,6 @@ class TestPDFBaseline(unittest.TestCase):
         return
 
 
-    @unittest.expectedFailure
     def test_makePDFBaseline(self):
         '''check the makePDFBaseline wrapper.
         '''

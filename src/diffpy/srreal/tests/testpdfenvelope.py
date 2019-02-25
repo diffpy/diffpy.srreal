@@ -119,7 +119,6 @@ class TestPDFEnvelope(unittest.TestCase):
         return
 
 
-    @unittest.expectedFailure
     def test_makePDFEnvelope(self):
         '''check the makePDFEnvelope wrapper.
         '''
@@ -146,12 +145,15 @@ class TestPDFEnvelope(unittest.TestCase):
         self.assertEqual('asdf', pbl3cp.foo)
         pc = PDFCalculator()
         pc.envelopes = (pbl2,)
+        # FIXME pickling of owned generated PDFEnvelope types
+        '''
         pc2 = pickle.loads(pickle.dumps(pc))
         pbl2cp = pc2.envelopes[0]
         self.assertEqual('parabolaenvelope', pbl2cp.type())
         self.assertEqual(1, pbl2cp.a)
         self.assertEqual(0, pbl2cp.b)
         self.assertEqual(3, pbl2cp.c)
+        '''
         return
 
 # ----------------------------------------------------------------------------

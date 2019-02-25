@@ -118,17 +118,26 @@ def _wrapAsRegisteredUnaryFunction(cls, regname, fnc, replace=False, **dbattrs):
                 self._registerDoubleAttribute(n)
             return
 
+        def __reduce__(self):
+            rv = (_regunary_create, (cls, regname), self.__getstate__())
+            return rv
+
     # End of class RegisteredUnaryFunction
 
     if replace:
         RegisteredUnaryFunction._deregisterType(regname)
     RegisteredUnaryFunction.__name__ = 'User' + cls.__name__ + '_' + regname
+    RegisteredUnaryFunction.__getstate__ = _pickle_getstate
+    RegisteredUnaryFunction.__setstate__ = _pickle_setstate
     RegisteredUnaryFunction()._registerThisType()
     rv = RegisteredUnaryFunction.createByType(regname)
     assert type(rv) is RegisteredUnaryFunction
     return rv
 
 # pickling support functions
+
+def _regunary_create(cls, tp):
+    return cls.createByType(tp)
 
 def _pickle_getstate(self):
     state = (self.__dict__,)
