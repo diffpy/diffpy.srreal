@@ -118,6 +118,15 @@ class PDFBaselineWrap :
         mutable std::string mtype;
         wrapper_registry_configurator<PDFBaseline> mconfigurator;
 
+        // serialization
+        friend class boost::serialization::access;
+        template<class Archive>
+            void serialize(Archive& ar, const unsigned int version)
+        {
+            using boost::serialization::base_object;
+            ar & base_object<PDFBaseline>(*this);
+        }
+
 };  // class PDFBaselineWrap
 
 
@@ -130,20 +139,6 @@ object callnparray(const PDFBaseline* obj, object& x)
     double* dst = yy.second;
     for (; src != last; ++src, ++dst)  *dst = (*obj)(*src);
     return yy.first;
-}
-
-
-python::object baseline_tobytes(PDFBaselinePtr obj)
-{
-    return serialization_tobytes(obj);
-}
-
-
-PDFBaselinePtr baseline_frombytes(const std::string& content)
-{
-    PDFBaselinePtr rv;
-    diffpy::serialization_fromstring(rv, content);
-    return rv;
 }
 
 }   // namespace nswrap_PDFBaseline
@@ -163,22 +158,24 @@ void wrap_PDFBaseline()
                 bp::arg("r_array"))
         .def("__call__", &PDFBaseline::operator(),
                 bp::arg("r"), doc_PDFBaseline___call__)
-        .enable_pickling()
+        .def_pickle(SerializationPickleSuite<PDFBaseline,DICT_PICKLE>())
         ;
 
     register_ptr_to_python<PDFBaselinePtr>();
 
     class_<ZeroBaseline, bases<PDFBaseline> >(
-            "ZeroBaseline", doc_ZeroBaseline);
+            "ZeroBaseline", doc_ZeroBaseline)
+        .def_pickle(SerializationPickleSuite<ZeroBaseline>());
     class_<LinearBaseline, bases<PDFBaseline> >(
-            "LinearBaseline", doc_ZeroBaseline);
-
-    // pickling support functions
-    def("_PDFBaseline_tobytes", baseline_tobytes);
-    def("_PDFBaseline_frombytes", baseline_frombytes);
+            "LinearBaseline", doc_ZeroBaseline)
+        .def_pickle(SerializationPickleSuite<LinearBaseline>());
 
 }
 
 }   // namespace srrealmodule
+
+// Serialization -------------------------------------------------------------
+
+BOOST_CLASS_EXPORT(srrealmodule::nswrap_PDFBaseline::PDFBaselineWrap)
 
 // End of file

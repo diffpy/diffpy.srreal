@@ -30,34 +30,13 @@ from diffpy.srreal import _final_imports
 from diffpy.srreal.srreal_ext import PDFBaseline
 from diffpy.srreal.srreal_ext import ZeroBaseline, LinearBaseline
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
-from diffpy.srreal.wraputils import _pickle_getstate, _pickle_setstate
 
 # class PDFBaseline ----------------------------------------------------------
 
-# pickling support
+# disable dictionary pickling for wrapped C++ classes
 
-def _baseline_create(s):
-    from diffpy.srreal.srreal_ext import _PDFBaseline_frombytes
-    return _PDFBaseline_frombytes(s)
-
-def _baseline_reduce(self):
-    from diffpy.srreal.srreal_ext import _PDFBaseline_tobytes
-    args = (_PDFBaseline_tobytes(self),)
-    rv = (_baseline_create, args)
-    return rv
-
-def _baseline_reduce_with_state(self):
-    rv = _baseline_reduce(self) + (self.__getstate__(),)
-    return rv
-
-# inject pickle methods
-
-PDFBaseline.__reduce__ = _baseline_reduce_with_state
-PDFBaseline.__getstate__ = _pickle_getstate
-PDFBaseline.__setstate__ = _pickle_setstate
-
-ZeroBaseline.__reduce__ = _baseline_reduce
-LinearBaseline.__reduce__ = _baseline_reduce
+LinearBaseline.__getstate_manages_dict__ = None
+ZeroBaseline.__getstate_manages_dict__ = None
 
 # attribute wrapper
 

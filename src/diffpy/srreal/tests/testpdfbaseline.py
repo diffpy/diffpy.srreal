@@ -167,7 +167,6 @@ class TestPDFBaseline(unittest.TestCase):
         return
 
 
-    @unittest.expectedFailure
     def test_pickling(self):
         '''check pickling and unpickling of PDFBaseline.
         '''
@@ -223,7 +222,6 @@ class TestPDFBaseline(unittest.TestCase):
         return
 
 
-    @unittest.expectedFailure
     def test_picking_owned(self):
         '''verify pickling of PDFBaseline owned by PDF calculators.
         '''

@@ -406,7 +406,8 @@ class PDFCalculatorPickleSuite :
         static tuple getstate(object obj)
         {
             tuple mystate = make_tuple(
-                    resolve_state_object<PeakProfile>(obj.attr("peakprofile"))
+                    resolve_state_object<PeakProfile>(obj.attr("peakprofile")),
+                    resolve_state_object<PDFBaseline>(obj.attr("baseline"))
                     );
             tuple rv(
                     getstate_super<Super>(obj) +
@@ -419,7 +420,7 @@ class PDFCalculatorPickleSuite :
 
         static void setstate(object obj, tuple state)
         {
-            ensure_tuple_length(state, 4);
+            ensure_tuple_length(state, 5);
             // restore the state using boost serialization
             tuple st0 = extract<tuple>(state[0]);
             Super::setstate(obj, st0);
@@ -427,6 +428,7 @@ class PDFCalculatorPickleSuite :
             stl_input_iterator<object> st(state);
             setstate_common(obj, st);
             assign_state_object(obj.attr("peakprofile"), *(++st));
+            assign_state_object(obj.attr("baseline"), *(++st));
         }
 };
 
