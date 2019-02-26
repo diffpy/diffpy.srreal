@@ -8,8 +8,10 @@ import unittest
 import pickle
 import numpy
 
+from diffpy.srreal.tests.testutils import pickle_with_attr
 from diffpy.srreal.pdfbaseline import PDFBaseline, makePDFBaseline
 from diffpy.srreal.pdfbaseline import ZeroBaseline, LinearBaseline
+from diffpy.srreal.pdfcalculator import PDFCalculator
 
 # ----------------------------------------------------------------------------
 
@@ -165,6 +167,7 @@ class TestPDFBaseline(unittest.TestCase):
         return
 
 
+    @unittest.expectedFailure
     def test_pickling(self):
         '''check pickling and unpickling of PDFBaseline.
         '''
@@ -174,6 +177,8 @@ class TestPDFBaseline(unittest.TestCase):
         self.assertEqual('linear', linear2.type())
         self.assertEqual(11, linear2.slope)
         self.assertEqual(11, linear2._getDoubleAttr('slope'))
+        self.assertRaises(RuntimeError, pickle_with_attr, linear, foo='bar')
+        self.assertRaises(RuntimeError, pickle_with_attr, self.zero, foo='bar')
         return
 
 
@@ -196,6 +201,10 @@ class TestPDFBaseline(unittest.TestCase):
         self.assertEqual(1, pbl3.a)
         self.assertEqual(2, pbl3.b)
         self.assertEqual(3, pbl3.c)
+        pbl.foo = 'bar'
+        pbl4 = pickle.loads(pickle.dumps(pbl))
+        self.assertEqual([7, 3, 28], [pbl4(x) for x in [-2, 0, 5]])
+        self.assertEqual('bar', pbl4.foo)
         # fail if this baseline type already exists.
         self.assertRaises(RuntimeError, makePDFBaseline, 'linear',
                           parabola_baseline, a=1, b=2, c=3)
@@ -213,7 +222,28 @@ class TestPDFBaseline(unittest.TestCase):
         self.assertEqual(set(), pbl5._namesOfDoubleAttributes())
         return
 
+
+    @unittest.expectedFailure
+    def test_picking_owned(self):
+        '''verify pickling of PDFBaseline owned by PDF calculators.
+        '''
+        pbl = makePDFBaseline('parabolabaseline',
+                parabola_baseline, a=1, b=2, c=3)
+        pbl.a = 7
+        pbl.foobar = 'asdf'
+        pc = PDFCalculator()
+        pc.baseline = pbl
+        self.assertIs(pbl, pc.baseline)
+        pc2 = pickle.loads(pickle.dumps(pc))
+        pbl2 = pc2.baseline
+        self.assertEqual(7, pbl2.a)
+        self.assertEqual('asdf', pbl2.foobar)
+        self.assertEqual('parabolabaseline', pbl2.type())
+        return
+
 # End of class TestPDFBaseline
+
+# ----------------------------------------------------------------------------
 
 # function for wrapping by makePDFBaseline
 
