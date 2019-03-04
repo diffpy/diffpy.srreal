@@ -8,7 +8,10 @@ import unittest
 import pickle
 import numpy
 
+from diffpy.srreal.tests.testutils import pickle_with_attr
 from diffpy.srreal.scatteringfactortable import ScatteringFactorTable
+from diffpy.srreal.scatteringfactortable import SFTXray, SFTElectron
+from diffpy.srreal.scatteringfactortable import SFTNeutron, SFTElectronNumber
 
 
 class LocalTable(ScatteringFactorTable):
@@ -91,6 +94,11 @@ class TestScatteringFactorTable(unittest.TestCase):
         self.assertAlmostEqual(123, sftx1.lookup('Na'), 12)
         self.assertEqual(self.sftx.lookup('C'), sftx1.lookup('Calias'))
         self.assertEqual(self.sftx.type(), sftx1.type())
+        pwa = pickle_with_attr
+        self.assertRaises(RuntimeError, pwa, SFTXray(), foo='bar')
+        self.assertRaises(RuntimeError, pwa, SFTElectron(), foo='bar')
+        self.assertRaises(RuntimeError, pwa, SFTNeutron(), foo='bar')
+        self.assertRaises(RuntimeError, pwa, SFTElectronNumber(), foo='bar')
         return
 
     def test_pickling_derived(self):
