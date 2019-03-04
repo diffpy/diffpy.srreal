@@ -345,8 +345,11 @@ tuple getstate_super(object& obj)
 
 tuple getstate_common(object& obj)
 {
+    auto resolve_pwm = resolve_state_object<PeakWidthModel>;
+    auto resolve_sft = resolve_state_object<ScatteringFactorTable>;
     tuple rv = make_tuple(
-            resolve_state_object<PeakWidthModel>(obj.attr("peakwidthmodel")),
+            resolve_pwm(obj.attr("peakwidthmodel")),
+            resolve_sft(obj.attr("scatteringfactortable")),
             obj.attr("envelopes")
             );
     return rv;
@@ -357,6 +360,7 @@ template <class Iter>
 void setstate_common(object& obj, Iter& st)
 {
     assign_state_object(obj.attr("peakwidthmodel"), *(++st));
+    assign_state_object(obj.attr("scatteringfactortable"), *(++st));
     assert(len(obj.attr("envelopes")) == 0);
     obj.attr("envelopes") = *(++st);
 }
@@ -383,7 +387,7 @@ class DebyePDFCalculatorPickleSuite :
 
         static void setstate(object obj, tuple state)
         {
-            ensure_tuple_length(state, 3);
+            ensure_tuple_length(state, 4);
             // restore the state using boost serialization
             tuple st0 = extract<tuple>(state[0]);
             Super::setstate(obj, st0);
@@ -420,7 +424,7 @@ class PDFCalculatorPickleSuite :
 
         static void setstate(object obj, tuple state)
         {
-            ensure_tuple_length(state, 5);
+            ensure_tuple_length(state, 6);
             // restore the state using boost serialization
             tuple st0 = extract<tuple>(state[0]);
             Super::setstate(obj, st0);

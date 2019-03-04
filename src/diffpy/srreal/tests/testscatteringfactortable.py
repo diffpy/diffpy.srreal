@@ -103,7 +103,6 @@ class TestScatteringFactorTable(unittest.TestCase):
         self.assertRaises(RuntimeError, pwa, SFTElectronNumber(), foo='bar')
         return
 
-    @unittest.expectedFailure
     def test_picking_owned(self):
         '''verify pickling of envelopes owned by PDF calculators.
         '''
