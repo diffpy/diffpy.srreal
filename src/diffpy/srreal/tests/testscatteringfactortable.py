@@ -24,18 +24,18 @@ class LocalTable(ScatteringFactorTable):
         return ScatteringFactorTable.ticker(self)
     tcnt = 0
 
-LocalTable()._registerThisType()
+# ----------------------------------------------------------------------------
 
-
-##############################################################################
 class TestScatteringFactorTable(unittest.TestCase):
 
     def setUp(self):
         self.sftx = ScatteringFactorTable.createByType('X')
         self.sftn = ScatteringFactorTable.createByType('N')
+        LocalTable()._registerThisType()
         return
 
     def tearDown(self):
+        ScatteringFactorTable._deregisterType('localtable')
         return
 
     def test_class_registry(self):
@@ -149,6 +149,8 @@ class TestScatteringFactorTable(unittest.TestCase):
         return
 
 # End of class TestScatteringFactorTable
+
+# ----------------------------------------------------------------------------
 
 if __name__ == '__main__':
     unittest.main()
