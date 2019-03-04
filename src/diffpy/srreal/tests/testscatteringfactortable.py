@@ -12,7 +12,9 @@ from diffpy.srreal.tests.testutils import pickle_with_attr
 from diffpy.srreal.scatteringfactortable import ScatteringFactorTable
 from diffpy.srreal.scatteringfactortable import SFTXray, SFTElectron
 from diffpy.srreal.scatteringfactortable import SFTNeutron, SFTElectronNumber
+from diffpy.srreal.pdfcalculator import PDFCalculator, DebyePDFCalculator
 
+# ----------------------------------------------------------------------------
 
 class LocalTable(ScatteringFactorTable):
     def clone(self):
@@ -99,6 +101,29 @@ class TestScatteringFactorTable(unittest.TestCase):
         self.assertRaises(RuntimeError, pwa, SFTElectron(), foo='bar')
         self.assertRaises(RuntimeError, pwa, SFTNeutron(), foo='bar')
         self.assertRaises(RuntimeError, pwa, SFTElectronNumber(), foo='bar')
+        return
+
+    @unittest.expectedFailure
+    def test_picking_owned(self):
+        '''verify pickling of envelopes owned by PDF calculators.
+        '''
+        pc = PDFCalculator()
+        dbpc = DebyePDFCalculator()
+        ltb = LocalTable()
+        ltb.setCustomAs('Na', 'Na', 37)
+        ltb.foo = 'bar'
+        pc.scatteringfactortable = ltb
+        dbpc.scatteringfactortable = ltb
+        self.assertIs(ltb, pc.scatteringfactortable)
+        self.assertIs(ltb, dbpc.scatteringfactortable)
+        pc2 = pickle.loads(pickle.dumps(pc))
+        dbpc2 = pickle.loads(pickle.dumps(dbpc))
+        self.assertEqual('localtable', pc2.scatteringfactortable.type())
+        self.assertEqual('localtable', dbpc2.scatteringfactortable.type())
+        self.assertEqual(37, pc2.scatteringfactortable.lookup('Na'))
+        self.assertEqual(37, dbpc2.scatteringfactortable.lookup('Na'))
+        self.assertEqual('bar', pc2.scatteringfactortable.foo)
+        self.assertEqual('bar', dbpc2.scatteringfactortable.foo)
         return
 
     def test_pickling_derived(self):
