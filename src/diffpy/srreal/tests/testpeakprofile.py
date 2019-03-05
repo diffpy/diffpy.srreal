@@ -6,8 +6,10 @@
 
 import unittest
 import pickle
+import numpy
 
 from diffpy.srreal.tests.testutils import pickle_with_attr
+from diffpy.srreal.tests.testutils import mod_structure
 from diffpy.srreal.peakprofile import PeakProfile
 from diffpy.srreal.pdfcalculator import PDFCalculator
 
@@ -165,15 +167,27 @@ class MySawTooth(PeakProfile):
         if rv < 0:  rv = 0
         return rv
 
+    def xboundlo(self, fwhm):
+        return -fwhm
+
+    def xboundhi(self, fwhm):
+        return +fwhm
+
 # End of class MySawTooth
 
 class TestPeakProfileOwner(unittest.TestCase):
 
     def setUp(self):
+        MySawTooth()._registerThisType()
         self.pc = PDFCalculator()
-        self.pkf = MySawTooth()
+        self.pc.peakprofile = 'mysawtooth'
+        self.pkf = self.pc.peakprofile
         self.pkf.peakprecision = 0.0017
-        self.pc.peakprofile = self.pkf
+        return
+
+
+    def tearDown(self):
+        PeakProfile._deregisterType(self.pkf.type())
         return
 
 
@@ -181,6 +195,22 @@ class TestPeakProfileOwner(unittest.TestCase):
         '''Check type of the owned PeakProfile instance.
         '''
         self.assertEqual('mysawtooth', self.pc.peakprofile.type())
+        return
+
+
+    def test_custom_peakprofile(self):
+        "Check if our MySawTooth is indeed applied."
+        c2 = mod_structure.Structure(2 * [mod_structure.Atom('C')])
+        c2.z = [0, 1]
+        c2.Uisoequiv = 0.01
+        r, g = self.pc(c2)
+        k = g.argmax()
+        self.assertEqual(1, r[k])
+        self.assertTrue(numpy.allclose(numpy.diff(g[k - 5:k], 2), 0))
+        self.assertTrue(numpy.allclose(numpy.diff(g[k:k + 5], 2), 0))
+        pkf2 = self.pc.peakprofile.clone()
+        self.assertTrue(isinstance(pkf2, MySawTooth))
+        self.assertEqual(0.0017, pkf2.peakprecision)
         return
 
 
