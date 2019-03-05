@@ -11,11 +11,9 @@ from diffpy.srreal.tests.testutils import pickle_with_attr
 from diffpy.srreal.peakprofile import PeakProfile
 from diffpy.srreal.pdfcalculator import PDFCalculator
 
-##############################################################################
-class TestPeakProfile(unittest.TestCase):
+# ----------------------------------------------------------------------------
 
-    tio2stru = None
-    tio2adpt = None
+class TestPeakProfile(unittest.TestCase):
 
     def setUp(self):
         self.pkgauss = PeakProfile.createByType('gaussian')
