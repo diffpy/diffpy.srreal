@@ -295,6 +295,15 @@ class ScatteringFactorTableWrap :
         mutable std::string mradiationtype;
         wrapper_registry_configurator<ScatteringFactorTable> mconfigurator;
 
+        // serialization
+        friend class boost::serialization::access;
+        template<class Archive>
+            void serialize(Archive& ar, const unsigned int version)
+        {
+            using boost::serialization::base_object;
+            ar & base_object<ScatteringFactorTable>(*this);
+        }
+
 };  // class ScatteringFactorTableWrap
 
 object lookupnparray(const ScatteringFactorTable& sftb,
@@ -366,19 +375,23 @@ void wrap_ScatteringFactorTable()
                 &ScatteringFactorTableWrap::default_ticker,
                 return_internal_reference<>(),
                 doc_ScatteringFactorTable_ticker)
-        .enable_pickling()
+        .def_pickle(SerializationPickleSuite<ScatteringFactorTable,DICT_PICKLE>())
         ;
 
     register_ptr_to_python<ScatteringFactorTablePtr>();
 
     class_<SFTXray, bases<ScatteringFactorTable> >(
-            "SFTXray", doc_SFTXray);
+            "SFTXray", doc_SFTXray)
+        .def_pickle(SerializationPickleSuite<SFTXray>());
     class_<SFTElectron, bases<ScatteringFactorTable> >(
-            "SFTElectron", doc_SFTElectron);
+            "SFTElectron", doc_SFTElectron)
+        .def_pickle(SerializationPickleSuite<SFTElectron>());
     class_<SFTNeutron, bases<ScatteringFactorTable> >(
-            "SFTNeutron", doc_SFTNeutron);
+            "SFTNeutron", doc_SFTNeutron)
+        .def_pickle(SerializationPickleSuite<SFTNeutron>());
     class_<SFTElectronNumber, bases<ScatteringFactorTable> >(
-            "SFTElectronNumber", doc_SFTElectronNumber);
+            "SFTElectronNumber", doc_SFTElectronNumber)
+        .def_pickle(SerializationPickleSuite<SFTElectronNumber>());
 
     class_<ScatteringFactorTableOwner>("ScatteringFactorTableOwner",
             doc_ScatteringFactorTableOwner)
@@ -394,11 +407,13 @@ void wrap_ScatteringFactorTable()
                 &SFTOwner::getRadiationType,
                 return_value_policy<copy_const_reference>(),
                 doc_ScatteringFactorTableOwner_getRadiationType)
-        .def_pickle(SerializationPickleSuite<ScatteringFactorTableOwner,
-                DICT_IGNORE>())
         ;
 }
 
 }   // namespace srrealmodule
+
+// Serialization -------------------------------------------------------------
+
+BOOST_CLASS_EXPORT(srrealmodule::nswrap_ScatteringFactorTable::ScatteringFactorTableWrap)
 
 // End of file

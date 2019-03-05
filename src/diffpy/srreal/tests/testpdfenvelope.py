@@ -8,12 +8,14 @@ import unittest
 import pickle
 import numpy
 
+from diffpy.srreal.tests.testutils import pickle_with_attr
 from diffpy.srreal.pdfenvelope import PDFEnvelope, makePDFEnvelope
 from diffpy.srreal.pdfenvelope import QResolutionEnvelope, ScaleEnvelope
 from diffpy.srreal.pdfenvelope import SphericalShapeEnvelope, StepCutEnvelope
-from diffpy.srreal.pdfcalculator import PDFCalculator
+from diffpy.srreal.pdfcalculator import PDFCalculator, DebyePDFCalculator
 
-##############################################################################
+# ----------------------------------------------------------------------------
+
 class TestPDFEnvelope(unittest.TestCase):
 
     def setUp(self):
@@ -143,14 +145,37 @@ class TestPDFEnvelope(unittest.TestCase):
         pbl3cp = pickle.loads(pickle.dumps(pbl3))
         self.assertEqual(0, pbl3cp.a)
         self.assertEqual('asdf', pbl3cp.foo)
+        return
+
+
+    def test_picking_owned(self):
+        '''verify pickling of envelopes owned by PDF calculators.
+        '''
+        pbl = makePDFEnvelope('parabolaenvelope',
+                parabola_envelope, a=1, b=2, c=3)
+        pbl.a = 7
+        pbl.foobar = 'asdf'
         pc = PDFCalculator()
-        pc.envelopes = (pbl2,)
+        pc.envelopes = (pbl,)
+        dbpc = DebyePDFCalculator()
+        dbpc.envelopes = (pbl,)
+        self.assertIs(pbl, pc.envelopes[0])
+        self.assertIs(pbl, dbpc.envelopes[0])
+        pc.addEnvelope(self.fscale)
+        dbpc.addEnvelope(self.fscale)
+        self.fscale.scale = 3.5
+        self.assertEqual(3.5, pc.scale)
+        self.assertEqual(3.5, dbpc.scale)
         pc2 = pickle.loads(pickle.dumps(pc))
-        pbl2cp = pc2.envelopes[0]
-        self.assertEqual('parabolaenvelope', pbl2cp.type())
-        self.assertEqual(1, pbl2cp.a)
-        self.assertEqual(0, pbl2cp.b)
-        self.assertEqual(3, pbl2cp.c)
+        dbpc2 = pickle.loads(pickle.dumps(dbpc))
+        self.assertEqual(3.5, pc2.scale)
+        self.assertEqual(3.5, dbpc2.scale)
+        pblcopies = [pc2.getEnvelope("parabolaenvelope"),
+                     dbpc2.getEnvelope("parabolaenvelope")]
+        for pbl2 in pblcopies:
+            self.assertEqual(7, pbl2.a)
+            self.assertEqual('asdf', pbl2.foobar)
+            self.assertEqual('parabolaenvelope', pbl2.type())
         return
 
 # ----------------------------------------------------------------------------
@@ -174,6 +199,7 @@ class TestQResolutionEnvelope(unittest.TestCase):
         evlp2 = pickle.loads(pickle.dumps(evlp))
         self.assertEqual(QResolutionEnvelope, type(evlp2))
         self.assertEqual(3, evlp2.qdamp)
+        self.assertRaises(RuntimeError, pickle_with_attr, evlp, foo='bar')
         return
 
 # ----------------------------------------------------------------------------
@@ -197,6 +223,7 @@ class TestScaleEnvelope(unittest.TestCase):
         evlp2 = pickle.loads(pickle.dumps(evlp))
         self.assertEqual(ScaleEnvelope, type(evlp2))
         self.assertEqual(3, evlp2.scale)
+        self.assertRaises(RuntimeError, pickle_with_attr, evlp, foo='bar')
         return
 
 # ----------------------------------------------------------------------------
@@ -220,6 +247,7 @@ class TestSphericalShapeEnvelope(unittest.TestCase):
         evlp2 = pickle.loads(pickle.dumps(evlp))
         self.assertEqual(SphericalShapeEnvelope, type(evlp2))
         self.assertEqual(3, evlp2.spdiameter)
+        self.assertRaises(RuntimeError, pickle_with_attr, evlp, foo='bar')
         return
 
 # ----------------------------------------------------------------------------
@@ -243,6 +271,7 @@ class TestStepCutEnvelope(unittest.TestCase):
         evlp2 = pickle.loads(pickle.dumps(evlp))
         self.assertEqual(StepCutEnvelope, type(evlp2))
         self.assertEqual(3, evlp2.stepcut)
+        self.assertRaises(RuntimeError, pickle_with_attr, evlp, foo='bar')
         return
 
 # ----------------------------------------------------------------------------

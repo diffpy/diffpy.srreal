@@ -34,36 +34,15 @@ from diffpy.srreal.srreal_ext import PDFEnvelope
 from diffpy.srreal.srreal_ext import ScaleEnvelope, QResolutionEnvelope
 from diffpy.srreal.srreal_ext import SphericalShapeEnvelope, StepCutEnvelope
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
-from diffpy.srreal.wraputils import _pickle_getstate, _pickle_setstate
 
 # class PDFEnvelope ----------------------------------------------------------
 
-# pickling support
+# disable dictionary pickling for wrapped C++ classes
 
-def _envelope_create(s):
-    from diffpy.srreal.srreal_ext import _PDFEnvelope_frombytes
-    return _PDFEnvelope_frombytes(s)
-
-def _envelope_reduce(self):
-    from diffpy.srreal.srreal_ext import _PDFEnvelope_tobytes
-    args = (_PDFEnvelope_tobytes(self),)
-    rv = (_envelope_create, args)
-    return rv
-
-def _envelope_reduce_with_state(self):
-    rv = _envelope_reduce(self) + (self.__getstate__(),)
-    return rv
-
-# inject pickle methods
-
-PDFEnvelope.__reduce__ = _envelope_reduce_with_state
-PDFEnvelope.__getstate__ = _pickle_getstate
-PDFEnvelope.__setstate__ = _pickle_setstate
-
-QResolutionEnvelope.__reduce__ = _envelope_reduce
-ScaleEnvelope.__reduce__ = _envelope_reduce
-SphericalShapeEnvelope.__reduce__ = _envelope_reduce
-StepCutEnvelope.__reduce__ = _envelope_reduce
+QResolutionEnvelope.__getstate_manages_dict__ = None
+ScaleEnvelope.__getstate_manages_dict__ = None
+SphericalShapeEnvelope.__getstate_manages_dict__ = None
+StepCutEnvelope.__getstate_manages_dict__ = None
 
 # attribute wrappers
 

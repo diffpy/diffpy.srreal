@@ -9,6 +9,7 @@ import pickle
 
 from diffpy.srreal.bvscalculator import BVSCalculator
 from diffpy.srreal.tests.testutils import loadDiffPyStructure
+from diffpy.srreal.tests.testutils import pickle_with_attr
 
 ##############################################################################
 class TestBVSCalculator(unittest.TestCase):
@@ -124,13 +125,12 @@ class TestBVSCalculator(unittest.TestCase):
         bvsc.rmin = 0.1
         bvsc.rmax = 12.3
         bvsc.valenceprecision = 0.3e-4
-        bvsc.foobar = 'asdf'
         spkl = pickle.dumps(bvsc)
         bvsc1 = pickle.loads(spkl)
         self.assertFalse(bvsc is bvsc1)
         for a in bvsc._namesOfDoubleAttributes():
             self.assertEqual(getattr(bvsc, a), getattr(bvsc1, a))
-        self.assertEqual('asdf', bvsc1.foobar)
+        self.assertRaises(RuntimeError, pickle_with_attr, bvsc, foo='bar')
         return
 
 

@@ -19,7 +19,6 @@
 #include <boost/python/class.hpp>
 #include <boost/python/copy_const_reference.hpp>
 #include <boost/python/register_ptr_to_python.hpp>
-#include <boost/serialization/export.hpp>
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"

@@ -139,6 +139,15 @@ class PDFEnvelopeWrap :
         mutable std::string mtype;
         wrapper_registry_configurator<PDFEnvelope> mconfigurator;
 
+        // serialization
+        friend class boost::serialization::access;
+        template<class Archive>
+            void serialize(Archive& ar, const unsigned int version)
+        {
+            using boost::serialization::base_object;
+            ar & base_object<PDFEnvelope>(*this);
+        }
+
 };  // class PDFEnvelopeWrap
 
 
@@ -151,20 +160,6 @@ object callnparray(const PDFEnvelope* obj, object& x)
     double* dst = yy.second;
     for (; src != last; ++src, ++dst)  *dst = (*obj)(*src);
     return yy.first;
-}
-
-
-python::object envelope_tobytes(PDFEnvelopePtr obj)
-{
-    return serialization_tobytes(obj);
-}
-
-
-PDFEnvelopePtr envelope_frombytes(const std::string& content)
-{
-    PDFEnvelopePtr rv;
-    diffpy::serialization_fromstring(rv, content);
-    return rv;
 }
 
 }   // namespace nswrap_PDFEnvelope
@@ -184,26 +179,34 @@ void wrap_PDFEnvelope()
                 bp::arg("r_array"))
         .def("__call__", &PDFEnvelope::operator(),
                 bp::arg("r"), doc_PDFEnvelope___call__)
-        .enable_pickling()
+        .def_pickle(SerializationPickleSuite<PDFEnvelope,DICT_PICKLE>())
         ;
 
     register_ptr_to_python<PDFEnvelopePtr>();
 
     class_<QResolutionEnvelope, bases<PDFEnvelope> >(
-            "QResolutionEnvelope", doc_QResolutionEnvelope);
+            "QResolutionEnvelope", doc_QResolutionEnvelope)
+        .def_pickle(SerializationPickleSuite<QResolutionEnvelope>())
+        ;
     class_<ScaleEnvelope, bases<PDFEnvelope> >(
-            "ScaleEnvelope", doc_ScaleEnvelope);
+            "ScaleEnvelope", doc_ScaleEnvelope)
+        .def_pickle(SerializationPickleSuite<ScaleEnvelope>())
+        ;
     class_<SphericalShapeEnvelope, bases<PDFEnvelope> >(
-            "SphericalShapeEnvelope", doc_SphericalShapeEnvelope);
+            "SphericalShapeEnvelope", doc_SphericalShapeEnvelope)
+        .def_pickle(SerializationPickleSuite<SphericalShapeEnvelope>())
+        ;
     class_<StepCutEnvelope, bases<PDFEnvelope> >(
-            "StepCutEnvelope", doc_StepCutEnvelope);
-
-    // pickling support functions
-    def("_PDFEnvelope_tobytes", envelope_tobytes);
-    def("_PDFEnvelope_frombytes", envelope_frombytes);
+            "StepCutEnvelope", doc_StepCutEnvelope)
+        .def_pickle(SerializationPickleSuite<StepCutEnvelope>())
+        ;
 
 }
 
 }   // namespace srrealmodule
+
+// Serialization -------------------------------------------------------------
+
+BOOST_CLASS_EXPORT(srrealmodule::nswrap_PDFEnvelope::PDFEnvelopeWrap)
 
 // End of file

@@ -374,7 +374,7 @@ python::object repr_QuantityType(const QuantityType& v)
 
 python::object eval_asarray(PairQuantity& obj, python::object& a)
 {
-    QuantityType value = (Py_None == a.ptr()) ? obj.eval() : obj.eval(a);
+    QuantityType value = (a.is_none()) ? obj.eval() : obj.eval(a);
     python::object rv = convertToNumPyArray(value);
     return rv;
 }
@@ -487,7 +487,7 @@ void set_pair_mask(PairQuantity& obj,
         python::object i, python::object j, python::object msk,
         python::object others)
 {
-    if (Py_None != others.ptr())  mask_all_pairs(obj, others);
+    if (!others.is_none())  mask_all_pairs(obj, others);
     python::extract<int> geti(i);
     python::extract<int> getj(j);
     bool mask = msk;
@@ -515,7 +515,7 @@ void set_type_mask(PairQuantity& obj,
         python::object others)
 {
     using namespace std;
-    if (Py_None != others.ptr())  mask_all_pairs(obj, others);
+    if (!others.is_none())  mask_all_pairs(obj, others);
     python::extract<string> getsmbli(smbli);
     python::extract<string> getsmblj(smblj);
     bool mask = msk;
@@ -830,7 +830,6 @@ void wrap_PairQuantity()
                 doc_BasePairQuantity_ticker)
         .def("copy", pqcopy,
                 doc_BasePairQuantity_copy)
-        .def_pickle(PairQuantityPickleSuite<PairQuantity>())
         ;
 
     class_<PairQuantityWrap, bases<PairQuantity>,
@@ -884,6 +883,9 @@ void wrap_PairQuantity()
         .add_property("_value", make_function(&PairQuantityWrap::value,
                     return_internal_reference<>()),
                 doc_PairQuantity__value)
+        // classes PairQuantityExposed, PairQuantityWrap add no members,
+        // therefore we can create pickle suite from C++ base class.
+        .def_pickle(PairQuantityPickleSuite<PairQuantity, DICT_PICKLE>())
         ;
 
 }

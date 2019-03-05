@@ -12,6 +12,7 @@ import numpy
 from diffpy.srreal.tests.testutils import has_pyobjcryst, _msg_nopyobjcryst
 from diffpy.srreal.tests.testutils import loadDiffPyStructure
 from diffpy.srreal.tests.testutils import loadObjCrystCrystal
+from diffpy.srreal.tests.testutils import pickle_with_attr
 from diffpy.srreal.overlapcalculator import OverlapCalculator
 from diffpy.srreal.atomradiitable import CovalentRadiiTable
 
@@ -84,7 +85,6 @@ class TestOverlapCalculator(unittest.TestCase):
         olc.rmin = 0.1
         olc.rmax = 12.3
         olc.setPairMask(1, 2, False)
-        olc.foobar = 'asdf'
         spkl = pickle.dumps(olc)
         olc1 = pickle.loads(spkl)
         self.assertFalse(olc is olc1)
@@ -92,9 +92,9 @@ class TestOverlapCalculator(unittest.TestCase):
             self.assertEqual(getattr(olc, a), getattr(olc1, a))
         self.assertFalse(olc1.getPairMask(1, 2))
         self.assertTrue(olc1.getPairMask(0, 0))
-        self.assertEqual('asdf', olc1.foobar)
         self.assertTrue(numpy.array_equal(
             olc.sitesquareoverlaps, olc1.sitesquareoverlaps))
+        self.assertRaises(RuntimeError, pickle_with_attr, olc, foo='bar')
         return
 
     def test_pickling_artb(self):

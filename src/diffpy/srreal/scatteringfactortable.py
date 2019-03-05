@@ -28,35 +28,15 @@ from diffpy.srreal.srreal_ext import SFTXray
 from diffpy.srreal.srreal_ext import SFTElectron
 from diffpy.srreal.srreal_ext import SFTNeutron
 from diffpy.srreal.srreal_ext import SFTElectronNumber
-from diffpy.srreal.wraputils import _pickle_getstate, _pickle_setstate
 from diffpy.srreal.sfaverage import SFAverage
 
 # Pickling Support -----------------------------------------------------------
 
-def _sft_create(owner):
-    return owner.scatteringfactortable
+# disable dictionary pickling for wrapped C++ classes
 
-def _sft_reduce(self):
-    from diffpy.srreal.srreal_ext import ScatteringFactorTableOwner
-    owner = ScatteringFactorTableOwner()
-    owner.scatteringfactortable = self
-    args = (owner,)
-    rv = (_sft_create, args)
-    return rv
-
-def _sft_reduce_with_state(self):
-    rv = _sft_reduce(self) + (self.__getstate__(),)
-    return rv
-
-# inject pickle methods to ScatteringFactorTable
-
-ScatteringFactorTable.__reduce__ = _sft_reduce_with_state
-ScatteringFactorTable.__getstate__ = _pickle_getstate
-ScatteringFactorTable.__setstate__ = _pickle_setstate
-
-SFTXray.__reduce__ = _sft_reduce
-SFTElectron.__reduce__ = _sft_reduce
-SFTNeutron.__reduce__ = _sft_reduce
-SFTElectronNumber.__reduce__ = _sft_reduce
+SFTXray.__getstate_manages_dict__ = None
+SFTElectron.__getstate_manages_dict__ = None
+SFTNeutron.__getstate_manages_dict__ = None
+SFTElectronNumber.__getstate_manages_dict__ = None
 
 # End of file

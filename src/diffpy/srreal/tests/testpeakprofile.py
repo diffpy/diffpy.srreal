@@ -6,15 +6,16 @@
 
 import unittest
 import pickle
+import numpy
 
+from diffpy.srreal.tests.testutils import pickle_with_attr
+from diffpy.srreal.tests.testutils import mod_structure
 from diffpy.srreal.peakprofile import PeakProfile
 from diffpy.srreal.pdfcalculator import PDFCalculator
 
-##############################################################################
-class TestPeakProfile(unittest.TestCase):
+# ----------------------------------------------------------------------------
 
-    tio2stru = None
-    tio2adpt = None
+class TestPeakProfile(unittest.TestCase):
 
     def setUp(self):
         self.pkgauss = PeakProfile.createByType('gaussian')
@@ -135,6 +136,9 @@ class TestPeakProfile(unittest.TestCase):
         self.assertEqual('gaussian', pkg2.type())
         self.assertEqual(0.0011, pkg2.peakprecision)
         self.assertEqual(0.0011, pkg2._getDoubleAttr('peakprecision'))
+        self.assertRaises(RuntimeError, pickle_with_attr, pkg, foo='bar')
+        pkc = self.pkcropped
+        self.assertRaises(RuntimeError, pickle_with_attr, pkc, foo='bar')
         return
 
 # ----------------------------------------------------------------------------
@@ -163,17 +167,27 @@ class MySawTooth(PeakProfile):
         if rv < 0:  rv = 0
         return rv
 
-MySawTooth()._registerThisType()
+    def xboundlo(self, fwhm):
+        return -fwhm
+
+    def xboundhi(self, fwhm):
+        return +fwhm
 
 # End of class MySawTooth
 
 class TestPeakProfileOwner(unittest.TestCase):
 
     def setUp(self):
+        MySawTooth()._registerThisType()
         self.pc = PDFCalculator()
-        self.pkf = MySawTooth()
+        self.pc.peakprofile = 'mysawtooth'
+        self.pkf = self.pc.peakprofile
         self.pkf.peakprecision = 0.0017
-        self.pc.peakprofile = self.pkf
+        return
+
+
+    def tearDown(self):
+        PeakProfile._deregisterType(self.pkf.type())
         return
 
 
@@ -184,22 +198,40 @@ class TestPeakProfileOwner(unittest.TestCase):
         return
 
 
+    def test_custom_peakprofile(self):
+        "Check if our MySawTooth is indeed applied."
+        c2 = mod_structure.Structure(2 * [mod_structure.Atom('C')])
+        c2.z = [0, 1]
+        c2.Uisoequiv = 0.01
+        r, g = self.pc(c2)
+        k = g.argmax()
+        self.assertEqual(1, r[k])
+        self.assertTrue(numpy.allclose(numpy.diff(g[k - 5:k], 2), 0))
+        self.assertTrue(numpy.allclose(numpy.diff(g[k:k + 5], 2), 0))
+        pkf2 = self.pc.peakprofile.clone()
+        self.assertTrue(isinstance(pkf2, MySawTooth))
+        self.assertEqual(0.0017, pkf2.peakprecision)
+        return
+
+
     def test_pickling(self):
         '''Check pickling of an owned PeakProfile instance.
         '''
         pc1 = pickle.loads(pickle.dumps(self.pc))
         self.pkf.peakprecision = 0.0003
+        self.pkf.foo = 'bar'
         pc2 = pickle.loads(pickle.dumps(self.pc))
         self.assertEqual('mysawtooth', pc1.peakprofile.type())
         self.assertEqual(0.0017, pc1.peakprofile.peakprecision)
         self.assertEqual(0.0017, pc1.peakprecision)
+        self.assertFalse(hasattr(pc1.peakprofile, 'foo'))
         self.assertEqual('mysawtooth', pc2.peakprofile.type())
         self.assertEqual(0.0003, pc2.peakprofile.peakprecision)
         self.assertEqual(0.0003, pc2.peakprecision)
+        self.assertEqual('bar', pc2.peakprofile.foo)
         return
 
 # ----------------------------------------------------------------------------
-
 
 if __name__ == '__main__':
     unittest.main()

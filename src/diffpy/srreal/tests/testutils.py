@@ -7,6 +7,7 @@
 import sys
 import copy
 import numpy
+import pickle
 
 from diffpy.srreal.structureconverters import convertObjCrystCrystal
 from diffpy.srreal.tests import logger
@@ -81,6 +82,15 @@ def loadCrystalStructureAdapter(filename):
     for op in pcif.spacegroup.iter_symops():
         adpt.addSymOp(op.R, op.t)
     return adpt
+
+
+def pickle_with_attr(obj, **attr):
+    "Return pickle dump after setting one or more attributes."
+    assert attr, "keyword argument must be set"
+    for k, v in attr.items():
+        setattr(obj, k, v)
+    rv = pickle.dumps(obj)
+    return rv
 
 # helper class for testing overloading of StructureAdapter
 
