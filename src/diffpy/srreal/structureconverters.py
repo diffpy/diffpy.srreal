@@ -24,7 +24,7 @@ from diffpy.srreal.srreal_ext import PeriodicStructureAdapter
 
 # Converter for Structure class from diffpy.structure ------------------------
 
-# TODO prune when Python 2 support is dropped.
+# TODO prune in version 1.4.
 @RegisterStructureAdapter('diffpy.Structure.structure.Structure')
 @RegisterStructureAdapter('diffpy.structure.structure.Structure')
 def convertDiffPyStructure(stru):

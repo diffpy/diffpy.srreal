@@ -44,7 +44,7 @@ __date__ = cp['date']
 __git_commit__ = cp['commit']
 __timestamp__ = int(cp['timestamp'])
 
-# TODO remove deprecated __gitsha__ in version 1.3.
+# TODO remove deprecated __gitsha__ in version 1.4.
 __gitsha__ = __git_commit__
 
 del cp, fcfg, fp, kwords
