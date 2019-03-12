@@ -4,7 +4,6 @@
 """
 
 
-import sys
 import copy
 import numpy
 import pickle
@@ -12,15 +11,19 @@ import pickle
 from diffpy.srreal.structureconverters import convertObjCrystCrystal
 from diffpy.srreal.tests import logger
 
-# Handle renamed diffpy.structure module by importing it to a common name.
-# TODO simplify when Python 2 support is dropped.
+# Deprecated in 1.3 - import of old camel-case diffpy.Structure names.
+# TODO drop this in version 1.4.
 
-if sys.version_info[0] >= 3:
+try:
     import diffpy.structure as mod_structure
     from diffpy.structure.parsers import getParser
-else:
-    import diffpy.Structure as mod_structure
-    from diffpy.Structure.Parsers import getParser
+except ImportError as e:
+    try:
+        import diffpy.Structure as mod_structure
+        from diffpy.Structure.Parsers import getParser
+    except ImportError:
+        raise e
+    del e
 
 # Resolve availability of optional packages.
 
