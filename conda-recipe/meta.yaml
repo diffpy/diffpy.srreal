@@ -36,7 +36,7 @@ requirements:
     - boost
     - pycifrw
     - diffpy.structure
-    - pyobjcryst 2.0*
+    - pyobjcryst 2.1.*
     - periodictable
 
 test:

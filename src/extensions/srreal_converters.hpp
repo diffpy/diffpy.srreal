@@ -34,17 +34,8 @@
 #include <diffpy/srreal/QuantityType.hpp>
 #include <diffpy/version.hpp>
 
-// FIXME -- temporary features, remove when released
-#include <diffpy/features.hpp>
-#ifndef DIFFPY_DEV_PEAKWIDTHMODEL_SERIALIZATION
-#error "diffpy.srreal requires PEAKWIDTHMODEL_SERIALIZATION feature"
-#endif
-#ifndef DIFFPY_DEV_DIRECT_SERIALIZATION
-#error "diffpy.srreal requires DIRECT_SERIALIZATION feature"
-#endif
-
-#if DIFFPY_VERSION < 1003003000
-#error "diffpy.srreal requires libdiffpy 1.3.3 or later."
+#if DIFFPY_VERSION < 1004000000
+#error "diffpy.srreal requires libdiffpy 1.4.0 or later."
 #endif
 
 /// Conversion function that supports implicit conversions in
