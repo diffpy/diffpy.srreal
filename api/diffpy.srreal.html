@@ -1,58 +1,49 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>diffpy.srreal package &#8212; SrReal 1.2 documentation</title>
-    
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <title>diffpy.srreal package &#8212; diffpy.srreal 1.3.0 documentation</title>
+    <link rel="stylesheet" href="../_static/pydoctheme.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '1.2',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    
     <script type="text/javascript" src="../_static/sidebar.js"></script>
+    
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="diffpy.srreal documentation" href="../index.html" /> 
-  </head>
-  <body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <link rel="prev" title="Release notes" href="../release.html" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="shortcut icon" type="image/png" href="../_static/favicon.png" />
+    <meta name="viewport" content="width=device-width,initial-scale=0.8">
+    
+    
+
+  </head><body>
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../index.html" title="diffpy.srreal documentation"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">SrReal 1.2 documentation</a> &#187;</li> 
+        <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
+        <li><a href="../index.html">diffpy.srreal 1.3.0 documentation</a> &#187;</li> 
       </ul>
-    </div>  
+    </div>
+    
+  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="diffpy-srreal-package">
-<h1>diffpy.srreal package<a class="headerlink" href="#diffpy-srreal-package" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-diffpy.srreal">
+<span id="diffpy-srreal-package"></span><h1>diffpy.srreal package<a class="headerlink" href="#module-diffpy.srreal" title="Permalink to this headline">¶</a></h1>
+<p>Tools for real space structure analysis.</p>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -62,7 +53,7 @@
 <dl class="class">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.atomradiitable.</code><code class="descname">AtomRadiiTable</code><a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Boost.Python.instance</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Boost.Python.instance</span></code></p>
 <p>Base class for looking up empirical atom radii.
 This class has virtual methods and cannot be used as is.</p>
 <p>A derived class has to overload the following methods:</p>
@@ -103,20 +94,20 @@ types by calling the _registerThisType method with any instance.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) – string type identifying a registered AtomRadiiTable class.</li>
-<li><strong>a new instance of the AtomRadiiTable-derived class.</strong> (<em>Returns</em>) – </li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tp</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – string type identifying a registered AtomRadiiTable class.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A new instance of the AtomRadiiTable-derived class named <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#diffpy.srreal.atomradiitable.AtomRadiiTable" title="diffpy.srreal.atomradiitable.AtomRadiiTable">AtomRadiiTable</a></td>
 </tr>
 </tbody>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.getRegisteredTypes" title="diffpy.srreal.atomradiitable.AtomRadiiTable.getRegisteredTypes"><code class="xref py py-meth docutils literal"><span class="pre">getRegisteredTypes()</span></code></a></dt>
+<dt><a class="reference internal" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.getRegisteredTypes" title="diffpy.srreal.atomradiitable.AtomRadiiTable.getRegisteredTypes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getRegisteredTypes()</span></code></a></dt>
 <dd>Return set of the recognized type strings.</dd>
-<dt><a class="reference internal" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.getAliasedTypes" title="diffpy.srreal.atomradiitable.AtomRadiiTable.getAliasedTypes"><code class="xref py py-meth docutils literal"><span class="pre">getAliasedTypes()</span></code></a></dt>
+<dt><a class="reference internal" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.getAliasedTypes" title="diffpy.srreal.atomradiitable.AtomRadiiTable.getAliasedTypes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getAliasedTypes()</span></code></a></dt>
 <dd>Return dictionary of string aliases.</dd>
 </dl>
 </div>
@@ -149,7 +140,7 @@ Raise ValueError for an invalid string format.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a map of registered aliases to their corresponding standard names.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
 </tr>
 </tbody>
 </table>
@@ -172,8 +163,18 @@ Raise ValueError for an invalid string format.</p>
 <dl class="staticmethod">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.getRegisteredTypes">
 <em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a set of string types of the registered AtomRadiiTable classes.</p>
-<p>These are the allowed arguments for the <cite>createByType</cite> factory.</p>
+<dd><p>Get string types of all registered AtomRadiiTable classes.</p>
+<p>These are the allowed arguments for the <a class="reference internal" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.createByType" title="diffpy.srreal.atomradiitable.AtomRadiiTable.createByType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">createByType</span></code></a> factory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the registered string types.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#set" title="(in Python v3.7)">set</a></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::python::api::object getRegisteredTypes()</dd>
@@ -183,17 +184,17 @@ Raise ValueError for an invalid string format.</p>
 <dl class="staticmethod">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.isRegisteredType">
 <em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &#x2192; bool :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.isRegisteredType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the given string is registered as a AtomRadiiTable type.</p>
+<dd><p>Check if the given string is registered as a named AtomRadiiTable type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) – string name or an alias to be checked.</li>
-<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) – </li>
-<li><strong>standard type</strong><strong> or </strong><strong>its alias.</strong> (<em>a</em>) – </li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tp</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – string name or an alias to be checked.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> is known to the registry either as a standard
+type or its alias.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -253,7 +254,7 @@ radius   – custom radius that will be returned by the lookup method</p>
 
 <dl class="method">
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.toString">
-<code class="descname">toString</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em><span class="optional">[</span>, <em>(str)separator=’</em>, <em>’</em><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; str :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.toString" title="Permalink to this definition">¶</a></dt>
+<code class="descname">toString</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em><span class="optional">[</span>, <em>(str)separator='</em>, <em>'</em><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; str :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.toString" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return string of all custom atom radii in ‘A1:r1, A2:r2, …’ format.</p>
 <p>separator    – string separator between ‘A1:r1’ entries, by default ‘,’</p>
 <p>Return string.</p>
@@ -267,7 +268,7 @@ radius   – custom radius that will be returned by the lookup method</p>
 <dt id="diffpy.srreal.atomradiitable.AtomRadiiTable.type">
 <code class="descname">type</code><span class="sig-paren">(</span><em>(AtomRadiiTable)arg1</em><span class="sig-paren">)</span> &#x2192; str :<a class="headerlink" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a unique string type that identifies a AtomRadiiTable-derived class.
-The string type is used for class registration and in the <cite>createByType</cite>
+The string type is used for class registration and in the <a class="reference internal" href="#diffpy.srreal.atomradiitable.AtomRadiiTable.createByType" title="diffpy.srreal.atomradiitable.AtomRadiiTable.createByType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">createByType</span></code></a>
 function.</p>
 <p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
@@ -281,7 +282,7 @@ function.</p>
 <dl class="class">
 <dt id="diffpy.srreal.atomradiitable.ConstantRadiiTable">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.atomradiitable.</code><code class="descname">ConstantRadiiTable</code><a class="headerlink" href="#diffpy.srreal.atomradiitable.ConstantRadiiTable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.AtomRadiiTable</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.AtomRadiiTable</span></code></p>
 <p>Atom radii table with the same radius for all atoms, by default 0.</p>
 <p>See setDefault() for changing the default radius or setCustom()
 and fromString() for setting a special radius for selected atoms.</p>
@@ -330,7 +331,7 @@ and fromString() for setting a special radius for selected atoms.</p>
 <dl class="class">
 <dt id="diffpy.srreal.atomradiitable.CovalentRadiiTable">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.atomradiitable.</code><code class="descname">CovalentRadiiTable</code><a class="headerlink" href="#diffpy.srreal.atomradiitable.CovalentRadiiTable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.AtomRadiiTable</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.AtomRadiiTable</span></code></p>
 <p>Covalent radii from Cordero et al., 2008, doi:10.1039/b801115j.
 Instantiation of this class requires the periodictable module.</p>
 <dl class="method">
@@ -364,7 +365,7 @@ A base to PairQuantity and quite a few other classes.</p>
 <dl class="class">
 <dt id="diffpy.srreal.attributes.Attributes">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.attributes.</code><code class="descname">Attributes</code><a class="headerlink" href="#diffpy.srreal.attributes.Attributes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Boost.Python.instance</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Boost.Python.instance</span></code></p>
 <p>This class manages named C++ double attributes owned by an instance.
 The derived objects own double attributes that can be looked up from C++
 by name, without having to know a full C++ interface of their classes.</p>
@@ -377,7 +378,7 @@ by name, without having to know a full C++ interface of their classes.</p>
 <dl class="class">
 <dt id="diffpy.srreal.bondcalculator.BondCalculator">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.bondcalculator.</code><code class="descname">BondCalculator</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.bondcalculator.BondCalculator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.BasePairQuantity</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.BasePairQuantity</span></code></p>
 <p>Calculator of bond distances in a specified structure.</p>
 <dl class="attribute">
 <dt id="diffpy.srreal.bondcalculator.BondCalculator.directions">
@@ -469,7 +470,7 @@ class BVParam – bond valence data associated with specific cation-anion pair</
 <dl class="class">
 <dt id="diffpy.srreal.bvparameterstable.BVParam">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.bvparameterstable.</code><code class="descname">BVParam</code><a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParam" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Boost.Python.instance</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Boost.Python.instance</span></code></p>
 <p>Storage of bond valence parameters for a given cation-anion pair.</p>
 <dl class="attribute">
 <dt id="diffpy.srreal.bvparameterstable.BVParam.B">
@@ -548,7 +549,7 @@ class BVParam – bond valence data associated with specific cation-anion pair</
 <dl class="class">
 <dt id="diffpy.srreal.bvparameterstable.BVParametersTable">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.bvparameterstable.</code><code class="descname">BVParametersTable</code><a class="headerlink" href="#diffpy.srreal.bvparameterstable.BVParametersTable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Boost.Python.instance</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Boost.Python.instance</span></code></p>
 <p>Lookup table for bond valence parameters of a cation-anion pairs.</p>
 <dl class="method">
 <dt id="diffpy.srreal.bvparameterstable.BVParametersTable.getAll">
@@ -709,7 +710,7 @@ value    – signed valence to be used for the symbol, e.g., -1.</p>
 </dl>
 </div></blockquote>
 <dl class="docutils">
-<dt>setCustom( (BVParametersTable)arg1, (str)atom0, (int)valence0, (str)atom1, (int)valence1, (float)Ro, (float)B [, (str)ref_id=”]) -&gt; None :</dt>
+<dt>setCustom( (BVParametersTable)arg1, (str)atom0, (int)valence0, (str)atom1, (int)valence1, (float)Ro, (float)B [, (str)ref_id=’‘]) -&gt; None :</dt>
 <dd><p class="first">Insert custom bond valence data to the table.</p>
 <p>atom0    – bare symbol of the cation atom
 valence0 – positive integer cation valence
@@ -721,7 +722,7 @@ ref_id   – optional reference code in bvparm2011.cif</p>
 <p>No return value.</p>
 <dl class="last docutils">
 <dt>C++ signature :</dt>
-<dd>void setCustom(diffpy::srreal::BVParametersTable {lvalue},std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;,int,std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;,int,double,double [,std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;=”])</dd>
+<dd>void setCustom(diffpy::srreal::BVParametersTable {lvalue},std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;,int,std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;,int,double,double [,std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;=’‘])</dd>
 </dl>
 </dd>
 </dl>
@@ -736,7 +737,7 @@ ref_id   – optional reference code in bvparm2011.cif</p>
 <dl class="class">
 <dt id="diffpy.srreal.bvscalculator.BVSCalculator">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.bvscalculator.</code><code class="descname">BVSCalculator</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.bvscalculator.BVSCalculator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.BasePairQuantity</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.BasePairQuantity</span></code></p>
 <p>Calculator of bond valence sums in the specified structure.</p>
 <dl class="attribute">
 <dt id="diffpy.srreal.bvscalculator.BVSCalculator.bvdiff">
@@ -817,7 +818,7 @@ equal to rmax.  The value depends on ions present in the structure.</p>
 <dl class="class">
 <dt id="diffpy.srreal.eventticker.EventTicker">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.eventticker.</code><code class="descname">EventTicker</code><a class="headerlink" href="#diffpy.srreal.eventticker.EventTicker" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Boost.Python.instance</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Boost.Python.instance</span></code></p>
 <p>Class for storing modification ‘times’ of dependent objects
 The default EventTicker object is initialized to a zero time.</p>
 <dl class="method">
@@ -852,7 +853,7 @@ Keep original value if the other ticker is older.</p>
 <dl class="class">
 <dt id="diffpy.srreal.overlapcalculator.OverlapCalculator">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.overlapcalculator.</code><code class="descname">OverlapCalculator</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.overlapcalculator.OverlapCalculator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.BasePairQuantity</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.BasePairQuantity</span></code></p>
 <p>Calculate the overlap of atom radii and coordination numbers at each site.</p>
 <dl class="attribute">
 <dt id="diffpy.srreal.overlapcalculator.OverlapCalculator.atomradiitable">
@@ -1032,7 +1033,7 @@ for site multiplicities and occupancies.</p>
 <dl class="class">
 <dt id="diffpy.srreal.pairquantity.PairQuantity">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.pairquantity.</code><code class="descname">PairQuantity</code><a class="headerlink" href="#diffpy.srreal.pairquantity.PairQuantity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.BasePairQuantity</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.BasePairQuantity</span></code></p>
 <p>Base class for Python defined pair quantity calculators.
 No action by default.  Concrete calculators must override the
 _addPairContribution method to get some results.</p>
@@ -1073,7 +1074,7 @@ into parallel calculators.</p>
 <p>pqobj    – instance of PairQuantity calculator to be run in parallel
 ncpu     – number of parallel jobs
 pmap     – a parallel map function used to submit job to workers</p>
-<p>The <code class="docutils literal"><span class="pre">pqobj.evaluatortype</span></code> is reset to ‘BASIC’ because other
+<p>The <code class="docutils literal notranslate"><span class="pre">pqobj.evaluatortype</span></code> is reset to ‘BASIC’ because other
 evaluator types are not supported within parallel calculations.</p>
 <p>Return a proxy calculator instance that has the same interface,
 but executes the calculation in parallel split among ncpu jobs.</p>
@@ -1082,12 +1083,14 @@ but executes the calculation in parallel split among ncpu jobs.</p>
 </div>
 <div class="section" id="module-diffpy.srreal.pdfbaseline">
 <span id="diffpy-srreal-pdfbaseline-module"></span><h2>diffpy.srreal.pdfbaseline module<a class="headerlink" href="#module-diffpy.srreal.pdfbaseline" title="Permalink to this headline">¶</a></h2>
-<p>Classes for configuring PDF baseline:
-PDFBaseline, ZeroBaseline, LinearBaseline</p>
+<dl class="docutils">
+<dt>Classes for configuring PDF baseline:</dt>
+<dd>PDFBaseline, ZeroBaseline, LinearBaseline</dd>
+</dl>
 <dl class="class">
 <dt id="diffpy.srreal.pdfbaseline.PDFBaseline">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.pdfbaseline.</code><code class="descname">PDFBaseline</code><a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.Attributes</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.Attributes</span></code></p>
 <p>Base class and registry for functions that calculate PDF baseline.</p>
 <dl class="method">
 <dt id="diffpy.srreal.pdfbaseline.PDFBaseline.clone">
@@ -1119,20 +1122,20 @@ PDFBaseline, ZeroBaseline, LinearBaseline</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) – string type identifying a registered PDFBaseline class.</li>
-<li><strong>a new instance of the PDFBaseline-derived class.</strong> (<em>Returns</em>) – </li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tp</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – string type identifying a registered PDFBaseline class.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A new instance of the PDFBaseline-derived class named <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#diffpy.srreal.pdfbaseline.PDFBaseline" title="diffpy.srreal.pdfbaseline.PDFBaseline">PDFBaseline</a></td>
 </tr>
 </tbody>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="#diffpy.srreal.pdfbaseline.PDFBaseline.getRegisteredTypes" title="diffpy.srreal.pdfbaseline.PDFBaseline.getRegisteredTypes"><code class="xref py py-meth docutils literal"><span class="pre">getRegisteredTypes()</span></code></a></dt>
+<dt><a class="reference internal" href="#diffpy.srreal.pdfbaseline.PDFBaseline.getRegisteredTypes" title="diffpy.srreal.pdfbaseline.PDFBaseline.getRegisteredTypes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getRegisteredTypes()</span></code></a></dt>
 <dd>Return set of the recognized type strings.</dd>
-<dt><a class="reference internal" href="#diffpy.srreal.pdfbaseline.PDFBaseline.getAliasedTypes" title="diffpy.srreal.pdfbaseline.PDFBaseline.getAliasedTypes"><code class="xref py py-meth docutils literal"><span class="pre">getAliasedTypes()</span></code></a></dt>
+<dt><a class="reference internal" href="#diffpy.srreal.pdfbaseline.PDFBaseline.getAliasedTypes" title="diffpy.srreal.pdfbaseline.PDFBaseline.getAliasedTypes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getAliasedTypes()</span></code></a></dt>
 <dd>Return dictionary of string aliases.</dd>
 </dl>
 </div>
@@ -1152,7 +1155,7 @@ PDFBaseline, ZeroBaseline, LinearBaseline</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a map of registered aliases to their corresponding standard names.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
 </tr>
 </tbody>
 </table>
@@ -1165,8 +1168,18 @@ PDFBaseline, ZeroBaseline, LinearBaseline</p>
 <dl class="staticmethod">
 <dt id="diffpy.srreal.pdfbaseline.PDFBaseline.getRegisteredTypes">
 <em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a set of string types of the registered PDFBaseline classes.</p>
-<p>These are the allowed arguments for the <cite>createByType</cite> factory.</p>
+<dd><p>Get string types of all registered PDFBaseline classes.</p>
+<p>These are the allowed arguments for the <a class="reference internal" href="#diffpy.srreal.pdfbaseline.PDFBaseline.createByType" title="diffpy.srreal.pdfbaseline.PDFBaseline.createByType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">createByType</span></code></a> factory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the registered string types.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#set" title="(in Python v3.7)">set</a></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::python::api::object getRegisteredTypes()</dd>
@@ -1176,17 +1189,17 @@ PDFBaseline, ZeroBaseline, LinearBaseline</p>
 <dl class="staticmethod">
 <dt id="diffpy.srreal.pdfbaseline.PDFBaseline.isRegisteredType">
 <em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &#x2192; bool :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.isRegisteredType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the given string is registered as a PDFBaseline type.</p>
+<dd><p>Check if the given string is registered as a named PDFBaseline type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) – string name or an alias to be checked.</li>
-<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) – </li>
-<li><strong>standard type</strong><strong> or </strong><strong>its alias.</strong> (<em>a</em>) – </li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tp</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – string name or an alias to be checked.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> is known to the registry either as a standard
+type or its alias.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -1200,7 +1213,7 @@ PDFBaseline, ZeroBaseline, LinearBaseline</p>
 <dt id="diffpy.srreal.pdfbaseline.PDFBaseline.type">
 <code class="descname">type</code><span class="sig-paren">(</span><em>(PDFBaseline)arg1</em><span class="sig-paren">)</span> &#x2192; str :<a class="headerlink" href="#diffpy.srreal.pdfbaseline.PDFBaseline.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a unique string type that identifies a PDFBaseline-derived class.
-The string type is used for class registration and in the <cite>createByType</cite>
+The string type is used for class registration and in the <a class="reference internal" href="#diffpy.srreal.pdfbaseline.PDFBaseline.createByType" title="diffpy.srreal.pdfbaseline.PDFBaseline.createByType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">createByType</span></code></a>
 function.</p>
 <p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
@@ -1252,14 +1265,14 @@ pdfc.baseline = baseline
 <dl class="class">
 <dt id="diffpy.srreal.pdfbaseline.ZeroBaseline">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.pdfbaseline.</code><code class="descname">ZeroBaseline</code><a class="headerlink" href="#diffpy.srreal.pdfbaseline.ZeroBaseline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.PDFBaseline</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.PDFBaseline</span></code></p>
 <p>Trivial baseline function that is always zero, no baseline.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="diffpy.srreal.pdfbaseline.LinearBaseline">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.pdfbaseline.</code><code class="descname">LinearBaseline</code><a class="headerlink" href="#diffpy.srreal.pdfbaseline.LinearBaseline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.PDFBaseline</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.PDFBaseline</span></code></p>
 <p>Trivial baseline function that is always zero, no baseline.</p>
 <dl class="attribute">
 <dt id="diffpy.srreal.pdfbaseline.LinearBaseline.slope">
@@ -1273,13 +1286,15 @@ is preset to (-4 * pi * rho0).</p>
 </div>
 <div class="section" id="module-diffpy.srreal.pdfcalculator">
 <span id="diffpy-srreal-pdfcalculator-module"></span><h2>diffpy.srreal.pdfcalculator module<a class="headerlink" href="#module-diffpy.srreal.pdfcalculator" title="Permalink to this headline">¶</a></h2>
-<p>Top-level classes for PDF calculation:
-DebyePDFCalculator – simulate PDF by evaluating Debye sum in Q-space
-PDFCalculator      – calculate PDF by peak summation in real space</p>
+<dl class="docutils">
+<dt>Top-level classes for PDF calculation:</dt>
+<dd>DebyePDFCalculator – simulate PDF by evaluating Debye sum in Q-space
+PDFCalculator      – calculate PDF by peak summation in real space</dd>
+</dl>
 <dl class="class">
 <dt id="diffpy.srreal.pdfcalculator.DebyePDFCalculator">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.pdfcalculator.</code><code class="descname">DebyePDFCalculator</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.pdfcalculator.DebyePDFCalculator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.BasePairQuantity</span></code>, <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.PeakWidthModelOwner</span></code>, <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.ScatteringFactorTableOwner</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.BasePairQuantity</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.PeakWidthModelOwner</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.ScatteringFactorTableOwner</span></code></p>
 <p>Calculate PDF using the Debye scattering equation.</p>
 <dl class="method">
 <dt id="diffpy.srreal.pdfcalculator.DebyePDFCalculator.addEnvelope">
@@ -1532,7 +1547,7 @@ explicit qstep assignment, which makes qstep independent of rmax.</p>
 <dl class="class">
 <dt id="diffpy.srreal.pdfcalculator.PDFCalculator">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.pdfcalculator.</code><code class="descname">PDFCalculator</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.pdfcalculator.PDFCalculator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.BasePairQuantity</span></code>, <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.PeakWidthModelOwner</span></code>, <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.ScatteringFactorTableOwner</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.BasePairQuantity</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.PeakWidthModelOwner</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.ScatteringFactorTableOwner</span></code></p>
 <p>Calculate PDF using the real-space summation of PeakProfile functions.</p>
 <dl class="method">
 <dt id="diffpy.srreal.pdfcalculator.PDFCalculator.addEnvelope">
@@ -1842,13 +1857,15 @@ fftftog function to recover the original signal g.</p>
 </div>
 <div class="section" id="module-diffpy.srreal.pdfenvelope">
 <span id="diffpy-srreal-pdfenvelope-module"></span><h2>diffpy.srreal.pdfenvelope module<a class="headerlink" href="#module-diffpy.srreal.pdfenvelope" title="Permalink to this headline">¶</a></h2>
-<p>Classes for configuring PDF scaling envelope:
-PDFEnvelope, ScaleEnvelope, QResolutionEnvelope,
-SphericalShapeEnvelope, StepCutEnvelope</p>
+<dl class="docutils">
+<dt>Classes for configuring PDF scaling envelope:</dt>
+<dd>PDFEnvelope, ScaleEnvelope, QResolutionEnvelope,
+SphericalShapeEnvelope, StepCutEnvelope</dd>
+</dl>
 <dl class="class">
 <dt id="diffpy.srreal.pdfenvelope.PDFEnvelope">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.pdfenvelope.</code><code class="descname">PDFEnvelope</code><a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.Attributes</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.Attributes</span></code></p>
 <p>Base class and registry for functions that return PDF scaling envelopes.</p>
 <dl class="method">
 <dt id="diffpy.srreal.pdfenvelope.PDFEnvelope.clone">
@@ -1880,20 +1897,20 @@ SphericalShapeEnvelope, StepCutEnvelope</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) – string type identifying a registered PDFEnvelope class.</li>
-<li><strong>a new instance of the PDFEnvelope-derived class.</strong> (<em>Returns</em>) – </li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tp</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – string type identifying a registered PDFEnvelope class.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A new instance of the PDFEnvelope-derived class named <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#diffpy.srreal.pdfenvelope.PDFEnvelope" title="diffpy.srreal.pdfenvelope.PDFEnvelope">PDFEnvelope</a></td>
 </tr>
 </tbody>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.getRegisteredTypes" title="diffpy.srreal.pdfenvelope.PDFEnvelope.getRegisteredTypes"><code class="xref py py-meth docutils literal"><span class="pre">getRegisteredTypes()</span></code></a></dt>
+<dt><a class="reference internal" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.getRegisteredTypes" title="diffpy.srreal.pdfenvelope.PDFEnvelope.getRegisteredTypes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getRegisteredTypes()</span></code></a></dt>
 <dd>Return set of the recognized type strings.</dd>
-<dt><a class="reference internal" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.getAliasedTypes" title="diffpy.srreal.pdfenvelope.PDFEnvelope.getAliasedTypes"><code class="xref py py-meth docutils literal"><span class="pre">getAliasedTypes()</span></code></a></dt>
+<dt><a class="reference internal" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.getAliasedTypes" title="diffpy.srreal.pdfenvelope.PDFEnvelope.getAliasedTypes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getAliasedTypes()</span></code></a></dt>
 <dd>Return dictionary of string aliases.</dd>
 </dl>
 </div>
@@ -1913,7 +1930,7 @@ SphericalShapeEnvelope, StepCutEnvelope</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a map of registered aliases to their corresponding standard names.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
 </tr>
 </tbody>
 </table>
@@ -1926,8 +1943,18 @@ SphericalShapeEnvelope, StepCutEnvelope</p>
 <dl class="staticmethod">
 <dt id="diffpy.srreal.pdfenvelope.PDFEnvelope.getRegisteredTypes">
 <em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a set of string types of the registered PDFEnvelope classes.</p>
-<p>These are the allowed arguments for the <cite>createByType</cite> factory.</p>
+<dd><p>Get string types of all registered PDFEnvelope classes.</p>
+<p>These are the allowed arguments for the <a class="reference internal" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.createByType" title="diffpy.srreal.pdfenvelope.PDFEnvelope.createByType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">createByType</span></code></a> factory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the registered string types.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#set" title="(in Python v3.7)">set</a></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::python::api::object getRegisteredTypes()</dd>
@@ -1937,17 +1964,17 @@ SphericalShapeEnvelope, StepCutEnvelope</p>
 <dl class="staticmethod">
 <dt id="diffpy.srreal.pdfenvelope.PDFEnvelope.isRegisteredType">
 <em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &#x2192; bool :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.isRegisteredType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the given string is registered as a PDFEnvelope type.</p>
+<dd><p>Check if the given string is registered as a named PDFEnvelope type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) – string name or an alias to be checked.</li>
-<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) – </li>
-<li><strong>standard type</strong><strong> or </strong><strong>its alias.</strong> (<em>a</em>) – </li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tp</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – string name or an alias to be checked.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> is known to the registry either as a standard
+type or its alias.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -1961,7 +1988,7 @@ SphericalShapeEnvelope, StepCutEnvelope</p>
 <dt id="diffpy.srreal.pdfenvelope.PDFEnvelope.type">
 <code class="descname">type</code><span class="sig-paren">(</span><em>(PDFEnvelope)arg1</em><span class="sig-paren">)</span> &#x2192; str :<a class="headerlink" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a unique string type that identifies a PDFEnvelope-derived class.
-The string type is used for class registration and in the <cite>createByType</cite>
+The string type is used for class registration and in the <a class="reference internal" href="#diffpy.srreal.pdfenvelope.PDFEnvelope.createByType" title="diffpy.srreal.pdfenvelope.PDFEnvelope.createByType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">createByType</span></code></a>
 function.</p>
 <p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
@@ -2014,7 +2041,7 @@ pdfc.addEnvelope(envelope)
 <dl class="class">
 <dt id="diffpy.srreal.pdfenvelope.QResolutionEnvelope">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.pdfenvelope.</code><code class="descname">QResolutionEnvelope</code><a class="headerlink" href="#diffpy.srreal.pdfenvelope.QResolutionEnvelope" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.PDFEnvelope</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.PDFEnvelope</span></code></p>
 <p>Gaussian dampening envelope function due to limited Q-resolution.</p>
 <p>Returns   exp(-qdamp * x**2).
 Returns   1  when qdamp is zero or negative.</p>
@@ -2029,7 +2056,7 @@ Returns   1  when qdamp is zero or negative.</p>
 <dl class="class">
 <dt id="diffpy.srreal.pdfenvelope.ScaleEnvelope">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.pdfenvelope.</code><code class="descname">ScaleEnvelope</code><a class="headerlink" href="#diffpy.srreal.pdfenvelope.ScaleEnvelope" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.PDFEnvelope</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.PDFEnvelope</span></code></p>
 <p>Uniform scaling envelope function.</p>
 <p>Returns   scale.</p>
 <dl class="attribute">
@@ -2043,7 +2070,7 @@ Returns   1  when qdamp is zero or negative.</p>
 <dl class="class">
 <dt id="diffpy.srreal.pdfenvelope.SphericalShapeEnvelope">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.pdfenvelope.</code><code class="descname">SphericalShapeEnvelope</code><a class="headerlink" href="#diffpy.srreal.pdfenvelope.SphericalShapeEnvelope" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.PDFEnvelope</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.PDFEnvelope</span></code></p>
 <p>Dampening PDF envelope due to finite spherical particle shape.</p>
 <p>Returns   (1 - 1.5*tau + 0.5*tau**3), where tau = x/spdiameter.
 Returns   1 when spdiameter &lt;= 0.</p>
@@ -2058,7 +2085,7 @@ Returns   1 when spdiameter &lt;= 0.</p>
 <dl class="class">
 <dt id="diffpy.srreal.pdfenvelope.StepCutEnvelope">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.pdfenvelope.</code><code class="descname">StepCutEnvelope</code><a class="headerlink" href="#diffpy.srreal.pdfenvelope.StepCutEnvelope" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.PDFEnvelope</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.PDFEnvelope</span></code></p>
 <p>Step function damping envelope.</p>
 <p>Returns   1 when x &lt;= stepcut or if stepcut &lt;= 0.
 Returns   0 when x &gt; stepcut.</p>
@@ -2073,13 +2100,15 @@ Returns   0 when x &gt; stepcut.</p>
 </div>
 <div class="section" id="module-diffpy.srreal.peakprofile">
 <span id="diffpy-srreal-peakprofile-module"></span><h2>diffpy.srreal.peakprofile module<a class="headerlink" href="#module-diffpy.srreal.peakprofile" title="Permalink to this headline">¶</a></h2>
-<p>Class for configuring PDF profile function:
-PeakProfile
-GaussianProfile, CroppedGaussianProfile</p>
+<dl class="docutils">
+<dt>Class for configuring PDF profile function:</dt>
+<dd>PeakProfile
+GaussianProfile, CroppedGaussianProfile</dd>
+</dl>
 <dl class="class">
 <dt id="diffpy.srreal.peakprofile.PeakProfile">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.peakprofile.</code><code class="descname">PeakProfile</code><a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.Attributes</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.Attributes</span></code></p>
 <p>Base class and registry for PDF peak profile functions.
 The peak profile functions must be centered at 0 and their integrated
 area must be 1.</p>
@@ -2113,20 +2142,20 @@ area must be 1.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) – string type identifying a registered PeakProfile class.</li>
-<li><strong>a new instance of the PeakProfile-derived class.</strong> (<em>Returns</em>) – </li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tp</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – string type identifying a registered PeakProfile class.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A new instance of the PeakProfile-derived class named <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#diffpy.srreal.peakprofile.PeakProfile" title="diffpy.srreal.peakprofile.PeakProfile">PeakProfile</a></td>
 </tr>
 </tbody>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="#diffpy.srreal.peakprofile.PeakProfile.getRegisteredTypes" title="diffpy.srreal.peakprofile.PeakProfile.getRegisteredTypes"><code class="xref py py-meth docutils literal"><span class="pre">getRegisteredTypes()</span></code></a></dt>
+<dt><a class="reference internal" href="#diffpy.srreal.peakprofile.PeakProfile.getRegisteredTypes" title="diffpy.srreal.peakprofile.PeakProfile.getRegisteredTypes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getRegisteredTypes()</span></code></a></dt>
 <dd>Return set of the recognized type strings.</dd>
-<dt><a class="reference internal" href="#diffpy.srreal.peakprofile.PeakProfile.getAliasedTypes" title="diffpy.srreal.peakprofile.PeakProfile.getAliasedTypes"><code class="xref py py-meth docutils literal"><span class="pre">getAliasedTypes()</span></code></a></dt>
+<dt><a class="reference internal" href="#diffpy.srreal.peakprofile.PeakProfile.getAliasedTypes" title="diffpy.srreal.peakprofile.PeakProfile.getAliasedTypes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getAliasedTypes()</span></code></a></dt>
 <dd>Return dictionary of string aliases.</dd>
 </dl>
 </div>
@@ -2146,7 +2175,7 @@ area must be 1.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a map of registered aliases to their corresponding standard names.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
 </tr>
 </tbody>
 </table>
@@ -2159,8 +2188,18 @@ area must be 1.</p>
 <dl class="staticmethod">
 <dt id="diffpy.srreal.peakprofile.PeakProfile.getRegisteredTypes">
 <em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a set of string types of the registered PeakProfile classes.</p>
-<p>These are the allowed arguments for the <cite>createByType</cite> factory.</p>
+<dd><p>Get string types of all registered PeakProfile classes.</p>
+<p>These are the allowed arguments for the <a class="reference internal" href="#diffpy.srreal.peakprofile.PeakProfile.createByType" title="diffpy.srreal.peakprofile.PeakProfile.createByType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">createByType</span></code></a> factory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the registered string types.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#set" title="(in Python v3.7)">set</a></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::python::api::object getRegisteredTypes()</dd>
@@ -2170,17 +2209,17 @@ area must be 1.</p>
 <dl class="staticmethod">
 <dt id="diffpy.srreal.peakprofile.PeakProfile.isRegisteredType">
 <em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &#x2192; bool :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.isRegisteredType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the given string is registered as a PeakProfile type.</p>
+<dd><p>Check if the given string is registered as a named PeakProfile type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) – string name or an alias to be checked.</li>
-<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) – </li>
-<li><strong>standard type</strong><strong> or </strong><strong>its alias.</strong> (<em>a</em>) – </li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tp</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – string name or an alias to be checked.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> is known to the registry either as a standard
+type or its alias.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -2226,7 +2265,7 @@ This method can be overridden in a Python-derived class.</p>
 <dt id="diffpy.srreal.peakprofile.PeakProfile.type">
 <code class="descname">type</code><span class="sig-paren">(</span><em>(PeakProfile)arg1</em><span class="sig-paren">)</span> &#x2192; str :<a class="headerlink" href="#diffpy.srreal.peakprofile.PeakProfile.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a unique string type that identifies a PeakProfile-derived class.
-The string type is used for class registration and in the <cite>createByType</cite>
+The string type is used for class registration and in the <a class="reference internal" href="#diffpy.srreal.peakprofile.PeakProfile.createByType" title="diffpy.srreal.peakprofile.PeakProfile.createByType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">createByType</span></code></a>
 function.</p>
 <p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
@@ -2268,14 +2307,14 @@ xboundlo the profile function must be smaller than (peakprecision * maximum).</p
 <dl class="class">
 <dt id="diffpy.srreal.peakprofile.GaussianProfile">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.peakprofile.</code><code class="descname">GaussianProfile</code><a class="headerlink" href="#diffpy.srreal.peakprofile.GaussianProfile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.PeakProfile</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.PeakProfile</span></code></p>
 <p>Gaussian profile function.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="diffpy.srreal.peakprofile.CroppedGaussianProfile">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.peakprofile.</code><code class="descname">CroppedGaussianProfile</code><a class="headerlink" href="#diffpy.srreal.peakprofile.CroppedGaussianProfile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.GaussianProfile</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.GaussianProfile</span></code></p>
 <p>Gaussian function cropped to zero at its crossing with peakprecision.</p>
 <p>The profile is also rescaled to keep the integrated area of 1.</p>
 </dd></dl>
@@ -2283,13 +2322,15 @@ xboundlo the profile function must be smaller than (peakprecision * maximum).</p
 </div>
 <div class="section" id="module-diffpy.srreal.peakwidthmodel">
 <span id="diffpy-srreal-peakwidthmodel-module"></span><h2>diffpy.srreal.peakwidthmodel module<a class="headerlink" href="#module-diffpy.srreal.peakwidthmodel" title="Permalink to this headline">¶</a></h2>
-<p>Classes for configuring peak width evaluation in PDF calculations:
-PeakWidthModel,
-ConstantPeakWidth, DebyeWallerPeakWidth, JeongPeakWidth</p>
+<dl class="docutils">
+<dt>Classes for configuring peak width evaluation in PDF calculations:</dt>
+<dd>PeakWidthModel,
+ConstantPeakWidth, DebyeWallerPeakWidth, JeongPeakWidth</dd>
+</dl>
 <dl class="class">
 <dt id="diffpy.srreal.peakwidthmodel.PeakWidthModel">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.peakwidthmodel.</code><code class="descname">PeakWidthModel</code><a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.Attributes</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.Attributes</span></code></p>
 <p>Base class for functors that calculate the PDF peak widths.
 Peak width is defined as full width at half maximum (FWHM).</p>
 <dl class="method">
@@ -2335,20 +2376,20 @@ This method must be overridden in a derived class.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) – string type identifying a registered PeakWidthModel class.</li>
-<li><strong>a new instance of the PeakWidthModel-derived class.</strong> (<em>Returns</em>) – </li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tp</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – string type identifying a registered PeakWidthModel class.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A new instance of the PeakWidthModel-derived class named <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel" title="diffpy.srreal.peakwidthmodel.PeakWidthModel">PeakWidthModel</a></td>
 </tr>
 </tbody>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.getRegisteredTypes" title="diffpy.srreal.peakwidthmodel.PeakWidthModel.getRegisteredTypes"><code class="xref py py-meth docutils literal"><span class="pre">getRegisteredTypes()</span></code></a></dt>
+<dt><a class="reference internal" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.getRegisteredTypes" title="diffpy.srreal.peakwidthmodel.PeakWidthModel.getRegisteredTypes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getRegisteredTypes()</span></code></a></dt>
 <dd>Return set of the recognized type strings.</dd>
-<dt><a class="reference internal" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.getAliasedTypes" title="diffpy.srreal.peakwidthmodel.PeakWidthModel.getAliasedTypes"><code class="xref py py-meth docutils literal"><span class="pre">getAliasedTypes()</span></code></a></dt>
+<dt><a class="reference internal" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.getAliasedTypes" title="diffpy.srreal.peakwidthmodel.PeakWidthModel.getAliasedTypes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getAliasedTypes()</span></code></a></dt>
 <dd>Return dictionary of string aliases.</dd>
 </dl>
 </div>
@@ -2368,7 +2409,7 @@ This method must be overridden in a derived class.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a map of registered aliases to their corresponding standard names.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
 </tr>
 </tbody>
 </table>
@@ -2381,8 +2422,18 @@ This method must be overridden in a derived class.</p>
 <dl class="staticmethod">
 <dt id="diffpy.srreal.peakwidthmodel.PeakWidthModel.getRegisteredTypes">
 <em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a set of string types of the registered PeakWidthModel classes.</p>
-<p>These are the allowed arguments for the <cite>createByType</cite> factory.</p>
+<dd><p>Get string types of all registered PeakWidthModel classes.</p>
+<p>These are the allowed arguments for the <a class="reference internal" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.createByType" title="diffpy.srreal.peakwidthmodel.PeakWidthModel.createByType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">createByType</span></code></a> factory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the registered string types.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#set" title="(in Python v3.7)">set</a></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::python::api::object getRegisteredTypes()</dd>
@@ -2392,17 +2443,17 @@ This method must be overridden in a derived class.</p>
 <dl class="staticmethod">
 <dt id="diffpy.srreal.peakwidthmodel.PeakWidthModel.isRegisteredType">
 <em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &#x2192; bool :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.isRegisteredType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the given string is registered as a PeakWidthModel type.</p>
+<dd><p>Check if the given string is registered as a named PeakWidthModel type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) – string name or an alias to be checked.</li>
-<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) – </li>
-<li><strong>standard type</strong><strong> or </strong><strong>its alias.</strong> (<em>a</em>) – </li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tp</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – string name or an alias to be checked.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> is known to the registry either as a standard
+type or its alias.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -2481,7 +2532,7 @@ This method can be overridden in a Python-derived class.</p>
 <dt id="diffpy.srreal.peakwidthmodel.PeakWidthModel.type">
 <code class="descname">type</code><span class="sig-paren">(</span><em>(PeakWidthModel)arg1</em><span class="sig-paren">)</span> &#x2192; str :<a class="headerlink" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a unique string type that identifies a PeakWidthModel-derived class.
-The string type is used for class registration and in the <cite>createByType</cite>
+The string type is used for class registration and in the <a class="reference internal" href="#diffpy.srreal.peakwidthmodel.PeakWidthModel.createByType" title="diffpy.srreal.peakwidthmodel.PeakWidthModel.createByType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">createByType</span></code></a>
 function.</p>
 <p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
@@ -2495,8 +2546,20 @@ function.</p>
 <dl class="class">
 <dt id="diffpy.srreal.peakwidthmodel.ConstantPeakWidth">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.peakwidthmodel.</code><code class="descname">ConstantPeakWidth</code><a class="headerlink" href="#diffpy.srreal.peakwidthmodel.ConstantPeakWidth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.PeakWidthModel</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.PeakWidthModel</span></code></p>
 <p>Peak width model returning constant width.</p>
+<dl class="attribute">
+<dt id="diffpy.srreal.peakwidthmodel.ConstantPeakWidth.bisowidth">
+<code class="descname">bisowidth</code><a class="headerlink" href="#diffpy.srreal.peakwidthmodel.ConstantPeakWidth.bisowidth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Equivalent uniform Biso for this constant <a class="reference internal" href="#diffpy.srreal.peakwidthmodel.ConstantPeakWidth.width" title="diffpy.srreal.peakwidthmodel.ConstantPeakWidth.width"><code class="xref py py-obj docutils literal notranslate"><span class="pre">width</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="diffpy.srreal.peakwidthmodel.ConstantPeakWidth.uisowidth">
+<code class="descname">uisowidth</code><a class="headerlink" href="#diffpy.srreal.peakwidthmodel.ConstantPeakWidth.uisowidth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Equivalent uniform Uiso for this constant <a class="reference internal" href="#diffpy.srreal.peakwidthmodel.ConstantPeakWidth.width" title="diffpy.srreal.peakwidthmodel.ConstantPeakWidth.width"><code class="xref py py-obj docutils literal notranslate"><span class="pre">width</span></code></a>.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="diffpy.srreal.peakwidthmodel.ConstantPeakWidth.width">
 <code class="descname">width</code><a class="headerlink" href="#diffpy.srreal.peakwidthmodel.ConstantPeakWidth.width" title="Permalink to this definition">¶</a></dt>
@@ -2508,7 +2571,7 @@ function.</p>
 <dl class="class">
 <dt id="diffpy.srreal.peakwidthmodel.DebyeWallerPeakWidth">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.peakwidthmodel.</code><code class="descname">DebyeWallerPeakWidth</code><a class="headerlink" href="#diffpy.srreal.peakwidthmodel.DebyeWallerPeakWidth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.PeakWidthModel</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.PeakWidthModel</span></code></p>
 <p>Calculate PDF peak width from a Debye-Waller model of atom vibrations.
 This returns mean-square displacement of atoms in the pair along their
 bond scaled as FWHM.  The atom displacements are assumed independent.</p>
@@ -2517,7 +2580,7 @@ bond scaled as FWHM.  The atom displacements are assumed independent.</p>
 <dl class="class">
 <dt id="diffpy.srreal.peakwidthmodel.JeongPeakWidth">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.peakwidthmodel.</code><code class="descname">JeongPeakWidth</code><a class="headerlink" href="#diffpy.srreal.peakwidthmodel.JeongPeakWidth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.DebyeWallerPeakWidth</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.DebyeWallerPeakWidth</span></code></p>
 <p>Calculate PDF peak width assuming I.-K. Jeong model of correlated motion.
 This returns mean-square displacement of atoms in the pair along their
 bond corrected for correlated motion and data noise at high-Q by a scaling
@@ -2549,7 +2612,7 @@ factor  sqrt(1 - delta1/r - delta2/r**2 + (qbroad * r)**2).</p>
 <dl class="class">
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.scatteringfactortable.</code><code class="descname">ScatteringFactorTable</code><a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Boost.Python.instance</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Boost.Python.instance</span></code></p>
 <p>Base class for looking up scattering factors by atom symbols.
 This class has virtual methods and cannot be used as is.</p>
 <p>A derived class has to override the following methods:</p>
@@ -2591,20 +2654,20 @@ types by calling the _registerThisType method with any instance.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) – string type identifying a registered ScatteringFactorTable class.</li>
-<li><strong>a new instance of the ScatteringFactorTable-derived class.</strong> (<em>Returns</em>) – </li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tp</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – string type identifying a registered ScatteringFactorTable class.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A new instance of the ScatteringFactorTable-derived class named <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable" title="diffpy.srreal.scatteringfactortable.ScatteringFactorTable">ScatteringFactorTable</a></td>
 </tr>
 </tbody>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getRegisteredTypes" title="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getRegisteredTypes"><code class="xref py py-meth docutils literal"><span class="pre">getRegisteredTypes()</span></code></a></dt>
+<dt><a class="reference internal" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getRegisteredTypes" title="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getRegisteredTypes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getRegisteredTypes()</span></code></a></dt>
 <dd>Return set of the recognized type strings.</dd>
-<dt><a class="reference internal" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getAliasedTypes" title="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getAliasedTypes"><code class="xref py py-meth docutils literal"><span class="pre">getAliasedTypes()</span></code></a></dt>
+<dt><a class="reference internal" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getAliasedTypes" title="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getAliasedTypes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getAliasedTypes()</span></code></a></dt>
 <dd>Return dictionary of string aliases.</dd>
 </dl>
 </div>
@@ -2624,7 +2687,7 @@ types by calling the _registerThisType method with any instance.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a map of registered aliases to their corresponding standard names.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
 </tr>
 </tbody>
 </table>
@@ -2647,8 +2710,18 @@ types by calling the _registerThisType method with any instance.</p>
 <dl class="staticmethod">
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getRegisteredTypes">
 <em class="property">static </em><code class="descname">getRegisteredTypes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; object :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.getRegisteredTypes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a set of string types of the registered ScatteringFactorTable classes.</p>
-<p>These are the allowed arguments for the <cite>createByType</cite> factory.</p>
+<dd><p>Get string types of all registered ScatteringFactorTable classes.</p>
+<p>These are the allowed arguments for the <a class="reference internal" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.createByType" title="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.createByType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">createByType</span></code></a> factory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the registered string types.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#set" title="(in Python v3.7)">set</a></td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
 <dt>C++ signature :</dt>
 <dd>boost::python::api::object getRegisteredTypes()</dd>
@@ -2658,17 +2731,17 @@ types by calling the _registerThisType method with any instance.</p>
 <dl class="staticmethod">
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.isRegisteredType">
 <em class="property">static </em><code class="descname">isRegisteredType</code><span class="sig-paren">(</span><em>(str)tp</em><span class="sig-paren">)</span> &#x2192; bool :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.isRegisteredType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the given string is registered as a ScatteringFactorTable type.</p>
+<dd><p>Check if the given string is registered as a named ScatteringFactorTable type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tp</strong> (<em>str</em>) – string name or an alias to be checked.</li>
-<li><strong>True if tp is known to the registry either as</strong> (<em>Return</em>) – </li>
-<li><strong>standard type</strong><strong> or </strong><strong>its alias.</strong> (<em>a</em>) – </li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tp</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – string name or an alias to be checked.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> is known to the registry either as a standard
+type or its alias.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -2803,7 +2876,7 @@ This method can be overridden in a Python-derived class.</p>
 <dt id="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.type">
 <code class="descname">type</code><span class="sig-paren">(</span><em>(ScatteringFactorTable)arg1</em><span class="sig-paren">)</span> &#x2192; str :<a class="headerlink" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a unique string type that identifies a ScatteringFactorTable-derived class.
-The string type is used for class registration and in the <cite>createByType</cite>
+The string type is used for class registration and in the <a class="reference internal" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable.createByType" title="diffpy.srreal.scatteringfactortable.ScatteringFactorTable.createByType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">createByType</span></code></a>
 function.</p>
 <p>This method must be overloaded in a derived class.</p>
 <dl class="docutils">
@@ -2817,7 +2890,7 @@ function.</p>
 <dl class="class">
 <dt id="diffpy.srreal.scatteringfactortable.SFTXray">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.scatteringfactortable.</code><code class="descname">SFTXray</code><a class="headerlink" href="#diffpy.srreal.scatteringfactortable.SFTXray" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.ScatteringFactorTable</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.ScatteringFactorTable</span></code></p>
 <p>X-ray scattering factors table.</p>
 <p>Q-dependence of scattering factors is calculated using
 Waasmaier - Kirfel approximation valid up to Q=75/A.</p>
@@ -2826,7 +2899,7 @@ Waasmaier - Kirfel approximation valid up to Q=75/A.</p>
 <dl class="class">
 <dt id="diffpy.srreal.scatteringfactortable.SFTElectron">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.scatteringfactortable.</code><code class="descname">SFTElectron</code><a class="headerlink" href="#diffpy.srreal.scatteringfactortable.SFTElectron" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.ScatteringFactorTable</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.ScatteringFactorTable</span></code></p>
 <p>Electron scattering factors table.</p>
 <p>Q-dependence is derived from X-ray scattering factors according
 to the International Tables Volume C.</p>
@@ -2835,14 +2908,14 @@ to the International Tables Volume C.</p>
 <dl class="class">
 <dt id="diffpy.srreal.scatteringfactortable.SFTNeutron">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.scatteringfactortable.</code><code class="descname">SFTNeutron</code><a class="headerlink" href="#diffpy.srreal.scatteringfactortable.SFTNeutron" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.ScatteringFactorTable</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.ScatteringFactorTable</span></code></p>
 <p>Table of neutron scattering lengths in fm.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="diffpy.srreal.scatteringfactortable.SFTElectronNumber">
 <em class="property">class </em><code class="descclassname">diffpy.srreal.scatteringfactortable.</code><code class="descname">SFTElectronNumber</code><a class="headerlink" href="#diffpy.srreal.scatteringfactortable.SFTElectronNumber" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.ScatteringFactorTable</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">diffpy.srreal.srreal_ext.ScatteringFactorTable</span></code></p>
 <p>Table of electron numbers for elements and ions.</p>
 <p>Can be used as Q-indendent scattering factors for X-rays.</p>
 </dd></dl>
@@ -2852,7 +2925,7 @@ to the International Tables Volume C.</p>
 <span id="diffpy-srreal-sfaverage-module"></span><h2>diffpy.srreal.sfaverage module<a class="headerlink" href="#module-diffpy.srreal.sfaverage" title="Permalink to this headline">¶</a></h2>
 <p>Compositional averaging of atom scattering factors.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">diffpy.srreal.scatteringfactortable</span> <span class="k">import</span> <span class="n">SFTXray</span>
 <span class="n">xtb</span> <span class="o">=</span> <span class="n">SFTXray</span><span class="p">()</span>
 <span class="n">qa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
@@ -2955,10 +3028,10 @@ Float or NumPy array.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>composition</strong> (<em>dictionary</em><em> or </em><em>a list of</em><em> (</em><em>symbol</em><em>, </em><em>amount</em><em>) </em><em>pairs.</em>) – The chemical composition for evaluating the average.  Atom
 symbols may repeat when it is a list of (symbol, amount) pairs.</li>
-<li><strong>sftb</strong> (<a class="reference internal" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable" title="diffpy.srreal.scatteringfactortable.ScatteringFactorTable"><em>ScatteringFactorTable</em></a><em> or </em><em>str</em>) – The ScatteringFactorTable object for looking up the values.
-When string use <cite>ScatteringFactorTable.createByType</cite> to create
+<li><strong>sftb</strong> (<a class="reference internal" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable" title="diffpy.srreal.scatteringfactortable.ScatteringFactorTable"><em>ScatteringFactorTable</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The ScatteringFactorTable object for looking up the values.
+When string use <code class="xref py py-obj docutils literal notranslate"><span class="pre">ScatteringFactorTable.createByType</span></code> to create
 a new lookup table of the specified type.</li>
-<li><strong>q</strong> (<em>float</em><em> or </em><em>NumPy array</em><em> (</em><em>optional</em><em>)</em>) – The Q value in inverse Angstroms for which to lookup
+<li><strong>q</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> or </em><em>NumPy array</em><em> (</em><em>optional</em><em>)</em>) – The Q value in inverse Angstroms for which to lookup
 the scattering factor values.</li>
 </ul>
 </td>
@@ -2985,10 +3058,10 @@ the scattering factor values.</li>
 <li><strong>stru</strong> (<em>diffpy Structure</em><em> or </em><em>pyobjcryst Crystal</em><em> or </em><em>StructureAdapter</em>) – The structure object that stores the atom species and their
 occupancies.  Can be any type with a registered conversion
 to the StructureAdapter class.</li>
-<li><strong>sftb</strong> (<a class="reference internal" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable" title="diffpy.srreal.scatteringfactortable.ScatteringFactorTable"><em>ScatteringFactorTable</em></a><em> or </em><em>str</em>) – The ScatteringFactorTable object for looking up the values.
-When string use <cite>ScatteringFactorTable.createByType</cite> to create
+<li><strong>sftb</strong> (<a class="reference internal" href="#diffpy.srreal.scatteringfactortable.ScatteringFactorTable" title="diffpy.srreal.scatteringfactortable.ScatteringFactorTable"><em>ScatteringFactorTable</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The ScatteringFactorTable object for looking up the values.
+When string use <code class="xref py py-obj docutils literal notranslate"><span class="pre">ScatteringFactorTable.createByType</span></code> to create
 a new lookup table of the specified type.</li>
-<li><strong>q</strong> (<em>float</em><em> or </em><em>NumPy array</em><em> (</em><em>optional</em><em>)</em>) – The Q value in inverse Angstroms for which to lookup
+<li><strong>q</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> or </em><em>NumPy array</em><em> (</em><em>optional</em><em>)</em>) – The Q value in inverse Angstroms for which to lookup
 the scattering factor values.</li>
 </ul>
 </td>
@@ -2998,7 +3071,7 @@ the scattering factor values.</li>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><code class="xref py py-meth docutils literal"><span class="pre">RegisterStructureAdapter()</span></code></dt>
+<dt><code class="xref py py-meth docutils literal notranslate"><span class="pre">RegisterStructureAdapter()</span></code></dt>
 <dd>to add support for more structure types.</dd>
 </dl>
 </div>
@@ -3072,81 +3145,14 @@ Raise TypeError if stru cannot be converted to StructureAdapter.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-diffpy.srreal.structureconverters">
-<span id="diffpy-srreal-structureconverters-module"></span><h2>diffpy.srreal.structureconverters module<a class="headerlink" href="#module-diffpy.srreal.structureconverters" title="Permalink to this headline">¶</a></h2>
-<p>Converters from other structure representations in Python to diffpy.srreal
-StructureAdapter classes.</p>
-<dl class="class">
-<dt id="diffpy.srreal.structureconverters.DiffPyStructureAtomicAdapter">
-<em class="property">class </em><code class="descclassname">diffpy.srreal.structureconverters.</code><code class="descname">DiffPyStructureAtomicAdapter</code><a class="headerlink" href="#diffpy.srreal.structureconverters.DiffPyStructureAtomicAdapter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.structureconverters._DiffPyStructureMetadata</span></code>, <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.AtomicStructureAdapter</span></code></p>
-</dd></dl>
-
-<dl class="class">
-<dt id="diffpy.srreal.structureconverters.DiffPyStructurePeriodicAdapter">
-<em class="property">class </em><code class="descclassname">diffpy.srreal.structureconverters.</code><code class="descname">DiffPyStructurePeriodicAdapter</code><a class="headerlink" href="#diffpy.srreal.structureconverters.DiffPyStructurePeriodicAdapter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.structureconverters._DiffPyStructureMetadata</span></code>, <code class="xref py py-class docutils literal"><span class="pre">diffpy.srreal.srreal_ext.PeriodicStructureAdapter</span></code></p>
-</dd></dl>
-
-<dl class="function">
-<dt id="diffpy.srreal.structureconverters.convertDiffPyStructure">
-<code class="descclassname">diffpy.srreal.structureconverters.</code><code class="descname">convertDiffPyStructure</code><span class="sig-paren">(</span><em>stru</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.structureconverters.convertDiffPyStructure" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adapt Structure class from diffpy.structure package.</p>
-</dd></dl>
-
-</div>
 <div class="section" id="module-diffpy.srreal.version">
 <span id="diffpy-srreal-version-module"></span><h2>diffpy.srreal.version module<a class="headerlink" href="#module-diffpy.srreal.version" title="Permalink to this headline">¶</a></h2>
 <p>Definitions of version-related constants and of libdiffpy_version_info.</p>
-<dl class="function">
-<dt id="diffpy.srreal.version.get_libdiffpy_version_info">
-<code class="descclassname">diffpy.srreal.version.</code><code class="descname">get_libdiffpy_version_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.version.get_libdiffpy_version_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get version data for the active libdiffpy shared library.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a namedtuple which contains libdiffpy version data.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">libdiffpy_version_info</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Deprecated in diffpy.srreal 1.1
-<cite>libdiffpy_version_info</cite> will be removed in diffpy.srreal 1.2.</p>
-</div>
-</dd></dl>
-
-</div>
-<div class="section" id="module-diffpy.srreal.wraputils">
-<span id="diffpy-srreal-wraputils-module"></span><h2>diffpy.srreal.wraputils module<a class="headerlink" href="#module-diffpy.srreal.wraputils" title="Permalink to this headline">¶</a></h2>
-<p>Local utilities helpful for tweaking interfaces to boost python classes.</p>
-<dl class="function">
-<dt id="diffpy.srreal.wraputils.propertyFromExtDoubleAttr">
-<code class="descclassname">diffpy.srreal.wraputils.</code><code class="descname">propertyFromExtDoubleAttr</code><span class="sig-paren">(</span><em>attrname</em>, <em>doc</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.wraputils.propertyFromExtDoubleAttr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create property wrapper to a DoubleAttr in C++ extension object.</p>
-<p>attrname – string name of the double attribute
-doc      – docstring for the Python class property</p>
-<p>Return a property object.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="diffpy.srreal.wraputils.setattrFromKeywordArguments">
-<code class="descclassname">diffpy.srreal.wraputils.</code><code class="descname">setattrFromKeywordArguments</code><span class="sig-paren">(</span><em>obj</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.wraputils.setattrFromKeywordArguments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set attributes of the obj according to keyword arguments.
-For example:    setattrFromKeywordArguments(obj, qmax=24, scale=2)
-This is a shared helper function used by __init__ and __call__.</p>
-<p>kwargs   – one or more keyword arguments</p>
-<p>No return value.
-Raise TypeError for invalid keyword argument.</p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-diffpy.srreal">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-diffpy.srreal" title="Permalink to this headline">¶</a></h2>
-<p>Tools for real space structure analysis.</p>
+<p class="rubric">Notes</p>
+<p>Variable <code class="xref py py-obj docutils literal notranslate"><span class="pre">__gitsha__</span></code> is deprecated as of version 1.3.
+Use <code class="xref py py-obj docutils literal notranslate"><span class="pre">__git_commit__</span></code> instead.</p>
+<p>Variable <code class="xref py py-obj docutils literal notranslate"><span class="pre">libdiffpy_version_info.git_sha</span></code> is deprecated as of version 1.4.0.
+Use <code class="xref py py-obj docutils literal notranslate"><span class="pre">libdiffpy_version_info.git_commit</span></code> instead.</p>
 </div>
 </div>
 
@@ -3156,7 +3162,10 @@ Raise TypeError for invalid keyword argument.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
+    <a id="sidebar-anchor"></a>
+    
+
+  <h3><a href="../index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">diffpy.srreal package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
@@ -3177,17 +3186,14 @@ Raise TypeError for invalid keyword argument.</p>
 <li><a class="reference internal" href="#module-diffpy.srreal.scatteringfactortable">diffpy.srreal.scatteringfactortable module</a></li>
 <li><a class="reference internal" href="#module-diffpy.srreal.sfaverage">diffpy.srreal.sfaverage module</a></li>
 <li><a class="reference internal" href="#module-diffpy.srreal.structureadapter">diffpy.srreal.structureadapter module</a></li>
-<li><a class="reference internal" href="#module-diffpy.srreal.structureconverters">diffpy.srreal.structureconverters module</a></li>
 <li><a class="reference internal" href="#module-diffpy.srreal.version">diffpy.srreal.version module</a></li>
-<li><a class="reference internal" href="#module-diffpy.srreal.wraputils">diffpy.srreal.wraputils module</a></li>
-<li><a class="reference internal" href="#module-diffpy.srreal">Module contents</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="../index.html"
-                        title="previous chapter">diffpy.srreal documentation</a></p>
+  <p class="topless"><a href="../release.html"
+                        title="previous chapter">Release notes</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -3197,36 +3203,38 @@ Raise TypeError for invalid keyword argument.</p>
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
-             >index</a></li>
+             accesskey="I">index</a></li>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../index.html" title="diffpy.srreal documentation"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">SrReal 1.2 documentation</a> &#187;</li> 
+          <a href="../release.html" title="Release notes"
+             accesskey="P">previous</a> |</li>
       </ul>
     </div>
+
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2017, Brookhaven National Laboratory.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+        &#169; Copyright 2019, Brookhaven National Laboratory.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
     </div>
   </body>
 </html>

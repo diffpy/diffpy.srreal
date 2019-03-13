@@ -1,18 +1,11 @@
-.. SrReal documentation master file, created by
-   sphinx-quickstart on Tue Oct 22 12:02:48 2013.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 ####################################################
 diffpy.srreal documentation
 ####################################################
 
-Software version |release|.
+diffpy.srreal - calculators for PDF, bond valence sum and other pair quantities.
 
-Last updated |today|.
-
-diffpy.srreal - calculators for PDF, bond valence sum and other pair quantities
-
+| Software version |release|.
+| Last updated |today|.
 
 The diffpy.srreal package provides calculators for atomic pair distribution
 function (PDF), bond valence sums (BVS), atom overlaps for a hard-sphere
@@ -44,41 +37,39 @@ calculate PDF with a user-defined profile function.  A new calculator class
 can be also defined for any quantity that is obtained by iteration over atom
 pairs, by defining only the function that processes atom-pair contributions.
 
-===================
-Disclaimer
-===================
+========================================
+Authors
+========================================
 
-.. literalinclude:: ../../../LICENSE.txt
+diffpy.srreal is developed by members of the Billinge Group at
+Columbia University and at Brookhaven National Laboratory including
+Pavol Juhás, Christopher L. Farrow, Simon J.L. Billinge.
 
-================
-Acknowledgments
-================
-
-Developers
------------
-
-diffpy.srreal is developed and maintained by
-
-.. literalinclude:: ../../../AUTHORS.txt
-
+For a detailed list of contributors see
+https://github.com/diffpy/diffpy.srreal/graphs/contributors.
 
 ======================================
 Installation
 ======================================
 
-See the `README.rst <https://github.com/diffpy/diffpy.srreal#requirements>`_
+See the `README <https://github.com/diffpy/diffpy.srreal#requirements>`_
 file included with the distribution.
 
-
 ======================================
-API and Index
+Table of contents
 ======================================
 
 .. toctree::
-   :maxdepth: 2
-   
-   api/diffpy.srreal.rst
-   
+   :titlesonly:
+
+   license
+   release
+   Package API <api/diffpy.srreal>
+
+======================================
+Indices
+======================================
+
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
