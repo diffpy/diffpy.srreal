@@ -1,5 +1,7 @@
 :tocdepth: 2
 
+.. default-role:: py:obj
+
 diffpy.srreal package
 =====================
 
