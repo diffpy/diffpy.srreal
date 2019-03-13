@@ -53,23 +53,4 @@ libdiffpy_version_info = libdiffpy_version_info(
         git_sha = vd['git_sha'])
 del vd
 
-
-def get_libdiffpy_version_info():
-    """
-    Get version data for the active libdiffpy shared library.
-
-    Returns
-    -------
-    libdiffpy_version_info
-        a namedtuple which contains libdiffpy version data.
-
-
-    .. note:: Deprecated in diffpy.srreal 1.1
-          `libdiffpy_version_info` will be removed in diffpy.srreal 1.3.
-    """
-    from warnings import warn
-    warn("get_libdiffpy_version_info is deprecated, "
-         "use the libdiffpy_version_info object.", DeprecationWarning)
-    return libdiffpy_version_info
-
 # End of file
