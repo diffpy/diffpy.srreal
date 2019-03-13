@@ -148,13 +148,7 @@ diffpy.srreal.structureadapter module
     :undoc-members:
     :show-inheritance:
 
-diffpy.srreal.structureconverters module
-----------------------------------------
-
-.. automodule:: diffpy.srreal.structureconverters
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. skip internal module diffpy.srreal.structureconverters
 
 diffpy.srreal.version module
 ----------------------------
@@ -164,10 +158,4 @@ diffpy.srreal.version module
     :undoc-members:
     :show-inheritance:
 
-diffpy.srreal.wraputils module
-------------------------------
-
-.. automodule:: diffpy.srreal.wraputils
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. skip internal module diffpy.srreal.wraputils
