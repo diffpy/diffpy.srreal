@@ -48,12 +48,6 @@ Pavol Juhás, Christopher L. Farrow, Simon J.L. Billinge.
 For a detailed list of contributors see
 https://github.com/diffpy/diffpy.srreal/graphs/contributors.
 
-===================
-Disclaimer
-===================
-
-.. literalinclude:: ../../../LICENSE.txt
-
 ======================================
 Installation
 ======================================
@@ -61,14 +55,14 @@ Installation
 See the `README <https://github.com/diffpy/diffpy.srreal#requirements>`_
 file included with the distribution.
 
-
 ======================================
-API and Index
+Table of contents
 ======================================
 
 .. toctree::
-   :maxdepth: 2
+   :titlesonly:
    
+   license
    api/diffpy.srreal.rst
    
 * :ref:`genindex`
