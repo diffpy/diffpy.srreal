@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# diffpy.SrReal documentation build configuration file, created by
+# diffpy.srreal documentation build configuration file, created by
 # sphinx-quickstart on Tue Oct 22 12:02:48 2013.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -12,17 +12,18 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
+import sys
+import os
 import time
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-# sys.path.insert(0, os.path.abspath('.'))
-# sys.path.insert(0, os.path.abspath('../../..'))
+#sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('../../..'))
 
 # abbreviations
-ab_authors = 'Pavol Juhás, Christopher L. Farrow, Simon J.L. Billinge group'
+ab_authors = u'Pavol Juhás, Christopher L. Farrow, Simon J.L. Billinge group'
 
 # -- General configuration -----------------------------------------------------
 
@@ -51,16 +52,14 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'SrReal'
+project = 'diffpy.srreal'
 copyright = '%Y, Brookhaven National Laboratory'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
-sys.path.insert(0, os.path.abspath('../../..'))
 from setup import versiondata
 fullversion = versiondata.get('DEFAULT', 'version')
-sys.path.remove(os.path.abspath('../../..'))
 # The short X.Y version.
 version = ''.join(fullversion.split('.post')[:1])
 # The full version, including alpha/beta/rc tags.
@@ -188,7 +187,7 @@ html_theme_options = {
 # html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'SrRealdoc'
+htmlhelp_basename = 'srrealdoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -207,7 +206,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-    ('index', 'SrReal_manual.tex', 'SrReal Documentation',
+    ('index', 'diffpy.srreal.tex', 'diffpy.srreal Documentation',
      ab_authors, 'manual'),
 ]
 
@@ -237,7 +236,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'srreal', 'SrReal Documentation',
+    ('index', 'diffpy.srreal', 'diffpy.srreal Documentation',
      ab_authors, 1)
 ]
 
@@ -251,8 +250,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    ('index', 'SrReal', 'SrReal Documentation',
-     ab_authors, 'SrReal', 'One line description of project.',
+    ('index', 'diffpy.srreal', 'diffpy.srreal Documentation',
+     ab_authors, 'diffpy.srreal', 'One line description of project.',
      'Miscellaneous'),
 ]
 
