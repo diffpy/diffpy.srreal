@@ -43,7 +43,7 @@ python::dict get_libdiffpy_version_info_dict()
     rv["minor"] = libdiffpy_version_info::minor;
     rv["micro"] = libdiffpy_version_info::micro;
     rv["date"] = libdiffpy_version_info::date;
-    rv["git_sha"] = libdiffpy_version_info::git_sha;
+    rv["git_commit"] = libdiffpy_version_info::git_sha;
     rv["patch"] = libdiffpy_version_info::patch;
     return rv;
 }

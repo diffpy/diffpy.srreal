@@ -20,6 +20,9 @@ Notes
 -----
 Variable `__gitsha__` is deprecated as of version 1.3.
 Use `__git_commit__` instead.
+
+Variable `libdiffpy_version_info.git_sha` is deprecated as of version 1.4.0.
+Use `libdiffpy_version_info.git_commit` instead.
 """
 
 __all__ = ['__date__', '__git_commit__', '__timestamp__', '__version__',
@@ -39,8 +42,11 @@ __gitsha__ = __git_commit__
 from collections import namedtuple
 from diffpy.srreal.srreal_ext import _get_libdiffpy_version_info_dict
 
-libdiffpy_version_info = namedtuple('libdiffpy_version_info',
-        "major minor micro patch version_number version date git_sha")
+libdiffpy_version_info = namedtuple(
+    'libdiffpy_version_info',
+    "major minor micro patch version_number version date git_commit " +
+    # TODO remove git_sha in version 1.4.
+    "git_sha")
 vd = _get_libdiffpy_version_info_dict()
 libdiffpy_version_info = libdiffpy_version_info(
         version = vd['version_str'],
@@ -50,7 +56,9 @@ libdiffpy_version_info = libdiffpy_version_info(
         micro = vd['micro'],
         patch = vd['patch'],
         date = vd['date'],
-        git_sha = vd['git_sha'])
+        git_commit = vd['git_commit'],
+        # TODO remove git_sha in version 1.4.
+        git_sha = vd['git_commit'])
 del vd
 
 # End of file
