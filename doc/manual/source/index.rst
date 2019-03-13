@@ -64,7 +64,11 @@ Table of contents
 
    license
    release
-   api/diffpy.srreal.rst
+   Package API <api/diffpy.srreal>
+
+======================================
+Indices
+======================================
 
 * :ref:`genindex`
 * :ref:`modindex`

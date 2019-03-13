@@ -1,5 +1,12 @@
+:tocdepth: 2
+
 diffpy.srreal package
 =====================
+
+.. automodule:: diffpy.srreal
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 Submodules
 ----------
@@ -161,15 +168,6 @@ diffpy.srreal.wraputils module
 ------------------------------
 
 .. automodule:: diffpy.srreal.wraputils
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: diffpy.srreal
     :members:
     :undoc-members:
     :show-inheritance:
