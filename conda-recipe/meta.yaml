@@ -24,8 +24,6 @@ requirements:
     - scons
     - numpy {{ numpy }}
     - libdiffpy {{ libdiffpy }}
-    - pycifrw
-    - diffpy.structure
     - boost {{ boost }}
 
   run:
@@ -34,7 +32,6 @@ requirements:
     - setuptools
     - {{ pin_compatible('numpy', min_pin='x.x', max_pin='x') }}
     - boost
-    - pycifrw
     - diffpy.structure
     - pyobjcryst 2.1.*
     - periodictable
