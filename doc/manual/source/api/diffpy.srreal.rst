@@ -1,5 +1,14 @@
+:tocdepth: 2
+
+.. default-role:: py:obj
+
 diffpy.srreal package
 =====================
+
+.. automodule:: diffpy.srreal
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 Submodules
 ----------
@@ -141,13 +150,7 @@ diffpy.srreal.structureadapter module
     :undoc-members:
     :show-inheritance:
 
-diffpy.srreal.structureconverters module
-----------------------------------------
-
-.. automodule:: diffpy.srreal.structureconverters
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. skip internal module diffpy.srreal.structureconverters
 
 diffpy.srreal.version module
 ----------------------------
@@ -157,19 +160,4 @@ diffpy.srreal.version module
     :undoc-members:
     :show-inheritance:
 
-diffpy.srreal.wraputils module
-------------------------------
-
-.. automodule:: diffpy.srreal.wraputils
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: diffpy.srreal
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. skip internal module diffpy.srreal.wraputils

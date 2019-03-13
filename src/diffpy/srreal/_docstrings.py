@@ -119,7 +119,10 @@ Parameters
 tp : str
     string type identifying a registered @NAME@ class.
 
-Returns a new instance of the @NAME@-derived class.
+Returns
+-------
+@NAME@
+    A new instance of the @NAME@-derived class named `tp`.
 
 See Also
 --------
@@ -129,15 +132,18 @@ getAliasedTypes : Return dictionary of string aliases.
 
 
 doc_HasClassRegistry_isRegisteredType = """\
-Check if the given string is registered as a @NAME@ type.
+Check if the given string is registered as a named @NAME@ type.
 
 Parameters
 ----------
 tp : str
     string name or an alias to be checked.
 
-Return ``True`` if `tp` is known to the registry either as
-a standard type or its alias.
+Returns
+-------
+bool
+    ``True`` if `tp` is known to the registry either as a standard
+    type or its alias.
 """
 
 
@@ -152,7 +158,12 @@ dict
 
 
 doc_HasClassRegistry_getRegisteredTypes = """\
-Return a set of string types of the registered @NAME@ classes.
+Get string types of all registered @NAME@ classes.
 
 These are the allowed arguments for the `createByType` factory.
+
+Returns
+-------
+set
+    the registered string types.
 """
