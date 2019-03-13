@@ -61,10 +61,11 @@ Table of contents
 
 .. toctree::
    :titlesonly:
-   
+
    license
+   release
    api/diffpy.srreal.rst
-   
+
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
