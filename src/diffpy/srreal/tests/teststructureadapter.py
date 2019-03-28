@@ -60,7 +60,6 @@ class TestRoutines(unittest.TestCase):
         self.assertTrue(type(adpt3) is DiffPyStructureAtomicAdapter)
         return
 
-    @unittest.expectedFailure
     def test_createStructureAdapter_int64_occupancy(self):
         """Check Structure conversion when occupany is of numpy.int64 type.
         """
