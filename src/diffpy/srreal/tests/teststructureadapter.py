@@ -60,6 +60,16 @@ class TestRoutines(unittest.TestCase):
         self.assertTrue(type(adpt3) is DiffPyStructureAtomicAdapter)
         return
 
+    def test_createStructureAdapter_int64_occupancy(self):
+        """Check Structure conversion when occupany is of numpy.int64 type.
+        """
+        self.nickel[0].occupancy = numpy.int64(0)
+        self.nickel[1].occupancy = numpy.int64(1)
+        adpt = createStructureAdapter(self.nickel)
+        self.assertEqual(0.0, adpt.siteOccupancy(0))
+        self.assertEqual(1.0, adpt.siteOccupancy(1))
+        return
+
     def test_pickling(self):
         '''check pickling of StructureAdapter instances.
         '''
