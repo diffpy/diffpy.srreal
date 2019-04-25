@@ -23,6 +23,7 @@ namespace srrealmodule {
 
 void ensure_index_bounds(int idx, int lo, int hi);
 void ensure_non_negative(int value);
+bool isiterable(boost::python::object obj);
 
 }   // namespace srrealmodule
 
