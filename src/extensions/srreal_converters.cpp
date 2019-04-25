@@ -304,6 +304,7 @@ int extractint(boost::python::object obj)
     if (PyArray_CheckScalar(pobj))
     {
         int rv = PyArray_PyIntAsInt(pobj);
+        if (rv == -1 && PyErr_Occurred())  python::throw_error_already_set();
         return rv;
     }
     // nothing worked, call geti which will raise an exception
