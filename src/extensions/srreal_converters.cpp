@@ -294,6 +294,25 @@ NumPyArray_DoublePtr extractNumPyDoubleArray(::boost::python::object& obj)
 }
 
 
+/// extract double with a support for numpy.int types
+double extractdouble(boost::python::object obj)
+{
+    using namespace boost;
+    python::extract<double> getx(obj);
+    if (getx.check())  return getx();
+    PyObject* pobj = obj.ptr();
+    if (PyArray_CheckScalar(pobj))
+    {
+        double x;
+        PyArray_CastScalarToCtype(pobj, &x,
+                PyArray_DescrFromType(NPY_DOUBLE));
+        return x;
+    }
+    // nothing worked, call getx which will raise an exception
+    return getx();
+}
+
+
 /// extract integer with a support for numpy.int types
 int extractint(boost::python::object obj)
 {
