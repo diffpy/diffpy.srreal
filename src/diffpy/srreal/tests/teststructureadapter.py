@@ -599,6 +599,42 @@ class TestAtom(unittest.TestCase):
         self.assertEqual(0.023, a.uc23)
         return
 
+    def test_xc_yc_zc(self):
+        'check Atom properties xc, yc, zc.'
+        a = self.a
+        a.xc, a.yc, a.zc = numpy.arange(1, 4)
+        self.assertEqual(1.0, a.xc)
+        self.assertEqual(2.0, a.yc)
+        self.assertEqual(3.0, a.zc)
+        return
+
+    def test_occupancy(self):
+        'check Atom.occupancy'
+        a = self.a
+        a.occupancy, = numpy.arange(1)
+        self.assertEqual(0.0, a.occupancy)
+        a.occupancy = numpy.float32(0.5)
+        self.assertEqual(0.5, a.occupancy)
+        return
+
+    def test_anisotropy(self):
+        'check Atom.anisotropy'
+        a = self.a
+        nptrue, npfalse = (numpy.arange(2) < 1)
+        a.anisotropy = nptrue
+        self.assertTrue(a.anisotropy)
+        a.anisotropy = npfalse
+        self.assertFalse(a.anisotropy)
+        return
+
+    def test_ucij(self):
+        'check Atom attributes u11, u22, etc.'
+        a = self.a
+        a.uc11, a.uc22, a.uc33, a.uc12, a.uc13, a.uc23 = numpy.arange(1, 7)
+        uijexp = [[1, 4, 5], [4, 2, 6], [5, 6, 3]]
+        self.assertTrue(numpy.array_equal(uijexp, a.uij_cartn))
+        return
+
 # End of class TestAtom
 
 # ----------------------------------------------------------------------------
