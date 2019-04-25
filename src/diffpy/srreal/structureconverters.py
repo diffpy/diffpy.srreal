@@ -142,7 +142,7 @@ def _fetchDiffPyStructureData(adpt, stru):
     aa = AdapterAtom()
     for a0 in stru:
         aa.atomtype = a0.element
-        aa.occupancy = float(a0.occupancy)
+        aa.occupancy = a0.occupancy
         aa.anisotropy = a0.anisotropy
         # copy fractional coordinates
         aa.xyz_cartn = a0.xyz
