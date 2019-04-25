@@ -5,6 +5,7 @@
 
 import unittest
 import pickle
+import numpy
 
 from diffpy.srreal.pairquantity import PairQuantity
 from diffpy.srreal.srreal_ext import BasePairQuantity
@@ -73,6 +74,22 @@ class TestPairQuantity(unittest.TestCase):
         self.pq.setStructure(EMPTY)
         adpt = self.pq.getStructure()
         self.assertEqual(0, adpt.countSites())
+        return
+
+
+    def test_setPairMask_args(self):
+        """check argument type handling in setPairMask
+        """
+        spm = self.pq.setPairMask
+        gpm = self.pq.getPairMask
+        self.assertRaises(TypeError, spm, 0.0, 0, False)
+        self.assertRaises(TypeError, spm, numpy.float32(0.5), 0, False)
+        self.assertTrue(gpm(0, 0))
+        spm(numpy.int32(1), 0, True, others=False)
+        self.assertTrue(gpm(0, 1))
+        self.assertTrue(gpm(1, 0))
+        self.assertFalse(gpm(0, 0))
+        self.assertFalse(gpm(2, 7))
         return
 
 
