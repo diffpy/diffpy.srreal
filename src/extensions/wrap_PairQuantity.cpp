@@ -39,6 +39,7 @@
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
+#include "srreal_validators.hpp"
 
 #include <diffpy/srreal/PairQuantity.hpp>
 
@@ -488,13 +489,13 @@ void set_pair_mask(PairQuantity& obj,
         python::object others)
 {
     if (!others.is_none())  mask_all_pairs(obj, others);
-    python::extract<int> geti(i);
-    python::extract<int> getj(j);
     bool mask = msk;
-    // short circuit for normal call
-    if (geti.check() && getj.check())
+    // short circuit for normal call with scalar values
+    if (!isiterable(i) && !isiterable(j))
     {
-        obj.setPairMask(geti(), getj(), mask);
+        const int i1 = extractint(i);
+        const int j1 = extractint(j);
+        obj.setPairMask(i1, j1, mask);
         return;
     }
     std::vector<int> iindices = parsepairindex(i);
