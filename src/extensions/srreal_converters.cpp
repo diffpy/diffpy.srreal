@@ -31,6 +31,7 @@
 #include <diffpy/srreal/StructureAdapter.hpp>
 
 #include "srreal_converters.hpp"
+#include "srreal_validators.hpp"
 
 #include "srreal_numpy_symbol.hpp"
 // numpy/arrayobject.h needs to be included after srreal_numpy_symbol.hpp,
@@ -70,19 +71,6 @@ boost::python::object newNumPyArray(int dim, const int* sz, int typenum)
     // create numpy array
     python::object rv(
             python::handle<>(PyArray_SimpleNew(dim, &npsz, typenum)));
-    return rv;
-}
-
-
-bool isiterable(boost::python::object obj)
-{
-    using namespace boost::python;
-#if PY_MAJOR_VERSION >= 3
-    object Iterable = import("collections.abc").attr("Iterable");
-#else
-    object Iterable = import("collections").attr("Iterable");
-#endif
-    bool rv = (1 == PyObject_IsInstance(obj.ptr(), Iterable.ptr()));
     return rv;
 }
 
