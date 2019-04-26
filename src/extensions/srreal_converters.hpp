@@ -395,6 +395,10 @@ extractQuantityType(::boost::python::object obj,
 NumPyArray_DoublePtr extractNumPyDoubleArray(::boost::python::object& obj);
 
 
+/// extract double with a support for numpy numeric types
+double extractdouble(::boost::python::object obj);
+
+
 /// extract integer with a support for numpy.int types
 int extractint(::boost::python::object obj);
 
