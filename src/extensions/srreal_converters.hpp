@@ -35,7 +35,7 @@
 #include <diffpy/version.hpp>
 
 #if DIFFPY_VERSION < 1004000000
-#error "diffpy.srreal requires libdiffpy 1.4.0 or later."
+#error diffpy.srreal requires libdiffpy 1.4.0 or later.
 #endif
 
 /// Conversion function that supports implicit conversions in
