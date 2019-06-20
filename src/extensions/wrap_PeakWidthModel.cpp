@@ -237,10 +237,6 @@ void wrap_PeakWidthModel()
         .def("maxWidth",
                 maxwidthwithpystructure,
                 (bp::arg("stru"), bp::arg("rmin"), bp::arg("rmax")))
-        .def("maxWidth",
-                &PeakWidthModel::maxWidth,
-                (bp::arg("stru"), bp::arg("rmin"), bp::arg("rmax")),
-                doc_PeakWidthModel_maxWidth)
         .def("ticker",
                 &PeakWidthModel::ticker,
                 &PeakWidthModelWrap::default_ticker,
