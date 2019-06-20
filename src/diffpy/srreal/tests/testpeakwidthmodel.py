@@ -261,11 +261,15 @@ class MyPWM(PeakWidthModel):
         self.tcnt += 1
         return PeakWidthModel.ticker(self)
 
-MyPWM()._registerThisType()
-
 # End of class MyPWM
 
 class TestPeakWidthOwner(unittest.TestCase):
+
+    @classmethod
+    def tearDownClass(cls):
+        assert "mypwm" not in PeakWidthModel.getRegisteredTypes()
+        return
+
 
     def setUp(self):
         self.pc = PDFCalculator()
