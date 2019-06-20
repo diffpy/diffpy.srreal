@@ -52,7 +52,7 @@ C++ compiler and the following software:
 * ``setuptools`` - tools for installing Python packages
 * ``NumPy`` - library for scientific computing with Python
 * ``python-dev`` - header files for interfacing Python with C
-* ``libboost-all-dev`` - Boost C++ libraries and development files (1.43 or later)
+* ``libboost-all-dev`` - Boost C++ libraries and development files
 * ``libdiffpy`` - C++ library for PDF, bond valence sum and other pair
   quantity calculators https://github.com/diffpy/libdiffpy
 * ``diffpy.structure`` - simple storage and manipulation of atomic structures
@@ -149,11 +149,9 @@ Anaconda environment.  This can be achieved by setting the ``CPATH``,
    # compile and re-install diffpy.srreal
    scons -j4 build=debug develop
 
-On Mac OS X the distributed Anaconda packages are built for operating
-system version 10.7, which may be incompatible with codes compiled on a
-newer OS.  To avoid this problem set the environment variable
-``MACOSX_DEPLOYMENT_TARGET=10.7``.  This allows to build diffpy.srreal
-against the Anaconda package for the libdiffpy library.
+Note the Anaconda package for the required libdiffpy library is built
+with a C++ compiler provided by Anaconda.  This may cause incompatibility
+with system C++.  In such case use Anaconda C++ to build diffpy.srreal.
 
 
 CONTACTS
