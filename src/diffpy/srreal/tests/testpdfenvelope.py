@@ -43,12 +43,15 @@ class TestPDFEnvelope(unittest.TestCase):
         """check PDFEnvelope.__call__()
         """
         x = numpy.arange(0, 9.1, 0.3)
+        xb = numpy.array([(0.0, xi) for xi in x])[:, 1]
+        self.assertTrue(xb.strides > x.strides)
         # this is a virtual method in the base class
         self.assertRaises(RuntimeError, PDFEnvelope().__call__, 37)
         self.assertEqual(0.0, self.fstepcut(10))
         self.assertEqual(1.0, self.fstepcut(3.45))
         ycheck = numpy.array(17 * [1] + 14 * [0])
         self.assertTrue(numpy.array_equal(ycheck, self.fstepcut(x)))
+        self.assertTrue(numpy.array_equal(ycheck, self.fstepcut(xb)))
         self.assertEqual(1.0, self.fscale(3.45))
         self.assertEqual(1.0, self.fscale(345))
         self.assertTrue(numpy.array_equal(numpy.ones_like(x), self.fscale(x)))

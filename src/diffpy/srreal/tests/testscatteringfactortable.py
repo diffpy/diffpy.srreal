@@ -167,10 +167,12 @@ class TestScatteringFactorTable(unittest.TestCase):
         """Check ScatteringFactorTable.lookup handling of array arguments.
         """
         qa = numpy.linspace(0, 50)
+        qb = numpy.array([(x, 0.0) for x in qa])[:,0]
+        self.assertTrue(qb.strides > qa.strides)
         sftx = self.sftx
         fmn0 = numpy.array([sftx.lookup('Mn', x) for x in qa])
-        fmn1 = sftx.lookup('Mn', qa)
-        self.assertTrue(numpy.array_equal(fmn0, fmn1))
+        self.assertTrue(numpy.array_equal(fmn0, sftx.lookup('Mn', qa)))
+        self.assertTrue(numpy.array_equal(fmn0, sftx.lookup('Mn', qb)))
         self.assertTrue(numpy.array_equal(
             fmn0.reshape(5, 10), sftx.lookup('Mn', qa.reshape(5, 10))))
         self.assertTrue(numpy.array_equal(

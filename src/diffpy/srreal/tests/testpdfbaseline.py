@@ -53,7 +53,10 @@ class TestPDFBaseline(unittest.TestCase):
         self.assertEqual(-7.0, self.linear(3.5))
         self.assertEqual(-2.0, self.linear._getDoubleAttr('slope'))
         x = numpy.arange(0, 10.001, 0.1)
+        xb = numpy.array([(0.0, xi) for xi in x])[:, 1]
+        self.assertTrue(xb.strides > x.strides)
         self.assertTrue(numpy.array_equal(-2 * x, self.linear(x)))
+        self.assertTrue(numpy.array_equal(-2 * x, self.linear(xb)))
         return
 
 
