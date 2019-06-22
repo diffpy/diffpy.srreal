@@ -30,6 +30,10 @@ def import_now():
     '''
     Import all Python modules that tweak extension-defined classes.
     '''
+    global _import_now_called
+    if _import_now_called:
+        return
+    _import_now_called = True
     from importlib import import_module
     import_module('diffpy.srreal.attributes')
     import_module('diffpy.srreal.atomradiitable')
@@ -44,3 +48,5 @@ def import_now():
     import_module('diffpy.srreal.pdfcalculator')
     import_module('diffpy.srreal.structureconverters')
     return
+
+_import_now_called = False
