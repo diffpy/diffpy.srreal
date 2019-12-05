@@ -252,6 +252,7 @@ class TestPDFCalculator(unittest.TestCase):
         pdfc.maxextension = 10.1
         pdfc.peakprecision = 5e-06
         pdfc.qbroad = 0.01
+        pdfc.qbroad_new = 0.01
         pdfc.qdamp = 0.05
         pdfc.qmax = 10
         pdfc.qmin = 0.5
