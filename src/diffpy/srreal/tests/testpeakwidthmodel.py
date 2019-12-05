@@ -214,6 +214,7 @@ class TestJeongPeakWidth(unittest.TestCase):
         self.assertTrue(hasattr(self.pwm, 'delta1'))
         self.assertTrue(hasattr(self.pwm, 'delta2'))
         self.assertTrue(hasattr(self.pwm, 'qbroad'))
+        self.assertTrue(hasattr(self.pwm, 'qbroad_new'))
         return
 
 
@@ -224,11 +225,13 @@ class TestJeongPeakWidth(unittest.TestCase):
         pwm.delta1 = 1
         pwm.delta2 = 2
         pwm.qbroad = 3
+        pwm.qbroad_new = 4
         pwm2 = pickle.loads(pickle.dumps(pwm))
         self.assertEqual(JeongPeakWidth, type(pwm2))
         self.assertEqual(1, pwm2.delta1)
         self.assertEqual(2, pwm2.delta2)
         self.assertEqual(3, pwm2.qbroad)
+        self.assertEqual(4, pwm2.qbroad_new)
         return
 
 # ----------------------------------------------------------------------------

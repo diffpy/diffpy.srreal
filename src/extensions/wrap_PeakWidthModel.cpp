@@ -93,7 +93,8 @@ const char* doc_JeongPeakWidth = "\
 Calculate PDF peak width assuming I.-K. Jeong model of correlated motion.\n\
 This returns mean-square displacement of atoms in the pair along their\n\
 bond corrected for correlated motion and data noise at high-Q by a scaling\n\
-factor  sqrt(1 - delta1/r - delta2/r**2 + (qbroad * r)**2).\n\
+and additive factor  \n\
+sqrt(1 - delta1/r - delta2/r**2 + (qbroad * r)**2) + (qbroad_new * r)**2.\n\
 ";
 
 const char* doc_PeakWidthModelOwner = "\

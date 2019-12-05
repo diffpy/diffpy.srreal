@@ -58,6 +58,9 @@ JeongPeakWidth.delta2 = propertyFromExtDoubleAttr('delta2',
 JeongPeakWidth.qbroad = propertyFromExtDoubleAttr('qbroad',
         'PDF peak broadening from increased intensity noise at high Q.')
 
+JeongPeakWidth.qbroad_new = propertyFromExtDoubleAttr('qbroad_new',
+        'PDF peak broadening from non-constant instrumental broadening in Q-space.')
+
 # Import delayed tweaks of the extension classes.
 
 _final_imports.import_now()

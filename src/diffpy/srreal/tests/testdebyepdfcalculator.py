@@ -160,6 +160,7 @@ class TestDebyePDFCalculator(unittest.TestCase):
         dpdfc.delta2 = 0.3
         dpdfc.maxextension = 10.1
         dpdfc.qbroad = 0.01
+        dpdfc.qbroad_new = 0.01
         dpdfc.qdamp = 0.05
         dpdfc.qmax = 10
         dpdfc.qmin = 0.5
