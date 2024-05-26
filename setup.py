@@ -14,7 +14,7 @@ import sys
 import glob
 from setuptools import setup
 from setuptools import Extension
-from numpy.distutils.misc_util import get_numpy_include_dirs
+import numpy as np
 
 
 # Use this version when git data are not available, like in git zip archive.
@@ -27,7 +27,7 @@ ext_kws = {
         'libraries' : ['diffpy'],
         'extra_compile_args' : ['-std=c++11'],
         'extra_link_args' : [],
-        'include_dirs' : get_numpy_include_dirs(),
+        'include_dirs' : [np.get_include()],
 }
 
 # determine if we run with Python 3.
