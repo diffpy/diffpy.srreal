@@ -27,6 +27,7 @@ a call of _registerThisType.
 """
 
 
+import atexit
 import weakref
 
 
@@ -62,7 +63,7 @@ class _DerivedClassesCleanUpHandler(object):
         return
 
 
-    def __del__(self):
+    def clean(self):
         while self._references:
             wr = self._references.pop()
             obj = wr()
@@ -75,7 +76,8 @@ class _DerivedClassesCleanUpHandler(object):
 
 # create singleton instance of the cleanup handler
 _cleanup_handler = _DerivedClassesCleanUpHandler()
-del _DerivedClassesCleanUpHandler
+atexit.register(_cleanup_handler.clean)
 
+del _DerivedClassesCleanUpHandler
 
 # End of file.
