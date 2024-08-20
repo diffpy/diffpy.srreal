@@ -30,9 +30,9 @@ opts, args = parser.parse_args(sys.argv[1:])
 # load menthol structure and make sure Uiso values are non-zero
 if opts.pyobjcryst:
     # use pyobjcryst if requested by the user
-    from pyobjcryst import loadCrystal
+    from pyobjcryst.crystal import create_crystal_crom_cif
     from numpy import pi
-    menthol = loadCrystal(mentholcif)
+    menthol = create_crystal_crom_cif(mentholcif)
     for sc in menthol.GetScatteringComponentList():
         sp = sc.mpScattPow
         sp.Biso = sp.Biso or 8 * pi**2 * Uisodefault

@@ -45,8 +45,8 @@ distprint = DistancePrinter()
 distprint._setDoubleAttr('rmax', 10)
 
 def get_pyobjcryst_sphalerite():
-    from pyobjcryst import loadCrystal
-    crst = loadCrystal('datafiles/sphalerite.cif')
+    from pyobjcryst.crystal import create_crystal_from_cif
+    crst = create_crystal_from_cif('datafiles/sphalerite.cif')
     return crst
 
 def main():
