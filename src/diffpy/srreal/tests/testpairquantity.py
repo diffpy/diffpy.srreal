@@ -83,7 +83,7 @@ class TestPairQuantity(unittest.TestCase):
         spm = self.pq.setPairMask
         gpm = self.pq.getPairMask
         self.assertRaises(TypeError, spm, 0.0, 0, False)
-        self.assertRaises(TypeError, spm, numpy.complex128(0.5), 0, False)
+        self.assertRaises(TypeError, spm, complex(0.5), 0, False)
         self.assertTrue(gpm(0, 0))
         spm(numpy.int32(1), 0, True, others=False)
         self.assertTrue(gpm(0, 1))
