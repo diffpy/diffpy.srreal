@@ -83,6 +83,11 @@ def _defineCommonInterface(cls):
         Not applied when equal zero.  Active for JeongPeakWidth model.
         [0 1/A]''')
 
+    cls.qbroad_new = propertyFromExtDoubleAttr('qbroad_new',
+        '''PDF peak broadening from non-constant instrumental broadening 
+        in Q-space.  Active for JeongPeakWidth model.
+        [0 1/A]''')
+
     cls.extendedrmin = propertyFromExtDoubleAttr('extendedrmin',
         '''Low boundary of the extended r-range, read-only.
         [A]''')
