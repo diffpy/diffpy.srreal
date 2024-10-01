@@ -42,6 +42,19 @@ pairs, by defining only the function that processes atom-pair contributions.
 For more information about the diffpy.srreal library, see users manual at
 http://diffpy.github.io/diffpy.srreal.
 
+Citation
+--------
+
+If you use this program for a scientific research that leads
+to publication, we ask that you acknowledge use of the program
+by citing the following paper in your publication:
+
+   P. Juhás, C. L. Farrow, X. Yang, K. R. Knox and S. J. L. Billinge,
+   `Complex modeling: a strategy and software program for combining
+   multiple information sources to solve ill posed structure and
+   nanostructure inverse problems
+   <http://dx.doi.org/10.1107/S2053273315014473>`__,
+   *Acta Crystallogr. A* **71**, 562-568 (2015).
 
 REQUIREMENTS
 ------------------------------------------------------------------------
