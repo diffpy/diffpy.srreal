@@ -26,27 +26,25 @@ def get_boost_libraries():
 
 
 ext_kws = {
-        'libraries' : ["diffpy"] + get_boost_libraries(),
-        'extra_compile_args' : ["-std=c++11"],
-        'extra_link_args' : [],
-        'include_dirs' : [numpy.get_include()],
+    "libraries": ["diffpy"] + get_boost_libraries(),
+    "extra_compile_args": ["-std=c++11"],
+    "extra_link_args": [],
+    "include_dirs": [numpy.get_include()],
 }
 
 
 def create_extensions():
     "Initialize Extension objects for the setup function."
-    ext = Extension('diffpy.srreal.srreal_ext',
-                    glob.glob('src/extensions/*.cpp'),
-                    **ext_kws)
+    ext = Extension("diffpy.srreal.srreal_ext", glob.glob("src/extensions/*.cpp"), **ext_kws)
     return [ext]
 
 
 # Extensions not included in pyproject.toml
 setup_args = dict(
-    ext_modules = [],
+    ext_modules=[],
 )
 
 
-if __name__ == '__main__':
-    setup_args['ext_modules'] = create_extensions()
+if __name__ == "__main__":
+    setup_args["ext_modules"] = create_extensions()
     setup(**setup_args)

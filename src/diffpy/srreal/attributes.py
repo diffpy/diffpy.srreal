@@ -17,26 +17,27 @@
     A base to PairQuantity and quite a few other classes.
 """
 
-__all__ = ['Attributes']
+__all__ = ["Attributes"]
 
 from diffpy.srreal.srreal_ext import Attributes
 
 # Inject the __getattr__ and __setattr__ methods to the Attributes class
 
+
 def _getattr(self, name):
-    '''Lookup a C++ double attribute if standard Python lookup fails.
+    """Lookup a C++ double attribute if standard Python lookup fails.
 
     Raise AttributeError if C++ double attribute does not exist.
-    '''
+    """
     rv = self._getDoubleAttr(name)
     return rv
+
 
 Attributes.__getattr__ = _getattr
 
 
 def _setattr(self, name, value):
-    '''Assign to C++ double attribute if Python attribute does not exist.
-    '''
+    """Assign to C++ double attribute if Python attribute does not exist."""
     try:
         object.__getattribute__(self, name)
     except AttributeError:
@@ -46,16 +47,20 @@ def _setattr(self, name, value):
     object.__setattr__(self, name, value)
     return
 
+
 Attributes.__setattr__ = _setattr
 
 # Helper accessor functions used by the _registerDoubleAttribute method
+
 
 def _pyattrgetter(name):
     f = lambda obj: object.__getattribute__(obj, name)
     return f
 
+
 def _pyattrsetter(name):
     f = lambda obj, value: object.__setattr__(obj, name, value)
     return f
+
 
 # End of file

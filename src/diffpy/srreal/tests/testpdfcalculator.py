@@ -16,16 +16,18 @@ from diffpy.srreal.pdfcalculator import fftgtof, fftftog
 
 # helper functions
 
+
 def _maxNormDiff(yobs, ycalc):
-    '''Returned maximum difference normalized by RMS of the yobs
-    '''
+    """Returned maximum difference normalized by RMS of the yobs"""
     yobsa = numpy.array(yobs)
     obsmax = numpy.max(numpy.fabs(yobsa)) or 1
     ynmdiff = (yobsa - ycalc) / obsmax
     rv = max(numpy.fabs(ynmdiff))
     return rv
 
+
 # ----------------------------------------------------------------------------
+
 
 class TestPDFCalculator(unittest.TestCase):
 
@@ -35,28 +37,25 @@ class TestPDFCalculator(unittest.TestCase):
     def setUp(self):
         self.pdfcalc = PDFCalculator()
         if not self.nickel:
-            type(self).nickel = loadDiffPyStructure('Ni.stru')
+            type(self).nickel = loadDiffPyStructure("Ni.stru")
         if not self.tio2rutile:
-            type(self).tio2rutile = (
-                    loadDiffPyStructure('TiO2_rutile-fit.stru'))
+            type(self).tio2rutile = loadDiffPyStructure("TiO2_rutile-fit.stru")
         return
 
     def tearDown(self):
         return
 
     def test___init__(self):
-        """check PDFCalculator.__init__()
-        """
+        """check PDFCalculator.__init__()"""
         pdfc = PDFCalculator(qmin=13, rmin=4, rmax=99)
         self.assertEqual(13, pdfc.qmin)
         self.assertEqual(4, pdfc.rmin)
         self.assertEqual(99, pdfc.rmax)
-        self.assertEqual(99, pdfc._getDoubleAttr('rmax'))
+        self.assertEqual(99, pdfc._getDoubleAttr("rmax"))
         return
 
     def test___call__(self):
-        """Check PDFCalculator.__call__()
-        """
+        """Check PDFCalculator.__call__()"""
         r0, g0 = self.pdfcalc(self.tio2rutile, rmin=2)
         self.assertEqual(2.0, r0[0])
         r1, g1 = self.pdfcalc(self.tio2rutile, scale=7)
@@ -65,7 +64,7 @@ class TestPDFCalculator(unittest.TestCase):
         rutile2 = self.tio2rutile.copy()
         # work around Structure bug of shared pdffit dictionary
         rutile2.pdffit = dict(self.tio2rutile.pdffit)
-        rutile2.pdffit['spdiameter'] = 5.0
+        rutile2.pdffit["spdiameter"] = 5.0
         r3, g3 = self.pdfcalc(rutile2)
         self.assertEqual(0.0, sum(g3[r3 >= 5] ** 2))
         r4, g4 = self.pdfcalc(rutile2, scale=1, spdiameter=0)
@@ -74,53 +73,47 @@ class TestPDFCalculator(unittest.TestCase):
         return
 
     def test__getDoubleAttr(self):
-        """check PDFCalculator._getDoubleAttr()
-        """
+        """check PDFCalculator._getDoubleAttr()"""
         gdba = self.pdfcalc._getDoubleAttr
-        self.assertEqual(1.0, gdba('scale'))
-        self.assertEqual(0.0, gdba('qdamp'))
-        self.assertRaises(Exception, gdba, 'notanattribute')
+        self.assertEqual(1.0, gdba("scale"))
+        self.assertEqual(0.0, gdba("qdamp"))
+        self.assertRaises(Exception, gdba, "notanattribute")
         return
 
     def test__hasDoubleAttr(self):
-        """check PDFCalculator._hasDoubleAttr()
-        """
-        self.assertTrue(self.pdfcalc._hasDoubleAttr('scale'))
-        self.assertFalse(self.pdfcalc._hasDoubleAttr('notanattribute'))
+        """check PDFCalculator._hasDoubleAttr()"""
+        self.assertTrue(self.pdfcalc._hasDoubleAttr("scale"))
+        self.assertFalse(self.pdfcalc._hasDoubleAttr("notanattribute"))
         return
 
     def test__namesOfDoubleAttributes(self):
-        """check PDFCalculator._namesOfDoubleAttributes()
-        """
+        """check PDFCalculator._namesOfDoubleAttributes()"""
         self.assertTrue(type(self.pdfcalc._namesOfDoubleAttributes()) is set)
-        self.assertTrue('qmax' in self.pdfcalc._namesOfDoubleAttributes())
+        self.assertTrue("qmax" in self.pdfcalc._namesOfDoubleAttributes())
         return
 
     def test__setDoubleAttr(self):
-        """check PDFCalculator._setDoubleAttr()
-        """
+        """check PDFCalculator._setDoubleAttr()"""
         gdba = self.pdfcalc._getDoubleAttr
         sdba = self.pdfcalc._setDoubleAttr
-        self.assertEqual(0.0, gdba('rmin'))
-        sdba('rmin', 3.0)
-        self.assertEqual(3.0, gdba('rmin'))
+        self.assertEqual(0.0, gdba("rmin"))
+        sdba("rmin", 3.0)
+        self.assertEqual(3.0, gdba("rmin"))
         return
 
     def test_eval_nickel(self):
-        """check PDFCalculator.eval() on simple Nickel data
-        """
-        fnipf2 = datafile('Ni-fit.fgr')
+        """check PDFCalculator.eval() on simple Nickel data"""
+        fnipf2 = datafile("Ni-fit.fgr")
         gpf2 = numpy.loadtxt(fnipf2, usecols=(1,))
-        self.pdfcalc._setDoubleAttr('rmax', 10.0001)
+        self.pdfcalc._setDoubleAttr("rmax", 10.0001)
         self.pdfcalc.eval(self.nickel)
         gcalc = self.pdfcalc.pdf
         self.assertTrue(_maxNormDiff(gpf2, gcalc) < 0.0091)
         return
 
     def test_eval_rutile(self):
-        """check PDFCalculator.eval() on anisotropic rutile data
-        """
-        frutile = datafile('TiO2_rutile-fit.fgr')
+        """check PDFCalculator.eval() on anisotropic rutile data"""
+        frutile = datafile("TiO2_rutile-fit.fgr")
         gpf2 = numpy.loadtxt(frutile, usecols=(1,))
         # configure calculator according to testdata/TiO2_ruitile-fit.fgr
         self.pdfcalc.qmax = 26
@@ -143,8 +136,7 @@ class TestPDFCalculator(unittest.TestCase):
         return
 
     def test_partial_pdfs(self):
-        """Check calculation of partial PDFs.
-        """
+        """Check calculation of partial PDFs."""
         pdfc = self.pdfcalc
         pdfc.rstep = 0.1
         rutile = self.tio2rutile
@@ -208,8 +200,7 @@ class TestPDFCalculator(unittest.TestCase):
         return
 
     def test_full_mask(self):
-        '''Test PDFCalculator for a fully masked structure.
-        '''
+        """Test PDFCalculator for a fully masked structure."""
         pdfc = self.pdfcalc
         pdfc.rstep = 0.1
         rutile = self.tio2rutile
@@ -225,8 +216,7 @@ class TestPDFCalculator(unittest.TestCase):
         return
 
     def test_zero_mask(self):
-        '''Test PDFCalculator with a totally masked out structure.
-        '''
+        """Test PDFCalculator with a totally masked out structure."""
         pdfc = self.pdfcalc
         pdfc.rstep = 0.1
         rutile = self.tio2rutile
@@ -241,12 +231,11 @@ class TestPDFCalculator(unittest.TestCase):
         return
 
     def test_pickling(self):
-        '''check pickling and unpickling of PDFCalculator.
-        '''
+        """check pickling and unpickling of PDFCalculator."""
         pdfc = self.pdfcalc
-        pdfc.scatteringfactortable = 'N'
-        pdfc.scatteringfactortable.setCustomAs('Na', 'Na', 7)
-        pdfc.addEnvelope('sphericalshape')
+        pdfc.scatteringfactortable = "N"
+        pdfc.scatteringfactortable.setCustomAs("Na", "Na", 7)
+        pdfc.addEnvelope("sphericalshape")
         pdfc.delta1 = 0.2
         pdfc.delta2 = 0.3
         pdfc.maxextension = 10.1
@@ -266,20 +255,17 @@ class TestPDFCalculator(unittest.TestCase):
         sft = pdfc.scatteringfactortable
         sft1 = pdfc1.scatteringfactortable
         self.assertEqual(sft.type(), sft1.type())
-        self.assertEqual(7.0, sft1.lookup('Na'))
+        self.assertEqual(7.0, sft1.lookup("Na"))
         for a in pdfc._namesOfDoubleAttributes():
             self.assertEqual(getattr(pdfc, a), getattr(pdfc1, a))
-        self.assertEqual(13.3,
-                pdfc1.getEnvelope('sphericalshape').spdiameter)
-        self.assertEqual(pdfc._namesOfDoubleAttributes(),
-                pdfc1._namesOfDoubleAttributes())
+        self.assertEqual(13.3, pdfc1.getEnvelope("sphericalshape").spdiameter)
+        self.assertEqual(pdfc._namesOfDoubleAttributes(), pdfc1._namesOfDoubleAttributes())
         self.assertEqual(pdfc.usedenvelopetypes, pdfc1.usedenvelopetypes)
-        self.assertRaises(RuntimeError, pickle_with_attr, pdfc, foo='bar')
+        self.assertRaises(RuntimeError, pickle_with_attr, pdfc, foo="bar")
         return
 
     def test_mask_pickling(self):
-        '''Check if mask gets properly pickled and restored.
-        '''
+        """Check if mask gets properly pickled and restored."""
         self.pdfcalc.maskAllPairs(False)
         self.pdfcalc.setPairMask(0, 1, True)
         self.assertTrue(False is self.pdfcalc.getPairMask(0, 0))
@@ -290,9 +276,9 @@ class TestPDFCalculator(unittest.TestCase):
         return
 
     def test_pickling_derived_structure(self):
-        '''check pickling of PDFCalculator with DerivedStructureAdapter.
-        '''
+        """check pickling of PDFCalculator with DerivedStructureAdapter."""
         from diffpy.srreal.tests.testutils import DerivedStructureAdapter
+
         pdfc = self.pdfcalc
         stru0 = DerivedStructureAdapter()
         pdfc.setStructure(stru0)
@@ -307,20 +293,19 @@ class TestPDFCalculator(unittest.TestCase):
         return
 
     def test_envelopes(self):
-        '''Check the envelopes property.
-        '''
+        """Check the envelopes property."""
         from diffpy.srreal.pdfenvelope import PDFEnvelope
+
         pc = self.pdfcalc
         self.assertTrue(len(pc.envelopes) > 0)
         pc.clearEnvelopes()
         self.assertEqual(0, len(pc.envelopes))
-        pc.addEnvelope(PDFEnvelope.createByType('scale'))
+        pc.addEnvelope(PDFEnvelope.createByType("scale"))
         self.assertEqual(1, len(pc.envelopes))
-        self.assertEqual('scale', pc.envelopes[0].type())
-        pc.envelopes += ('qresolution',)
-        self.assertEqual(('qresolution', 'scale'), pc.usedenvelopetypes)
-        self.assertTrue(all([isinstance(e, PDFEnvelope)
-            for e in pc.envelopes]))
+        self.assertEqual("scale", pc.envelopes[0].type())
+        pc.envelopes += ("qresolution",)
+        self.assertEqual(("qresolution", "scale"), pc.usedenvelopetypes)
+        self.assertTrue(all([isinstance(e, PDFEnvelope) for e in pc.envelopes]))
         return
 
 
@@ -353,41 +338,40 @@ class TestPDFCalculator(unittest.TestCase):
 
 # ----------------------------------------------------------------------------
 
+
 class TestFFTRoutines(unittest.TestCase):
 
     def test_fft_conversions(self):
-        """Verify conversions of arguments in fftgtof function.
-        """
-        fnipf2 = datafile('Ni-fit.fgr')
+        """Verify conversions of arguments in fftgtof function."""
+        fnipf2 = datafile("Ni-fit.fgr")
         data = numpy.loadtxt(fnipf2)
         dr = 0.01
-        fq0, dq0 = fftgtof(data[:,1], dr)
-        fq1, dq1 = fftgtof(data[:,1].copy(), dr)
-        fq2, dq2 = fftgtof(list(data[:,1]), dr)
+        fq0, dq0 = fftgtof(data[:, 1], dr)
+        fq1, dq1 = fftgtof(data[:, 1].copy(), dr)
+        fq2, dq2 = fftgtof(list(data[:, 1]), dr)
         self.assertTrue(numpy.array_equal(fq0, fq1))
         self.assertTrue(numpy.array_equal(fq0, fq2))
         self.assertEqual(dq0, dq1)
         self.assertEqual(dq0, dq2)
         return
 
-
     def test_fft_roundtrip(self):
-        """Check if forward and inverse transformation recover the input.
-        """
-        fnipf2 = datafile('Ni-fit.fgr')
+        """Check if forward and inverse transformation recover the input."""
+        fnipf2 = datafile("Ni-fit.fgr")
         g0 = numpy.loadtxt(fnipf2, usecols=(1,))
         dr0 = 0.01
         fq, dq = fftgtof(g0, dr0)
         g1, dr1 = fftftog(fq, dq)
         self.assertAlmostEqual(dr0, dr1, 12)
-        self.assertTrue(numpy.allclose(g0, g1[:g0.size]))
+        self.assertTrue(numpy.allclose(g0, g1[: g0.size]))
         return
+
 
 # End of class TestFFTRoutines
 
 # ----------------------------------------------------------------------------
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
 
 # End of file

@@ -19,9 +19,7 @@ class ScatteringFactorTable -- scattering factors for atoms, ions and isotopes.
 
 
 # exported items, these also makes them show in pydoc.
-__all__ = ['ScatteringFactorTable',
-        'SFTXray', 'SFTElectron', 'SFTNeutron', 'SFTElectronNumber',
-        'SFAverage']
+__all__ = ["ScatteringFactorTable", "SFTXray", "SFTElectron", "SFTNeutron", "SFTElectronNumber", "SFAverage"]
 
 from diffpy.srreal.srreal_ext import ScatteringFactorTable
 from diffpy.srreal.srreal_ext import SFTXray

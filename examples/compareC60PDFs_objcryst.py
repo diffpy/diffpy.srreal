@@ -12,10 +12,10 @@ from pyobjcryst.scatteringpower import ScatteringPowerAtom
 from diffpy.srreal.pdfcalculator import PDFCalculator, DebyePDFCalculator
 
 # load C60 molecule as a diffpy.structure object
-bucky_diffpy = Structure(filename='datafiles/C60bucky.stru')
+bucky_diffpy = Structure(filename="datafiles/C60bucky.stru")
 
 # convert to an ObjCryst molecule
-c60 = Crystal(1, 1, 1, 'P1')
+c60 = Crystal(1, 1, 1, "P1")
 mc60 = Molecule(c60, "C60")
 c60.AddScatterer(mc60)
 # Create the scattering power object for the carbon atoms
@@ -26,10 +26,11 @@ for i, a in enumerate(bucky_diffpy):
     mc60.AddAtom(a.xyz_cartn[0], a.xyz_cartn[1], a.xyz_cartn[2], sp, cname)
 
 # PDF configuration
-cfg = { 'qmax' : 25,
-        'rmin' : 0,
-        'rmax' : 10.001,
-        'rstep' : 0.05,
+cfg = {
+    "qmax": 25,
+    "rmin": 0,
+    "rmax": 10.001,
+    "rstep": 0.05,
 }
 
 # calculate PDF by real-space summation
