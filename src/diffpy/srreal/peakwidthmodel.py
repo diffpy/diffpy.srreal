@@ -21,12 +21,7 @@ Classes for configuring peak width evaluation in PDF calculations:
 
 
 # exported items
-__all__ = [
-    'PeakWidthModel',
-    'ConstantPeakWidth',
-    'DebyeWallerPeakWidth',
-    'JeongPeakWidth'
-]
+__all__ = ["PeakWidthModel", "ConstantPeakWidth", "DebyeWallerPeakWidth", "JeongPeakWidth"]
 
 from diffpy.srreal import _final_imports
 from diffpy.srreal.srreal_ext import PeakWidthModel, ConstantPeakWidth
@@ -37,26 +32,35 @@ from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
 
 # add attribute wrappers for the derived classes
 
-ConstantPeakWidth.width = propertyFromExtDoubleAttr('width',
-    '''Constant FWHM value returned by this model.
-    ''')
+ConstantPeakWidth.width = propertyFromExtDoubleAttr(
+    "width",
+    """Constant FWHM value returned by this model.
+    """,
+)
 
-ConstantPeakWidth.bisowidth = propertyFromExtDoubleAttr('bisowidth',
-    '''Equivalent uniform Biso for this constant `width`.
-    ''')
+ConstantPeakWidth.bisowidth = propertyFromExtDoubleAttr(
+    "bisowidth",
+    """Equivalent uniform Biso for this constant `width`.
+    """,
+)
 
-ConstantPeakWidth.uisowidth = propertyFromExtDoubleAttr('uisowidth',
-    '''Equivalent uniform Uiso for this constant `width`.
-    ''')
+ConstantPeakWidth.uisowidth = propertyFromExtDoubleAttr(
+    "uisowidth",
+    """Equivalent uniform Uiso for this constant `width`.
+    """,
+)
 
-JeongPeakWidth.delta1 = propertyFromExtDoubleAttr('delta1',
-        'Coefficient for (1/r) contribution to the peak sharpening.')
+JeongPeakWidth.delta1 = propertyFromExtDoubleAttr(
+    "delta1", "Coefficient for (1/r) contribution to the peak sharpening."
+)
 
-JeongPeakWidth.delta2 = propertyFromExtDoubleAttr('delta2',
-        'Coefficient for (1/r**2) contribution to the peak sharpening.')
+JeongPeakWidth.delta2 = propertyFromExtDoubleAttr(
+    "delta2", "Coefficient for (1/r**2) contribution to the peak sharpening."
+)
 
-JeongPeakWidth.qbroad = propertyFromExtDoubleAttr('qbroad',
-        'PDF peak broadening from increased intensity noise at high Q.')
+JeongPeakWidth.qbroad = propertyFromExtDoubleAttr(
+    "qbroad", "PDF peak broadening from increased intensity noise at high Q."
+)
 
 # Import delayed tweaks of the extension classes.
 

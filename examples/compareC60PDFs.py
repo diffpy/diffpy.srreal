@@ -11,13 +11,14 @@ from diffpy.structure import Structure
 from diffpy.srreal.pdfcalculator import PDFCalculator, DebyePDFCalculator
 
 mydir = os.path.dirname(os.path.abspath(sys.argv[0]))
-buckyfile = os.path.join(mydir, 'datafiles', 'C60bucky.stru')
+buckyfile = os.path.join(mydir, "datafiles", "C60bucky.stru")
 
 # load C60 molecule as a diffpy.structure object
 bucky = Structure(filename=buckyfile)
-cfg = { 'qmax' : 25,
-        'rmin' : 0,
-        'rmax' : 10.001,
+cfg = {
+    "qmax": 25,
+    "rmin": 0,
+    "rmax": 10.001,
 }
 
 # calculate PDF by real-space summation

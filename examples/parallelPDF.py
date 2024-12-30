@@ -16,14 +16,12 @@ from diffpy.srreal.pdfcalculator import PDFCalculator
 from diffpy.srreal.parallel import createParallelCalculator
 
 mydir = os.path.dirname(os.path.abspath(__file__))
-mentholcif = os.path.join(mydir, 'datafiles', 'menthol.cif')
+mentholcif = os.path.join(mydir, "datafiles", "menthol.cif")
 Uisodefault = 0.005
 
 # configure options parsing
-parser = optparse.OptionParser("%prog [options]\n" +
-    __doc__)
-parser.add_option("--pyobjcryst", action="store_true",
-        help="Use pyobjcryst to load the CIF file.")
+parser = optparse.OptionParser("%prog [options]\n" + __doc__)
+parser.add_option("--pyobjcryst", action="store_true", help="Use pyobjcryst to load the CIF file.")
 parser.allow_interspersed_args = True
 opts, args = parser.parse_args(sys.argv[1:])
 
@@ -32,6 +30,7 @@ if opts.pyobjcryst:
     # use pyobjcryst if requested by the user
     from pyobjcryst import loadCrystal
     from numpy import pi
+
     menthol = loadCrystal(mentholcif)
     for sc in menthol.GetScatteringComponentList():
         sp = sc.mpScattPow
@@ -43,9 +42,10 @@ else:
         a.Uisoequiv = a.Uisoequiv or Uisodefault
 
 # configuration of a PDF calculator
-cfg = { 'qmax' : 25,
-        'rmin' : 0,
-        'rmax' : 30,
+cfg = {
+    "qmax": 25,
+    "rmin": 0,
+    "rmax": 30,
 }
 
 # number of CPUs for parallel calculation
@@ -72,6 +72,7 @@ print("Time ratio: %g" % (t0 / t1))
 
 # plot both results and the difference curve
 from matplotlib.pyplot import plot, show, clf
+
 clf()
 gd = g0 - g1
 plot(r0, g0, r1, g1, r0, gd - 3)

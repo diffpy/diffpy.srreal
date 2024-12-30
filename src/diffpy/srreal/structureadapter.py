@@ -29,8 +29,9 @@ Constants:
 EMPTY        -- singleton instance of an empty structure.
 """
 
+
 def createStructureAdapter(stru):
-    '''
+    """
     Create StructureAdapter from a Python object.
 
     stru -- an object that is convertible to StructureAdapter, i.e., it has
@@ -39,14 +40,17 @@ def createStructureAdapter(stru):
 
     Return a StructureAdapter instance.
     Raise TypeError if stru cannot be converted to StructureAdapter.
-    '''
-    if isinstance(stru, StructureAdapter):  return stru
+    """
+    if isinstance(stru, StructureAdapter):
+        return stru
     import inspect
+
     # build fully-qualified names of Python types in method resolution order
     cls = type(stru)
     fqnames = [str(tp).split("'")[1] for tp in inspect.getmro(cls)]
     for fqn in fqnames:
-        if not fqn in _adapter_converters_registry:  continue
+        if not fqn in _adapter_converters_registry:
+            continue
         factory = _adapter_converters_registry[fqn]
         return factory(stru)
     # none of the registered factories could convert the stru object
@@ -55,7 +59,7 @@ def createStructureAdapter(stru):
 
 
 def RegisterStructureAdapter(fqname, fnc=None):
-    '''Function decorator that marks it as a converter of specified
+    """Function decorator that marks it as a converter of specified
     object type to StructureAdapter class in diffpy.srreal.  The registered
     structure object types can be afterwards directly used with calculators
     in diffpy.srreal as they would be implicitly converted to the internal
@@ -75,13 +79,16 @@ def RegisterStructureAdapter(fqname, fnc=None):
             ...
 
     See diffpy.srreal.structureconverters module for usage example.
-    '''
+    """
+
     def __wrapper(fnc):
         _adapter_converters_registry[fqname] = fnc
         return fnc
+
     if fnc is None:
         return __wrapper
     return __wrapper(fnc)
+
 
 _adapter_converters_registry = {}
 
@@ -101,8 +108,17 @@ EMPTY = _emptyStructureAdapter()
 del _emptyStructureAdapter
 
 # silence the pyflakes syntax checker
-assert all((Atom, AtomicStructureAdapter, PeriodicStructureAdapter,
-            CrystalStructureAdapter, StructureDifference,
-            nometa, nosymmetry, BaseBondGenerator))
+assert all(
+    (
+        Atom,
+        AtomicStructureAdapter,
+        PeriodicStructureAdapter,
+        CrystalStructureAdapter,
+        StructureDifference,
+        nometa,
+        nosymmetry,
+        BaseBondGenerator,
+    )
+)
 
 # End of file
