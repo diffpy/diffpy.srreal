@@ -12,13 +12,14 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-
 """
 Top-level classes for PDF calculation:
     DebyePDFCalculator -- simulate PDF by evaluating Debye sum in Q-space
     PDFCalculator      -- calculate PDF by peak summation in real space
 """
 
+from diffpy.srreal.srreal_ext import DebyePDFCalculator, PDFCalculator, fftftog, fftgtof
+from diffpy.srreal.wraputils import propertyFromExtDoubleAttr, setattrFromKeywordArguments
 
 # exported items
 __all__ = """
@@ -26,27 +27,21 @@ __all__ = """
     fftftog fftgtof
     """.split()
 
-from diffpy.srreal.srreal_ext import DebyePDFCalculator
-from diffpy.srreal.srreal_ext import PDFCalculator
-from diffpy.srreal.srreal_ext import fftftog, fftgtof
-from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
-from diffpy.srreal.wraputils import setattrFromKeywordArguments
-
-# silence the pyflakes syntax checker
-assert all((fftftog, fftgtof))
-
 # imports for backward compatibility
-from diffpy.srreal.pdfbaseline import PDFBaseline, makePDFBaseline, ZeroBaseline, LinearBaseline
+from diffpy.srreal.pdfbaseline import LinearBaseline, PDFBaseline, ZeroBaseline, makePDFBaseline
 from diffpy.srreal.pdfenvelope import (
     PDFEnvelope,
-    makePDFEnvelope,
     QResolutionEnvelope,
     ScaleEnvelope,
     SphericalShapeEnvelope,
     StepCutEnvelope,
+    makePDFEnvelope,
 )
 from diffpy.srreal.peakprofile import PeakProfile
-from diffpy.srreal.peakwidthmodel import PeakWidthModel, ConstantPeakWidth, DebyeWallerPeakWidth, JeongPeakWidth
+from diffpy.srreal.peakwidthmodel import ConstantPeakWidth, DebyeWallerPeakWidth, JeongPeakWidth, PeakWidthModel
+
+# silence the pyflakes syntax checker
+assert all((fftftog, fftgtof))
 
 # silence the pyflakes syntax checker
 assert all(
@@ -148,10 +143,10 @@ def _defineCommonInterface(cls):
     )
 
     def _call_kwargs(self, structure=None, **kwargs):
-        """Calculate PDF for the given structure as an (r, G) tuple.
-        Keyword arguments can be used to configure calculator attributes,
-        these override any properties that may be passed from the structure,
-        such as spdiameter.
+        """Calculate PDF for the given structure as an (r, G) tuple. Keyword
+        arguments can be used to configure calculator attributes, these
+        override any properties that may be passed from the structure, such as
+        spdiameter.
 
         structure    -- a structure object to be evaluated.  Reuse the last
                         structure when None.

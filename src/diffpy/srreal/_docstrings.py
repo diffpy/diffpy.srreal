@@ -12,10 +12,7 @@
 # See LICENSE.txt for license information.
 #
 ##############################################################################
-
-"""
-Docstrings for classes and functions in srreal_ext module.
-"""
+"""Docstrings for classes and functions in srreal_ext module."""
 
 # Shared docstrings for classes derived from HasClassRegistry ----------------
 

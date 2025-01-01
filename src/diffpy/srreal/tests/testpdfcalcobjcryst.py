@@ -1,19 +1,16 @@
 #!/usr/bin/env python
 
-"""Unit tests for pdfcalculator.py on ObjCryst crystal structures
-"""
+"""Unit tests for pdfcalculator.py on ObjCryst crystal structures."""
 
 
 import re
 import unittest
 
 import numpy
-from diffpy.srreal.pdfcalculator import PDFCalculator
 
-from diffpy.srreal.tests.testutils import has_pyobjcryst, _msg_nopyobjcryst
-from diffpy.srreal.tests.testutils import loadObjCrystCrystal
-from diffpy.srreal.tests.testutils import datafile
+from diffpy.srreal.pdfcalculator import PDFCalculator
 from diffpy.srreal.tests.testpdfcalculator import _maxNormDiff
+from diffpy.srreal.tests.testutils import _msg_nopyobjcryst, datafile, has_pyobjcryst, loadObjCrystCrystal
 
 # helper functions
 
@@ -41,7 +38,8 @@ def _loadExpectedPDF(basefilename):
 
 
 def _makePDFCalculator(crst, cfgdict):
-    """Return a PDFCalculator object evaluated for a pyobjcryst.Crystal crst."""
+    """Return a PDFCalculator object evaluated for a pyobjcryst.Crystal
+    crst."""
     pdfcargs = {k: v for k, v in cfgdict.items() if k not in ("biso", "type")}
     pdfc = PDFCalculator(**pdfcargs)
     if "biso" in cfgdict:
@@ -81,19 +79,19 @@ class TestPDFCalcObjcryst(unittest.TestCase):
         return
 
     def test_CdSeN(self):
-        """check PDFCalculator on ObjCryst loaded CIF, neutrons"""
+        """Check PDFCalculator on ObjCryst loaded CIF, neutrons."""
         self._comparePDFs("cdsen", "CdSe_cadmoselite_N.fgr", "CdSe_cadmoselite.cif")
         self.assertTrue(self.cdsen_mxnd < 0.01)
         return
 
     def test_CdSeX(self):
-        """check PDFCalculator on ObjCryst loaded CIF, xrays"""
+        """Check PDFCalculator on ObjCryst loaded CIF, xrays."""
         self._comparePDFs("cdsex", "CdSe_cadmoselite_X.fgr", "CdSe_cadmoselite.cif")
         self.assertTrue(self.cdsex_mxnd < 0.01)
         return
 
     def test_rutileaniso(self):
-        """check PDFCalculator on ObjCryst loaded anisotropic rutile"""
+        """Check PDFCalculator on ObjCryst loaded anisotropic rutile."""
         self._comparePDFs("rutileaniso", "TiO2_rutile-fit.fgr", "TiO2_rutile-fit.cif")
         self.assertTrue(self.rutileaniso_mxnd < 0.057)
         return

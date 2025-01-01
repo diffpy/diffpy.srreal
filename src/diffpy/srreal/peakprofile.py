@@ -12,7 +12,6 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-
 """
 Class for configuring PDF profile function:
     PeakProfile
@@ -24,8 +23,7 @@ Class for configuring PDF profile function:
 __all__ = ["PeakProfile", "GaussianProfile", "CroppedGaussianProfile"]
 
 from diffpy.srreal import _final_imports
-from diffpy.srreal.srreal_ext import PeakProfile
-from diffpy.srreal.srreal_ext import GaussianProfile, CroppedGaussianProfile
+from diffpy.srreal.srreal_ext import CroppedGaussianProfile, GaussianProfile, PeakProfile
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
 
 # class PeakProfile ----------------------------------------------------------

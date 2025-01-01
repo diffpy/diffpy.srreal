@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 
 """Plot C60 PDFs calculated with PDFCalculator and DebyePDFCalculator.
+
 The C60 molecule are stored in a pyobjcryst object.
 """
 
-from matplotlib.pyplot import plot, show, clf
-from diffpy.structure import Structure
+from matplotlib.pyplot import clf, plot, show
 from pyobjcryst.crystal import Crystal
 from pyobjcryst.molecule import Molecule
 from pyobjcryst.scatteringpower import ScatteringPowerAtom
-from diffpy.srreal.pdfcalculator import PDFCalculator, DebyePDFCalculator
+
+from diffpy.srreal.pdfcalculator import DebyePDFCalculator, PDFCalculator
+from diffpy.structure import Structure
 
 # load C60 molecule as a diffpy.structure object
 bucky_diffpy = Structure(filename="datafiles/C60bucky.stru")

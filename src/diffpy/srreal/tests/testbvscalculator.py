@@ -1,15 +1,13 @@
 #!/usr/bin/env python
 
-"""Unit tests for diffpy.srreal.bvscalculator
-"""
+"""Unit tests for diffpy.srreal.bvscalculator."""
 
 
-import unittest
 import pickle
+import unittest
 
 from diffpy.srreal.bvscalculator import BVSCalculator
-from diffpy.srreal.tests.testutils import loadDiffPyStructure
-from diffpy.srreal.tests.testutils import pickle_with_attr
+from diffpy.srreal.tests.testutils import loadDiffPyStructure, pickle_with_attr
 
 
 ##############################################################################
@@ -29,14 +27,14 @@ class TestBVSCalculator(unittest.TestCase):
         return
 
     def test___init__(self):
-        """check BVSCalculator.__init__()"""
+        """Check BVSCalculator.__init__()"""
         self.assertEqual(1e-5, self.bvc.valenceprecision)
         bvc1 = BVSCalculator(valenceprecision=1e-4)
         self.assertEqual(1e-4, bvc1.valenceprecision)
         return
 
     def test___call__(self):
-        """check BVSCalculator.__call__()"""
+        """Check BVSCalculator.__call__()"""
         vcalc = self.bvc(self.rutile)
         self.assertEqual(len(self.rutile), len(vcalc))
         self.assertEqual(tuple(self.bvc.value), tuple(vcalc))
@@ -49,7 +47,7 @@ class TestBVSCalculator(unittest.TestCase):
         return
 
     def test_bvdiff(self):
-        """check BVSCalculator.bvdiff"""
+        """Check BVSCalculator.bvdiff."""
         self.bvc(self.rutile)
         self.assertEqual(6, len(self.bvc.bvdiff))
         # rutile is overbonded
@@ -58,14 +56,14 @@ class TestBVSCalculator(unittest.TestCase):
         return
 
     def test_bvmsdiff(self):
-        """check BVSCalculator.bvmsdiff"""
+        """Check BVSCalculator.bvmsdiff."""
         self.assertEqual(0, self.bvc.bvmsdiff)
         self.bvc(self.rutile)
         self.assertAlmostEqual(0.0158969, self.bvc.bvmsdiff, 6)
         return
 
     def test_bvrmsdiff(self):
-        """check BVSCalculator.bvrmsdiff"""
+        """Check BVSCalculator.bvrmsdiff."""
         from math import sqrt
 
         self.assertEqual(0, self.bvc.bvrmsdiff)
@@ -85,24 +83,24 @@ class TestBVSCalculator(unittest.TestCase):
         return
 
     def test_eval(self):
-        """check BVSCalculator.eval()"""
+        """Check BVSCalculator.eval()"""
         vcalc = self.bvc.eval(self.rutile)
         self.assertEqual(tuple(vcalc), tuple(self.bvc.value))
         return
 
     def test_valences(self):
-        """check BVSCalculator.valences"""
+        """Check BVSCalculator.valences."""
         self.bvc(self.rutile)
         self.assertEqual((4, 4, -2, -2, -2, -2), tuple(self.bvc.valences))
         return
 
     def test_value(self):
-        """check BVSCalculator.value"""
+        """Check BVSCalculator.value."""
         self.assertEqual(0, len(self.bvc.value))
         return
 
     def test_pickling(self):
-        """check pickling and unpickling of BVSCalculator."""
+        """Check pickling and unpickling of BVSCalculator."""
         bvsc = BVSCalculator()
         bvsc.rmin = 0.1
         bvsc.rmax = 12.3
@@ -140,7 +138,7 @@ class TestBVSCalculator(unittest.TestCase):
         return
 
     def test_pickling_derived_structure(self):
-        """check pickling of BVSCalculator with DerivedStructureAdapter."""
+        """Check pickling of BVSCalculator with DerivedStructureAdapter."""
         from diffpy.srreal.tests.testutils import DerivedStructureAdapter
 
         bvc = self.bvc
@@ -157,7 +155,7 @@ class TestBVSCalculator(unittest.TestCase):
         return
 
     def test_table_atom_valence(self):
-        """check calculation with defined valences in bvparamtable"""
+        """Check calculation with defined valences in bvparamtable."""
         bvc = self.bvc
         barerutile = self.rutile.copy()
         for a in barerutile:

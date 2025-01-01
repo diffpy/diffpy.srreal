@@ -12,7 +12,6 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-
 """
 Classes for configuring peak width evaluation in PDF calculations:
     PeakWidthModel,
@@ -24,8 +23,7 @@ Classes for configuring peak width evaluation in PDF calculations:
 __all__ = ["PeakWidthModel", "ConstantPeakWidth", "DebyeWallerPeakWidth", "JeongPeakWidth"]
 
 from diffpy.srreal import _final_imports
-from diffpy.srreal.srreal_ext import PeakWidthModel, ConstantPeakWidth
-from diffpy.srreal.srreal_ext import DebyeWallerPeakWidth, JeongPeakWidth
+from diffpy.srreal.srreal_ext import ConstantPeakWidth, DebyeWallerPeakWidth, JeongPeakWidth, PeakWidthModel
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
 
 # class PeakWidthModel -------------------------------------------------------

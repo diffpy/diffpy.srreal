@@ -12,17 +12,14 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-
-"""class OverlapCalculator -- calculator of atom overlaps in a structure.
-"""
+"""Class OverlapCalculator -- calculator of atom overlaps in a structure."""
 
 
 # exported items, these also makes them show in pydoc.
 __all__ = ["OverlapCalculator"]
 
-from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
-from diffpy.srreal.wraputils import setattrFromKeywordArguments
 from diffpy.srreal.srreal_ext import OverlapCalculator
+from diffpy.srreal.wraputils import propertyFromExtDoubleAttr, setattrFromKeywordArguments
 
 # property wrappers to C++ double attributes
 
@@ -50,9 +47,8 @@ OverlapCalculator.rmaxused = propertyFromExtDoubleAttr(
 
 
 def _init_kwargs(self, **kwargs):
-    """Create a new instance of OverlapCalculator.
-    Keyword arguments can be used to configure
-    calculator properties, for example:
+    """Create a new instance of OverlapCalculator. Keyword arguments can be
+    used to configure calculator properties, for example:
 
     olc = OverlapCalculator(rmax=2.5)
 

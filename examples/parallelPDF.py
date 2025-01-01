@@ -1,19 +1,23 @@
 #!/usr/bin/env python
 
-"""Demonstration of parallel PDF calculation using the multiprocessing
-package.  A PDF of menthol structure is first calculated on a single core
-and then on all computer CPUs.  The script then compares both results
-and prints elapsed time per each calculation.
+"""Demonstration of parallel PDF calculation using the multiprocessing package.
+
+A PDF of menthol structure is first calculated on a single core and then
+on all computer CPUs.  The script then compares both results and prints
+elapsed time per each calculation.
 """
 
+import multiprocessing
+import optparse
 import os
 import sys
-import optparse
 import time
-import multiprocessing
-from diffpy.structure import Structure
-from diffpy.srreal.pdfcalculator import PDFCalculator
+
+from matplotlib.pyplot import clf, plot, show
+
 from diffpy.srreal.parallel import createParallelCalculator
+from diffpy.srreal.pdfcalculator import PDFCalculator
+from diffpy.structure import Structure
 
 mydir = os.path.dirname(os.path.abspath(__file__))
 mentholcif = os.path.join(mydir, "datafiles", "menthol.cif")
@@ -28,8 +32,8 @@ opts, args = parser.parse_args(sys.argv[1:])
 # load menthol structure and make sure Uiso values are non-zero
 if opts.pyobjcryst:
     # use pyobjcryst if requested by the user
-    from pyobjcryst import loadCrystal
     from numpy import pi
+    from pyobjcryst import loadCrystal
 
     menthol = loadCrystal(mentholcif)
     for sc in menthol.GetScatteringComponentList():
@@ -62,7 +66,7 @@ print("Calculation time on 1 CPU: %g" % t0)
 pool = multiprocessing.Pool(processes=ncpu)
 
 t1 = time.time()
-# create a proxy parrallel calculator to PDFCalculator pc0,
+# create a proxy parallel calculator to PDFCalculator pc0,
 # that uses ncpu parallel jobs submitted via pool.imap_unordered
 pc1 = createParallelCalculator(pc0, ncpu, pool.imap_unordered)
 r1, g1 = pc1(menthol)
@@ -71,7 +75,6 @@ print("Calculation time on %i CPUs: %g" % (ncpu, t1))
 print("Time ratio: %g" % (t0 / t1))
 
 # plot both results and the difference curve
-from matplotlib.pyplot import plot, show, clf
 
 clf()
 gd = g0 - g1

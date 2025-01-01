@@ -1,18 +1,21 @@
 #!/usr/bin/env python
 
-"""Unit tests for diffpy.srreal.bondcalculator
-"""
+"""Unit tests for diffpy.srreal.bondcalculator."""
 
 
-import unittest
 import pickle
+import unittest
+
 import numpy
 
-from diffpy.srreal.tests.testutils import has_pyobjcryst, _msg_nopyobjcryst
-from diffpy.srreal.tests.testutils import loadDiffPyStructure
-from diffpy.srreal.tests.testutils import loadObjCrystCrystal
-from diffpy.srreal.tests.testutils import pickle_with_attr
 from diffpy.srreal.bondcalculator import BondCalculator
+from diffpy.srreal.tests.testutils import (
+    _msg_nopyobjcryst,
+    has_pyobjcryst,
+    loadDiffPyStructure,
+    loadObjCrystCrystal,
+    pickle_with_attr,
+)
 
 # ----------------------------------------------------------------------------
 
@@ -33,7 +36,7 @@ class TestBondCalculator(unittest.TestCase):
         return
 
     def test___init__(self):
-        """check BondCalculator.__init__()"""
+        """Check BondCalculator.__init__()"""
         self.assertEqual(0, self.bdc.rmin)
         self.assertEqual(5, self.bdc.rmax)
         self.assertEqual(0, len(self.bdc.distances))
@@ -44,7 +47,7 @@ class TestBondCalculator(unittest.TestCase):
         return
 
     def test___call__(self):
-        """check BondCalculator.__call__()"""
+        """Check BondCalculator.__call__()"""
         bdc = self.bdc
         bdc.rmax = 0
         self.assertEqual(0, len(bdc(self.rutile)))
@@ -59,7 +62,7 @@ class TestBondCalculator(unittest.TestCase):
         return
 
     def test_pickling(self):
-        """check pickling and unpickling of BondCalculator."""
+        """Check pickling and unpickling of BondCalculator."""
         bdc = self.bdc
         bdc.rmin = 0.1
         bdc.rmax = 12.3
@@ -77,7 +80,7 @@ class TestBondCalculator(unittest.TestCase):
         return
 
     def test_pickling_derived_structure(self):
-        """check pickling of BondCalculator with DerivedStructureAdapter."""
+        """Check pickling of BondCalculator with DerivedStructureAdapter."""
         from diffpy.srreal.tests.testutils import DerivedStructureAdapter
 
         bdc = self.bdc
@@ -94,7 +97,7 @@ class TestBondCalculator(unittest.TestCase):
         return
 
     def test_distances(self):
-        """check BondCalculator.distances"""
+        """Check BondCalculator.distances."""
         self.bdc.eval(self.nickel)
         dst = self.bdc.distances
         self.assertTrue(numpy.array_equal(dst, BondCalculator()(self.nickel)))
@@ -115,7 +118,7 @@ class TestBondCalculator(unittest.TestCase):
         return
 
     def test_directions(self):
-        """check BondCalculator.directions"""
+        """Check BondCalculator.directions."""
         dst = self.bdc(self.rutile)
         drs = self.bdc.directions
         nms = numpy.sqrt(numpy.sum(numpy.power(drs, 2), axis=1))
@@ -123,7 +126,7 @@ class TestBondCalculator(unittest.TestCase):
         return
 
     def test_sites(self):
-        """check BondCalculator.sites"""
+        """Check BondCalculator.sites."""
         bdc = self.bdc
         dst = bdc(self.rutile)
         self.assertEqual(len(dst), len(bdc.sites0))
@@ -144,7 +147,7 @@ class TestBondCalculator(unittest.TestCase):
         return
 
     def test_types(self):
-        """check BondCalculator.types"""
+        """Check BondCalculator.types."""
         bdc = self.bdc
         dst = bdc(self.rutile)
         self.assertEqual(len(dst), len(bdc.types0))
@@ -163,7 +166,7 @@ class TestBondCalculator(unittest.TestCase):
         return
 
     def test_filterCone(self):
-        """check BondCalculator.filterCone()"""
+        """Check BondCalculator.filterCone()"""
         bdc = self.bdc
         bdc.rmax = 2.5
         self.assertEqual(12, len(bdc(self.niprim)))
@@ -181,7 +184,7 @@ class TestBondCalculator(unittest.TestCase):
         return
 
     def test_filterOff(self):
-        """check BondCalculator.filterOff()"""
+        """Check BondCalculator.filterOff()"""
         bdc = self.bdc
         bdc.rmax = 2.5
         bdc.filterCone([1, 2, 3], -1)
@@ -191,7 +194,7 @@ class TestBondCalculator(unittest.TestCase):
         return
 
     def test_setPairMask(self):
-        """check different setPairMask arguments."""
+        """Check different setPairMask arguments."""
         bdc = self.bdc
         dall = bdc(self.nickel)
         bdc.maskAllPairs(False)
@@ -220,7 +223,7 @@ class TestBondCalculator(unittest.TestCase):
         return
 
     def test_setTypeMask(self):
-        """check different setTypeMask arguments."""
+        """Check different setTypeMask arguments."""
         bdc = self.bdc
         dall = bdc(self.rutile)
         bdc.setTypeMask("all", "All", False)
@@ -261,7 +264,7 @@ class TestBondCalculatorObjCryst(unittest.TestCase):
         return
 
     def test___call__(self):
-        """check BondCalculator.__call__()"""
+        """Check BondCalculator.__call__()"""
         bdc = self.bdc
         bdc.rmax = 0
         self.assertEqual(0, len(bdc(self.rutile).tolist()))
@@ -272,7 +275,7 @@ class TestBondCalculatorObjCryst(unittest.TestCase):
         return
 
     def test_sites(self):
-        """check BondCalculator.sites"""
+        """Check BondCalculator.sites."""
         bdc = self.bdc
         dst = bdc(self.rutile)
         self.assertEqual(len(dst), len(bdc.sites0))
@@ -293,7 +296,7 @@ class TestBondCalculatorObjCryst(unittest.TestCase):
         return
 
     def test_types(self):
-        """check BondCalculator.types"""
+        """Check BondCalculator.types."""
         bdc = self.bdc
         dst = bdc(self.rutile)
         self.assertEqual(len(dst), len(bdc.types0))
@@ -312,7 +315,7 @@ class TestBondCalculatorObjCryst(unittest.TestCase):
         return
 
     def test_filterCone(self):
-        """check BondCalculator.filterCone()"""
+        """Check BondCalculator.filterCone()"""
         bdc = self.bdc
         bdc.rmax = 2.5
         bdc.filterCone([+0.5, +0.5, 0], 1)
@@ -329,7 +332,7 @@ class TestBondCalculatorObjCryst(unittest.TestCase):
         return
 
     def test_filterOff(self):
-        """check BondCalculator.filterOff()"""
+        """Check BondCalculator.filterOff()"""
         bdc = self.bdc
         bdc.rmax = 2.5
         bdc.filterCone([1, 2, 3], -1)

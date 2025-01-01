@@ -1,18 +1,23 @@
 #!/usr/bin/env python
 
-"""Unit tests for the PDFEnvelope class from diffpy.srreal.pdfcalculator
-"""
+"""Unit tests for the PDFEnvelope class from diffpy.srreal.pdfcalculator."""
 
 
-import unittest
 import pickle
+import unittest
+
 import numpy
 
+from diffpy.srreal.pdfcalculator import DebyePDFCalculator, PDFCalculator
+from diffpy.srreal.pdfenvelope import (
+    PDFEnvelope,
+    QResolutionEnvelope,
+    ScaleEnvelope,
+    SphericalShapeEnvelope,
+    StepCutEnvelope,
+    makePDFEnvelope,
+)
 from diffpy.srreal.tests.testutils import pickle_with_attr
-from diffpy.srreal.pdfenvelope import PDFEnvelope, makePDFEnvelope
-from diffpy.srreal.pdfenvelope import QResolutionEnvelope, ScaleEnvelope
-from diffpy.srreal.pdfenvelope import SphericalShapeEnvelope, StepCutEnvelope
-from diffpy.srreal.pdfcalculator import PDFCalculator, DebyePDFCalculator
 
 # ----------------------------------------------------------------------------
 
@@ -30,14 +35,14 @@ class TestPDFEnvelope(unittest.TestCase):
         return
 
     def test___init__(self):
-        """check PDFEnvelope.__init__()"""
+        """Check PDFEnvelope.__init__()"""
         self.assertEqual(1.0, self.fscale.scale)
         self.fscale._setDoubleAttr("scale", 2.0)
         self.assertEqual(2.0, self.fscale.scale)
         return
 
     def test___call__(self):
-        """check PDFEnvelope.__call__()"""
+        """Check PDFEnvelope.__call__()"""
         x = numpy.arange(0, 9.1, 0.3)
         xb = numpy.array([(0.0, xi) for xi in x])[:, 1]
         self.assertTrue(xb.strides > x.strides)
@@ -56,7 +61,7 @@ class TestPDFEnvelope(unittest.TestCase):
         return
 
     def test_clone(self):
-        """check PDFEnvelope.clone"""
+        """Check PDFEnvelope.clone."""
         # this is a virtual method in the base class
         self.assertRaises(RuntimeError, PDFEnvelope().clone)
         self.fstepcut.stepcut = 17
@@ -67,7 +72,7 @@ class TestPDFEnvelope(unittest.TestCase):
         return
 
     def test_create(self):
-        """check PDFEnvelope.create"""
+        """Check PDFEnvelope.create."""
         # this is a virtual method in the base class
         self.assertRaises(RuntimeError, PDFEnvelope().create)
         self.assertEqual("stepcut", self.fstepcut.create().type())
@@ -77,7 +82,7 @@ class TestPDFEnvelope(unittest.TestCase):
         return
 
     def test_type(self):
-        """check PDFEnvelope.type"""
+        """Check PDFEnvelope.type."""
         # this is a virtual method in the base class
         self.assertRaises(RuntimeError, PDFEnvelope().type)
         self.assertEqual("stepcut", self.fstepcut.type())
@@ -85,12 +90,12 @@ class TestPDFEnvelope(unittest.TestCase):
         return
 
     def test_createByType(self):
-        """check PDFEnvelope.createByType()"""
+        """Check PDFEnvelope.createByType()"""
         self.assertRaises(ValueError, PDFEnvelope.createByType, "notregistered")
         return
 
     def test_getRegisteredTypes(self):
-        """check PDFEnvelope.getRegisteredTypes"""
+        """Check PDFEnvelope.getRegisteredTypes."""
         regtypes = PDFEnvelope.getRegisteredTypes()
         self.assertTrue(2 <= len(regtypes))
         self.assertTrue("stepcut" in regtypes)
@@ -98,7 +103,7 @@ class TestPDFEnvelope(unittest.TestCase):
         return
 
     def test_pickling(self):
-        """check pickling and unpickling of PDFEnvelope."""
+        """Check pickling and unpickling of PDFEnvelope."""
         stp = self.fstepcut
         stp.stepcut = 11
         stp2 = pickle.loads(pickle.dumps(stp))
@@ -108,7 +113,7 @@ class TestPDFEnvelope(unittest.TestCase):
         return
 
     def test_makePDFEnvelope(self):
-        """check the makePDFEnvelope wrapper."""
+        """Check the makePDFEnvelope wrapper."""
         pbl = makePDFEnvelope("parabolaenvelope", parabola_envelope, a=1, b=2, c=3)
         self.assertEqual(3, pbl(0))
         self.assertEqual(6, pbl(1))
@@ -132,7 +137,7 @@ class TestPDFEnvelope(unittest.TestCase):
         return
 
     def test_picking_owned(self):
-        """verify pickling of envelopes owned by PDF calculators."""
+        """Verify pickling of envelopes owned by PDF calculators."""
         pbl = makePDFEnvelope("parabolaenvelope", parabola_envelope, a=1, b=2, c=3)
         pbl.a = 7
         pbl.foobar = "asdf"

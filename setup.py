@@ -6,11 +6,12 @@ quantities based on atom pair interaction.
 Packages:   diffpy.srreal
 """
 
-import numpy
-import sys
 import glob
-from setuptools import setup, Extension
+import sys
 from ctypes.util import find_library
+
+import numpy
+from setuptools import Extension, setup
 
 
 def get_boost_libraries():

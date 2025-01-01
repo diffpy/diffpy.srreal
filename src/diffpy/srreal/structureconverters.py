@@ -12,15 +12,22 @@
 # See LICENSE.txt for license information.
 #
 ##############################################################################
+"""Converters from other structure representations in Python to diffpy.srreal
+StructureAdapter classes."""
 
-"""
-Converters from other structure representations in Python to diffpy.srreal
-StructureAdapter classes.
-"""
-
+from diffpy.srreal.srreal_ext import (
+    AtomicStructureAdapter,
+    PeriodicStructureAdapter,
+    convertObjCrystCrystal,
+    convertObjCrystMolecule,
+)
 from diffpy.srreal.structureadapter import RegisterStructureAdapter
-from diffpy.srreal.srreal_ext import AtomicStructureAdapter
-from diffpy.srreal.srreal_ext import PeriodicStructureAdapter
+
+# Converters for Molecule and Crystal from pyobjcryst ------------------------
+
+
+RegisterStructureAdapter("pyobjcryst._pyobjcryst.Molecule", convertObjCrystMolecule)
+RegisterStructureAdapter("pyobjcryst._pyobjcryst.Crystal", convertObjCrystCrystal)
 
 # Converter for Structure class from diffpy.structure ------------------------
 
@@ -48,21 +55,10 @@ def convertDiffPyStructure(stru):
     return adpt
 
 
-# Converters for Molecule and Crystal from pyobjcryst ------------------------
-
-from diffpy.srreal.srreal_ext import convertObjCrystMolecule
-
-RegisterStructureAdapter("pyobjcryst._pyobjcryst.Molecule", convertObjCrystMolecule)
-
-from diffpy.srreal.srreal_ext import convertObjCrystCrystal
-
-RegisterStructureAdapter("pyobjcryst._pyobjcryst.Crystal", convertObjCrystCrystal)
-
 # Adapter classes and helpers for diffpy.structure class ---------------------
 
 
 class _DiffPyStructureMetadata(object):
-
     "Base class for handling metadata information in the pdffit attribute."
 
     pdffit = None
@@ -76,7 +72,7 @@ class _DiffPyStructureMetadata(object):
     def _customPQConfig(self, pqobj):
         """Apply PDF-related metadata if defined in PDFFit structure format."""
         pqname = type(pqobj).__name__
-        if not pqname in ("PDFCalculator", "DebyePDFCalculator"):
+        if pqname not in ("PDFCalculator", "DebyePDFCalculator"):
             return
         if not self.pdffit:
             return
@@ -87,12 +83,12 @@ class _DiffPyStructureMetadata(object):
         pqobj.scale = self.pdffit["scale"]
         # spdiameter
         if "spdiameter" in self.pdffit:
-            if not "sphericalshape" in envtps:
+            if "sphericalshape" not in envtps:
                 pqobj.addEnvelope("sphericalshape")
             pqobj.spdiameter = self.pdffit["spdiameter"]
         # stepcut
         if "stepcut" in self.pdffit:
-            if not "stepcut" in envtps:
+            if "stepcut" not in envtps:
                 pqobj.addEnvelope("stepcut")
             pqobj.stepcut = self.pdffit["stepcut"]
         # delta1, delta2 - set these only when using JeongPeakWidth model
@@ -102,7 +98,7 @@ class _DiffPyStructureMetadata(object):
         return
 
     def _fetchMetadata(self, stru):
-        """Copy data from the pdffit attribute of diffpy Structure object
+        """Copy data from the pdffit attribute of diffpy Structure object.
 
         stru -- instance of Structure class from diffpy.structure
 

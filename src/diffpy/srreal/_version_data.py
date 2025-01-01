@@ -12,9 +12,7 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-
-"""
-Extraction of version data for diffpy.srreal package
+"""Extraction of version data for diffpy.srreal package.
 
 Does not import any extension module unlike the `version` module.
 """
@@ -24,7 +22,6 @@ __all__ = ["__date__", "__git_commit__", "__timestamp__", "__version__"]
 import os.path
 
 from pkg_resources import resource_filename
-
 
 # obtain version information from the version.cfg file
 cp = dict(version="", date="", commit="", timestamp="0")

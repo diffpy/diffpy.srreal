@@ -2,26 +2,26 @@
 ###########################################################################
 #
 #                 Cambridge Crystallographic Data Centre
-#                                CCDC 
-# 
+#                                CCDC
+#
 ###########################################################################
 #
 #  This CIF contains data generated directly from one or more entries in
-#  the Cambridge Structural Database and will include bibliographic, 
+#  the Cambridge Structural Database and will include bibliographic,
 #  chemical, crystal, experimental, refinement, and atomic coordinate data,
 #  as available.
-#     
+#
 #  Copyright  2008  The Cambridge Crystallographic Data Centre
-# 
-#  This CIF is provided on the understanding that it is used for bona fide 
+#
+#  This CIF is provided on the understanding that it is used for bona fide
 #  research purposes only.  It may contain copyright material of the CCDC
-#  or of third parties, and may not be copied or further disseminated in 
-#  any form, whether machine-readable or not, except for the purpose of 
+#  or of third parties, and may not be copied or further disseminated in
+#  any form, whether machine-readable or not, except for the purpose of
 #  generating routine backup copies on your local computer system.
-# 
-#  For further information about the CCDC, data deposition and data 
-#  retrieval see <www.ccdc.cam.ac.uk>. Bona fide researchers may freely 
-#  download  Mercury and enCIFer from this site to visualise CIF-encoded 
+#
+#  For further information about the CCDC, data deposition and data
+#  retrieval see <www.ccdc.cam.ac.uk>. Bona fide researchers may freely
+#  download  Mercury and enCIFer from this site to visualise CIF-encoded
 #  structures and to carry out CIF format checking respectively.
 #
 ###########################################################################

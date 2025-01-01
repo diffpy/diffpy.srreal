@@ -1,10 +1,20 @@
 #!/usr/bin/env python
 
-"""Tune the peak precision parameter so that PDFCalculator
-gives equivalent results to diffpy.pdffit2.
+"""Tune the peak precision parameter so that PDFCalculator gives equivalent
+results to diffpy.pdffit2.
 
 Usage: tunePeakPrecision.py [qmax] [peakprecision] [createplot]
 """
+
+# global imports
+import sys
+import time
+
+import numpy
+
+import diffpy.pdffit2
+from diffpy.srreal.pdf_ext import PDFCalculator
+from diffpy.structure import Structure
 
 # Results:
 # Qmax  peakprecision   CPU     Notes
@@ -20,16 +30,6 @@ rmax = 50.0
 rstep = 0.01
 peakprecision = None
 createplot = False
-
-# global imports
-import sys
-import time
-
-import numpy
-
-from diffpy.structure import Structure
-from diffpy.srreal.pdf_ext import PDFCalculator
-import diffpy.pdffit2
 
 # make PdfFit silent
 diffpy.pdffit2.redirect_stdout(open("/dev/null", "w"))
@@ -52,7 +52,7 @@ nickel.readStr(nickel_discus_data, format="discus")
 
 
 def Gpdffit2(qmax):
-    """Calculate reference nickel PDF using diffpy.pdffit2
+    """Calculate reference nickel PDF using diffpy.pdffit2.
 
     qmax    -- vawevector cutoff value in 1/A
 
@@ -68,7 +68,7 @@ def Gpdffit2(qmax):
 
 
 def Gsrreal(qmax, peakprecision=None):
-    """Calculate nickel PDF using PDFCalculator from diffpy.srreal
+    """Calculate nickel PDF using PDFCalculator from diffpy.srreal.
 
     qmax            -- vawevector cutoff value in 1/A
     peakprecision   -- precision factor affecting peak cutoff,

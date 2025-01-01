@@ -1,18 +1,22 @@
 #!/usr/bin/env python
 
-"""Unit tests for diffpy.srreal.scatteringfactortable
-"""
+"""Unit tests for diffpy.srreal.scatteringfactortable."""
 
 
-import unittest
 import pickle
+import unittest
+
 import numpy
 
+from diffpy.srreal.pdfcalculator import DebyePDFCalculator, PDFCalculator
+from diffpy.srreal.scatteringfactortable import (
+    ScatteringFactorTable,
+    SFTElectron,
+    SFTElectronNumber,
+    SFTNeutron,
+    SFTXray,
+)
 from diffpy.srreal.tests.testutils import pickle_with_attr
-from diffpy.srreal.scatteringfactortable import ScatteringFactorTable
-from diffpy.srreal.scatteringfactortable import SFTXray, SFTElectron
-from diffpy.srreal.scatteringfactortable import SFTNeutron, SFTElectronNumber
-from diffpy.srreal.pdfcalculator import PDFCalculator, DebyePDFCalculator
 
 # ----------------------------------------------------------------------------
 
@@ -58,7 +62,7 @@ class TestScatteringFactorTable(unittest.TestCase):
         return
 
     def test_class_registry(self):
-        """check if instances are aliased by radiationType()."""
+        """Check if instances are aliased by radiationType()."""
         ltb = ScatteringFactorTable.createByType("LTB")
         self.assertTrue(type(ltb) is LocalTable)
         ltb2 = ScatteringFactorTable.createByType("localtable")
@@ -66,7 +70,7 @@ class TestScatteringFactorTable(unittest.TestCase):
         return
 
     def test_ticker(self):
-        """check ScatteringFactorTable.ticker()"""
+        """Check ScatteringFactorTable.ticker()"""
         from diffpy.srreal.eventticker import EventTicker
 
         et0 = EventTicker(self.sftx.ticker())
@@ -77,7 +81,7 @@ class TestScatteringFactorTable(unittest.TestCase):
         return
 
     def test_ticker_override(self):
-        """check Python override of ScatteringFactorTable.ticker."""
+        """Check Python override of ScatteringFactorTable.ticker."""
         from diffpy.srreal.pdfcalculator import PDFCalculator
 
         lsft = LocalTable()
@@ -98,7 +102,7 @@ class TestScatteringFactorTable(unittest.TestCase):
         return
 
     def test_pickling(self):
-        """check pickling of ScatteringFactorTable instances."""
+        """Check pickling of ScatteringFactorTable instances."""
         self.assertEqual(0, len(self.sftx.getCustomSymbols()))
         self.sftx.setCustomAs("Na", "Na", 123)
         self.sftx.setCustomAs("Calias", "C")
@@ -116,7 +120,7 @@ class TestScatteringFactorTable(unittest.TestCase):
         return
 
     def test_picking_owned(self):
-        """verify pickling of envelopes owned by PDF calculators."""
+        """Verify pickling of envelopes owned by PDF calculators."""
         pc = PDFCalculator()
         dbpc = DebyePDFCalculator()
         ltb = LocalTable()
@@ -137,7 +141,7 @@ class TestScatteringFactorTable(unittest.TestCase):
         return
 
     def test_pickling_derived(self):
-        """check pickling of a derived classes."""
+        """Check pickling of a derived classes."""
         lsft = LocalTable()
         self.assertEqual(3, lsft._standardLookup("Na", 2))
         self.assertEqual(set(), lsft.getCustomSymbols())

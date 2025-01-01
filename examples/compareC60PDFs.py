@@ -1,14 +1,17 @@
 #!/usr/bin/env python
 
 """Plot C60 PDFs calculated with PDFCalculator and DebyePDFCalculator.
+
 The C60 molecule is held in a diffpy Structure object.
 """
 
-import sys
 import os
-from matplotlib.pyplot import plot, show, clf
+import sys
+
+from matplotlib.pyplot import clf, plot, show
+
+from diffpy.srreal.pdfcalculator import DebyePDFCalculator, PDFCalculator
 from diffpy.structure import Structure
-from diffpy.srreal.pdfcalculator import PDFCalculator, DebyePDFCalculator
 
 mydir = os.path.dirname(os.path.abspath(sys.argv[0]))
 buckyfile = os.path.join(mydir, "datafiles", "C60bucky.stru")

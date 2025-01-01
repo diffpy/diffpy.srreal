@@ -12,17 +12,14 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-
-"""class BondCalculator -- distances between atoms in the structure.
-"""
+"""Class BondCalculator -- distances between atoms in the structure."""
 
 
 # exported items, these also makes them show in pydoc.
 __all__ = ["BondCalculator"]
 
-from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
-from diffpy.srreal.wraputils import setattrFromKeywordArguments
 from diffpy.srreal.srreal_ext import BondCalculator
+from diffpy.srreal.wraputils import propertyFromExtDoubleAttr, setattrFromKeywordArguments
 
 # property wrappers to C++ double attributes
 
@@ -43,9 +40,8 @@ BondCalculator.rmax = propertyFromExtDoubleAttr(
 
 
 def _init_kwargs(self, **kwargs):
-    """Create a new instance of BondCalculator.
-    Keyword arguments can be used to configure
-    calculator properties, for example:
+    """Create a new instance of BondCalculator. Keyword arguments can be used
+    to configure calculator properties, for example:
 
     bdc = BondCalculator(rmin=1.5, rmax=2.5)
 

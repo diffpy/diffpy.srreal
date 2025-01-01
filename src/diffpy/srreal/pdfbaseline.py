@@ -12,7 +12,6 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-
 """
 Classes for configuring PDF baseline:
     PDFBaseline, ZeroBaseline, LinearBaseline
@@ -27,8 +26,7 @@ __all__ = """
     """.split()
 
 from diffpy.srreal import _final_imports
-from diffpy.srreal.srreal_ext import PDFBaseline
-from diffpy.srreal.srreal_ext import ZeroBaseline, LinearBaseline
+from diffpy.srreal.srreal_ext import LinearBaseline, PDFBaseline, ZeroBaseline
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
 
 # class PDFBaseline ----------------------------------------------------------
@@ -50,8 +48,8 @@ LinearBaseline.slope = propertyFromExtDoubleAttr(
 
 
 def makePDFBaseline(name, fnc, replace=False, **dbattrs):
-    """Helper function for registering Python function as a PDFBaseline.
-    This is required for using Python function as PDFCalculator.baseline.
+    """Helper function for registering Python function as a PDFBaseline. This
+    is required for using Python function as PDFCalculator.baseline.
 
     name     -- unique string name for registering Python function in the
                 global registry of PDFBaseline types.  This will be the

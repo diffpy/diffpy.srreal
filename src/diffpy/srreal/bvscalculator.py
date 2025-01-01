@@ -12,17 +12,14 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-
-"""class BVSCalculator -- bond valence sums calculator
-"""
+"""Class BVSCalculator -- bond valence sums calculator."""
 
 
 # exported items
 __all__ = ["BVSCalculator"]
 
 from diffpy.srreal.srreal_ext import BVSCalculator
-from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
-from diffpy.srreal.wraputils import setattrFromKeywordArguments
+from diffpy.srreal.wraputils import propertyFromExtDoubleAttr, setattrFromKeywordArguments
 
 # Property wrappers to C++ double attributes
 

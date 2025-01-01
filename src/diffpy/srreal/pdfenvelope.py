@@ -12,7 +12,6 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-
 """
 Classes for configuring PDF scaling envelope:
     PDFEnvelope, ScaleEnvelope, QResolutionEnvelope,
@@ -30,9 +29,13 @@ __all__ = """
    """.split()
 
 from diffpy.srreal import _final_imports
-from diffpy.srreal.srreal_ext import PDFEnvelope
-from diffpy.srreal.srreal_ext import ScaleEnvelope, QResolutionEnvelope
-from diffpy.srreal.srreal_ext import SphericalShapeEnvelope, StepCutEnvelope
+from diffpy.srreal.srreal_ext import (
+    PDFEnvelope,
+    QResolutionEnvelope,
+    ScaleEnvelope,
+    SphericalShapeEnvelope,
+    StepCutEnvelope,
+)
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
 
 # class PDFEnvelope ----------------------------------------------------------
@@ -74,8 +77,8 @@ StepCutEnvelope.stepcut = propertyFromExtDoubleAttr(
 
 
 def makePDFEnvelope(name, fnc, replace=False, **dbattrs):
-    """Helper function for registering Python function as a PDFEnvelope.
-    This is required for using Python function as PDFCalculator envelope.
+    """Helper function for registering Python function as a PDFEnvelope. This
+    is required for using Python function as PDFCalculator envelope.
 
     name     -- unique string name for registering Python function in the
                 global registry of PDFEnvelope types.  This will be the

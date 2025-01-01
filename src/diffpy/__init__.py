@@ -12,7 +12,6 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-
 """diffpy - tools for structure analysis by diffraction.
 
 Blank namespace package.

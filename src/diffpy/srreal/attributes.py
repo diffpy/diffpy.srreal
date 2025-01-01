@@ -12,7 +12,6 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-
 """class Attributes  -- wrapper to C++ class diffpy::Attributes
     A base to PairQuantity and quite a few other classes.
 """
@@ -54,12 +53,16 @@ Attributes.__setattr__ = _setattr
 
 
 def _pyattrgetter(name):
-    f = lambda obj: object.__getattribute__(obj, name)
+    def f(obj):
+        return object.__getattribute__(obj, name)
+
     return f
 
 
 def _pyattrsetter(name):
-    f = lambda obj, value: object.__setattr__(obj, name, value)
+    def f(obj, value):
+        object.__setattr__(obj, name, value)
+
     return f
 
 

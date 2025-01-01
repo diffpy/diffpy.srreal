@@ -12,9 +12,7 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-
-"""
-Definitions of version-related constants and of libdiffpy_version_info.
+"""Definitions of version-related constants and of libdiffpy_version_info.
 
 Notes
 -----
@@ -28,10 +26,7 @@ Use `libdiffpy_version_info.git_commit` instead.
 __all__ = ["__date__", "__git_commit__", "__timestamp__", "__version__", "libdiffpy_version_info"]
 
 
-from diffpy.srreal._version_data import __version__
-from diffpy.srreal._version_data import __date__
-from diffpy.srreal._version_data import __git_commit__
-from diffpy.srreal._version_data import __timestamp__
+from diffpy.srreal._version_data import __date__, __git_commit__, __timestamp__, __version__
 
 # TODO remove deprecated __gitsha__ in version 1.4.
 __gitsha__ = __git_commit__
@@ -39,6 +34,7 @@ __gitsha__ = __git_commit__
 # version information on the active libdiffpy shared library -----------------
 
 from collections import namedtuple
+
 from diffpy.srreal.srreal_ext import _get_libdiffpy_version_info_dict
 
 libdiffpy_version_info = namedtuple(

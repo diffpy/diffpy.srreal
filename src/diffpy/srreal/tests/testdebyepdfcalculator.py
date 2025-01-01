@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 
-"""Unit tests for pdfcalculator.py
-"""
+"""Unit tests for pdfcalculator.py."""
 
 
-import unittest
 import pickle
+import unittest
+
 import numpy
 
 from diffpy.srreal.pdfcalculator import DebyePDFCalculator, PDFCalculator
-from diffpy.srreal.tests.testutils import loadDiffPyStructure
-from diffpy.srreal.tests.testutils import pickle_with_attr
 from diffpy.srreal.tests.testpdfcalculator import _maxNormDiff
+from diffpy.srreal.tests.testutils import loadDiffPyStructure, pickle_with_attr
 
 
 ##############################################################################
@@ -42,21 +41,21 @@ class TestDebyePDFCalculator(unittest.TestCase):
     #       return
 
     def test___getattr__(self):
-        """check DebyePDFCalculator.__getattr__()"""
+        """Check DebyePDFCalculator.__getattr__()"""
         self.assertEqual(0.0, self.dpdfc.qmin)
         self.dpdfc._setDoubleAttr("qmin", 1.23)
         self.assertEqual(1.23, self.dpdfc.qmin)
         return
 
     def test___setattr__(self):
-        """check DebyePDFCalculator.__setattr__()"""
+        """Check DebyePDFCalculator.__setattr__()"""
         self.assertNotEqual(1.23, self.dpdfc._getDoubleAttr("rmin"))
         self.dpdfc.rmin = 1.23
         self.assertEqual(1.23, self.dpdfc._getDoubleAttr("rmin"))
         return
 
     def test__getDoubleAttr(self):
-        """check DebyePDFCalculator._getDoubleAttr()"""
+        """Check DebyePDFCalculator._getDoubleAttr()"""
         gdba = self.dpdfc._getDoubleAttr
         self.assertEqual(1.0, gdba("scale"))
         self.assertEqual(0.0, gdba("qdamp"))
@@ -64,19 +63,19 @@ class TestDebyePDFCalculator(unittest.TestCase):
         return
 
     def test__hasDoubleAttr(self):
-        """check DebyePDFCalculator._hasDoubleAttr()"""
+        """Check DebyePDFCalculator._hasDoubleAttr()"""
         self.assertTrue(self.dpdfc._hasDoubleAttr("scale"))
         self.assertFalse(self.dpdfc._hasDoubleAttr("notanattribute"))
         return
 
     def test__namesOfDoubleAttributes(self):
-        """check DebyePDFCalculator._namesOfDoubleAttributes()"""
+        """Check DebyePDFCalculator._namesOfDoubleAttributes()"""
         self.assertTrue(type(self.dpdfc._namesOfDoubleAttributes()) is set)
         self.assertTrue("qmax" in self.dpdfc._namesOfDoubleAttributes())
         return
 
     def test__setDoubleAttr(self):
-        """check DebyePDFCalculator._setDoubleAttr()"""
+        """Check DebyePDFCalculator._setDoubleAttr()"""
         gdba = self.dpdfc._getDoubleAttr
         sdba = self.dpdfc._setDoubleAttr
         self.assertEqual(0.0, gdba("rmin"))
@@ -85,7 +84,7 @@ class TestDebyePDFCalculator(unittest.TestCase):
         return
 
     def test_PDF_C60bucky(self):
-        """check DebyePDFCalculator.pdf for C60 Bucky ball."""
+        """Check DebyePDFCalculator.pdf for C60 Bucky ball."""
         qmax = self.dpdfc.qmax
         r0, g0 = PDFCalculator(qmax=qmax)(self.bucky)
         r1, g1 = self.dpdfc(self.bucky)
@@ -140,7 +139,7 @@ class TestDebyePDFCalculator(unittest.TestCase):
         return
 
     def test_pickling(self):
-        """check pickling and unpickling of PDFCalculator."""
+        """Check pickling and unpickling of PDFCalculator."""
         dpdfc = self.dpdfc
         dpdfc.setScatteringFactorTableByType("N")
         dpdfc.scatteringfactortable.setCustomAs("Na", "Na", 7)
@@ -188,7 +187,8 @@ class TestDebyePDFCalculator(unittest.TestCase):
         return
 
     def test_pickling_derived_structure(self):
-        """check pickling of DebyePDFCalculator with DerivedStructureAdapter."""
+        """Check pickling of DebyePDFCalculator with
+        DerivedStructureAdapter."""
         from diffpy.srreal.tests.testutils import DerivedStructureAdapter
 
         dpdfc = self.dpdfc

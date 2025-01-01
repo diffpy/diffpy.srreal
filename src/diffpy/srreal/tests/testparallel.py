@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 
-"""Unit tests for diffpy.srreal.parallel
-"""
+"""Unit tests for diffpy.srreal.parallel."""
 
 
-import unittest
 import multiprocessing
+import unittest
+
 import numpy
-from diffpy.srreal.tests.testutils import loadDiffPyStructure
+
 from diffpy.srreal.parallel import createParallelCalculator
+from diffpy.srreal.tests.testutils import loadDiffPyStructure
 
 
 ##############################################################################
@@ -44,7 +45,7 @@ class TestRoutines(unittest.TestCase):
         return self._pool
 
     def test_parallel_evaluatortype(self):
-        """check handling of the evaluatortype property"""
+        """Check handling of the evaluatortype property."""
         from diffpy.srreal.pdfcalculator import PDFCalculator
 
         pdfc = PDFCalculator()
@@ -57,7 +58,7 @@ class TestRoutines(unittest.TestCase):
         return
 
     def test_parallel_pdf(self):
-        """check parallel PDFCalculator"""
+        """Check parallel PDFCalculator."""
         from diffpy.srreal.pdfcalculator import PDFCalculator
 
         pdfc = PDFCalculator()
@@ -84,7 +85,7 @@ class TestRoutines(unittest.TestCase):
         return
 
     def test_parallel_bonds(self):
-        """check parallel BondCalculator"""
+        """Check parallel BondCalculator."""
         from diffpy.srreal.bondcalculator import BondCalculator
 
         nickel = self.nickel

@@ -12,9 +12,11 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys
 import os
+import sys
 import time
+
+from setup import versiondata
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -61,7 +63,6 @@ copyright = "%Y, Brookhaven National Laboratory"
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
-from setup import versiondata
 
 fullversion = versiondata.get("DEFAULT", "version")
 # The short X.Y version.

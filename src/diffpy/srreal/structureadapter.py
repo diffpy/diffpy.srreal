@@ -12,9 +12,8 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-
-"""class StructureAdapter -- adapter of any structure object to the interface
-    expected by srreal PairQuantity calculators
+"""Class StructureAdapter -- adapter of any structure object to the interface
+expected by srreal PairQuantity calculators.
 
 Routines:
 
@@ -29,10 +28,25 @@ Constants:
 EMPTY        -- singleton instance of an empty structure.
 """
 
+# import of srreal_ext calls RegisterStructureAdapter, therefore it has
+# to be at the end of this module.
+
+from diffpy.srreal.srreal_ext import (
+    Atom,
+    AtomicStructureAdapter,
+    BaseBondGenerator,
+    CrystalStructureAdapter,
+    PeriodicStructureAdapter,
+    StructureAdapter,
+    StructureDifference,
+    _emptyStructureAdapter,
+    nometa,
+    nosymmetry,
+)
+
 
 def createStructureAdapter(stru):
-    """
-    Create StructureAdapter from a Python object.
+    """Create StructureAdapter from a Python object.
 
     stru -- an object that is convertible to StructureAdapter, i.e., it has
             a registered factory that converts Python structure object to
@@ -49,7 +63,7 @@ def createStructureAdapter(stru):
     cls = type(stru)
     fqnames = [str(tp).split("'")[1] for tp in inspect.getmro(cls)]
     for fqn in fqnames:
-        if not fqn in _adapter_converters_registry:
+        if fqn not in _adapter_converters_registry:
             continue
         factory = _adapter_converters_registry[fqn]
         return factory(stru)
@@ -59,10 +73,10 @@ def createStructureAdapter(stru):
 
 
 def RegisterStructureAdapter(fqname, fnc=None):
-    """Function decorator that marks it as a converter of specified
-    object type to StructureAdapter class in diffpy.srreal.  The registered
-    structure object types can be afterwards directly used with calculators
-    in diffpy.srreal as they would be implicitly converted to the internal
+    """Function decorator that marks it as a converter of specified object type
+    to StructureAdapter class in diffpy.srreal.  The registered structure
+    object types can be afterwards directly used with calculators in
+    diffpy.srreal as they would be implicitly converted to the internal
     diffpy.srreal structure type.
 
     fqname   -- fully qualified class name for the convertible objects.
@@ -91,18 +105,6 @@ def RegisterStructureAdapter(fqname, fnc=None):
 
 
 _adapter_converters_registry = {}
-
-# import of srreal_ext calls RegisterStructureAdapter, therefore it has
-# to be at the end of this module.
-
-from diffpy.srreal.srreal_ext import StructureAdapter
-from diffpy.srreal.srreal_ext import Atom, AtomicStructureAdapter
-from diffpy.srreal.srreal_ext import PeriodicStructureAdapter
-from diffpy.srreal.srreal_ext import CrystalStructureAdapter
-from diffpy.srreal.srreal_ext import StructureDifference
-from diffpy.srreal.srreal_ext import nometa, nosymmetry
-from diffpy.srreal.srreal_ext import _emptyStructureAdapter
-from diffpy.srreal.srreal_ext import BaseBondGenerator
 
 EMPTY = _emptyStructureAdapter()
 del _emptyStructureAdapter

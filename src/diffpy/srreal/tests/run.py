@@ -12,8 +12,7 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-
-"""Convenience module for executing all unit tests with
+"""Convenience module for executing all unit tests with.
 
 python -m diffpy.srreal.tests.run
 """
@@ -24,7 +23,8 @@ if __name__ == "__main__":
 
     # show warnings by default
     if not sys.warnoptions:
-        import os, warnings
+        import os
+        import warnings
 
         warnings.simplefilter("default")
         # also affect subprocesses

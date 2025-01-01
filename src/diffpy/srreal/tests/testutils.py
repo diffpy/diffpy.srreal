@@ -1,13 +1,19 @@
 #!/usr/bin/env python
 
-"""Helper routines for running other unit tests.
-"""
+"""Helper routines for running other unit tests."""
 
 
 import copy
-import numpy
 import pickle
 
+import numpy
+
+from diffpy.srreal.structureadapter import (
+    AtomicStructureAdapter,
+    CrystalStructureAdapter,
+    PeriodicStructureAdapter,
+    StructureAdapter,
+)
 from diffpy.srreal.structureconverters import convertObjCrystCrystal
 from diffpy.srreal.tests import logger
 
@@ -103,11 +109,6 @@ def pickle_with_attr(obj, **attr):
 
 
 # helper class for testing overloading of StructureAdapter
-
-from diffpy.srreal.structureadapter import StructureAdapter
-from diffpy.srreal.structureadapter import AtomicStructureAdapter
-from diffpy.srreal.structureadapter import PeriodicStructureAdapter
-from diffpy.srreal.structureadapter import CrystalStructureAdapter
 
 
 class HasCustomPQConfig(object):

@@ -1,2 +1,3 @@
 python
-setuptools
+boost
+numpy

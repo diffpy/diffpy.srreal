@@ -1,24 +1,21 @@
 #!/usr/bin/env python
 
-"""Unit tests for diffpy.srreal.pdfcalculator
-"""
+"""Unit tests for diffpy.srreal.pdfcalculator."""
 
 
-import unittest
 import pickle
+import unittest
 
 import numpy
-from diffpy.srreal.tests.testutils import loadDiffPyStructure
-from diffpy.srreal.tests.testutils import datafile
-from diffpy.srreal.tests.testutils import pickle_with_attr
-from diffpy.srreal.pdfcalculator import PDFCalculator
-from diffpy.srreal.pdfcalculator import fftgtof, fftftog
+
+from diffpy.srreal.pdfcalculator import PDFCalculator, fftftog, fftgtof
+from diffpy.srreal.tests.testutils import datafile, loadDiffPyStructure, pickle_with_attr
 
 # helper functions
 
 
 def _maxNormDiff(yobs, ycalc):
-    """Returned maximum difference normalized by RMS of the yobs"""
+    """Returned maximum difference normalized by RMS of the yobs."""
     yobsa = numpy.array(yobs)
     obsmax = numpy.max(numpy.fabs(yobsa)) or 1
     ynmdiff = (yobsa - ycalc) / obsmax
@@ -46,7 +43,7 @@ class TestPDFCalculator(unittest.TestCase):
         return
 
     def test___init__(self):
-        """check PDFCalculator.__init__()"""
+        """Check PDFCalculator.__init__()"""
         pdfc = PDFCalculator(qmin=13, rmin=4, rmax=99)
         self.assertEqual(13, pdfc.qmin)
         self.assertEqual(4, pdfc.rmin)
@@ -73,7 +70,7 @@ class TestPDFCalculator(unittest.TestCase):
         return
 
     def test__getDoubleAttr(self):
-        """check PDFCalculator._getDoubleAttr()"""
+        """Check PDFCalculator._getDoubleAttr()"""
         gdba = self.pdfcalc._getDoubleAttr
         self.assertEqual(1.0, gdba("scale"))
         self.assertEqual(0.0, gdba("qdamp"))
@@ -81,19 +78,19 @@ class TestPDFCalculator(unittest.TestCase):
         return
 
     def test__hasDoubleAttr(self):
-        """check PDFCalculator._hasDoubleAttr()"""
+        """Check PDFCalculator._hasDoubleAttr()"""
         self.assertTrue(self.pdfcalc._hasDoubleAttr("scale"))
         self.assertFalse(self.pdfcalc._hasDoubleAttr("notanattribute"))
         return
 
     def test__namesOfDoubleAttributes(self):
-        """check PDFCalculator._namesOfDoubleAttributes()"""
+        """Check PDFCalculator._namesOfDoubleAttributes()"""
         self.assertTrue(type(self.pdfcalc._namesOfDoubleAttributes()) is set)
         self.assertTrue("qmax" in self.pdfcalc._namesOfDoubleAttributes())
         return
 
     def test__setDoubleAttr(self):
-        """check PDFCalculator._setDoubleAttr()"""
+        """Check PDFCalculator._setDoubleAttr()"""
         gdba = self.pdfcalc._getDoubleAttr
         sdba = self.pdfcalc._setDoubleAttr
         self.assertEqual(0.0, gdba("rmin"))
@@ -102,7 +99,7 @@ class TestPDFCalculator(unittest.TestCase):
         return
 
     def test_eval_nickel(self):
-        """check PDFCalculator.eval() on simple Nickel data"""
+        """Check PDFCalculator.eval() on simple Nickel data."""
         fnipf2 = datafile("Ni-fit.fgr")
         gpf2 = numpy.loadtxt(fnipf2, usecols=(1,))
         self.pdfcalc._setDoubleAttr("rmax", 10.0001)
@@ -112,7 +109,7 @@ class TestPDFCalculator(unittest.TestCase):
         return
 
     def test_eval_rutile(self):
-        """check PDFCalculator.eval() on anisotropic rutile data"""
+        """Check PDFCalculator.eval() on anisotropic rutile data."""
         frutile = datafile("TiO2_rutile-fit.fgr")
         gpf2 = numpy.loadtxt(frutile, usecols=(1,))
         # configure calculator according to testdata/TiO2_ruitile-fit.fgr
@@ -231,7 +228,7 @@ class TestPDFCalculator(unittest.TestCase):
         return
 
     def test_pickling(self):
-        """check pickling and unpickling of PDFCalculator."""
+        """Check pickling and unpickling of PDFCalculator."""
         pdfc = self.pdfcalc
         pdfc.scatteringfactortable = "N"
         pdfc.scatteringfactortable.setCustomAs("Na", "Na", 7)
@@ -276,7 +273,7 @@ class TestPDFCalculator(unittest.TestCase):
         return
 
     def test_pickling_derived_structure(self):
-        """check pickling of PDFCalculator with DerivedStructureAdapter."""
+        """Check pickling of PDFCalculator with DerivedStructureAdapter."""
         from diffpy.srreal.tests.testutils import DerivedStructureAdapter
 
         pdfc = self.pdfcalc
