@@ -4,9 +4,9 @@
 """
 
 
+import gc
 import unittest
 import weakref
-import gc
 
 from diffpy.srreal.attributes import Attributes
 from diffpy.srreal.pairquantity import PairQuantity
@@ -23,7 +23,7 @@ class TestAttributes(unittest.TestCase):
         return
 
     def test___setattr__(self):
-        """check Attributes.__setattr__()"""
+        """Check Attributes.__setattr__()"""
         # normal attribute
         a = Attributes()
         a.x = 45
@@ -39,7 +39,7 @@ class TestAttributes(unittest.TestCase):
         return
 
     def test___getattr__(self):
-        """check Attributes.__getattr__()"""
+        """Check Attributes.__getattr__()"""
         a = Attributes()
         self.assertRaises(AttributeError, getattr, a, "invalid")
         a.x = 11
@@ -50,7 +50,7 @@ class TestAttributes(unittest.TestCase):
         return
 
     def test_garbage_collection(self):
-        """check garbage collection for Python defined Attributes"""
+        """Check garbage collection for Python defined Attributes."""
         # check if attributes are garbage collected
         pq = PairQuantity()
         wpq = weakref.ref(pq)
@@ -63,7 +63,7 @@ class TestAttributes(unittest.TestCase):
         return
 
     def test__getDoubleAttr(self):
-        """check Attributes._getDoubleAttr()"""
+        """Check Attributes._getDoubleAttr()"""
         pdfc = PDFCalculator()
         pdfc.foo = 11
         self.assertRaises(AttributeError, pdfc._getDoubleAttr, "foo")
@@ -77,7 +77,7 @@ class TestAttributes(unittest.TestCase):
         return
 
     def test__hasDoubleAttr(self):
-        """check Attributes._hasDoubleAttr()"""
+        """Check Attributes._hasDoubleAttr()"""
         a = Attributes()
         a.foo = 45
         self.assertFalse(a._hasDoubleAttr("foo"))
@@ -86,7 +86,7 @@ class TestAttributes(unittest.TestCase):
         return
 
     def test__namesOfDoubleAttributes(self):
-        """check Attributes._namesOfDoubleAttributes()"""
+        """Check Attributes._namesOfDoubleAttributes()"""
         a = Attributes()
         self.assertEqual(0, len(a._namesOfDoubleAttributes()))
         pq = PairQuantity()
@@ -97,7 +97,7 @@ class TestAttributes(unittest.TestCase):
         return
 
     def test__namesOfWritableDoubleAttributes(self):
-        """check Attributes._namesOfDoubleAttributes()"""
+        """Check Attributes._namesOfDoubleAttributes()"""
         a = Attributes()
         self.assertEqual(0, len(a._namesOfDoubleAttributes()))
         a._registerDoubleAttribute("bar", lambda obj: 13)
@@ -114,7 +114,7 @@ class TestAttributes(unittest.TestCase):
         return
 
     def test__registerDoubleAttribute(self):
-        """check Attributes._registerDoubleAttribute()"""
+        """Check Attributes._registerDoubleAttribute()"""
         d = {"g_called": False, "s_called": False, "value": 0}
 
         def g(obj):
@@ -154,7 +154,7 @@ class TestAttributes(unittest.TestCase):
         return
 
     def test__setDoubleAttr(self):
-        """check Attributes._setDoubleAttr()"""
+        """Check Attributes._setDoubleAttr()"""
         pdfc = PDFCalculator()
         pdfc._setDoubleAttr("scale", 1.23)
         self.assertFalse("scale" in pdfc.__dict__)

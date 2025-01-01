@@ -12,9 +12,7 @@
 # See LICENSE.txt for license information.
 #
 ##############################################################################
-
-"""
-Finalize tweak of classes from the extension module srreal_ext.
+"""Finalize tweak of classes from the extension module srreal_ext.
 
 This private module handles loading of Python-level tweaks of the
 extension-defined classes.  Any client that imports this module
@@ -27,9 +25,7 @@ This avoids unresolvable import dependencies for any order of imports.
 
 
 def import_now():
-    """
-    Import all Python modules that tweak extension-defined classes.
-    """
+    """Import all Python modules that tweak extension-defined classes."""
     global _import_now_called
     if _import_now_called:
         return

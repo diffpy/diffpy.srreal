@@ -1,17 +1,20 @@
 #!/usr/bin/env python
 
-"""Unit tests for diffpy.srreal.sfaverage
-"""
+"""Unit tests for diffpy.srreal.sfaverage."""
 
 
 import unittest
+
 import numpy
 
-from diffpy.srreal.sfaverage import SFAverage
 from diffpy.srreal.scatteringfactortable import ScatteringFactorTable
-from diffpy.srreal.tests.testutils import loadDiffPyStructure
-from diffpy.srreal.tests.testutils import has_pyobjcryst, _msg_nopyobjcryst
-from diffpy.srreal.tests.testutils import loadObjCrystCrystal
+from diffpy.srreal.sfaverage import SFAverage
+from diffpy.srreal.tests.testutils import (
+    _msg_nopyobjcryst,
+    has_pyobjcryst,
+    loadDiffPyStructure,
+    loadObjCrystCrystal,
+)
 
 # ----------------------------------------------------------------------------
 
@@ -27,7 +30,7 @@ class TestSFAverage(unittest.TestCase):
         return
 
     def test_fromStructure_CdSe(self):
-        """check SFAverage.fromStructure() for CdSe"""
+        """Check SFAverage.fromStructure() for CdSe."""
         cdse = loadDiffPyStructure("CdSe_cadmoselite.cif")
         sfavg = SFAverage.fromStructure(cdse, self.sftx)
         fcd = self.sftx.lookup("Cd")
@@ -55,7 +58,7 @@ class TestSFAverage(unittest.TestCase):
         return
 
     def test_fromComposition(self):
-        """check SFAverage.fromComposition()"""
+        """Check SFAverage.fromComposition()"""
         sfavg1 = SFAverage.fromComposition({"Na": 1, "Cl": 1}, self.sftx)
         fm = ["Na", 0.25, "Cl", 0.75, "Cl", 0.25, "Na", 0.5, "Na", 0.25]
         smblcnts = zip(fm[0::2], fm[1::2])
@@ -86,7 +89,7 @@ class TestSFAverageObjCryst(unittest.TestCase):
         return
 
     def test_from_rutile(self):
-        """check SFAverage.fromStructure for pyobjcryst Crystal of rutile."""
+        """Check SFAverage.fromStructure for pyobjcryst Crystal of rutile."""
         rutile = loadObjCrystCrystal("rutile.cif")
         qa = numpy.arange(0, 25, 0.1)
         sfavg = SFAverage.fromStructure(rutile, self.sftx, qa)

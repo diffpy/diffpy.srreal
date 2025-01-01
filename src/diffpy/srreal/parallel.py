@@ -12,7 +12,6 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-
 """ParallelPairQuantity  -- proxy class for converting PairQuantity types
 into parallel calculators.
 """
@@ -23,6 +22,7 @@ __all__ = ["createParallelCalculator"]
 
 import copy
 import inspect
+
 from diffpy.srreal.attributes import Attributes
 
 # ----------------------------------------------------------------------------
@@ -43,8 +43,8 @@ def createParallelCalculator(pqobj, ncpu, pmap):
     """
 
     class ParallelPairQuantity(Attributes):
-        """Class for running parallel calculations.  This is a proxy class
-        to the wrapper PairQuantity type with the same interface.
+        """Class for running parallel calculations.  This is a proxy class to
+        the wrapper PairQuantity type with the same interface.
 
         Instance data:
 
@@ -100,8 +100,8 @@ def createParallelCalculator(pqobj, ncpu, pmap):
         def __call__(self, *args, **kwargs):
             """Call the wrapped calculator using parallel evaluation.
 
-            The arguments and return value are the same as for the wrapped
-            PairQuantity calculator.
+            The arguments and return value are the same as for the
+            wrapped PairQuantity calculator.
             """
             savedeval = self.pqobj.__dict__.get("eval")
 
@@ -175,18 +175,24 @@ def createParallelCalculator(pqobj, ncpu, pmap):
         fget = fset = fdel = None
         if prop.fget:
 
-            def fget(self):
+            def _fget(self):
                 return prop.fget(self.pqobj)
+
+            fget = _fget
 
         if prop.fset:
 
-            def fset(self, value):
+            def _fset(self, value):
                 return prop.fset(self.pqobj, value)
+
+            fset = _fset
 
         if prop.fdel:
 
-            def fdel(self):
+            def _fdel(self):
                 return prop.fdel(self.pqobj)
+
+            fdel = _fdel
 
         return property(fget, fset, fdel, prop.__doc__)
 

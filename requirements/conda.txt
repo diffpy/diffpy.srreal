@@ -1,3 +1,5 @@
-numpy
 boost
+numpy
+setuptools
 diffpy.structure
+periodictable

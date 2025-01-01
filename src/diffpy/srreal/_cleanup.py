@@ -12,9 +12,7 @@
 # See LICENSE.txt for license information.
 #
 ##############################################################################
-
-"""
-Cancel registration of Python-extended C++ classes when Python exits.
+"""Cancel registration of Python-extended C++ classes when Python exits.
 
 Note
 ----
@@ -29,7 +27,6 @@ a call of _registerThisType.
 
 import atexit
 import weakref
-
 
 # Routine to be used from srreal_ext module ----------------------------------
 

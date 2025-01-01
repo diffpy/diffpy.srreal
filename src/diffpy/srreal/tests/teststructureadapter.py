@@ -1,28 +1,32 @@
 #!/usr/bin/env python
 
-"""Unit tests for diffpy.srreal.structureadapter
-"""
+"""Unit tests for diffpy.srreal.structureadapter."""
 
 
-import unittest
 import pickle
+import unittest
+
 import numpy
+
+import diffpy.srreal.tests.testutils as testutils
 from diffpy.srreal.pdfcalculator import PDFCalculator
-from diffpy.srreal.tests.testutils import has_pyobjcryst, _msg_nopyobjcryst
-from diffpy.srreal.tests.testutils import loadObjCrystCrystal
-from diffpy.srreal.tests.testutils import loadDiffPyStructure
-from diffpy.srreal.tests.testutils import loadCrystalStructureAdapter
 from diffpy.srreal.structureadapter import (
+    Atom,
+    AtomicStructureAdapter,
+    CrystalStructureAdapter,
+    PeriodicStructureAdapter,
+    StructureAdapter,
     createStructureAdapter,
     nometa,
     nosymmetry,
-    StructureAdapter,
-    AtomicStructureAdapter,
-    Atom,
-    PeriodicStructureAdapter,
-    CrystalStructureAdapter,
 )
-import diffpy.srreal.tests.testutils as testutils
+from diffpy.srreal.tests.testutils import (
+    _msg_nopyobjcryst,
+    has_pyobjcryst,
+    loadCrystalStructureAdapter,
+    loadDiffPyStructure,
+    loadObjCrystCrystal,
+)
 
 # ----------------------------------------------------------------------------
 
@@ -34,7 +38,7 @@ class TestRoutines(unittest.TestCase):
         return
 
     def test_createStructureAdapter(self):
-        """check createStructureAdapter() routine."""
+        """Check createStructureAdapter() routine."""
         adpt = createStructureAdapter(self.nickel)
         self.assertEqual(4, adpt.countSites())
         self.assertTrue(False is adpt.siteAnisotropy(0))
@@ -74,7 +78,7 @@ class TestRoutines(unittest.TestCase):
         return
 
     def test_pickling(self):
-        """check pickling of StructureAdapter instances."""
+        """Check pickling of StructureAdapter instances."""
         adpt = createStructureAdapter(self.nickel)
         adpt1 = pickle.loads(pickle.dumps(adpt))
         self.assertFalse(adpt is adpt1)
@@ -113,7 +117,7 @@ class TestDerivedAdapter(unittest.TestCase):
         return
 
     def test__customPQConfig(self):
-        """check if DerivedCls._customPQConfig gets called."""
+        """Check if DerivedCls._customPQConfig gets called."""
         self.assertEqual(0, self.adpt.cpqcount)
         pc = PDFCalculator()
         pc.setStructure(self.adpt)
@@ -123,7 +127,7 @@ class TestDerivedAdapter(unittest.TestCase):
         return
 
     def test_pickling(self):
-        """check pickling of DerivedCls instances."""
+        """Check pickling of DerivedCls instances."""
         self.adpt.cpqcount = 1
         adpt1 = pickle.loads(pickle.dumps(self.adpt))
         self.assertTrue(self.DerivedCls is type(adpt1))
@@ -162,7 +166,7 @@ class TestNoMeta(unittest.TestCase):
         return
 
     def test_nometa(self):
-        """check NoMetaStructureAdapter."""
+        """Check NoMetaStructureAdapter."""
         r0, g0 = PDFCalculator()(self.nickel)
         ni1 = self.nickel.copy()
         ni1.pdffit["scale"] = 2.0
@@ -188,7 +192,7 @@ class TestNoMeta(unittest.TestCase):
         return
 
     def test_nometa_pickling(self):
-        """check pickling of the NoMetaStructureAdapter wrapper."""
+        """Check pickling of the NoMetaStructureAdapter wrapper."""
         r0, g0 = PDFCalculator()(self.nickel)
         ni1 = self.nickel.copy()
         ni1.pdffit["scale"] = 2.0
@@ -200,7 +204,7 @@ class TestNoMeta(unittest.TestCase):
         return
 
     def test_nometa_twice(self):
-        """check that second call of nometa returns the same object."""
+        """Check that second call of nometa returns the same object."""
         adpt1 = nometa(self.nickel)
         adpt2 = nometa(adpt1)
         self.assertTrue(adpt1 is adpt2)
@@ -218,7 +222,7 @@ class TestNoSymmetry(unittest.TestCase):
         return
 
     def test_nosymmetry(self):
-        """check NoSymmetryStructureAdapter."""
+        """Check NoSymmetryStructureAdapter."""
         pdfc0 = PDFCalculator()
         r0, g0 = pdfc0(self.nickel)
         rdf0 = pdfc0.rdf
@@ -242,13 +246,13 @@ class TestNoSymmetry(unittest.TestCase):
         return
 
     def test_nosymmetry_twice(self):
-        """check that second call of nosymmetry returns the same object."""
+        """Check that second call of nosymmetry returns the same object."""
         adpt1 = nosymmetry(self.nickel)
         adpt2 = nosymmetry(adpt1)
         self.assertTrue(adpt1 is adpt2)
 
     def test_nosymmetry_pickling(self):
-        """check pickling of the NoSymmetryStructureAdapter wrapper."""
+        """Check pickling of the NoSymmetryStructureAdapter wrapper."""
         ni1ns = nosymmetry(self.nickel)
         r1, g1 = PDFCalculator()(ni1ns)
         ni2ns = pickle.loads(pickle.dumps(ni1ns))
@@ -273,7 +277,7 @@ class TestPyObjCrystAdapter(unittest.TestCase):
         return
 
     def test_objcryst_adapter(self):
-        """check ObjCrystStructureAdapter for rutile."""
+        """Check ObjCrystStructureAdapter for rutile."""
         self.assertEqual(2, self.rutile.countSites())
         self.assertEqual(6, self.rutile.totalOccupancy())
         self.assertEqual("Ti", self.rutile.siteAtomType(0))
@@ -289,7 +293,7 @@ class TestPyObjCrystAdapter(unittest.TestCase):
         return
 
     def test_objcryst_pickling(self):
-        """check pickling of the NoSymmetryStructureAdapter wrapper."""
+        """Check pickling of the NoSymmetryStructureAdapter wrapper."""
         r0, g0 = PDFCalculator()(self.rutile)
         rutile1 = pickle.loads(pickle.dumps(self.rutile))
         self.assertFalse(self.rutile is rutile1)
@@ -487,34 +491,34 @@ class TestStructureAdapter(unittest.TestCase):
     #       return
 
     def test_siteAtomType(self):
-        """check StructureAdapter.siteAtomType()"""
+        """Check StructureAdapter.siteAtomType()"""
         self.assertEqual("", self.adpt.siteAtomType(0))
         return
 
     def test_siteCartesianPosition(self):
-        """check StructureAdapter.siteCartesianPosition()"""
+        """Check StructureAdapter.siteCartesianPosition()"""
         self.assertRaises(RuntimeError, self.adpt.siteAnisotropy, 0)
         return
 
     def test_siteMultiplicity(self):
-        """check StructureAdapter.siteMultiplicity()"""
+        """Check StructureAdapter.siteMultiplicity()"""
         self.assertEqual(1, self.adpt.siteMultiplicity(0))
         return
 
     def test_siteOccupancy(self):
-        """check StructureAdapter.siteOccupancy()"""
-        # check if we use the C++ method that alwasy return 1.
+        """Check StructureAdapter.siteOccupancy()"""
+        # check if we use the C++ method that always return 1.
         self.assertEqual(1.0, self.adpt.siteOccupancy(0))
         self.assertEqual(1.0, self.adpt.siteOccupancy(99))
         return
 
     def test_siteAnisotropy(self):
-        """check StructureAdapter.siteAnisotropy()"""
+        """Check StructureAdapter.siteAnisotropy()"""
         self.assertRaises(RuntimeError, self.adpt.siteAnisotropy, 0)
         return
 
     def test_siteCartesianUij(self):
-        """check StructureAdapter.siteCartesianUij()"""
+        """Check StructureAdapter.siteCartesianUij()"""
         self.assertRaises(RuntimeError, self.adpt.siteCartesianUij, 0)
         return
 
@@ -536,7 +540,7 @@ class TestAtom(unittest.TestCase):
         return
 
     def test___init__copy(self):
-        """check Atom copy constructor."""
+        """Check Atom copy constructor."""
         self.a.xyz_cartn = (1, 2, 3)
         a1 = Atom(self.a)
         self.assertEqual(self.a, a1)
@@ -544,7 +548,7 @@ class TestAtom(unittest.TestCase):
         return
 
     def test_equality(self):
-        """check Atom equal and not equal operators."""
+        """Check Atom equal and not equal operators."""
         self.assertEqual(self.a, Atom())
         self.assertFalse(self.a != Atom())
         a1 = Atom()
@@ -553,7 +557,7 @@ class TestAtom(unittest.TestCase):
         return
 
     def test_pickling(self):
-        """check pickling of Atom instances."""
+        """Check pickling of Atom instances."""
         self.a.atomtype = "Na"
         a1 = pickle.loads(pickle.dumps(self.a))
         self.assertEqual("Na", a1.atomtype)
@@ -562,7 +566,7 @@ class TestAtom(unittest.TestCase):
         return
 
     def test_xyz_cartn(self):
-        """check Atom.xyz_cartn."""
+        """Check Atom.xyz_cartn."""
         a = self.a
         a.xyz_cartn = 4, 5, 6
         self.assertTrue(numpy.array_equal([4, 5, 6], a.xyz_cartn))
@@ -572,7 +576,7 @@ class TestAtom(unittest.TestCase):
         return
 
     def test_uij_cartn(self):
-        """check Atom.uij_cartn"""
+        """Check Atom.uij_cartn."""
         a = self.a
         a.uij_cartn = numpy.identity(3) * 0.01
         a.uc12 = 0.012

@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 
-"""Unit tests for the PeakWidthModel classes from diffpy.srreal.peakwidthmodel
-"""
+"""Unit tests for the PeakWidthModel classes from
+diffpy.srreal.peakwidthmodel."""
 
 
-import unittest
 import pickle
+import unittest
 
-from diffpy.srreal.peakwidthmodel import PeakWidthModel
-from diffpy.srreal.peakwidthmodel import DebyeWallerPeakWidth, JeongPeakWidth
 from diffpy.srreal.pdfcalculator import DebyePDFCalculator, PDFCalculator
+from diffpy.srreal.peakwidthmodel import DebyeWallerPeakWidth, JeongPeakWidth, PeakWidthModel
 from diffpy.srreal.structureadapter import createStructureAdapter
 from diffpy.srreal.tests.testutils import loadDiffPyStructure
 
@@ -41,14 +40,14 @@ class TestPeakWidthModel(unittest.TestCase):
         return bnds
 
     def test___init__(self):
-        """check PeakWidthModel.__init__()"""
+        """Check PeakWidthModel.__init__()"""
         self.assertEqual(2.0, self.pwconst.width)
         self.pwconst._setDoubleAttr("width", 3.0)
         self.assertEqual(3.0, self.pwconst.width)
         return
 
     def test_create(self):
-        """check PeakWidthModel.create"""
+        """Check PeakWidthModel.create."""
         # this is a virtual method in the base class
         self.assertRaises(RuntimeError, PeakWidthModel().create)
         self.assertEqual("constant", self.pwconst.create().type())
@@ -57,7 +56,7 @@ class TestPeakWidthModel(unittest.TestCase):
         return
 
     def test_clone(self):
-        """check PeakWidthModel.clone"""
+        """Check PeakWidthModel.clone."""
         # this is a virtual method in the base class
         self.assertRaises(RuntimeError, PeakWidthModel().clone)
         self.pwconst.width = 17
@@ -68,14 +67,14 @@ class TestPeakWidthModel(unittest.TestCase):
         return
 
     def test_type(self):
-        """check PeakWidthModel.type"""
+        """Check PeakWidthModel.type."""
         # this is a virtual method in the base class
         self.assertRaises(RuntimeError, PeakWidthModel().type)
         self.assertEqual("constant", self.pwconst.type())
         return
 
     def test_calculate(self):
-        """check PeakWidthModel.calculate()"""
+        """Check PeakWidthModel.calculate()"""
         pwm = PeakWidthModel()
         bnds = self._genbonds(1, 2)
         self.assertRaises(RuntimeError, pwm.calculate, bnds)
@@ -83,7 +82,7 @@ class TestPeakWidthModel(unittest.TestCase):
         return
 
     def test_isowidths(self):
-        """check ConstantPeakWidth properties bisowidth, uisowidth."""
+        """Check ConstantPeakWidth properties bisowidth, uisowidth."""
         from numpy import pi
 
         cnpw = self.pwconst
@@ -96,14 +95,14 @@ class TestPeakWidthModel(unittest.TestCase):
         return
 
     def test_maxWidth(self):
-        """check PeakWidthModel.maxWidth()"""
+        """Check PeakWidthModel.maxWidth()"""
         self.assertRaises(RuntimeError, PeakWidthModel().maxWidth, self.tio2adpt, 0, 10)
         self.assertEqual(2.0, self.pwconst.maxWidth(self.tio2adpt, 0, 10))
         self.assertEqual(2.0, self.pwconst.maxWidth(self.tio2stru, 0, 10))
         return
 
     def test_ticker(self):
-        """check PeakWidthModel.ticker()"""
+        """Check PeakWidthModel.ticker()"""
         from diffpy.srreal.eventticker import EventTicker
 
         et0 = EventTicker(self.pwconst.ticker())
@@ -114,7 +113,7 @@ class TestPeakWidthModel(unittest.TestCase):
         return
 
     def test_ticker_override(self):
-        """check PeakWidthModel.ticker override in a Python-derived class."""
+        """Check PeakWidthModel.ticker override in a Python-derived class."""
         pwm = MyPWM()
         self.assertEqual(0, pwm.tcnt)
         et0 = pwm.ticker()
@@ -133,14 +132,14 @@ class TestPeakWidthModel(unittest.TestCase):
         return
 
     def test_getRegisteredTypes(self):
-        """check PeakWidthModel.getRegisteredTypes"""
+        """Check PeakWidthModel.getRegisteredTypes."""
         regtypes = PeakWidthModel.getRegisteredTypes()
         self.assertTrue(3 <= len(regtypes))
         self.assertTrue(regtypes.issuperset(["constant", "debye-waller", "jeong"]))
         return
 
     def test_pickling(self):
-        """check pickling and unpickling of PeakWidthModel."""
+        """Check pickling and unpickling of PeakWidthModel."""
         pwc = self.pwconst
         pwc.width = 11
         pwc2 = pickle.loads(pickle.dumps(pwc))
@@ -160,13 +159,13 @@ class TestDebyeWallerPeakWidth(unittest.TestCase):
         return
 
     def test_type(self):
-        """check DebyeWallerPeakWidth.type"""
+        """Check DebyeWallerPeakWidth.type."""
         self.assertEqual("debye-waller", self.pwm.type())
         self.assertEqual(0, len(self.pwm._namesOfDoubleAttributes()))
         return
 
     def test_pickling(self):
-        """check pickling of DebyeWallerPeakWidth class."""
+        """Check pickling of DebyeWallerPeakWidth class."""
         self.assertEqual("debye-waller", self.pwm.type())
         pwm = self.pwm
         pwm2 = pickle.loads(pickle.dumps(pwm))
@@ -184,7 +183,7 @@ class TestJeongPeakWidth(unittest.TestCase):
         return
 
     def test_type(self):
-        """check JeongPeakWidth.type"""
+        """Check JeongPeakWidth.type."""
         self.assertEqual("jeong", self.pwm.type())
         self.assertTrue(hasattr(self.pwm, "delta1"))
         self.assertTrue(hasattr(self.pwm, "delta2"))
@@ -192,7 +191,7 @@ class TestJeongPeakWidth(unittest.TestCase):
         return
 
     def test_pickling(self):
-        """check pickling of the DebyeWallerPeakWidth class"""
+        """Check pickling of the DebyeWallerPeakWidth class."""
         pwm = self.pwm
         pwm.delta1 = 1
         pwm.delta2 = 2

@@ -12,9 +12,7 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-
-"""class AtomRadiiTable -- storage of empirical atom radii.
-"""
+"""Class AtomRadiiTable -- storage of empirical atom radii."""
 
 
 # exported items, these also makes them show in pydoc.
@@ -27,6 +25,7 @@ from diffpy.srreal.srreal_ext import AtomRadiiTable, ConstantRadiiTable
 
 class CovalentRadiiTable(AtomRadiiTable):
     """Covalent radii from Cordero et al., 2008, doi:10.1039/b801115j.
+
     Instantiation of this class requires the periodictable module.
     """
 
@@ -64,9 +63,9 @@ class CovalentRadiiTable(AtomRadiiTable):
         return copy.copy(self)
 
     def type(self):
-        """Unique string identifier of the CovalentRadiiTable type.
-        This is used for class registration and as an argument for the
-        createByType function.
+        """Unique string identifier of the CovalentRadiiTable type. This is
+        used for class registration and as an argument for the createByType
+        function.
 
         Return string.
         """

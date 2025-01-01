@@ -12,12 +12,10 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
+"""Unit tests for diffpy.srreal."""
 
-"""Unit tests for diffpy.srreal.
-"""
-
-import unittest
 import logging
+import unittest
 
 # create logger instance for the tests subpackage
 logging.basicConfig()
@@ -41,8 +39,9 @@ def testsuite(pattern=""):
         The TestSuite object containing the matching tests.
     """
     import re
-    from os.path import dirname
     from itertools import chain
+    from os.path import dirname
+
     from pkg_resources import resource_filename
 
     loader = unittest.defaultTestLoader

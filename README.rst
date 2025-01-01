@@ -114,7 +114,7 @@ parallel jobs (-j4) ::
 
    sudo scons -j4 install
 
-See ``scons -h`` for decription of build targets and options.
+See ``scons -h`` for description of build targets and options.
 
 
 DEVELOPMENT

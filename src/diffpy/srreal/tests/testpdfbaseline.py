@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 
-"""Unit tests for the PDFBaseline class from diffpy.srreal.pdfcalculator
-"""
+"""Unit tests for the PDFBaseline class from diffpy.srreal.pdfcalculator."""
 
 
-import unittest
 import pickle
+import unittest
+
 import numpy
 
-from diffpy.srreal.tests.testutils import pickle_with_attr
-from diffpy.srreal.pdfbaseline import PDFBaseline, makePDFBaseline
-from diffpy.srreal.pdfbaseline import ZeroBaseline, LinearBaseline
+from diffpy.srreal.pdfbaseline import LinearBaseline, PDFBaseline, ZeroBaseline, makePDFBaseline
 from diffpy.srreal.pdfcalculator import PDFCalculator
+from diffpy.srreal.tests.testutils import pickle_with_attr
 
 # ----------------------------------------------------------------------------
 
@@ -31,14 +30,14 @@ class TestPDFBaseline(unittest.TestCase):
         return
 
     def test___init__(self):
-        """check PDFBaseline.__init__()"""
+        """Check PDFBaseline.__init__()"""
         self.assertEqual(0.0, self.linear.slope)
         self.linear._setDoubleAttr("slope", 2.0)
         self.assertEqual(2.0, self.linear.slope)
         return
 
     def test___call__(self):
-        """check PDFBaseline.__call__()"""
+        """Check PDFBaseline.__call__()"""
         # this is a virtual method in the base class
         self.assertRaises(RuntimeError, PDFBaseline().__call__, 37)
         self.assertEqual(0.0, self.zero(10))
@@ -56,7 +55,7 @@ class TestPDFBaseline(unittest.TestCase):
         return
 
     def test_clone(self):
-        """check PDFBaseline.clone"""
+        """Check PDFBaseline.clone."""
         # this is a virtual method in the base class
         self.assertRaises(RuntimeError, PDFBaseline().clone)
         self.linear.slope = 17
@@ -67,7 +66,7 @@ class TestPDFBaseline(unittest.TestCase):
         return
 
     def test_create(self):
-        """check PDFBaseline.create"""
+        """Check PDFBaseline.create."""
         # this is a virtual method in the base class
         self.assertRaises(RuntimeError, PDFBaseline().create)
         self.assertEqual("zero", self.zero.create().type())
@@ -77,7 +76,7 @@ class TestPDFBaseline(unittest.TestCase):
         return
 
     def test_type(self):
-        """check PDFBaseline.type"""
+        """Check PDFBaseline.type."""
         # this is a virtual method in the base class
         self.assertRaises(RuntimeError, PDFBaseline().type)
         self.assertEqual("linear", self.linear.type())
@@ -87,7 +86,7 @@ class TestPDFBaseline(unittest.TestCase):
         return
 
     def test__aliasType(self):
-        """check PDFBaseline._aliasType."""
+        """Check PDFBaseline._aliasType."""
         self.assertRaises(ValueError, PDFBaseline.createByType, "alias")
         self.assertRaises(RuntimeError, PDFBaseline._aliasType, "invalid", "alias")
         self.assertRaises(RuntimeError, PDFBaseline._aliasType, "linear", "zero")
@@ -104,7 +103,7 @@ class TestPDFBaseline(unittest.TestCase):
         return
 
     def test__deregisterType(self):
-        """check PDFBaseline._deregisterType."""
+        """Check PDFBaseline._deregisterType."""
         self.assertEqual(0, PDFBaseline._deregisterType("nonexistent"))
         PDFBaseline._aliasType("linear", "alias")
         self.assertEqual(2, PDFBaseline._deregisterType("alias"))
@@ -113,12 +112,12 @@ class TestPDFBaseline(unittest.TestCase):
         return
 
     def test_createByType(self):
-        """check PDFBaseline.createByType()"""
+        """Check PDFBaseline.createByType()"""
         self.assertRaises(ValueError, PDFBaseline.createByType, "notregistered")
         return
 
     def test_isRegisteredType(self):
-        """check PDFBaseline.isRegisteredType()"""
+        """Check PDFBaseline.isRegisteredType()"""
         self.assertTrue(PDFBaseline.isRegisteredType("linear"))
         self.assertFalse(PDFBaseline.isRegisteredType("nonexistent"))
         PDFBaseline._deregisterType("linear")
@@ -126,7 +125,7 @@ class TestPDFBaseline(unittest.TestCase):
         return
 
     def test_getAliasedTypes(self):
-        """check PDFBaseline.getAliasedTypes()"""
+        """Check PDFBaseline.getAliasedTypes()"""
         self.assertEqual({}, PDFBaseline.getAliasedTypes())
         PDFBaseline._aliasType("linear", "foo")
         PDFBaseline._aliasType("linear", "bar")
@@ -136,7 +135,7 @@ class TestPDFBaseline(unittest.TestCase):
         return
 
     def test_getRegisteredTypes(self):
-        """check PDFBaseline.getRegisteredTypes"""
+        """Check PDFBaseline.getRegisteredTypes."""
         regtypes = PDFBaseline.getRegisteredTypes()
         self.assertTrue(2 <= len(regtypes))
         self.assertTrue("linear" in regtypes)
@@ -144,7 +143,7 @@ class TestPDFBaseline(unittest.TestCase):
         return
 
     def test_pickling(self):
-        """check pickling and unpickling of PDFBaseline."""
+        """Check pickling and unpickling of PDFBaseline."""
         linear = self.linear
         linear.slope = 11
         linear2 = pickle.loads(pickle.dumps(linear))
@@ -156,7 +155,7 @@ class TestPDFBaseline(unittest.TestCase):
         return
 
     def test_makePDFBaseline(self):
-        """check the makePDFBaseline wrapper."""
+        """Check the makePDFBaseline wrapper."""
         pbl = makePDFBaseline("parabolabaseline", parabola_baseline, a=1, b=2, c=3)
         self.assertEqual(3, pbl(0))
         self.assertEqual(6, pbl(1))
@@ -191,7 +190,7 @@ class TestPDFBaseline(unittest.TestCase):
         return
 
     def test_picking_owned(self):
-        """verify pickling of PDFBaseline owned by PDF calculators."""
+        """Verify pickling of PDFBaseline owned by PDF calculators."""
         pbl = makePDFBaseline("parabolabaseline", parabola_baseline, a=1, b=2, c=3)
         pbl.a = 7
         pbl.foobar = "asdf"

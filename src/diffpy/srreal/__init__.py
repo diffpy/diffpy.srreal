@@ -12,9 +12,7 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-
-"""Tools for real space structure analysis.
-"""
+"""Tools for real space structure analysis."""
 
 # package version
 from diffpy.srreal._version_data import __version__

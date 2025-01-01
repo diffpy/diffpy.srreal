@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 
-"""Unit tests for the PeakProfile classes from diffpy.srreal.peakprofile
-"""
+"""Unit tests for the PeakProfile classes from diffpy.srreal.peakprofile."""
 
 
-import unittest
 import pickle
+import unittest
+
 import numpy
 
-from diffpy.srreal.tests.testutils import pickle_with_attr
-from diffpy.srreal.tests.testutils import mod_structure
-from diffpy.srreal.peakprofile import PeakProfile
 from diffpy.srreal.pdfcalculator import PDFCalculator
+from diffpy.srreal.peakprofile import PeakProfile
+from diffpy.srreal.tests.testutils import mod_structure, pickle_with_attr
 
 # ----------------------------------------------------------------------------
 
@@ -27,7 +26,7 @@ class TestPeakProfile(unittest.TestCase):
         return
 
     def test___init__(self):
-        """check PeakProfile.__init__()"""
+        """Check PeakProfile.__init__()"""
         self.assertNotEqual(0.0, self.pkgauss.peakprecision)
         self.assertEqual(self.pkgauss.peakprecision, self.pkcropped.peakprecision)
         self.pkgauss._setDoubleAttr("peakprecision", 0.01)
@@ -35,7 +34,7 @@ class TestPeakProfile(unittest.TestCase):
         return
 
     def test_create(self):
-        """check PeakProfile.create"""
+        """Check PeakProfile.create."""
         # this is a virtual method in the base class
         self.assertRaises(RuntimeError, PeakProfile().create)
         self.assertEqual("gaussian", self.pkgauss.create().type())
@@ -44,7 +43,7 @@ class TestPeakProfile(unittest.TestCase):
         return
 
     def test_clone(self):
-        """check PeakProfile.clone"""
+        """Check PeakProfile.clone."""
         # this is a virtual method in the base class
         self.assertRaises(RuntimeError, PeakProfile().clone)
         self.pkgauss.peakprecision = 0.0003
@@ -55,14 +54,14 @@ class TestPeakProfile(unittest.TestCase):
         return
 
     def test_type(self):
-        """check PeakProfile.type"""
+        """Check PeakProfile.type."""
         # this is a virtual method in the base class
         self.assertRaises(RuntimeError, PeakProfile().type)
         self.assertEqual("croppedgaussian", self.pkcropped.type())
         return
 
     def test___call__(self):
-        """check PeakProfile.__call__()"""
+        """Check PeakProfile.__call__()"""
         ymx = self.pkgauss(0.0, 1)
         yhalflo = self.pkgauss(-0.5, 1)
         yhalfhi = self.pkgauss(-0.5, 1)
@@ -73,7 +72,7 @@ class TestPeakProfile(unittest.TestCase):
         return
 
     def test_ticker(self):
-        """check PeakProfile.ticker()"""
+        """Check PeakProfile.ticker()"""
         from diffpy.srreal.eventticker import EventTicker
 
         et0 = EventTicker(self.pkgauss.ticker())
@@ -84,7 +83,7 @@ class TestPeakProfile(unittest.TestCase):
         return
 
     def test_ticker_override(self):
-        """check method override for PeakProfile.ticker in a derived class."""
+        """Check method override for PeakProfile.ticker in a derived class."""
         pkf = MySawTooth()
         self.assertEqual(0, pkf.tcnt)
         et0 = pkf.ticker()
@@ -103,14 +102,14 @@ class TestPeakProfile(unittest.TestCase):
         return
 
     def test_getRegisteredTypes(self):
-        """check PeakProfile.getRegisteredTypes"""
+        """Check PeakProfile.getRegisteredTypes."""
         regtypes = PeakProfile.getRegisteredTypes()
         self.assertTrue(2 <= len(regtypes))
         self.assertTrue(regtypes.issuperset(["gaussian", "croppedgaussian"]))
         return
 
     def test_pickling(self):
-        """check pickling and unpickling of PeakProfile."""
+        """Check pickling and unpickling of PeakProfile."""
         pkg = self.pkgauss
         pkg.peakprecision = 0.0011
         pkg2 = pickle.loads(pickle.dumps(pkg))

@@ -12,10 +12,7 @@
 # See LICENSE.txt for license information.
 #
 ##############################################################################
-
-"""
-Compositional averaging of atom scattering factors.
-
+"""Compositional averaging of atom scattering factors.
 
 Examples
 --------
@@ -41,8 +38,7 @@ Examples
 
 
 class SFAverage(object):
-    """\
-    Calculate compositional statistics of atom scattering factors.
+    """Calculate compositional statistics of atom scattering factors.
 
     Compositional averages can be calculated for an array of Q-values.
     Results are stored in the class attributes.
@@ -65,7 +61,7 @@ class SFAverage(object):
         Compositional average of squared scattering factors.
         Float or NumPy array.
     composition :
-        Dictionary of atom symbols and their total abundancies.
+        Dictionary of atom symbols and their total abundance.
     """
 
     f1sum = 0
@@ -77,8 +73,7 @@ class SFAverage(object):
 
     @classmethod
     def fromStructure(cls, stru, sftb, q=0):
-        """\
-        Calculate average scattering factors from a structure object.
+        """Calculate average scattering factors from a structure object.
 
         Parameters
         ----------
@@ -121,8 +116,7 @@ class SFAverage(object):
 
     @classmethod
     def fromComposition(cls, composition, sftb, q=0):
-        """\
-        Calculate average scattering factors from atom concentrations.
+        """Calculate average scattering factors from atom concentrations.
 
         Parameters
         ----------
@@ -150,7 +144,7 @@ class SFAverage(object):
             sfa.composition.update(composition)
         else:
             for smbl, cnt in composition:
-                if not smbl in sfa.composition:
+                if smbl not in sfa.composition:
                     sfa.composition[smbl] = 0
                 sfa.composition[smbl] += cnt
         sfa.f1sum = 0.0 * q

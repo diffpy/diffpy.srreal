@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
-"""Demonstration of using PairQuantity class for calculation
-of Lennard Jones potential.
+"""Demonstration of using PairQuantity class for calculation of Lennard Jones
+potential.
 
 Vij = 4 * ( rij ** -12  -  rij ** -6 )
 """
 
 import sys
+
 from diffpy.srreal.pairquantity import PairQuantity
 from diffpy.structure import Structure
 
@@ -20,7 +21,7 @@ class LennardJonesCalculator(PairQuantity):
         return
 
     def __call__(self, structure):
-        """Return LJ potential for a specified structure"""
+        """Return LJ potential for a specified structure."""
         values = self.eval(structure)
         return values[0]
 

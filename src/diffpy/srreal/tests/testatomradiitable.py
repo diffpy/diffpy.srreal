@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 
-"""Unit tests for the AtomRadiiTable class.
-"""
+"""Unit tests for the AtomRadiiTable class."""
 
 
-import unittest
 import pickle
-from diffpy.srreal.tests.testutils import has_periodictable, _msg_noperiodictable
-from diffpy.srreal.atomradiitable import AtomRadiiTable, CovalentRadiiTable
-from diffpy.srreal.atomradiitable import ConstantRadiiTable
+import unittest
+
+from diffpy.srreal.atomradiitable import AtomRadiiTable, ConstantRadiiTable, CovalentRadiiTable
+from diffpy.srreal.tests.testutils import _msg_noperiodictable, has_periodictable
 
 # ----------------------------------------------------------------------------
 
@@ -24,7 +23,7 @@ class TestAtomRadiiTable(unittest.TestCase):
         return
 
     def test_pickling(self):
-        """check pickling and unpickling of AtomRadiiTable."""
+        """Check pickling and unpickling of AtomRadiiTable."""
         ctb1 = pickle.loads(pickle.dumps(self.ctb))
         self.assertTrue(type(ctb1) is ConstantRadiiTable)
         self.assertEqual({}, ctb1.getAllCustom())
@@ -38,7 +37,7 @@ class TestAtomRadiiTable(unittest.TestCase):
         return
 
     def test__standardLookup(self):
-        """check AtomRadiiTable._standardLookup()"""
+        """Check AtomRadiiTable._standardLookup()"""
         self.assertRaises(RuntimeError, self.rtb._standardLookup, "anything")
         self.assertEqual(0.0, self.ctb._standardLookup("anything"))
         self.ctb.setDefault(7.3)
@@ -46,7 +45,7 @@ class TestAtomRadiiTable(unittest.TestCase):
         return
 
     def test_fromString(self):
-        """check AtomRadiiTable.fromString()"""
+        """Check AtomRadiiTable.fromString()"""
         self.rtb.fromString("H:0.33, B:0.42")
         self.assertEqual({"H": 0.33, "B": 0.42}, self.rtb.getAllCustom())
         self.assertRaises(ValueError, self.rtb.fromString, "C:2.3, U:asdf")
@@ -60,12 +59,12 @@ class TestAtomRadiiTable(unittest.TestCase):
         return
 
     def test_getAllCustom(self):
-        """check AtomRadiiTable.getAllCustom()"""
+        """Check AtomRadiiTable.getAllCustom()"""
         self.assertEqual({}, self.rtb.getAllCustom())
         return
 
     def test_lookup(self):
-        """check AtomRadiiTable.lookup()"""
+        """Check AtomRadiiTable.lookup()"""
         self.assertRaises(RuntimeError, self.rtb.lookup, "C")
         self.assertEqual(0.0, self.ctb.lookup("C"))
         self.rtb.setCustom("C", 1.23)
@@ -73,7 +72,7 @@ class TestAtomRadiiTable(unittest.TestCase):
         return
 
     def test_resetCustom(self):
-        """check AtomRadiiTable.resetCustom()"""
+        """Check AtomRadiiTable.resetCustom()"""
         self.rtb.setCustom("C", 1.23)
         self.assertTrue(self.rtb.getAllCustom())
         self.rtb.resetAll()
@@ -81,7 +80,7 @@ class TestAtomRadiiTable(unittest.TestCase):
         return
 
     def test_setCustom(self):
-        """check AtomRadiiTable.setCustom()"""
+        """Check AtomRadiiTable.setCustom()"""
         self.rtb.setCustom("C", 1.23)
         self.assertEqual(1.23, self.rtb.lookup("C"))
         self.rtb.setCustom("C", 3.3)
@@ -89,7 +88,7 @@ class TestAtomRadiiTable(unittest.TestCase):
         return
 
     def test_toString(self):
-        """check AtomRadiiTable.toString()"""
+        """Check AtomRadiiTable.toString()"""
         rtb = self.rtb
         self.assertEqual("", rtb.toString())
         self.assertEqual("", rtb.toString("; "))
@@ -115,7 +114,7 @@ class TestCovalentRadiiTable(unittest.TestCase):
         return
 
     def test_pickling(self):
-        """check pickling and unpickling of CovalentRadiiTable."""
+        """Check pickling and unpickling of CovalentRadiiTable."""
         rtb1 = pickle.loads(pickle.dumps(self.rtb))
         self.assertTrue(type(rtb1) is CovalentRadiiTable)
         self.assertEqual({}, rtb1.getAllCustom())
@@ -127,12 +126,12 @@ class TestCovalentRadiiTable(unittest.TestCase):
         return
 
     def test__standardLookup(self):
-        """check CovalentRadiiTable._standardLookup()"""
+        """Check CovalentRadiiTable._standardLookup()"""
         self.assertEqual(1.22, self.rtb._standardLookup("Ga"))
         return
 
     def test_create(self):
-        """check CovalentRadiiTable.create()"""
+        """Check CovalentRadiiTable.create()"""
         self.rtb.setCustom("Na", 1.3)
         rtb2 = self.rtb.create()
         self.assertTrue(isinstance(rtb2, CovalentRadiiTable))
@@ -141,7 +140,7 @@ class TestCovalentRadiiTable(unittest.TestCase):
         return
 
     def test_clone(self):
-        """check CovalentRadiiTable.clone()"""
+        """Check CovalentRadiiTable.clone()"""
         self.rtb.setCustom("Na", 1.3)
         rtb2 = self.rtb.clone()
         self.assertTrue(isinstance(rtb2, CovalentRadiiTable))
@@ -150,25 +149,25 @@ class TestCovalentRadiiTable(unittest.TestCase):
         return
 
     def test_fromString(self):
-        """check CovalentRadiiTable.fromString()"""
+        """Check CovalentRadiiTable.fromString()"""
         self.rtb.fromString("Ga:2.22")
         self.assertEqual(2.22, self.rtb.lookup("Ga"))
         return
 
     def test_getAllCustom(self):
-        """check CovalentRadiiTable.getAllCustom()"""
+        """Check CovalentRadiiTable.getAllCustom()"""
         self.assertEqual({}, self.rtb.getAllCustom())
         return
 
     def test_lookup(self):
-        """check CovalentRadiiTable.lookup()"""
+        """Check CovalentRadiiTable.lookup()"""
         self.assertEqual(1.22, self.rtb.lookup("Ga"))
         self.rtb.fromString("Ga:2.22")
         self.assertEqual(2.22, self.rtb.lookup("Ga"))
         return
 
     def test_resetCustom(self):
-        """check CovalentRadiiTable.resetCustom()"""
+        """Check CovalentRadiiTable.resetCustom()"""
         self.rtb.fromString("B:2.33, Ga:2.22")
         self.rtb.resetCustom("B")
         self.rtb.resetCustom("nada")
@@ -178,14 +177,14 @@ class TestCovalentRadiiTable(unittest.TestCase):
         return
 
     def test_setCustom(self):
-        """check CovalentRadiiTable.setCustom()"""
+        """Check CovalentRadiiTable.setCustom()"""
         self.assertEqual(0.84, self.rtb.lookup("B"))
         self.rtb.setCustom("B", 0.9)
         self.assertEqual(0.9, self.rtb.lookup("B"))
         return
 
     def test_toString(self):
-        """check CovalentRadiiTable.toString()"""
+        """Check CovalentRadiiTable.toString()"""
         self.assertEqual("", self.rtb.toString(";---"))
         return
 

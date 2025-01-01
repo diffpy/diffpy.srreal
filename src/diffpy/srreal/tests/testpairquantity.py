@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 
-"""Unit tests for diffpy.srreal.pairquantity
-"""
+"""Unit tests for diffpy.srreal.pairquantity."""
 
-import unittest
 import pickle
+import unittest
+
 import numpy
 
 from diffpy.srreal.pairquantity import PairQuantity
-from diffpy.srreal.srreal_ext import BasePairQuantity
 from diffpy.srreal.pdfcalculator import PDFCalculator
+from diffpy.srreal.srreal_ext import BasePairQuantity
 from diffpy.srreal.tests.testutils import mod_structure
-
 
 # ----------------------------------------------------------------------------
 
@@ -40,7 +39,7 @@ class TestPairQuantity(unittest.TestCase):
         return
 
     def test_evaluatortype(self):
-        """check PairQuantity.evaluatortype property."""
+        """Check PairQuantity.evaluatortype property."""
         pq = self.pq
         self.assertTrue(pq.evaluatortype in ("BASIC", "OPTIMIZED"))
         pq.evaluatortype = "BASIC"
@@ -60,7 +59,7 @@ class TestPairQuantity(unittest.TestCase):
         return
 
     def test_setStructure(self):
-        """check PairQuantity.setStructure()"""
+        """Check PairQuantity.setStructure()"""
         Structure = mod_structure.Structure
         Atom = mod_structure.Atom
         from diffpy.srreal.structureadapter import EMPTY
@@ -76,7 +75,7 @@ class TestPairQuantity(unittest.TestCase):
         return
 
     def test_setPairMask_args(self):
-        """check argument type handling in setPairMask"""
+        """Check argument type handling in setPairMask."""
         spm = self.pq.setPairMask
         gpm = self.pq.getPairMask
         self.assertRaises(TypeError, spm, 0.0, 0, False)
@@ -90,13 +89,13 @@ class TestPairQuantity(unittest.TestCase):
         return
 
     def test_getStructure(self):
-        """check PairQuantity.getStructure()"""
+        """Check PairQuantity.getStructure()"""
         adpt = self.pq.getStructure()
         self.assertEqual(0, adpt.countSites())
         return
 
     def test_ticker(self):
-        """check PairQuantity.ticker()"""
+        """Check PairQuantity.ticker()"""
         from diffpy.srreal.eventticker import EventTicker
 
         et0 = EventTicker(self.pq.ticker())
@@ -107,7 +106,7 @@ class TestPairQuantity(unittest.TestCase):
         return
 
     def test_ticker_override(self):
-        """check Python override of PairQuantity.ticker."""
+        """Check Python override of PairQuantity.ticker."""
         pqcnt = PQCounter()
         self.assertEqual(0, pqcnt.tcnt)
         et0 = pqcnt.ticker()
@@ -142,9 +141,14 @@ class TestPairQuantity(unittest.TestCase):
         c8 = carbonzchain(8)
         c9 = carbonzchain(9)
         pqd = PQDerived()
+
         # wrapper for evaluation using specified evaluatortype.
         # Use pq.eval twice to trigger optimized evaluation.
-        eval_as = lambda evtp, pq, stru: (setattr(pq, "evaluatortype", evtp), pq.eval(stru), pq.eval())[-1]
+        def eval_as(evtp, pq, stru):
+            setattr(pq, "evaluatortype", evtp)
+            pq.eval(stru)
+            return pq.eval()
+
         eval_as("BASIC", pqd, c8)
         self.assertEqual("BASIC", pqd.evaluatortype)
         # pqd does not support OPTIMIZED evaluation.  Its use will
@@ -164,7 +168,7 @@ class TestPairQuantity(unittest.TestCase):
         return
 
     def test_pickling(self):
-        """check pickling and unpickling of PairQuantity."""
+        """Check pickling and unpickling of PairQuantity."""
         from diffpy.srreal.tests.testutils import DerivedStructureAdapter
 
         stru0 = DerivedStructureAdapter()
