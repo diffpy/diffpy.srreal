@@ -39,5 +39,4 @@ jobs:
           python -m pip install . --no-deps
 
       - name: Validate diffpy.pdfgui
-        run: 
-          python -m diffpy.srreal.tests.run
+        run: python -m diffpy.srreal.tests.run
