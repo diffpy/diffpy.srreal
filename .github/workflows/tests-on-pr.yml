@@ -1,0 +1,43 @@
+name: Tests on PR
+
+on:
+  push:
+    branches:
+      - main
+      - cookie
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out diffpy.srreal
+        uses: actions/checkout@v4
+
+      - name: Initialize miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: test
+          auto-update-conda: true
+          environment-file: environment.yml
+          auto-activate-base: false
+          python-version: 3.12
+
+      - name: Conda config
+        run: >-
+          conda config --set always_yes yes
+          --set changeps1 no
+
+      - name: Install diffpy.srreal and requirements
+        run: |
+          conda install --file requirements/test.txt
+          conda install --file requirements/conda.txt
+          python -m pip install . --no-deps
+
+      - name: Validate diffpy.pdfgui
+        run: python -m diffpy.srreal.tests.run

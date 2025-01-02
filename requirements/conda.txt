@@ -1,5 +1,6 @@
 boost
 numpy
+libdiffpy
 setuptools
 diffpy.structure
 periodictable
