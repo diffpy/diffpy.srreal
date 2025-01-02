@@ -1,0 +1,9 @@
+name: Initialize Actions
+on:
+  push:
+
+jobs:
+  initialize:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Initializing GitHub Actions"
