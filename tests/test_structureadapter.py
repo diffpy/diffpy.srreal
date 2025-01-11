@@ -7,8 +7,17 @@ import pickle
 import unittest
 
 import numpy
+import pytest
+from testutils import (
+    DerivedAtomicStructureAdapter,
+    DerivedCrystalStructureAdapter,
+    DerivedPeriodicStructureAdapter,
+    DerivedStructureAdapter,
+    loadCrystalStructureAdapter,
+    loadDiffPyStructure,
+    loadObjCrystCrystal,
+)
 
-import diffpy.srreal.tests.testutils as testutils
 from diffpy.srreal.pdfcalculator import PDFCalculator
 from diffpy.srreal.structureadapter import (
     Atom,
@@ -19,13 +28,6 @@ from diffpy.srreal.structureadapter import (
     createStructureAdapter,
     nometa,
     nosymmetry,
-)
-from diffpy.srreal.tests.testutils import (
-    _msg_nopyobjcryst,
-    has_pyobjcryst,
-    loadCrystalStructureAdapter,
-    loadDiffPyStructure,
-    loadObjCrystCrystal,
 )
 
 # ----------------------------------------------------------------------------
@@ -110,7 +112,7 @@ class TestRoutines(unittest.TestCase):
 class TestDerivedAdapter(unittest.TestCase):
     "Check functionality in a Python-derived StructureAdapter class."
 
-    DerivedCls = testutils.DerivedStructureAdapter
+    DerivedCls = DerivedStructureAdapter
 
     def setUp(self):
         self.adpt = self.DerivedCls()
@@ -145,15 +147,15 @@ class TestDerivedAdapter(unittest.TestCase):
 
 
 class TestDerivedAtomicAdapter(TestDerivedAdapter):
-    DerivedCls = testutils.DerivedAtomicStructureAdapter
+    DerivedCls = DerivedAtomicStructureAdapter
 
 
 class TestDerivedPeriodicAdapter(TestDerivedAdapter):
-    DerivedCls = testutils.DerivedPeriodicStructureAdapter
+    DerivedCls = DerivedPeriodicStructureAdapter
 
 
 class TestDerivedCrystalAdapter(TestDerivedAdapter):
-    DerivedCls = testutils.DerivedCrystalStructureAdapter
+    DerivedCls = DerivedCrystalStructureAdapter
 
 
 # ----------------------------------------------------------------------------
@@ -268,8 +270,12 @@ class TestNoSymmetry(unittest.TestCase):
 # ----------------------------------------------------------------------------
 
 
-@unittest.skipUnless(has_pyobjcryst, _msg_nopyobjcryst)
 class TestPyObjCrystAdapter(unittest.TestCase):
+
+    @pytest.fixture(autouse=True)
+    def _check_periodictable(self, has_pyobjcryst, _msg_nopyobjcryst):
+        if not has_pyobjcryst:
+            pytest.skip(_msg_nopyobjcryst)
 
     def setUp(self):
         rutile_crystal = loadObjCrystCrystal("TiO2_rutile-fit.cif")
@@ -408,7 +414,7 @@ class TestCrystalAdapter(IndexRangeTests, TestCase):
 
 
 class TestDerivedStructureAdapter(IndexRangeTests, TestCase):
-    AdptClass = testutils.DerivedStructureAdapter
+    AdptClass = DerivedStructureAdapter
 
     def setUp(self):
         IndexRangeTests.setUp(self)

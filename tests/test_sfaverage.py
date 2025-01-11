@@ -6,15 +6,11 @@
 import unittest
 
 import numpy
+import pytest
+from testutils import loadDiffPyStructure, loadObjCrystCrystal
 
 from diffpy.srreal.scatteringfactortable import ScatteringFactorTable
 from diffpy.srreal.sfaverage import SFAverage
-from diffpy.srreal.tests.testutils import (
-    _msg_nopyobjcryst,
-    has_pyobjcryst,
-    loadDiffPyStructure,
-    loadObjCrystCrystal,
-)
 
 # ----------------------------------------------------------------------------
 
@@ -78,8 +74,12 @@ class TestSFAverage(unittest.TestCase):
 # ----------------------------------------------------------------------------
 
 
-@unittest.skipUnless(has_pyobjcryst, _msg_nopyobjcryst)
 class TestSFAverageObjCryst(unittest.TestCase):
+
+    @pytest.fixture(autouse=True)
+    def _check_periodictable(self, has_pyobjcryst, _msg_nopyobjcryst):
+        if not has_pyobjcryst:
+            pytest.skip(_msg_nopyobjcryst)
 
     def setUp(self):
         self.sftx = ScatteringFactorTable.createByType("X")

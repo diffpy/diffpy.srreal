@@ -7,10 +7,10 @@ import re
 import unittest
 
 import numpy
+import pytest
+from testutils import _maxNormDiff, datafile, loadObjCrystCrystal
 
 from diffpy.srreal.pdfcalculator import PDFCalculator
-from diffpy.srreal.tests.testpdfcalculator import _maxNormDiff
-from diffpy.srreal.tests.testutils import _msg_nopyobjcryst, datafile, has_pyobjcryst, loadObjCrystCrystal
 
 # helper functions
 
@@ -59,8 +59,12 @@ def _makePDFCalculator(crst, cfgdict):
 # ----------------------------------------------------------------------------
 
 
-@unittest.skipUnless(has_pyobjcryst, _msg_nopyobjcryst)
 class TestPDFCalcObjcryst(unittest.TestCase):
+
+    @pytest.fixture(autouse=True)
+    def _check_periodictable(self, has_pyobjcryst, _msg_nopyobjcryst):
+        if not has_pyobjcryst:
+            pytest.skip(_msg_nopyobjcryst)
 
     def _comparePDFs(self, nickname, pdfbasename, cifbasename):
         def setself(**kwtoset):

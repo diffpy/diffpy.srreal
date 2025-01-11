@@ -7,6 +7,7 @@ import pickle
 import unittest
 
 import numpy
+from testutils import pickle_with_attr
 
 from diffpy.srreal.pdfcalculator import DebyePDFCalculator, PDFCalculator
 from diffpy.srreal.scatteringfactortable import (
@@ -16,7 +17,6 @@ from diffpy.srreal.scatteringfactortable import (
     SFTNeutron,
     SFTXray,
 )
-from diffpy.srreal.tests.testutils import pickle_with_attr
 
 # ----------------------------------------------------------------------------
 

@@ -7,6 +7,7 @@ import pickle
 import unittest
 
 import numpy
+from testutils import pickle_with_attr
 
 from diffpy.srreal.pdfcalculator import DebyePDFCalculator, PDFCalculator
 from diffpy.srreal.pdfenvelope import (
@@ -17,7 +18,6 @@ from diffpy.srreal.pdfenvelope import (
     StepCutEnvelope,
     makePDFEnvelope,
 )
-from diffpy.srreal.tests.testutils import pickle_with_attr
 
 # ----------------------------------------------------------------------------
 

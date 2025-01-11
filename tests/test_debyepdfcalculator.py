@@ -7,10 +7,9 @@ import pickle
 import unittest
 
 import numpy
+from testutils import _maxNormDiff, loadDiffPyStructure, pickle_with_attr
 
 from diffpy.srreal.pdfcalculator import DebyePDFCalculator, PDFCalculator
-from diffpy.srreal.tests.testpdfcalculator import _maxNormDiff
-from diffpy.srreal.tests.testutils import loadDiffPyStructure, pickle_with_attr
 
 
 ##############################################################################
@@ -189,7 +188,7 @@ class TestDebyePDFCalculator(unittest.TestCase):
     def test_pickling_derived_structure(self):
         """Check pickling of DebyePDFCalculator with
         DerivedStructureAdapter."""
-        from diffpy.srreal.tests.testutils import DerivedStructureAdapter
+        from testutils import DerivedStructureAdapter
 
         dpdfc = self.dpdfc
         stru0 = DerivedStructureAdapter()

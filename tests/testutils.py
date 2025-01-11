@@ -8,67 +8,23 @@ import pickle
 
 import numpy
 
+import diffpy.structure as mod_structure
 from diffpy.srreal.structureadapter import (
     AtomicStructureAdapter,
     CrystalStructureAdapter,
     PeriodicStructureAdapter,
     StructureAdapter,
 )
-from diffpy.srreal.structureconverters import convertObjCrystCrystal
-from diffpy.srreal.tests import logger
-
-# Deprecated in 1.3 - import of old camel-case diffpy.Structure names.
-# TODO drop this in version 1.4.
-
-try:
-    import diffpy.structure as mod_structure
-    from diffpy.structure.parsers import getParser
-except ImportError as e:
-    try:
-        import diffpy.Structure as mod_structure
-        from diffpy.Structure.Parsers import getParser
-    except ImportError:
-        raise e
-    del e
-
-# Resolve availability of optional packages.
-
-# pyobjcryst
-
-_msg_nopyobjcryst = "No module named 'pyobjcryst'"
-try:
-    import pyobjcryst.crystal
-
-    convertObjCrystCrystal(pyobjcryst.crystal.Crystal())
-    has_pyobjcryst = True
-except ImportError:
-    has_pyobjcryst = False
-    logger.warning("Cannot import pyobjcryst, pyobjcryst tests skipped.")
-except TypeError:
-    has_pyobjcryst = False
-    logger.warning("Compiled without ObjCryst, pyobjcryst tests skipped.")
-
-# periodictable
-
-_msg_noperiodictable = "No module named 'periodictable'"
-try:
-    import periodictable
-
-    has_periodictable = True
-    # silence the pyflakes syntax checker
-    del periodictable
-except ImportError:
-    has_periodictable = False
-    logger.warning("Cannot import periodictable, periodictable tests skipped.")
+from diffpy.structure.parsers import getParser
 
 # helper functions
 
 
 def datafile(filename):
-    from pkg_resources import resource_filename
+    from pathlib import Path
 
-    rv = resource_filename(__name__, "testdata/" + filename)
-    return rv
+    rv = Path(__file__).parent / "testdata" / filename
+    return str(rv)
 
 
 def loadObjCrystCrystal(filename):
@@ -105,6 +61,15 @@ def pickle_with_attr(obj, **attr):
     for k, v in attr.items():
         setattr(obj, k, v)
     rv = pickle.dumps(obj)
+    return rv
+
+
+def _maxNormDiff(yobs, ycalc):
+    """Returned maximum difference normalized by RMS of the yobs."""
+    yobsa = numpy.array(yobs)
+    obsmax = numpy.max(numpy.fabs(yobsa)) or 1
+    ynmdiff = (yobsa - ycalc) / obsmax
+    rv = max(numpy.fabs(ynmdiff))
     return rv
 
 

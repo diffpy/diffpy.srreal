@@ -7,15 +7,10 @@ import pickle
 import unittest
 
 import numpy
+import pytest
+from testutils import loadDiffPyStructure, loadObjCrystCrystal, pickle_with_attr
 
 from diffpy.srreal.bondcalculator import BondCalculator
-from diffpy.srreal.tests.testutils import (
-    _msg_nopyobjcryst,
-    has_pyobjcryst,
-    loadDiffPyStructure,
-    loadObjCrystCrystal,
-    pickle_with_attr,
-)
 
 # ----------------------------------------------------------------------------
 
@@ -81,7 +76,7 @@ class TestBondCalculator(unittest.TestCase):
 
     def test_pickling_derived_structure(self):
         """Check pickling of BondCalculator with DerivedStructureAdapter."""
-        from diffpy.srreal.tests.testutils import DerivedStructureAdapter
+        from testutils import DerivedStructureAdapter
 
         bdc = self.bdc
         stru0 = DerivedStructureAdapter()
@@ -249,8 +244,12 @@ class TestBondCalculator(unittest.TestCase):
 # ----------------------------------------------------------------------------
 
 
-@unittest.skipUnless(has_pyobjcryst, _msg_nopyobjcryst)
 class TestBondCalculatorObjCryst(unittest.TestCase):
+
+    @pytest.fixture(autouse=True)
+    def _check_periodictable(self, has_pyobjcryst, _msg_nopyobjcryst):
+        if not has_pyobjcryst:
+            pytest.skip(_msg_nopyobjcryst)
 
     def setUp(self):
         self.bdc = BondCalculator()

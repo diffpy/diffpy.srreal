@@ -36,8 +36,8 @@ jobs:
       - name: Install diffpy.srreal and requirements
         run: |
           conda install --file requirements/test.txt
-          conda install --file requirements/conda.txt
+          conda install boost numpy libdiffpy setuptools diffpy.structure periodictable gsl
           python -m pip install . --no-deps
 
       - name: Validate diffpy.pdfgui
-        run: python -m diffpy.srreal.tests.run
+        run: pytest tests
