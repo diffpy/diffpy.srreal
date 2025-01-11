@@ -1,8 +1,8 @@
 Authors
 =======
 
-Pavol Juhas, 
-Chris Farrow, 
+Pavol Juhas,
+Chris Farrow,
 Simon J.L. Billinge
 
 Contributors
