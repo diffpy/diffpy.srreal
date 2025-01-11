@@ -7,7 +7,7 @@ import pickle
 import unittest
 
 from diffpy.srreal.bvscalculator import BVSCalculator
-from diffpy.srreal.tests.testutils import loadDiffPyStructure, pickle_with_attr
+from testutils import loadDiffPyStructure, pickle_with_attr
 
 
 ##############################################################################
@@ -139,7 +139,7 @@ class TestBVSCalculator(unittest.TestCase):
 
     def test_pickling_derived_structure(self):
         """Check pickling of BVSCalculator with DerivedStructureAdapter."""
-        from diffpy.srreal.tests.testutils import DerivedStructureAdapter
+        from testutils import DerivedStructureAdapter
 
         bvc = self.bvc
         stru0 = DerivedStructureAdapter()

@@ -10,7 +10,7 @@ import numpy
 
 from diffpy.srreal.pdfbaseline import LinearBaseline, PDFBaseline, ZeroBaseline, makePDFBaseline
 from diffpy.srreal.pdfcalculator import PDFCalculator
-from diffpy.srreal.tests.testutils import pickle_with_attr
+from testutils import pickle_with_attr
 
 # ----------------------------------------------------------------------------
 

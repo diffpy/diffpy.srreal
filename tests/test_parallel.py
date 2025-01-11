@@ -9,7 +9,7 @@ import unittest
 import numpy
 
 from diffpy.srreal.parallel import createParallelCalculator
-from diffpy.srreal.tests.testutils import loadDiffPyStructure
+from testutils import loadDiffPyStructure
 
 
 ##############################################################################

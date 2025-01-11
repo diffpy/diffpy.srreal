@@ -16,7 +16,7 @@ from diffpy.srreal.scatteringfactortable import (
     SFTNeutron,
     SFTXray,
 )
-from diffpy.srreal.tests.testutils import pickle_with_attr
+from testutils import pickle_with_attr
 
 # ----------------------------------------------------------------------------
 

@@ -10,7 +10,7 @@ import numpy
 from diffpy.srreal.pairquantity import PairQuantity
 from diffpy.srreal.pdfcalculator import PDFCalculator
 from diffpy.srreal.srreal_ext import BasePairQuantity
-from diffpy.srreal.tests.testutils import mod_structure
+from testutils import mod_structure
 
 # ----------------------------------------------------------------------------
 
@@ -169,7 +169,7 @@ class TestPairQuantity(unittest.TestCase):
 
     def test_pickling(self):
         """Check pickling and unpickling of PairQuantity."""
-        from diffpy.srreal.tests.testutils import DerivedStructureAdapter
+        from testutils import DerivedStructureAdapter
 
         stru0 = DerivedStructureAdapter()
         self.pq.setStructure(stru0)

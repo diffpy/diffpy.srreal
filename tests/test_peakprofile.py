@@ -10,7 +10,7 @@ import numpy
 
 from diffpy.srreal.pdfcalculator import PDFCalculator
 from diffpy.srreal.peakprofile import PeakProfile
-from diffpy.srreal.tests.testutils import mod_structure, pickle_with_attr
+from testutils import mod_structure, pickle_with_attr
 
 # ----------------------------------------------------------------------------
 

@@ -6,14 +6,13 @@
 import copy
 import pickle
 import unittest
+import pytest
 
 import numpy
 
 from diffpy.srreal.atomradiitable import CovalentRadiiTable
 from diffpy.srreal.overlapcalculator import OverlapCalculator
-from diffpy.srreal.tests.testutils import (
-    _msg_nopyobjcryst,
-    has_pyobjcryst,
+from testutils import (
     loadDiffPyStructure,
     loadObjCrystCrystal,
     pickle_with_attr,
@@ -117,7 +116,7 @@ class TestOverlapCalculator(unittest.TestCase):
 
     def test_pickling_derived_structure(self):
         """Check pickling of OverlapCalculator with DerivedStructureAdapter."""
-        from diffpy.srreal.tests.testutils import DerivedStructureAdapter
+        from testutils import DerivedStructureAdapter
 
         olc = self.olc
         stru0 = DerivedStructureAdapter()
@@ -331,9 +330,12 @@ class TestOverlapCalculator(unittest.TestCase):
 
 # ----------------------------------------------------------------------------
 
-
-@unittest.skipUnless(has_pyobjcryst, _msg_nopyobjcryst)
 class TestOverlapCalculatorObjCryst(unittest.TestCase):
+
+    @pytest.fixture(autouse=True)
+    def _check_periodictable(self, has_pyobjcryst, _msg_nopyobjcryst):
+        if not has_pyobjcryst:
+            pytest.skip(_msg_nopyobjcryst)
 
     def setUp(self):
         self.olc = OverlapCalculator()

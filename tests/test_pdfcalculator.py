@@ -9,18 +9,9 @@ import unittest
 import numpy
 
 from diffpy.srreal.pdfcalculator import PDFCalculator, fftftog, fftgtof
-from diffpy.srreal.tests.testutils import datafile, loadDiffPyStructure, pickle_with_attr
+from testutils import datafile, loadDiffPyStructure, pickle_with_attr, _maxNormDiff
 
 # helper functions
-
-
-def _maxNormDiff(yobs, ycalc):
-    """Returned maximum difference normalized by RMS of the yobs."""
-    yobsa = numpy.array(yobs)
-    obsmax = numpy.max(numpy.fabs(yobsa)) or 1
-    ynmdiff = (yobsa - ycalc) / obsmax
-    rv = max(numpy.fabs(ynmdiff))
-    return rv
 
 
 # ----------------------------------------------------------------------------
@@ -274,7 +265,7 @@ class TestPDFCalculator(unittest.TestCase):
 
     def test_pickling_derived_structure(self):
         """Check pickling of PDFCalculator with DerivedStructureAdapter."""
-        from diffpy.srreal.tests.testutils import DerivedStructureAdapter
+        from testutils import DerivedStructureAdapter
 
         pdfc = self.pdfcalc
         stru0 = DerivedStructureAdapter()

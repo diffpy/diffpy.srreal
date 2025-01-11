@@ -5,15 +5,13 @@
 
 import pickle
 import unittest
+import pytest
 
 from diffpy.srreal.atomradiitable import AtomRadiiTable, ConstantRadiiTable, CovalentRadiiTable
-from diffpy.srreal.tests.testutils import _msg_noperiodictable, has_periodictable
 
 # ----------------------------------------------------------------------------
 
-
 class TestAtomRadiiTable(unittest.TestCase):
-
     def setUp(self):
         self.rtb = AtomRadiiTable()
         self.ctb = ConstantRadiiTable()
@@ -102,9 +100,12 @@ class TestAtomRadiiTable(unittest.TestCase):
 
 # ----------------------------------------------------------------------------
 
-
-@unittest.skipUnless(has_periodictable, _msg_noperiodictable)
 class TestCovalentRadiiTable(unittest.TestCase):
+
+    @pytest.fixture(autouse=True)
+    def _check_periodictable(self, has_periodictable, _msg_noperiodictable):
+        if not has_periodictable:
+            pytest.skip(_msg_noperiodictable)
 
     def setUp(self):
         self.rtb = CovalentRadiiTable()

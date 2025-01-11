@@ -17,7 +17,7 @@ from diffpy.srreal.pdfenvelope import (
     StepCutEnvelope,
     makePDFEnvelope,
 )
-from diffpy.srreal.tests.testutils import pickle_with_attr
+from testutils import pickle_with_attr
 
 # ----------------------------------------------------------------------------
 
