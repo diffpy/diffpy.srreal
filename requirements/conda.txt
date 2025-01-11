@@ -3,4 +3,6 @@ numpy
 libdiffpy
 setuptools
 diffpy.structure
-periodictable
+gsl
+# periodictable
+# pyobjcryst (up to py3.11 for mac)
