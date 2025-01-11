@@ -1,4 +1,4 @@
-name: diffpy.pdfgui
+name: diffpy.srreal
 channels:
   - conda-forge
 dependencies:
