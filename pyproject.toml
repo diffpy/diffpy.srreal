@@ -11,8 +11,8 @@ authors = [
 maintainers = [
   { name="Simon J.L. Billinge group", email="simon.billinge@gmail.com" },
 ]
-description = "calculators for PDF, bond valence sum, and other quantities based on atom pair interaction"
-keywords = ['PDF BVS atom overlap calculator real-space']
+description = "Calculators for PDF, bond valence sum, and other quantities based on atom pair interaction."
+keywords = ['PDF', 'BVS', 'atom', 'overlap', 'calculator', 'real-space']
 readme = "README.rst"
 requires-python = ">=3.11, <3.14"
 classifiers = [
