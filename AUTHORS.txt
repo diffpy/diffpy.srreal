@@ -1,9 +1,0 @@
-Authors:
-
-Pavol Juhas
-Chris Farrow
-Simon J.L. Billinge
-
-Contributors:
-
-https://github.com/diffpy/diffpy.srreal/graphs/contributors

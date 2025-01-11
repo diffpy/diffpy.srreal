@@ -1,0 +1,12 @@
+name: Deploy Documentation on Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  docs:
+    uses: Billingegroup/release-scripts/.github/workflows/_publish-docs-on-release.yml@v0
+    with:
+      project: diffpy.srreal
+      c_extension: true
+      headless: false
