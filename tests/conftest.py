@@ -4,7 +4,6 @@ from pathlib import Path
 
 import pytest
 
-import diffpy.structure as mod_structure
 from diffpy.srreal.structureconverters import convertObjCrystCrystal
 
 
