@@ -5,16 +5,12 @@
 
 import pickle
 import unittest
-import pytest
 
 import numpy
+import pytest
+from testutils import loadDiffPyStructure, loadObjCrystCrystal, pickle_with_attr
 
 from diffpy.srreal.bondcalculator import BondCalculator
-from testutils import (
-    loadDiffPyStructure,
-    loadObjCrystCrystal,
-    pickle_with_attr,
-)
 
 # ----------------------------------------------------------------------------
 
@@ -246,6 +242,7 @@ class TestBondCalculator(unittest.TestCase):
 # End of class TestBondCalculator
 
 # ----------------------------------------------------------------------------
+
 
 class TestBondCalculatorObjCryst(unittest.TestCase):
 

@@ -7,9 +7,9 @@ import pickle
 import unittest
 
 import numpy
+from testutils import _maxNormDiff, loadDiffPyStructure, pickle_with_attr
 
 from diffpy.srreal.pdfcalculator import DebyePDFCalculator, PDFCalculator
-from testutils import loadDiffPyStructure, pickle_with_attr, _maxNormDiff
 
 
 ##############################################################################

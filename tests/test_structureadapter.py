@@ -5,9 +5,18 @@
 
 import pickle
 import unittest
-import pytest
 
 import numpy
+import pytest
+from testutils import (
+    DerivedAtomicStructureAdapter,
+    DerivedCrystalStructureAdapter,
+    DerivedPeriodicStructureAdapter,
+    DerivedStructureAdapter,
+    loadCrystalStructureAdapter,
+    loadDiffPyStructure,
+    loadObjCrystCrystal,
+)
 
 from diffpy.srreal.pdfcalculator import PDFCalculator
 from diffpy.srreal.structureadapter import (
@@ -19,15 +28,6 @@ from diffpy.srreal.structureadapter import (
     createStructureAdapter,
     nometa,
     nosymmetry,
-)
-from testutils import (
-    loadCrystalStructureAdapter,
-    loadDiffPyStructure,
-    loadObjCrystCrystal,
-    DerivedStructureAdapter,
-    DerivedAtomicStructureAdapter,
-    DerivedPeriodicStructureAdapter,
-    DerivedCrystalStructureAdapter
 )
 
 # ----------------------------------------------------------------------------
@@ -268,6 +268,7 @@ class TestNoSymmetry(unittest.TestCase):
 # End of class TestNoSymmetry
 
 # ----------------------------------------------------------------------------
+
 
 class TestPyObjCrystAdapter(unittest.TestCase):
 

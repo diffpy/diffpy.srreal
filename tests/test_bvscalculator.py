@@ -6,8 +6,9 @@
 import pickle
 import unittest
 
-from diffpy.srreal.bvscalculator import BVSCalculator
 from testutils import loadDiffPyStructure, pickle_with_attr
+
+from diffpy.srreal.bvscalculator import BVSCalculator
 
 
 ##############################################################################

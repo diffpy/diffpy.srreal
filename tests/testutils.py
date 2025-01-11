@@ -8,15 +8,14 @@ import pickle
 
 import numpy
 
+import diffpy.structure as mod_structure
 from diffpy.srreal.structureadapter import (
     AtomicStructureAdapter,
     CrystalStructureAdapter,
     PeriodicStructureAdapter,
     StructureAdapter,
 )
-import diffpy.structure as mod_structure
 from diffpy.structure.parsers import getParser
-
 
 # helper functions
 
@@ -72,6 +71,7 @@ def _maxNormDiff(yobs, ycalc):
     ynmdiff = (yobsa - ycalc) / obsmax
     rv = max(numpy.fabs(ynmdiff))
     return rv
+
 
 # helper class for testing overloading of StructureAdapter
 

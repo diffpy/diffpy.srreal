@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from diffpy.srreal.structureconverters import convertObjCrystCrystal
 import diffpy.structure as mod_structure
+from diffpy.srreal.structureconverters import convertObjCrystCrystal
 
 
 @pytest.fixture
@@ -37,6 +37,7 @@ def _msg_nopyobjcryst():
 def has_pyobjcryst():
     try:
         import pyobjcryst.crystal
+
         convertObjCrystCrystal(pyobjcryst.crystal.Crystal())
         has_pyobjcryst = True
     except ImportError:

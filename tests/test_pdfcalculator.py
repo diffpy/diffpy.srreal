@@ -7,9 +7,9 @@ import pickle
 import unittest
 
 import numpy
+from testutils import _maxNormDiff, datafile, loadDiffPyStructure, pickle_with_attr
 
 from diffpy.srreal.pdfcalculator import PDFCalculator, fftftog, fftgtof
-from testutils import datafile, loadDiffPyStructure, pickle_with_attr, _maxNormDiff
 
 # helper functions
 

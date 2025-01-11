@@ -5,12 +5,12 @@
 
 import re
 import unittest
-import pytest
 
 import numpy
+import pytest
+from testutils import _maxNormDiff, datafile, loadObjCrystCrystal
 
 from diffpy.srreal.pdfcalculator import PDFCalculator
-from testutils import datafile, loadObjCrystCrystal, _maxNormDiff
 
 # helper functions
 
@@ -57,6 +57,7 @@ def _makePDFCalculator(crst, cfgdict):
 
 
 # ----------------------------------------------------------------------------
+
 
 class TestPDFCalcObjcryst(unittest.TestCase):
 

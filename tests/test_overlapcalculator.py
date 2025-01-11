@@ -6,17 +6,13 @@
 import copy
 import pickle
 import unittest
-import pytest
 
 import numpy
+import pytest
+from testutils import loadDiffPyStructure, loadObjCrystCrystal, pickle_with_attr
 
 from diffpy.srreal.atomradiitable import CovalentRadiiTable
 from diffpy.srreal.overlapcalculator import OverlapCalculator
-from testutils import (
-    loadDiffPyStructure,
-    loadObjCrystCrystal,
-    pickle_with_attr,
-)
 
 # ----------------------------------------------------------------------------
 
@@ -329,6 +325,7 @@ class TestOverlapCalculator(unittest.TestCase):
 # End of class TestOverlapCalculator
 
 # ----------------------------------------------------------------------------
+
 
 class TestOverlapCalculatorObjCryst(unittest.TestCase):
 

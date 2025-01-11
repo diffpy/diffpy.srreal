@@ -6,11 +6,11 @@ import pickle
 import unittest
 
 import numpy
+from testutils import mod_structure
 
 from diffpy.srreal.pairquantity import PairQuantity
 from diffpy.srreal.pdfcalculator import PDFCalculator
 from diffpy.srreal.srreal_ext import BasePairQuantity
-from testutils import mod_structure
 
 # ----------------------------------------------------------------------------
 

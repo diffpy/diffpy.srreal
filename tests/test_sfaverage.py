@@ -4,16 +4,13 @@
 
 
 import unittest
-import pytest
 
 import numpy
+import pytest
+from testutils import loadDiffPyStructure, loadObjCrystCrystal
 
 from diffpy.srreal.scatteringfactortable import ScatteringFactorTable
 from diffpy.srreal.sfaverage import SFAverage
-from testutils import (
-    loadDiffPyStructure,
-    loadObjCrystCrystal,
-)
 
 # ----------------------------------------------------------------------------
 
@@ -75,6 +72,7 @@ class TestSFAverage(unittest.TestCase):
 # End of class TestSFAverage
 
 # ----------------------------------------------------------------------------
+
 
 class TestSFAverageObjCryst(unittest.TestCase):
 

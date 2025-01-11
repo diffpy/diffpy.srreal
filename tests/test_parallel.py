@@ -7,9 +7,9 @@ import multiprocessing
 import unittest
 
 import numpy
+from testutils import loadDiffPyStructure
 
 from diffpy.srreal.parallel import createParallelCalculator
-from testutils import loadDiffPyStructure
 
 
 ##############################################################################

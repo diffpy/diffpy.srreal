@@ -5,11 +5,13 @@
 
 import pickle
 import unittest
+
 import pytest
 
 from diffpy.srreal.atomradiitable import AtomRadiiTable, ConstantRadiiTable, CovalentRadiiTable
 
 # ----------------------------------------------------------------------------
+
 
 class TestAtomRadiiTable(unittest.TestCase):
     def setUp(self):
@@ -99,6 +101,7 @@ class TestAtomRadiiTable(unittest.TestCase):
 # End of class TestAtomRadiiTable
 
 # ----------------------------------------------------------------------------
+
 
 class TestCovalentRadiiTable(unittest.TestCase):
 
