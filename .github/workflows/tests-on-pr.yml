@@ -26,7 +26,7 @@ jobs:
           auto-update-conda: true
           environment-file: environment.yml
           auto-activate-base: false
-          python-version: 3.12
+          python-version: 3.13
 
       - name: Conda config
         run: >-
