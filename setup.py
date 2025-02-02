@@ -47,6 +47,7 @@ def get_boost_config():
             lib = Path(conda_prefix) / "lib"
     return {"include_dirs": [str(inc)], "library_dirs": [str(lib)]}
 
+
 if os.name == "nt":
     compile_args = ["/std:c++14"]
     macros = [("_USE_MATH_DEFINES", None)]
