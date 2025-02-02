@@ -47,14 +47,21 @@ def get_boost_config():
             lib = Path(conda_prefix) / "lib"
     return {"include_dirs": [str(inc)], "library_dirs": [str(lib)]}
 
+if os.name == "nt":
+    compile_args = ["/std:c++14"]
+    macros = [("_USE_MATH_DEFINES", None)]
+else:
+    compile_args = ["-std=c++11"]
+    macros = []
 
 boost_cfg = get_boost_config()
 ext_kws = {
     "libraries": ["diffpy"] + get_boost_libraries(),
-    "extra_compile_args": ["-std=c++11"],
+    "extra_compile_args": compile_args,
     "extra_link_args": [],
     "include_dirs": [numpy.get_include()] + boost_cfg["include_dirs"],
     "library_dirs": boost_cfg["library_dirs"],
+    "define_macros": macros,
 }
 
 
