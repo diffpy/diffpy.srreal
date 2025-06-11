@@ -12,7 +12,6 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-
 """
 Classes for configuring PDF scaling envelope:
     PDFEnvelope, ScaleEnvelope, QResolutionEnvelope,
@@ -21,18 +20,22 @@ Classes for configuring PDF scaling envelope:
 
 
 # exported items
-__all__ = '''
+__all__ = """
    PDFEnvelope makePDFEnvelope
    QResolutionEnvelope
    ScaleEnvelope
    SphericalShapeEnvelope
    StepCutEnvelope
-   '''.split()
+   """.split()
 
 from diffpy.srreal import _final_imports
-from diffpy.srreal.srreal_ext import PDFEnvelope
-from diffpy.srreal.srreal_ext import ScaleEnvelope, QResolutionEnvelope
-from diffpy.srreal.srreal_ext import SphericalShapeEnvelope, StepCutEnvelope
+from diffpy.srreal.srreal_ext import (
+    PDFEnvelope,
+    QResolutionEnvelope,
+    ScaleEnvelope,
+    SphericalShapeEnvelope,
+    StepCutEnvelope,
+)
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
 
 # class PDFEnvelope ----------------------------------------------------------
@@ -46,27 +49,36 @@ StepCutEnvelope.__getstate_manages_dict__ = None
 
 # attribute wrappers
 
-QResolutionEnvelope.qdamp = propertyFromExtDoubleAttr('qdamp',
-    '''Dampening parameter in the Gaussian envelope function.
-    ''')
+QResolutionEnvelope.qdamp = propertyFromExtDoubleAttr(
+    "qdamp",
+    """Dampening parameter in the Gaussian envelope function.
+    """,
+)
 
-ScaleEnvelope.scale = propertyFromExtDoubleAttr('scale',
-    '''Overall scale for a uniform scaling envelope.
-    ''')
+ScaleEnvelope.scale = propertyFromExtDoubleAttr(
+    "scale",
+    """Overall scale for a uniform scaling envelope.
+    """,
+)
 
-SphericalShapeEnvelope.spdiameter = propertyFromExtDoubleAttr('spdiameter',
-    '''Particle diameter in Angstroms for a spherical shape damping.
-    ''')
+SphericalShapeEnvelope.spdiameter = propertyFromExtDoubleAttr(
+    "spdiameter",
+    """Particle diameter in Angstroms for a spherical shape damping.
+    """,
+)
 
-StepCutEnvelope.stepcut = propertyFromExtDoubleAttr('stepcut',
-    '''Cutoff for a step-function envelope.
-    ''')
+StepCutEnvelope.stepcut = propertyFromExtDoubleAttr(
+    "stepcut",
+    """Cutoff for a step-function envelope.
+    """,
+)
 
 # Python functions wrapper
 
+
 def makePDFEnvelope(name, fnc, replace=False, **dbattrs):
-    '''Helper function for registering Python function as a PDFEnvelope.
-    This is required for using Python function as PDFCalculator envelope.
+    """Helper function for registering Python function as a PDFEnvelope. This
+    is required for using Python function as PDFCalculator envelope.
 
     name     -- unique string name for registering Python function in the
                 global registry of PDFEnvelope types.  This will be the
@@ -100,11 +112,14 @@ def makePDFEnvelope(name, fnc, replace=False, **dbattrs):
         pdfc = PDFCalculator()
         pdfc.addEnvelope(envelope)
         # or pdfc.addEnvelope("expdecay")
-    '''
+    """
     from diffpy.srreal.wraputils import _wrapAsRegisteredUnaryFunction
-    rv = _wrapAsRegisteredUnaryFunction(PDFEnvelope, name, fnc,
-                                        replace=replace, **dbattrs)
+
+    rv = _wrapAsRegisteredUnaryFunction(
+        PDFEnvelope, name, fnc, replace=replace, **dbattrs
+    )
     return rv
+
 
 # Import delayed tweaks of the extension classes.
 

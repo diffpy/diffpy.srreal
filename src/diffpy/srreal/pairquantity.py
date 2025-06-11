@@ -12,14 +12,11 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-
-"""
-class PairQuantity    -- base class for Python defined calculators.
-"""
+"""Class PairQuantity    -- base class for Python defined calculators."""
 
 
 # exported items
-__all__ = ['PairQuantity']
+__all__ = ["PairQuantity"]
 
 from diffpy.srreal.srreal_ext import PairQuantity
 

@@ -12,7 +12,6 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-
 """
 Classes for configuring PDF baseline:
     PDFBaseline, ZeroBaseline, LinearBaseline
@@ -20,15 +19,14 @@ Classes for configuring PDF baseline:
 
 
 # exported items
-__all__ = '''
+__all__ = """
     PDFBaseline makePDFBaseline
     ZeroBaseline
     LinearBaseline
-    '''.split()
+    """.split()
 
 from diffpy.srreal import _final_imports
-from diffpy.srreal.srreal_ext import PDFBaseline
-from diffpy.srreal.srreal_ext import ZeroBaseline, LinearBaseline
+from diffpy.srreal.srreal_ext import LinearBaseline, PDFBaseline, ZeroBaseline
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
 
 # class PDFBaseline ----------------------------------------------------------
@@ -40,15 +38,18 @@ ZeroBaseline.__getstate_manages_dict__ = None
 
 # attribute wrapper
 
-LinearBaseline.slope = propertyFromExtDoubleAttr('slope',
-    '''Slope of an unscaled linear baseline.  For crystal structures it
-    is preset to (-4 * pi * rho0).''')
+LinearBaseline.slope = propertyFromExtDoubleAttr(
+    "slope",
+    """Slope of an unscaled linear baseline.  For crystal structures it
+    is preset to (-4 * pi * rho0).""",
+)
 
 # Python functions wrapper
 
+
 def makePDFBaseline(name, fnc, replace=False, **dbattrs):
-    '''Helper function for registering Python function as a PDFBaseline.
-    This is required for using Python function as PDFCalculator.baseline.
+    """Helper function for registering Python function as a PDFBaseline. This
+    is required for using Python function as PDFCalculator.baseline.
 
     name     -- unique string name for registering Python function in the
                 global registry of PDFBaseline types.  This will be the
@@ -81,11 +82,14 @@ def makePDFBaseline(name, fnc, replace=False, **dbattrs):
         pdfc = PDFCalculator()
         pdfc.baseline = baseline
         # or pdfc.baseline = "shiftedline"
-    '''
+    """
     from diffpy.srreal.wraputils import _wrapAsRegisteredUnaryFunction
-    rv = _wrapAsRegisteredUnaryFunction(PDFBaseline, name, fnc,
-                                        replace=replace, **dbattrs)
+
+    rv = _wrapAsRegisteredUnaryFunction(
+        PDFBaseline, name, fnc, replace=replace, **dbattrs
+    )
     return rv
+
 
 # Import delayed tweaks of the extension classes.
 

@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 
-"""Demonstration of using PairQuantity class for calculation
-of Lennard Jones potential.
+"""Demonstration of using PairQuantity class for calculation of Lennard Jones
+potential.
 
 Vij = 4 * ( rij ** -12  -  rij ** -6 )
 """
 
 import sys
+
 from diffpy.srreal.pairquantity import PairQuantity
 from diffpy.structure import Structure
+
 
 class LennardJonesCalculator(PairQuantity):
 
@@ -18,16 +20,13 @@ class LennardJonesCalculator(PairQuantity):
         self._resizeValue(1)
         return
 
-
     def __call__(self, structure):
-        '''Return LJ potential for a specified structure
-        '''
+        """Return LJ potential for a specified structure."""
         values = self.eval(structure)
         return values[0]
 
-
     def _addPairContribution(self, bnds, sumscale):
-        '''Add Lennard-Jones contribution from a single pair of atoms.
+        """Add Lennard-Jones contribution from a single pair of atoms.
 
         bnds     -- a BaseBondGenerator instance that contains information
                     about the current pair of atom sites.
@@ -35,11 +34,12 @@ class LennardJonesCalculator(PairQuantity):
                     be negative in case of fast value updates.
 
         No return value.  Updates _value, the internal results array.
-        '''
+        """
         rij = bnds.distance()
-        ljij = 4 * (rij ** -12  -  rij ** -6)
+        ljij = 4 * (rij**-12 - rij**-6)
         self._value[0] += sumscale * ljij / 2.0
         return
+
 
 # class LennardJonesCalculator
 
@@ -55,5 +55,5 @@ def main():
     print("LJ potential of %s is %g" % (filename, ljcalc(stru)))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

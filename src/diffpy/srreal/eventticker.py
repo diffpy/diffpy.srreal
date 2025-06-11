@@ -12,14 +12,11 @@
 # See LICENSE.txt for license information.
 #
 ##############################################################################
-
-"""
-class EventTicker -- storage of modification times of dependent objects
-"""
+"""Class EventTicker -- storage of modification times of dependent objects."""
 
 
 # exported items
-__all__ = ['EventTicker']
+__all__ = ["EventTicker"]
 
 from diffpy.srreal.srreal_ext import EventTicker
 

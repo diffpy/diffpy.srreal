@@ -12,34 +12,36 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-
-"""Local utilities helpful for tweaking interfaces to boost python classes.
-"""
+"""Local utilities helpful for tweaking interfaces to boost python classes."""
 
 
 import copy
 
 # Routines -------------------------------------------------------------------
 
+
 def propertyFromExtDoubleAttr(attrname, doc):
-    '''Create property wrapper to a DoubleAttr in C++ extension object.
+    """Create property wrapper to a DoubleAttr in C++ extension object.
 
     attrname -- string name of the double attribute
     doc      -- docstring for the Python class property
 
     Return a property object.
-    '''
+    """
+
     def fget(self):
         return self._getDoubleAttr(attrname)
+
     def fset(self, value):
         self._setDoubleAttr(attrname, value)
         return
+
     rv = property(fget, fset, doc=doc)
     return rv
 
 
 def setattrFromKeywordArguments(obj, **kwargs):
-    '''Set attributes of the obj according to keyword arguments.
+    """Set attributes of the obj according to keyword arguments.
     For example:    setattrFromKeywordArguments(obj, qmax=24, scale=2)
     This is a shared helper function used by __init__ and __call__.
 
@@ -47,7 +49,7 @@ def setattrFromKeywordArguments(obj, **kwargs):
 
     No return value.
     Raise TypeError for invalid keyword argument.
-    '''
+    """
     for n in kwargs:
         if not hasattr(obj, n):
             emsg = "Invalid keyword argument %r" % n
@@ -58,9 +60,9 @@ def setattrFromKeywordArguments(obj, **kwargs):
 
 
 def _wrapAsRegisteredUnaryFunction(cls, regname, fnc, replace=False, **dbattrs):
-    '''Helper function for wrapping Python function as PDFBaseline or
-    PDFEnvelope functor.  Not intended for direct usage, this function
-    is rather called from makePDFBaseline or makePDFEnvelope wrappers.
+    """Helper function for wrapping Python function as PDFBaseline or
+    PDFEnvelope functor.  Not intended for direct usage, this function is
+    rather called from makePDFBaseline or makePDFEnvelope wrappers.
 
     cls      -- the functor class for wrapping the Python function
     regname  -- string name for registering the function in the global
@@ -79,33 +81,31 @@ def _wrapAsRegisteredUnaryFunction(cls, regname, fnc, replace=False, **dbattrs):
                 fnc(x, **dbattrs).
 
     Return an instance of the functor class.
-    '''
+    """
+
     class RegisteredUnaryFunction(cls):
 
         def create(self):
-            '''Create new instance of the same type as self.
-            '''
+            """Create new instance of the same type as self."""
             return RegisteredUnaryFunction()
 
         def clone(self):
-            '''Return a new duplicate instance of self.
-            '''
+            """Return a new duplicate instance of self."""
             return copy.copy(self)
 
         def type(self):
-            '''Unique string identifier of this functor type.  The string
-            is used for class registration and as an argument for the
-            createByType function.
+            """Unique string identifier of this functor type.  The string is
+            used for class registration and as an argument for the createByType
+            function.
 
             Return string identifier.
-            '''
+            """
             return regname
 
         def __call__(self, x):
-            '''Evaluate this functor at x.
-            '''
+            """Evaluate this functor at x."""
             if dbattrs:
-                kw = {n : getattr(self, n) for n in dbattrs}
+                kw = {n: getattr(self, n) for n in dbattrs}
                 rv = fnc(x, **kw)
             else:
                 rv = fnc(x)
@@ -126,7 +126,7 @@ def _wrapAsRegisteredUnaryFunction(cls, regname, fnc, replace=False, **dbattrs):
 
     if replace:
         RegisteredUnaryFunction._deregisterType(regname)
-    RegisteredUnaryFunction.__name__ = 'User' + cls.__name__ + '_' + regname
+    RegisteredUnaryFunction.__name__ = "User" + cls.__name__ + "_" + regname
     RegisteredUnaryFunction.__getstate__ = _pickle_getstate
     RegisteredUnaryFunction.__setstate__ = _pickle_setstate
     RegisteredUnaryFunction()._registerThisType()
@@ -134,21 +134,25 @@ def _wrapAsRegisteredUnaryFunction(cls, regname, fnc, replace=False, **dbattrs):
     assert type(rv) is RegisteredUnaryFunction
     return rv
 
+
 # pickling support functions
+
 
 def _regunary_create(cls, tp):
     return cls.createByType(tp)
+
 
 def _pickle_getstate(self):
     state = (self.__dict__,)
     return state
 
+
 def _pickle_setstate(self, state):
     if len(state) != 1:
-        emsg = ("expected 1-item tuple in call to __setstate__, got " +
-                repr(state))
+        emsg = "expected 1-item tuple in call to __setstate__, got " + repr(state)
         raise ValueError(emsg)
     self.__dict__.update(state[0])
     return
+
 
 # End of file

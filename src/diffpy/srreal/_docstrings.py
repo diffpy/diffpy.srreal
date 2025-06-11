@@ -12,12 +12,10 @@
 # See LICENSE.txt for license information.
 #
 ##############################################################################
-
-"""
-Docstrings for classes and functions in srreal_ext module.
-"""
+"""Docstrings for classes and functions in srreal_ext module."""
 
 # Shared docstrings for classes derived from HasClassRegistry ----------------
+
 
 def get_registry_docstrings(cls):
     """Build a dictionary of docstrings per each HasClassRegistry method.
@@ -31,18 +29,21 @@ def get_registry_docstrings(cls):
     Returns a dictionary mapping Python method names to their docstrins.
     """
     n = cls.__name__
-    rv = {k : v.replace('@NAME@', n) for k, v in (
-        ("create", doc_HasClassRegistry_create),
-        ("clone", doc_HasClassRegistry_clone),
-        ("type", doc_HasClassRegistry_type),
-        ("_registerThisType", doc_HasClassRegistry__registerThisType),
-        ("_aliasType", doc_HasClassRegistry__aliasType),
-        ("_deregisterType", doc_HasClassRegistry__deregisterType),
-        ("createByType", doc_HasClassRegistry_createByType),
-        ("isRegisteredType", doc_HasClassRegistry_isRegisteredType),
-        ("getAliasedTypes", doc_HasClassRegistry_getAliasedTypes),
-        ("getRegisteredTypes", doc_HasClassRegistry_getRegisteredTypes),
-    )}
+    rv = {
+        k: v.replace("@NAME@", n)
+        for k, v in (
+            ("create", doc_HasClassRegistry_create),
+            ("clone", doc_HasClassRegistry_clone),
+            ("type", doc_HasClassRegistry_type),
+            ("_registerThisType", doc_HasClassRegistry__registerThisType),
+            ("_aliasType", doc_HasClassRegistry__aliasType),
+            ("_deregisterType", doc_HasClassRegistry__deregisterType),
+            ("createByType", doc_HasClassRegistry_createByType),
+            ("isRegisteredType", doc_HasClassRegistry_isRegisteredType),
+            ("getAliasedTypes", doc_HasClassRegistry_getAliasedTypes),
+            ("getRegisteredTypes", doc_HasClassRegistry_getRegisteredTypes),
+        )
+    }
     return rv
 
 

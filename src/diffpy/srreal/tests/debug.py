@@ -12,9 +12,7 @@
 # See LICENSE.txt for license information.
 #
 ##############################################################################
-
-"""
-Convenience module for debugging the unit tests using
+"""Convenience module for debugging the unit tests using.
 
 python -m diffpy.srreal.tests.debug
 
@@ -22,10 +20,12 @@ Exceptions raised by failed tests or other errors are not caught.
 """
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
+
     from diffpy.srreal.tests import testsuite
-    pattern = sys.argv[1] if len(sys.argv) > 1 else ''
+
+    pattern = sys.argv[1] if len(sys.argv) > 1 else ""
     suite = testsuite(pattern)
     suite.debug()
 

@@ -12,9 +12,7 @@
 # See LICENSE.txt for license information.
 #
 ##############################################################################
-
-"""
-Finalize tweak of classes from the extension module srreal_ext.
+"""Finalize tweak of classes from the extension module srreal_ext.
 
 This private module handles loading of Python-level tweaks of the
 extension-defined classes.  Any client that imports this module
@@ -27,26 +25,26 @@ This avoids unresolvable import dependencies for any order of imports.
 
 
 def import_now():
-    '''
-    Import all Python modules that tweak extension-defined classes.
-    '''
+    """Import all Python modules that tweak extension-defined classes."""
     global _import_now_called
     if _import_now_called:
         return
     _import_now_called = True
     from importlib import import_module
-    import_module('diffpy.srreal.attributes')
-    import_module('diffpy.srreal.atomradiitable')
-    import_module('diffpy.srreal.bondcalculator')
-    import_module('diffpy.srreal.bvscalculator')
-    import_module('diffpy.srreal.overlapcalculator')
-    import_module('diffpy.srreal.pdfbaseline')
-    import_module('diffpy.srreal.pdfenvelope')
-    import_module('diffpy.srreal.peakprofile')
-    import_module('diffpy.srreal.peakwidthmodel')
-    import_module('diffpy.srreal.scatteringfactortable')
-    import_module('diffpy.srreal.pdfcalculator')
-    import_module('diffpy.srreal.structureconverters')
+
+    import_module("diffpy.srreal.attributes")
+    import_module("diffpy.srreal.atomradiitable")
+    import_module("diffpy.srreal.bondcalculator")
+    import_module("diffpy.srreal.bvscalculator")
+    import_module("diffpy.srreal.overlapcalculator")
+    import_module("diffpy.srreal.pdfbaseline")
+    import_module("diffpy.srreal.pdfenvelope")
+    import_module("diffpy.srreal.peakprofile")
+    import_module("diffpy.srreal.peakwidthmodel")
+    import_module("diffpy.srreal.scatteringfactortable")
+    import_module("diffpy.srreal.pdfcalculator")
+    import_module("diffpy.srreal.structureconverters")
     return
+
 
 _import_now_called = False
