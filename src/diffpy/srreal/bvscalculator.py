@@ -19,7 +19,10 @@
 __all__ = ["BVSCalculator"]
 
 from diffpy.srreal.srreal_ext import BVSCalculator
-from diffpy.srreal.wraputils import propertyFromExtDoubleAttr, setattrFromKeywordArguments
+from diffpy.srreal.wraputils import (
+    propertyFromExtDoubleAttr,
+    setattrFromKeywordArguments,
+)
 
 # Property wrappers to C++ double attributes
 

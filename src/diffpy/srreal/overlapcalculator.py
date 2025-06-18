@@ -19,7 +19,10 @@
 __all__ = ["OverlapCalculator"]
 
 from diffpy.srreal.srreal_ext import OverlapCalculator
-from diffpy.srreal.wraputils import propertyFromExtDoubleAttr, setattrFromKeywordArguments
+from diffpy.srreal.wraputils import (
+    propertyFromExtDoubleAttr,
+    setattrFromKeywordArguments,
+)
 
 # property wrappers to C++ double attributes
 

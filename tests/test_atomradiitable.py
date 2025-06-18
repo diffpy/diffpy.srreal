@@ -8,7 +8,11 @@ import unittest
 
 import pytest
 
-from diffpy.srreal.atomradiitable import AtomRadiiTable, ConstantRadiiTable, CovalentRadiiTable
+from diffpy.srreal.atomradiitable import (
+    AtomRadiiTable,
+    ConstantRadiiTable,
+    CovalentRadiiTable,
+)
 
 # ----------------------------------------------------------------------------
 

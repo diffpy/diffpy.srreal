@@ -55,7 +55,10 @@ class TestRoutines(unittest.TestCase):
 
     def test_createStructureAdapterTypes(self):
         """Check types returned by conversion from diffpy.structure."""
-        from diffpy.srreal.structureconverters import DiffPyStructureAtomicAdapter, DiffPyStructurePeriodicAdapter
+        from diffpy.srreal.structureconverters import (
+            DiffPyStructureAtomicAdapter,
+            DiffPyStructurePeriodicAdapter,
+        )
 
         adpt = createStructureAdapter(self.nickel)
         self.assertTrue(type(adpt) is DiffPyStructurePeriodicAdapter)
