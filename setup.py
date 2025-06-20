@@ -72,7 +72,7 @@ def get_objcryst_libraries():
 if os.name == "nt":
     compile_args = ["/std:c++14"]
     macros = [("_USE_MATH_DEFINES", None)]
-    extra_link_args  = ["/FORCE:MULTIPLE"]
+    extra_link_args = ["/FORCE:MULTIPLE"]
 else:
     compile_args = ["-std=c++11"]
     macros = []
