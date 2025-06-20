@@ -14,7 +14,6 @@ repos:
     rev: v4.6.0
     hooks:
       - id: check-yaml
-        exclude: ^conda-recipe/meta\.yaml$
       - id: end-of-file-fixer
       - id: trailing-whitespace
       - id: check-case-conflict

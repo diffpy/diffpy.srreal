@@ -20,7 +20,13 @@ isotopes."""
 __all__ = ["ScatteringFactorTable", "SFTXray", "SFTElectron", "SFTNeutron", "SFTElectronNumber", "SFAverage"]
 
 from diffpy.srreal.sfaverage import SFAverage
-from diffpy.srreal.srreal_ext import ScatteringFactorTable, SFTElectron, SFTElectronNumber, SFTNeutron, SFTXray
+from diffpy.srreal.srreal_ext import (
+    ScatteringFactorTable,
+    SFTElectron,
+    SFTElectronNumber,
+    SFTNeutron,
+    SFTXray,
+)
 
 # Pickling Support -----------------------------------------------------------
 

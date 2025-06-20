@@ -9,7 +9,11 @@ import unittest
 
 import numpy
 import pytest
-from testutils import loadDiffPyStructure, loadObjCrystCrystal, pickle_with_attr
+from testutils import (
+    loadDiffPyStructure,
+    loadObjCrystCrystal,
+    pickle_with_attr,
+)
 
 from diffpy.srreal.atomradiitable import CovalentRadiiTable
 from diffpy.srreal.overlapcalculator import OverlapCalculator

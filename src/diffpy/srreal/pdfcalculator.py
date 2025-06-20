@@ -18,8 +18,16 @@ Top-level classes for PDF calculation:
     PDFCalculator      -- calculate PDF by peak summation in real space
 """
 
-from diffpy.srreal.srreal_ext import DebyePDFCalculator, PDFCalculator, fftftog, fftgtof
-from diffpy.srreal.wraputils import propertyFromExtDoubleAttr, setattrFromKeywordArguments
+from diffpy.srreal.srreal_ext import (
+    DebyePDFCalculator,
+    PDFCalculator,
+    fftftog,
+    fftgtof,
+)
+from diffpy.srreal.wraputils import (
+    propertyFromExtDoubleAttr,
+    setattrFromKeywordArguments,
+)
 
 # exported items
 __all__ = """
@@ -28,7 +36,12 @@ __all__ = """
     """.split()
 
 # imports for backward compatibility
-from diffpy.srreal.pdfbaseline import LinearBaseline, PDFBaseline, ZeroBaseline, makePDFBaseline
+from diffpy.srreal.pdfbaseline import (
+    LinearBaseline,
+    PDFBaseline,
+    ZeroBaseline,
+    makePDFBaseline,
+)
 from diffpy.srreal.pdfenvelope import (
     PDFEnvelope,
     QResolutionEnvelope,
@@ -38,7 +51,12 @@ from diffpy.srreal.pdfenvelope import (
     makePDFEnvelope,
 )
 from diffpy.srreal.peakprofile import PeakProfile
-from diffpy.srreal.peakwidthmodel import ConstantPeakWidth, DebyeWallerPeakWidth, JeongPeakWidth, PeakWidthModel
+from diffpy.srreal.peakwidthmodel import (
+    ConstantPeakWidth,
+    DebyeWallerPeakWidth,
+    JeongPeakWidth,
+    PeakWidthModel,
+)
 
 # silence the pyflakes syntax checker
 assert all((fftftog, fftgtof))

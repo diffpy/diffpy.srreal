@@ -10,7 +10,11 @@ import unittest
 from testutils import loadDiffPyStructure
 
 from diffpy.srreal.pdfcalculator import DebyePDFCalculator, PDFCalculator
-from diffpy.srreal.peakwidthmodel import DebyeWallerPeakWidth, JeongPeakWidth, PeakWidthModel
+from diffpy.srreal.peakwidthmodel import (
+    DebyeWallerPeakWidth,
+    JeongPeakWidth,
+    PeakWidthModel,
+)
 from diffpy.srreal.structureadapter import createStructureAdapter
 
 # ----------------------------------------------------------------------------

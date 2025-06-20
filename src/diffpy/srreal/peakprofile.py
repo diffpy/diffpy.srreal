@@ -23,7 +23,11 @@ Class for configuring PDF profile function:
 __all__ = ["PeakProfile", "GaussianProfile", "CroppedGaussianProfile"]
 
 from diffpy.srreal import _final_imports
-from diffpy.srreal.srreal_ext import CroppedGaussianProfile, GaussianProfile, PeakProfile
+from diffpy.srreal.srreal_ext import (
+    CroppedGaussianProfile,
+    GaussianProfile,
+    PeakProfile,
+)
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
 
 # class PeakProfile ----------------------------------------------------------
