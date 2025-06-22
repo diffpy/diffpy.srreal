@@ -92,7 +92,7 @@ ext_kws = {
     "extra_link_args": extra_link_args,
     "include_dirs": [numpy.get_include()] + boost_cfg["include_dirs"],
     "library_dirs": boost_cfg["library_dirs"],
-    "runtime_library_dirs": boost_cfg["library_dirs"],
+    # "runtime_library_dirs": boost_cfg["library_dirs"],
     "define_macros": macros,
 }
 
