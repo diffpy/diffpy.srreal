@@ -65,7 +65,7 @@ def get_objcryst_libraries():
         if "objcryst" not in stem.lower():
             continue
         # strip a leading "lib" so that setuptools does -lObjCryst, not -llibObjCryst
-        if stem.startswith("lib"):
+        if os.name != "nt" and stem.startswith("lib"):
             stem = stem[3:]
         libs.append(stem)
 
