@@ -61,9 +61,14 @@ def get_objcryst_libraries():
 
     libs = []
     for fn in os.listdir(libdir):
-        low = fn.lower()
-        if "objcryst" in low:
-            libs.append(os.path.splitext(fn)[0])
+        stem = Path(fn).stem
+        if "objcryst" not in stem.lower():
+            continue
+        # strip a leading "lib" so that setuptools does -lObjCryst, not -llibObjCryst
+        if stem.startswith("lib"):
+            stem = stem[3:]
+        libs.append(stem)
+
     if not libs:
         raise RuntimeError(f"No ObjCryst libraries found in {libdir}")
     return libs
