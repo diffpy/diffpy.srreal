@@ -1,9 +1,6 @@
-boost
-numpy
-libdiffpy
-setuptools
+libdiffpy=1.4.1rc1
+libboost-devel
+libobjcryst
+pyobjcryst
 diffpy.structure
-gsl
-# periodictable
-# pyobjcryst (up to py3.11 for mac)
-# dlfcn-win32 (for windows)
+periodictable
