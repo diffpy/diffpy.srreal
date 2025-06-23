@@ -53,7 +53,8 @@ def get_objcryst_libraries():
     conda_prefix = os.environ.get("CONDA_PREFIX")
     if not conda_prefix:
         raise EnvironmentError(
-            "CONDA_PREFIX is not set. Please install ObjCryst using conda and activate the environment."
+            "CONDA_PREFIX is not set. "
+            "Please install ObjCryst using conda and activate the environment."
         )
     if os.name == "nt":
         libdir = Path(conda_prefix) / "Library" / "lib"
@@ -65,7 +66,8 @@ def get_objcryst_libraries():
         stem = Path(fn).stem
         if "objcryst" not in stem.lower():
             continue
-        # strip a leading "lib" so that setuptools does -lObjCryst, not -llibObjCryst
+        # strip a leading "lib"
+        # so that setuptools does -lObjCryst, not -llibObjCryst
         if os.name != "nt" and stem.startswith("lib"):
             stem = stem[3:]
         libs.append(stem)
