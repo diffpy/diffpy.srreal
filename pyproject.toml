@@ -78,3 +78,8 @@ exclude = '''
   | tests/data
 )/
 '''
+
+[tool.docformatter]
+recursive = true
+wrap-summaries = 72
+wrap-descriptions = 72
