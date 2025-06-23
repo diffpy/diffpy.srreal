@@ -90,11 +90,19 @@ class TestRoutines(unittest.TestCase):
         self.assertEqual(adpt.countSites(), adpt1.countSites())
         self.assertEqual(adpt.totalOccupancy(), adpt1.totalOccupancy())
         self.assertEqual(adpt.siteAtomType(1), adpt1.siteAtomType(1))
-        self.assertTrue(numpy.array_equal(adpt.siteCartesianPosition(1), adpt1.siteCartesianPosition(1)))
+        self.assertTrue(
+            numpy.array_equal(
+                adpt.siteCartesianPosition(1), adpt1.siteCartesianPosition(1)
+            )
+        )
         self.assertEqual(adpt.siteMultiplicity(1), adpt1.siteMultiplicity(1))
         self.assertEqual(adpt.siteOccupancy(1), adpt1.siteOccupancy(1))
         self.assertTrue(adpt.siteAnisotropy(1) is adpt1.siteAnisotropy(1))
-        self.assertTrue(numpy.array_equal(adpt.siteCartesianUij(1), adpt1.siteCartesianUij(1)))
+        self.assertTrue(
+            numpy.array_equal(
+                adpt.siteCartesianUij(1), adpt1.siteCartesianUij(1)
+            )
+        )
         return
 
     def test_pickle_nonwrapped(self):
@@ -294,10 +302,16 @@ class TestPyObjCrystAdapter(unittest.TestCase):
         self.assertTrue(True is self.rutile.siteAnisotropy(0))
         self.assertTrue(True is self.rutile.siteAnisotropy(1))
         self.assertTrue(
-            numpy.allclose(numpy.diag([0.008698, 0.008698, 0.005492]), self.rutile.siteCartesianUij(0))
+            numpy.allclose(
+                numpy.diag([0.008698, 0.008698, 0.005492]),
+                self.rutile.siteCartesianUij(0),
+            )
         )
         self.assertTrue(
-            numpy.allclose(numpy.diag([0.021733, 0.021733, 0.007707]), self.rutile.siteCartesianUij(1))
+            numpy.allclose(
+                numpy.diag([0.021733, 0.021733, 0.007707]),
+                self.rutile.siteCartesianUij(1),
+            )
         )
         return
 
@@ -592,7 +606,14 @@ class TestAtom(unittest.TestCase):
         a.uc13 = 0.013
         a.uc23 = 0.023
         self.assertTrue(
-            numpy.array_equal(a.uij_cartn, [[0.01, 0.012, 0.013], [0.012, 0.01, 0.023], [0.013, 0.023, 0.01]])
+            numpy.array_equal(
+                a.uij_cartn,
+                [
+                    [0.01, 0.012, 0.013],
+                    [0.012, 0.01, 0.023],
+                    [0.013, 0.023, 0.01],
+                ],
+            )
         )
         self.assertEqual(0.01, a.uc11)
         self.assertEqual(0.01, a.uc22)

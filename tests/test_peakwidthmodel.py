@@ -101,7 +101,9 @@ class TestPeakWidthModel(unittest.TestCase):
 
     def test_maxWidth(self):
         """Check PeakWidthModel.maxWidth()"""
-        self.assertRaises(RuntimeError, PeakWidthModel().maxWidth, self.tio2adpt, 0, 10)
+        self.assertRaises(
+            RuntimeError, PeakWidthModel().maxWidth, self.tio2adpt, 0, 10
+        )
         self.assertEqual(2.0, self.pwconst.maxWidth(self.tio2adpt, 0, 10))
         self.assertEqual(2.0, self.pwconst.maxWidth(self.tio2stru, 0, 10))
         return
@@ -140,7 +142,9 @@ class TestPeakWidthModel(unittest.TestCase):
         """Check PeakWidthModel.getRegisteredTypes."""
         regtypes = PeakWidthModel.getRegisteredTypes()
         self.assertTrue(3 <= len(regtypes))
-        self.assertTrue(regtypes.issuperset(["constant", "debye-waller", "jeong"]))
+        self.assertTrue(
+            regtypes.issuperset(["constant", "debye-waller", "jeong"])
+        )
         return
 
     def test_pickling(self):

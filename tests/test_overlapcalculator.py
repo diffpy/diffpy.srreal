@@ -91,7 +91,9 @@ class TestOverlapCalculator(unittest.TestCase):
             self.assertEqual(getattr(olc, a), getattr(olc1, a))
         self.assertFalse(olc1.getPairMask(1, 2))
         self.assertTrue(olc1.getPairMask(0, 0))
-        self.assertTrue(numpy.array_equal(olc.sitesquareoverlaps, olc1.sitesquareoverlaps))
+        self.assertTrue(
+            numpy.array_equal(olc.sitesquareoverlaps, olc1.sitesquareoverlaps)
+        )
         self.assertRaises(RuntimeError, pickle_with_attr, olc, foo="bar")
         return
 
@@ -140,13 +142,18 @@ class TestOverlapCalculator(unittest.TestCase):
         ncpu = 4
         self.pool = multiprocessing.Pool(processes=ncpu)
         olc = self.olc
-        polc = createParallelCalculator(OverlapCalculator(), ncpu, self.pool.imap_unordered)
+        polc = createParallelCalculator(
+            OverlapCalculator(), ncpu, self.pool.imap_unordered
+        )
         olc.atomradiitable.fromString("Ti:1.6, O:0.66")
         polc.atomradiitable = olc.atomradiitable
         self.assertTrue(numpy.array_equal(olc(self.rutile), polc(self.rutile)))
         self.assertTrue(olc.totalsquareoverlap > 0.0)
         self.assertEqual(olc.totalsquareoverlap, polc.totalsquareoverlap)
-        self.assertEqual(sorted(zip(olc.sites0, olc.sites1)), sorted(zip(polc.sites0, polc.sites1)))
+        self.assertEqual(
+            sorted(zip(olc.sites0, olc.sites1)),
+            sorted(zip(polc.sites0, polc.sites1)),
+        )
         olc.atomradiitable.resetAll()
         self.assertEqual(0.0, sum(olc(self.rutile)))
         self.assertEqual(0.0, sum(polc(self.rutile)))
@@ -288,7 +295,9 @@ class TestOverlapCalculator(unittest.TestCase):
         self.assertFalse(numpy.any(olc.coordinations))
         olc.atomradiitable.fromString("Ti:1.6, O:0.66")
         olc(self.rutile)
-        self.assertTrue(numpy.array_equal([8, 8, 3, 3, 3, 3], olc.coordinations))
+        self.assertTrue(
+            numpy.array_equal([8, 8, 3, 3, 3, 3], olc.coordinations)
+        )
         return
 
     def test_coordinationByTypes(self):

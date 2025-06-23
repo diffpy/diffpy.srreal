@@ -85,7 +85,9 @@ def makePDFBaseline(name, fnc, replace=False, **dbattrs):
     """
     from diffpy.srreal.wraputils import _wrapAsRegisteredUnaryFunction
 
-    rv = _wrapAsRegisteredUnaryFunction(PDFBaseline, name, fnc, replace=replace, **dbattrs)
+    rv = _wrapAsRegisteredUnaryFunction(
+        PDFBaseline, name, fnc, replace=replace, **dbattrs
+    )
     return rv
 
 

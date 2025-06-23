@@ -184,8 +184,16 @@ class TestScatteringFactorTable(unittest.TestCase):
         fmn0 = numpy.array([sftx.lookup("Mn", x) for x in qa])
         self.assertTrue(numpy.array_equal(fmn0, sftx.lookup("Mn", qa)))
         self.assertTrue(numpy.array_equal(fmn0, sftx.lookup("Mn", qb)))
-        self.assertTrue(numpy.array_equal(fmn0.reshape(5, 10), sftx.lookup("Mn", qa.reshape(5, 10))))
-        self.assertTrue(numpy.array_equal(fmn0.reshape(5, 2, 5), sftx.lookup("Mn", qa.reshape(5, 2, 5))))
+        self.assertTrue(
+            numpy.array_equal(
+                fmn0.reshape(5, 10), sftx.lookup("Mn", qa.reshape(5, 10))
+            )
+        )
+        self.assertTrue(
+            numpy.array_equal(
+                fmn0.reshape(5, 2, 5), sftx.lookup("Mn", qa.reshape(5, 2, 5))
+            )
+        )
         self.assertTrue(numpy.array_equal(fmn0, sftx.lookup("Mn", list(qa))))
         self.assertRaises(TypeError, sftx.lookup, "Na", "asdf")
         self.assertRaises(TypeError, sftx.lookup, "Na", {})

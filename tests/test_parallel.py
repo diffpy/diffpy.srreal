@@ -54,7 +54,9 @@ class TestRoutines(unittest.TestCase):
         self.assertEqual("BASIC", ppdfc.evaluatortype)
         self.assertEqual("BASIC", pdfc.evaluatortype)
         ppdfc.evaluatortype = "BASIC"
-        self.assertRaises(ValueError, setattr, ppdfc, "evaluatortype", "OPTIMIZED")
+        self.assertRaises(
+            ValueError, setattr, ppdfc, "evaluatortype", "OPTIMIZED"
+        )
         return
 
     def test_parallel_pdf(self):
@@ -67,7 +69,9 @@ class TestRoutines(unittest.TestCase):
         r1, g1 = ppdfc1(self.cdse)
         self.assertTrue(numpy.array_equal(r0, r1))
         self.assertTrue(numpy.allclose(g0, g1))
-        ppdfc2 = createParallelCalculator(PDFCalculator(), self.ncpu, self.pool.imap_unordered)
+        ppdfc2 = createParallelCalculator(
+            PDFCalculator(), self.ncpu, self.pool.imap_unordered
+        )
         r2, g2 = ppdfc2(self.cdse)
         self.assertTrue(numpy.array_equal(r0, r2))
         self.assertTrue(numpy.allclose(g0, g2))
@@ -94,7 +98,9 @@ class TestRoutines(unittest.TestCase):
         pbc1 = createParallelCalculator(BondCalculator(), 3, map)
         d1 = pbc1(nickel)
         self.assertTrue(numpy.array_equal(d0, d1))
-        pbc2 = createParallelCalculator(BondCalculator(), self.ncpu, self.pool.imap_unordered)
+        pbc2 = createParallelCalculator(
+            BondCalculator(), self.ncpu, self.pool.imap_unordered
+        )
         d2 = pbc2(nickel)
         self.assertTrue(numpy.array_equal(d0, d2))
         bc.rmax = pbc1.rmax = pbc2.rmax = 2.5

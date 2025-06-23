@@ -25,7 +25,11 @@ Uisodefault = 0.005
 
 # configure options parsing
 parser = optparse.OptionParser("%prog [options]\n" + __doc__)
-parser.add_option("--pyobjcryst", action="store_true", help="Use pyobjcryst to load the CIF file.")
+parser.add_option(
+    "--pyobjcryst",
+    action="store_true",
+    help="Use pyobjcryst to load the CIF file.",
+)
 parser.allow_interspersed_args = True
 opts, args = parser.parse_args(sys.argv[1:])
 

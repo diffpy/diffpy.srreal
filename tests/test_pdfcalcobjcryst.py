@@ -84,19 +84,25 @@ class TestPDFCalcObjcryst(unittest.TestCase):
 
     def test_CdSeN(self):
         """Check PDFCalculator on ObjCryst loaded CIF, neutrons."""
-        self._comparePDFs("cdsen", "CdSe_cadmoselite_N.fgr", "CdSe_cadmoselite.cif")
+        self._comparePDFs(
+            "cdsen", "CdSe_cadmoselite_N.fgr", "CdSe_cadmoselite.cif"
+        )
         self.assertTrue(self.cdsen_mxnd < 0.01)
         return
 
     def test_CdSeX(self):
         """Check PDFCalculator on ObjCryst loaded CIF, xrays."""
-        self._comparePDFs("cdsex", "CdSe_cadmoselite_X.fgr", "CdSe_cadmoselite.cif")
+        self._comparePDFs(
+            "cdsex", "CdSe_cadmoselite_X.fgr", "CdSe_cadmoselite.cif"
+        )
         self.assertTrue(self.cdsex_mxnd < 0.01)
         return
 
     def test_rutileaniso(self):
         """Check PDFCalculator on ObjCryst loaded anisotropic rutile."""
-        self._comparePDFs("rutileaniso", "TiO2_rutile-fit.fgr", "TiO2_rutile-fit.cif")
+        self._comparePDFs(
+            "rutileaniso", "TiO2_rutile-fit.fgr", "TiO2_rutile-fit.cif"
+        )
         self.assertTrue(self.rutileaniso_mxnd < 0.057)
         return
 

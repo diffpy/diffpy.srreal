@@ -115,7 +115,9 @@ def makePDFEnvelope(name, fnc, replace=False, **dbattrs):
     """
     from diffpy.srreal.wraputils import _wrapAsRegisteredUnaryFunction
 
-    rv = _wrapAsRegisteredUnaryFunction(PDFEnvelope, name, fnc, replace=replace, **dbattrs)
+    rv = _wrapAsRegisteredUnaryFunction(
+        PDFEnvelope, name, fnc, replace=replace, **dbattrs
+    )
     return rv
 
 

@@ -59,7 +59,9 @@ def setattrFromKeywordArguments(obj, **kwargs):
     return
 
 
-def _wrapAsRegisteredUnaryFunction(cls, regname, fnc, replace=False, **dbattrs):
+def _wrapAsRegisteredUnaryFunction(
+    cls, regname, fnc, replace=False, **dbattrs
+):
     """Helper function for wrapping Python function as PDFBaseline or
     PDFEnvelope functor.  Not intended for direct usage, this function is
     rather called from makePDFBaseline or makePDFEnvelope wrappers.
@@ -149,7 +151,9 @@ def _pickle_getstate(self):
 
 def _pickle_setstate(self, state):
     if len(state) != 1:
-        emsg = "expected 1-item tuple in call to __setstate__, got " + repr(state)
+        emsg = "expected 1-item tuple in call to __setstate__, got " + repr(
+            state
+        )
         raise ValueError(emsg)
     self.__dict__.update(state[0])
     return

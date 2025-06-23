@@ -37,7 +37,8 @@ def get_boost_config():
         conda_prefix = os.environ.get("CONDA_PREFIX")
         if not conda_prefix:
             raise EnvironmentError(
-                "Neither BOOST_PATH nor CONDA_PREFIX are set. " "Please install Boost or set BOOST_PATH."
+                "Neither BOOST_PATH nor CONDA_PREFIX are set. "
+                "Please install Boost or set BOOST_PATH."
             )
         if os.name == "nt":
             inc = Path(conda_prefix) / "Library" / "include"
@@ -99,7 +100,11 @@ ext_kws = {
 
 def create_extensions():
     "Initialize Extension objects for the setup function."
-    ext = Extension("diffpy.srreal.srreal_ext", glob.glob("src/extensions/*.cpp"), **ext_kws)
+    ext = Extension(
+        "diffpy.srreal.srreal_ext",
+        glob.glob("src/extensions/*.cpp"),
+        **ext_kws,
+    )
     return [ext]
 
 

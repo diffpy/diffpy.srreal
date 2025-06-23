@@ -26,8 +26,12 @@ from diffpy.srreal.structureadapter import RegisterStructureAdapter
 # Converters for Molecule and Crystal from pyobjcryst ------------------------
 
 
-RegisterStructureAdapter("pyobjcryst._pyobjcryst.Molecule", convertObjCrystMolecule)
-RegisterStructureAdapter("pyobjcryst._pyobjcryst.Crystal", convertObjCrystCrystal)
+RegisterStructureAdapter(
+    "pyobjcryst._pyobjcryst.Molecule", convertObjCrystMolecule
+)
+RegisterStructureAdapter(
+    "pyobjcryst._pyobjcryst.Crystal", convertObjCrystCrystal
+)
 
 # Converter for Structure class from diffpy.structure ------------------------
 
@@ -115,11 +119,15 @@ class _DiffPyStructureMetadata(object):
 # end of class _DiffPyStructureMetadata
 
 
-class DiffPyStructureAtomicAdapter(_DiffPyStructureMetadata, AtomicStructureAdapter):
+class DiffPyStructureAtomicAdapter(
+    _DiffPyStructureMetadata, AtomicStructureAdapter
+):
     pass
 
 
-class DiffPyStructurePeriodicAdapter(_DiffPyStructureMetadata, PeriodicStructureAdapter):
+class DiffPyStructurePeriodicAdapter(
+    _DiffPyStructureMetadata, PeriodicStructureAdapter
+):
     pass
 
 

@@ -16,7 +16,10 @@ class DistancePrinter(PairQuantity):
 
     def _addPairContribution(self, bnds, sumscale):
         self.count += bnds.multiplicity() * sumscale / 2.0
-        print("%i %g %i %i" % (self.count, bnds.distance(), bnds.site0(), bnds.site1()))
+        print(
+            "%i %g %i %i"
+            % (self.count, bnds.distance(), bnds.site0(), bnds.site1())
+        )
         return
 
 

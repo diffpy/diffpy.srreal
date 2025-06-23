@@ -163,7 +163,9 @@ def createParallelCalculator(pqobj, ncpu, pmap):
         return proxymethod
 
     for n, f in inspect.getmembers(pqtype, inspect.isroutine):
-        ignore = n not in proxy_forced and (n.startswith("_") or hasattr(ParallelPairQuantity, n))
+        ignore = n not in proxy_forced and (
+            n.startswith("_") or hasattr(ParallelPairQuantity, n)
+        )
         if ignore:
             continue
         setattr(ParallelPairQuantity, n, _make_proxymethod(n, f))

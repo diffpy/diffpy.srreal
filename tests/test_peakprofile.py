@@ -28,7 +28,9 @@ class TestPeakProfile(unittest.TestCase):
     def test___init__(self):
         """Check PeakProfile.__init__()"""
         self.assertNotEqual(0.0, self.pkgauss.peakprecision)
-        self.assertEqual(self.pkgauss.peakprecision, self.pkcropped.peakprecision)
+        self.assertEqual(
+            self.pkgauss.peakprecision, self.pkcropped.peakprecision
+        )
         self.pkgauss._setDoubleAttr("peakprecision", 0.01)
         self.assertEqual(0.01, self.pkgauss.peakprecision)
         return

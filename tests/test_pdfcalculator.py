@@ -252,7 +252,9 @@ class TestPDFCalculator(unittest.TestCase):
         for a in pdfc._namesOfDoubleAttributes():
             self.assertEqual(getattr(pdfc, a), getattr(pdfc1, a))
         self.assertEqual(13.3, pdfc1.getEnvelope("sphericalshape").spdiameter)
-        self.assertEqual(pdfc._namesOfDoubleAttributes(), pdfc1._namesOfDoubleAttributes())
+        self.assertEqual(
+            pdfc._namesOfDoubleAttributes(), pdfc1._namesOfDoubleAttributes()
+        )
         self.assertEqual(pdfc.usedenvelopetypes, pdfc1.usedenvelopetypes)
         self.assertRaises(RuntimeError, pickle_with_attr, pdfc, foo="bar")
         return
@@ -298,7 +300,9 @@ class TestPDFCalculator(unittest.TestCase):
         self.assertEqual("scale", pc.envelopes[0].type())
         pc.envelopes += ("qresolution",)
         self.assertEqual(("qresolution", "scale"), pc.usedenvelopetypes)
-        self.assertTrue(all([isinstance(e, PDFEnvelope) for e in pc.envelopes]))
+        self.assertTrue(
+            all([isinstance(e, PDFEnvelope) for e in pc.envelopes])
+        )
         return
 
 

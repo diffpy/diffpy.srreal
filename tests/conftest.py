@@ -70,6 +70,8 @@ def has_periodictable():
         del periodictable
     except ImportError:
         has_periodictable = False
-        logging.warning("Cannot import periodictable, periodictable tests skipped.")
+        logging.warning(
+            "Cannot import periodictable, periodictable tests skipped."
+        )
 
     return has_periodictable
