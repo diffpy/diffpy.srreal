@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 
-"""Demonstration of using PairQuantity class for a printout of pair distances
-in periodic and non-periodic structures."""
+"""Demonstration of using PairQuantity class for a printout of pair
+distances in periodic and non-periodic structures."""
 
 from diffpy.srreal.pairquantity import PairQuantity
 from diffpy.structure import Structure
 
 
 class DistancePrinter(PairQuantity):
-    """This PairQuantity class simply prints the visited pair distances and the
-    indices of the contributing atoms."""
+    """This PairQuantity class simply prints the visited pair distances
+    and the indices of the contributing atoms."""
 
     def _resetValue(self):
         self.count = 0

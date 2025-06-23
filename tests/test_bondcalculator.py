@@ -79,7 +79,8 @@ class TestBondCalculator(unittest.TestCase):
         return
 
     def test_pickling_derived_structure(self):
-        """Check pickling of BondCalculator with DerivedStructureAdapter."""
+        """Check pickling of BondCalculator with
+        DerivedStructureAdapter."""
         from testutils import DerivedStructureAdapter
 
         bdc = self.bdc

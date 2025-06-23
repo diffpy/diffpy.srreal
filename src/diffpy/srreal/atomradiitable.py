@@ -63,9 +63,9 @@ class CovalentRadiiTable(AtomRadiiTable):
         return copy.copy(self)
 
     def type(self):
-        """Unique string identifier of the CovalentRadiiTable type. This is
-        used for class registration and as an argument for the createByType
-        function.
+        """Unique string identifier of the CovalentRadiiTable type. This
+        is used for class registration and as an argument for the
+        createByType function.
 
         Return string.
         """

@@ -36,7 +36,8 @@ Attributes.__getattr__ = _getattr
 
 
 def _setattr(self, name, value):
-    """Assign to C++ double attribute if Python attribute does not exist."""
+    """Assign to C++ double attribute if Python attribute does not
+    exist."""
     try:
         object.__getattribute__(self, name)
     except AttributeError:

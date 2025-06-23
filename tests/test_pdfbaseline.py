@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-"""Unit tests for the PDFBaseline class from diffpy.srreal.pdfcalculator."""
+"""Unit tests for the PDFBaseline class from
+diffpy.srreal.pdfcalculator."""
 
 
 import pickle

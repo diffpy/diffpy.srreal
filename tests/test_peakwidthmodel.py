@@ -120,7 +120,8 @@ class TestPeakWidthModel(unittest.TestCase):
         return
 
     def test_ticker_override(self):
-        """Check PeakWidthModel.ticker override in a Python-derived class."""
+        """Check PeakWidthModel.ticker override in a Python-derived
+        class."""
         pwm = MyPWM()
         self.assertEqual(0, pwm.tcnt)
         et0 = pwm.ticker()

@@ -12,7 +12,8 @@
 # See LICENSE.txt for license information.
 #
 ##############################################################################
-"""Class EventTicker -- storage of modification times of dependent objects."""
+"""Class EventTicker -- storage of modification times of dependent
+objects."""
 
 
 # exported items

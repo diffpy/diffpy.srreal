@@ -128,7 +128,8 @@ class TestPairQuantity(unittest.TestCase):
         return
 
     def test__addPairContribution(self):
-        """Check Python override of PairQuantity._addPairContribution."""
+        """Check Python override of
+        PairQuantity._addPairContribution."""
         pqcnt = PQCounter()
         self.assertEqual(0, pqcnt(carbonzchain(0)))
         self.assertEqual(0, pqcnt(carbonzchain(1)))
@@ -137,7 +138,8 @@ class TestPairQuantity(unittest.TestCase):
         return
 
     def test_optimized_evaluation(self):
-        """Check OPTIMIZED evaluation in Python-defined calculator class."""
+        """Check OPTIMIZED evaluation in Python-defined calculator
+        class."""
         c8 = carbonzchain(8)
         c9 = carbonzchain(9)
         pqd = PQDerived()

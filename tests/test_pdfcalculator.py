@@ -271,7 +271,8 @@ class TestPDFCalculator(unittest.TestCase):
         return
 
     def test_pickling_derived_structure(self):
-        """Check pickling of PDFCalculator with DerivedStructureAdapter."""
+        """Check pickling of PDFCalculator with
+        DerivedStructureAdapter."""
         from testutils import DerivedStructureAdapter
 
         pdfc = self.pdfcalc
@@ -353,7 +354,8 @@ class TestFFTRoutines(unittest.TestCase):
         return
 
     def test_fft_roundtrip(self):
-        """Check if forward and inverse transformation recover the input."""
+        """Check if forward and inverse transformation recover the
+        input."""
         fnipf2 = datafile("Ni-fit.fgr")
         g0 = numpy.loadtxt(fnipf2, usecols=(1,))
         dr0 = 0.01

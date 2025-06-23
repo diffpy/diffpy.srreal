@@ -12,8 +12,8 @@
 # See LICENSE.txt for license information.
 #
 ##############################################################################
-"""Converters from other structure representations in Python to diffpy.srreal
-StructureAdapter classes."""
+"""Converters from other structure representations in Python to
+diffpy.srreal StructureAdapter classes."""
 
 from diffpy.srreal.srreal_ext import (
     AtomicStructureAdapter,
@@ -69,12 +69,14 @@ class _DiffPyStructureMetadata(object):
 
     @staticmethod
     def hasMetadata(stru):
-        """True if Structure object carries data in its pdffit attribute."""
+        """True if Structure object carries data in its pdffit
+        attribute."""
         rv = hasattr(stru, "pdffit") and bool(stru.pdffit)
         return rv
 
     def _customPQConfig(self, pqobj):
-        """Apply PDF-related metadata if defined in PDFFit structure format."""
+        """Apply PDF-related metadata if defined in PDFFit structure
+        format."""
         pqname = type(pqobj).__name__
         if pqname not in ("PDFCalculator", "DebyePDFCalculator"):
             return
@@ -102,7 +104,8 @@ class _DiffPyStructureMetadata(object):
         return
 
     def _fetchMetadata(self, stru):
-        """Copy data from the pdffit attribute of diffpy Structure object.
+        """Copy data from the pdffit attribute of diffpy Structure
+        object.
 
         stru -- instance of Structure class from diffpy.structure
 

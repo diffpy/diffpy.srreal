@@ -91,7 +91,8 @@ class TestSFAverageObjCryst(unittest.TestCase):
         return
 
     def test_from_rutile(self):
-        """Check SFAverage.fromStructure for pyobjcryst Crystal of rutile."""
+        """Check SFAverage.fromStructure for pyobjcryst Crystal of
+        rutile."""
         rutile = loadObjCrystCrystal("rutile.cif")
         qa = numpy.arange(0, 25, 0.1)
         sfavg = SFAverage.fromStructure(rutile, self.sftx, qa)

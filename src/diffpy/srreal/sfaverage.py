@@ -116,7 +116,8 @@ class SFAverage(object):
 
     @classmethod
     def fromComposition(cls, composition, sftb, q=0):
-        """Calculate average scattering factors from atom concentrations.
+        """Calculate average scattering factors from atom
+        concentrations.
 
         Parameters
         ----------

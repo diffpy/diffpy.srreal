@@ -139,7 +139,8 @@ class TestBVSCalculator(unittest.TestCase):
         return
 
     def test_pickling_derived_structure(self):
-        """Check pickling of BVSCalculator with DerivedStructureAdapter."""
+        """Check pickling of BVSCalculator with
+        DerivedStructureAdapter."""
         from testutils import DerivedStructureAdapter
 
         bvc = self.bvc

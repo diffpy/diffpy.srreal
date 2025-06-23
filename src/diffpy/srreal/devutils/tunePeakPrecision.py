@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-"""Tune the peak precision parameter so that PDFCalculator gives equivalent
-results to diffpy.pdffit2.
+"""Tune the peak precision parameter so that PDFCalculator gives
+equivalent results to diffpy.pdffit2.
 
 Usage: tunePeakPrecision.py [qmax] [peakprecision] [createplot]
 """

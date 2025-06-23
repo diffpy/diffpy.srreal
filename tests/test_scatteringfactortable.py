@@ -158,7 +158,8 @@ class TestScatteringFactorTable(unittest.TestCase):
         return
 
     def test_derived_create(self):
-        """Check override of ScatteringFactorTable.create in Python class."""
+        """Check override of ScatteringFactorTable.create in Python
+        class."""
         lsft = LocalTable()
         lsft.setCustomAs("Xy", "Na")
         lsft2 = lsft.create()
@@ -167,7 +168,8 @@ class TestScatteringFactorTable(unittest.TestCase):
         return
 
     def test_derived_clone(self):
-        """Check override of ScatteringFactorTable.clone in Python class."""
+        """Check override of ScatteringFactorTable.clone in Python
+        class."""
         lsft = LocalTable()
         lsft.setCustomAs("Xy", "Na")
         lsft2 = lsft.clone()
@@ -176,7 +178,8 @@ class TestScatteringFactorTable(unittest.TestCase):
         return
 
     def test_lookup(self):
-        """Check ScatteringFactorTable.lookup handling of array arguments."""
+        """Check ScatteringFactorTable.lookup handling of array
+        arguments."""
         qa = numpy.linspace(0, 50)
         qb = numpy.array([(x, 0.0) for x in qa])[:, 0]
         self.assertTrue(qb.strides > qa.strides)

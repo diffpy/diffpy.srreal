@@ -12,7 +12,8 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-"""Local utilities helpful for tweaking interfaces to boost python classes."""
+"""Local utilities helpful for tweaking interfaces to boost python
+classes."""
 
 
 import copy
@@ -63,8 +64,8 @@ def _wrapAsRegisteredUnaryFunction(
     cls, regname, fnc, replace=False, **dbattrs
 ):
     """Helper function for wrapping Python function as PDFBaseline or
-    PDFEnvelope functor.  Not intended for direct usage, this function is
-    rather called from makePDFBaseline or makePDFEnvelope wrappers.
+    PDFEnvelope functor.  Not intended for direct usage, this function
+    is rather called from makePDFBaseline or makePDFEnvelope wrappers.
 
     cls      -- the functor class for wrapping the Python function
     regname  -- string name for registering the function in the global
@@ -96,9 +97,9 @@ def _wrapAsRegisteredUnaryFunction(
             return copy.copy(self)
 
         def type(self):
-            """Unique string identifier of this functor type.  The string is
-            used for class registration and as an argument for the createByType
-            function.
+            """Unique string identifier of this functor type.  The
+            string is used for class registration and as an argument for
+            the createByType function.
 
             Return string identifier.
             """

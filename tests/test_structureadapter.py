@@ -74,7 +74,8 @@ class TestRoutines(unittest.TestCase):
         return
 
     def test_createStructureAdapter_int64_occupancy(self):
-        """Check Structure conversion when occupany is of numpy.int64 type."""
+        """Check Structure conversion when occupany is of numpy.int64
+        type."""
         self.nickel[0].occupancy = numpy.int64(0)
         self.nickel[1].occupancy = numpy.int64(1)
         adpt = createStructureAdapter(self.nickel)
@@ -259,7 +260,8 @@ class TestNoSymmetry(unittest.TestCase):
         return
 
     def test_nosymmetry_twice(self):
-        """Check that second call of nosymmetry returns the same object."""
+        """Check that second call of nosymmetry returns the same
+        object."""
         adpt1 = nosymmetry(self.nickel)
         adpt2 = nosymmetry(adpt1)
         self.assertTrue(adpt1 is adpt2)
@@ -348,14 +350,16 @@ class IndexRangeTests(object):
         return
 
     def test_siteCartesianPositionIndex(self):
-        """Check out-of-range arguments in AdptClass.siteCartesianPosition."""
+        """Check out-of-range arguments in
+        AdptClass.siteCartesianPosition."""
         cnt = self.adpt.countSites()
         self.assertRaises(IndexError, self.adpt.siteCartesianPosition, cnt)
         self.assertRaises(IndexError, self.adpt.siteCartesianPosition, -1)
         return
 
     def test_siteMultiplicityIndex(self):
-        """Check out-of-range arguments in AdptClass.siteMultiplicity."""
+        """Check out-of-range arguments in
+        AdptClass.siteMultiplicity."""
         cnt = self.adpt.countSites()
         self.assertRaises(IndexError, self.adpt.siteMultiplicity, cnt)
         self.assertRaises(IndexError, self.adpt.siteMultiplicity, -1)
@@ -376,7 +380,8 @@ class IndexRangeTests(object):
         return
 
     def test_siteCartesianUijIndex(self):
-        """Check out-of-range arguments in AdptClass.siteCartesianUij."""
+        """Check out-of-range arguments in
+        AdptClass.siteCartesianUij."""
         cnt = self.adpt.countSites()
         self.assertRaises(IndexError, self.adpt.siteCartesianUij, cnt)
         self.assertRaises(IndexError, self.adpt.siteCartesianUij, -1)

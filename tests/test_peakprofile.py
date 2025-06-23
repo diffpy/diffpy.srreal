@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-"""Unit tests for the PeakProfile classes from diffpy.srreal.peakprofile."""
+"""Unit tests for the PeakProfile classes from
+diffpy.srreal.peakprofile."""
 
 
 import pickle
@@ -85,7 +86,8 @@ class TestPeakProfile(unittest.TestCase):
         return
 
     def test_ticker_override(self):
-        """Check method override for PeakProfile.ticker in a derived class."""
+        """Check method override for PeakProfile.ticker in a derived
+        class."""
         pkf = MySawTooth()
         self.assertEqual(0, pkf.tcnt)
         et0 = pkf.ticker()
