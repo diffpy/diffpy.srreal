@@ -121,7 +121,7 @@ Support and Contribute
 
 `Diffpy user group <https://groups.google.com/g/diffpy-users>`_ is the discussion forum for general questions and discussions about the use of diffpy.srreal. Please join the diffpy.srreal users community by joining the Google group. The diffpy.srreal project welcomes your expertise and enthusiasm!
 
-If you see a bug or want to request a feature, please `report it as an issue <https://github.com/diffpy/diffpy.srreal/issues>`_ and/or `submit a fix as a PR <https://github.com/diffpy/diffpy.srreal/pulls>`_.
+If you see a bug or want to request a feature, please `report it as an issue <https://github.com/diffpy/diffpy.srreal/issues>`_ and/or `submit a fix as a PR <https://github.com/diffpy/diffpy.srreal/pulls>`_. You can also post it to the `Diffpy user group <https://groups.google.com/g/diffpy-users>`_.
 
 Feel free to fork the project and contribute. To install diffpy.srreal
 in a development mode, with its sources being directly used by Python
