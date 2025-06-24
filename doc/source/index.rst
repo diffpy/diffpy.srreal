@@ -4,9 +4,9 @@
 
 .. |title| replace:: diffpy.srreal documentation
 
-diffpy.srreal - Calculators for PDF, bond valence sum, and other quantities based on atom pair interaction.
+``diffpy.srreal`` - Calculators for PDF, bond valence sum, and other quantities based on atom pair interaction.
 
-| Software version |release|.
+| Software version |release|
 | Last updated |today|.
 
 The diffpy.srreal package provides calculators for atomic pair distribution
@@ -65,6 +65,12 @@ Installation
 
 See the `README <https://github.com/diffpy/diffpy.srreal#installation>`_
 file included with the distribution.
+
+================
+Acknowledgements
+================
+
+``diffpy.srreal`` is built and maintained with `scikit-package <https://scikit-package.github.io/scikit-package/>`_.
 
 =================
 Table of contents
