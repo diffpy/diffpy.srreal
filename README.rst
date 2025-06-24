@@ -8,7 +8,7 @@
         :target: https://diffpy.github.io/diffpy.srreal
         :height: 100px
 
-|PyPi| |Forge| |PythonVersion| |PR|
+|PyPI| |Forge| |PythonVersion| |PR|
 
 |CI| |Codecov| |Black| |Tracking|
 
@@ -26,7 +26,7 @@
 
 .. |PR| image:: https://img.shields.io/badge/PR-Welcome-29ab47ff
 
-.. |PyPi| image:: https://img.shields.io/pypi/v/diffpy.srreal
+.. |PyPI| image:: https://img.shields.io/pypi/v/diffpy.srreal
         :target: https://pypi.org/project/diffpy.srreal/
 
 .. |PythonVersion| image:: https://img.shields.io/pypi/pyversions/diffpy.srreal
@@ -37,35 +37,7 @@
 
 Calculators for PDF, bond valence sum, and other quantities based on atom pair interaction.
 
-The diffpy.srreal package provides calculators for atomic pair distribution
-function (PDF), bond valence sums (BVS), atom overlaps for a hard-sphere
-model, bond distances and directions up to specified maximum distance.   The
-atomic structure models are represented with internal classes as non-periodic,
-periodic or structures with space group symmetries.  The package provides
-implicit adapters from diffpy.structure classes or from Crystal or Molecule
-objects from pyobjcryst.  Adapters can be easily defined for any other
-structure representations in Python allowing their direct use with the
-calculators.  Calculators support two evaluation models - BASIC, which
-performs a full pair-summation every time, and OPTIMIZED, which updates only
-pair contributions that have changed since the last evaluation.  Calculations
-can be split among parallel jobs using Python multiprocessing package or any
-other library that provides parallel map function.  PDF calculations can
-be done in two modes - either as a real-space summation of peak profiles
-(PDFCalculator) or as a reciprocal-space Debye summation and Fourier
-transform of the total scattering structure function (DebyePDFCalculator).
-
-The diffpy.srreal package is a Python binding to the C++ library libdiffpy
-(https://github.com/diffpy/libdiffpy).  Calculators are created as
-objects of a given calculator type and so multiple instances of the same
-calculator type can exist with different configurations.  Calculators are
-composed of other objects that perform lower-level tasks, such as calculating
-peak profile or looking up atom scattering factors.  These objects can be
-re-assigned at runtime allowing to easily customize the calculation procedure.
-New classes can be defined using object inheritance either in Python or in C++
-and used with the existing calculators; as an example, this allows to
-calculate PDF with a user-defined profile function.  A new calculator class
-can be also defined for any quantity that is obtained by iteration over atom
-pairs, by defining only the function that processes atom-pair contributions.
+* LONGER DESCRIPTION HERE
 
 For more information about the diffpy.srreal library, please consult our `online documentation <https://diffpy.github.io/diffpy.srreal>`_.
 
@@ -119,9 +91,7 @@ You may consult our `online documentation <https://diffpy.github.io/diffpy.srrea
 Support and Contribute
 ----------------------
 
-`Diffpy user group <https://groups.google.com/g/diffpy-users>`_ is the discussion forum for general questions and discussions about the use of diffpy.srreal. Please join the diffpy.srreal users community by joining the Google group. The diffpy.srreal project welcomes your expertise and enthusiasm!
-
-If you see a bug or want to request a feature, please `report it as an issue <https://github.com/diffpy/diffpy.srreal/issues>`_ and/or `submit a fix as a PR <https://github.com/diffpy/diffpy.srreal/pulls>`_. You can also post it to the `Diffpy user group <https://groups.google.com/g/diffpy-users>`_.
+If you see a bug or want to request a feature, please `report it as an issue <https://github.com/diffpy/diffpy.srreal/issues>`_ and/or `submit a fix as a PR <https://github.com/diffpy/diffpy.srreal/pulls>`_.
 
 Feel free to fork the project and contribute. To install diffpy.srreal
 in a development mode, with its sources being directly used by Python
@@ -149,4 +119,9 @@ Before contributing, please read our `Code of Conduct <https://github.com/diffpy
 Contact
 -------
 
-For more information on diffpy.srreal please visit the project `web-page <https://diffpy.github.io/>`_ or email Prof. Simon Billinge at  sb2896@columbia.edu.
+For more information on diffpy.srreal please visit the project `web-page <https://diffpy.github.io/>`_ or email Simon Billinge at sb2896@columbia.edu.
+
+Acknowledgements
+----------------
+
+``diffpy.srreal`` is built and maintained with `scikit-package <https://scikit-package.github.io/scikit-package/>`_.
