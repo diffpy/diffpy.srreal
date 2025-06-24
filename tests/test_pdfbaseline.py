@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-"""Unit tests for the PDFBaseline class from diffpy.srreal.pdfcalculator."""
+"""Unit tests for the PDFBaseline class from
+diffpy.srreal.pdfcalculator."""
 
 
 import pickle
@@ -93,8 +94,12 @@ class TestPDFBaseline(unittest.TestCase):
     def test__aliasType(self):
         """Check PDFBaseline._aliasType."""
         self.assertRaises(ValueError, PDFBaseline.createByType, "alias")
-        self.assertRaises(RuntimeError, PDFBaseline._aliasType, "invalid", "alias")
-        self.assertRaises(RuntimeError, PDFBaseline._aliasType, "linear", "zero")
+        self.assertRaises(
+            RuntimeError, PDFBaseline._aliasType, "invalid", "alias"
+        )
+        self.assertRaises(
+            RuntimeError, PDFBaseline._aliasType, "linear", "zero"
+        )
         PDFBaseline._aliasType("linear", "alias")
         bl = PDFBaseline.createByType("alias")
         self.assertEqual("linear", bl.type())
@@ -104,7 +109,9 @@ class TestPDFBaseline(unittest.TestCase):
         bl1 = PDFBaseline.createByType("alias")
         self.assertTrue(isinstance(bl1, LinearBaseline))
         # no other type can be aliased to the existing name.
-        self.assertRaises(RuntimeError, PDFBaseline._aliasType, "zero", "alias")
+        self.assertRaises(
+            RuntimeError, PDFBaseline._aliasType, "zero", "alias"
+        )
         return
 
     def test__deregisterType(self):
@@ -118,7 +125,9 @@ class TestPDFBaseline(unittest.TestCase):
 
     def test_createByType(self):
         """Check PDFBaseline.createByType()"""
-        self.assertRaises(ValueError, PDFBaseline.createByType, "notregistered")
+        self.assertRaises(
+            ValueError, PDFBaseline.createByType, "notregistered"
+        )
         return
 
     def test_isRegisteredType(self):
@@ -136,7 +145,9 @@ class TestPDFBaseline(unittest.TestCase):
         PDFBaseline._aliasType("linear", "bar")
         PDFBaseline._aliasType("linear", "linear")
         PDFBaseline._aliasType("bar", "foo")
-        self.assertEqual({"bar": "linear", "foo": "linear"}, PDFBaseline.getAliasedTypes())
+        self.assertEqual(
+            {"bar": "linear", "foo": "linear"}, PDFBaseline.getAliasedTypes()
+        )
         return
 
     def test_getRegisteredTypes(self):
@@ -161,7 +172,9 @@ class TestPDFBaseline(unittest.TestCase):
 
     def test_makePDFBaseline(self):
         """Check the makePDFBaseline wrapper."""
-        pbl = makePDFBaseline("parabolabaseline", parabola_baseline, a=1, b=2, c=3)
+        pbl = makePDFBaseline(
+            "parabolabaseline", parabola_baseline, a=1, b=2, c=3
+        )
         self.assertEqual(3, pbl(0))
         self.assertEqual(6, pbl(1))
         self.assertEqual(11, pbl(2))
@@ -181,10 +194,28 @@ class TestPDFBaseline(unittest.TestCase):
         self.assertEqual([7, 3, 28], [pbl4(x) for x in [-2, 0, 5]])
         self.assertEqual("bar", pbl4.foo)
         # fail if this baseline type already exists.
-        self.assertRaises(RuntimeError, makePDFBaseline, "linear", parabola_baseline, a=1, b=2, c=3)
-        self.assertRaises(RuntimeError, makePDFBaseline, "parabolabaseline", parabola_baseline, a=1, b=2, c=3)
+        self.assertRaises(
+            RuntimeError,
+            makePDFBaseline,
+            "linear",
+            parabola_baseline,
+            a=1,
+            b=2,
+            c=3,
+        )
+        self.assertRaises(
+            RuntimeError,
+            makePDFBaseline,
+            "parabolabaseline",
+            parabola_baseline,
+            a=1,
+            b=2,
+            c=3,
+        )
         # check replacement of an existing type.
-        makePDFBaseline("linear", parabola_baseline, replace=True, a=1, b=2, c=4)
+        makePDFBaseline(
+            "linear", parabola_baseline, replace=True, a=1, b=2, c=4
+        )
         pbl4 = PDFBaseline.createByType("linear")
         self.assertEqual(set(("a", "b", "c")), pbl4._namesOfDoubleAttributes())
         self.assertEqual(4, pbl4.c)
@@ -196,7 +227,9 @@ class TestPDFBaseline(unittest.TestCase):
 
     def test_picking_owned(self):
         """Verify pickling of PDFBaseline owned by PDF calculators."""
-        pbl = makePDFBaseline("parabolabaseline", parabola_baseline, a=1, b=2, c=3)
+        pbl = makePDFBaseline(
+            "parabolabaseline", parabola_baseline, a=1, b=2, c=3
+        )
         pbl.a = 7
         pbl.foobar = "asdf"
         pc = PDFCalculator()

@@ -77,8 +77,9 @@ StepCutEnvelope.stepcut = propertyFromExtDoubleAttr(
 
 
 def makePDFEnvelope(name, fnc, replace=False, **dbattrs):
-    """Helper function for registering Python function as a PDFEnvelope. This
-    is required for using Python function as PDFCalculator envelope.
+    """Helper function for registering Python function as a PDFEnvelope.
+    This is required for using Python function as PDFCalculator
+    envelope.
 
     name     -- unique string name for registering Python function in the
                 global registry of PDFEnvelope types.  This will be the
@@ -115,7 +116,9 @@ def makePDFEnvelope(name, fnc, replace=False, **dbattrs):
     """
     from diffpy.srreal.wraputils import _wrapAsRegisteredUnaryFunction
 
-    rv = _wrapAsRegisteredUnaryFunction(PDFEnvelope, name, fnc, replace=replace, **dbattrs)
+    rv = _wrapAsRegisteredUnaryFunction(
+        PDFEnvelope, name, fnc, replace=replace, **dbattrs
+    )
     return rv
 
 

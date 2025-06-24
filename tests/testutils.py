@@ -142,11 +142,15 @@ class DerivedAtomicStructureAdapter(HasCustomPQConfig, AtomicStructureAdapter):
     pass
 
 
-class DerivedPeriodicStructureAdapter(HasCustomPQConfig, PeriodicStructureAdapter):
+class DerivedPeriodicStructureAdapter(
+    HasCustomPQConfig, PeriodicStructureAdapter
+):
     pass
 
 
-class DerivedCrystalStructureAdapter(HasCustomPQConfig, CrystalStructureAdapter):
+class DerivedCrystalStructureAdapter(
+    HasCustomPQConfig, CrystalStructureAdapter
+):
     pass
 
 

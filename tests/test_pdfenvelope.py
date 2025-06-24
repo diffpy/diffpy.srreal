@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-"""Unit tests for the PDFEnvelope class from diffpy.srreal.pdfcalculator."""
+"""Unit tests for the PDFEnvelope class from
+diffpy.srreal.pdfcalculator."""
 
 
 import pickle
@@ -91,7 +92,9 @@ class TestPDFEnvelope(unittest.TestCase):
 
     def test_createByType(self):
         """Check PDFEnvelope.createByType()"""
-        self.assertRaises(ValueError, PDFEnvelope.createByType, "notregistered")
+        self.assertRaises(
+            ValueError, PDFEnvelope.createByType, "notregistered"
+        )
         return
 
     def test_getRegisteredTypes(self):
@@ -114,7 +117,9 @@ class TestPDFEnvelope(unittest.TestCase):
 
     def test_makePDFEnvelope(self):
         """Check the makePDFEnvelope wrapper."""
-        pbl = makePDFEnvelope("parabolaenvelope", parabola_envelope, a=1, b=2, c=3)
+        pbl = makePDFEnvelope(
+            "parabolaenvelope", parabola_envelope, a=1, b=2, c=3
+        )
         self.assertEqual(3, pbl(0))
         self.assertEqual(6, pbl(1))
         self.assertEqual(11, pbl(2))
@@ -138,7 +143,9 @@ class TestPDFEnvelope(unittest.TestCase):
 
     def test_picking_owned(self):
         """Verify pickling of envelopes owned by PDF calculators."""
-        pbl = makePDFEnvelope("parabolaenvelope", parabola_envelope, a=1, b=2, c=3)
+        pbl = makePDFEnvelope(
+            "parabolaenvelope", parabola_envelope, a=1, b=2, c=3
+        )
         pbl.a = 7
         pbl.foobar = "asdf"
         pc = PDFCalculator()
@@ -156,7 +163,10 @@ class TestPDFEnvelope(unittest.TestCase):
         dbpc2 = pickle.loads(pickle.dumps(dbpc))
         self.assertEqual(3.5, pc2.scale)
         self.assertEqual(3.5, dbpc2.scale)
-        pblcopies = [pc2.getEnvelope("parabolaenvelope"), dbpc2.getEnvelope("parabolaenvelope")]
+        pblcopies = [
+            pc2.getEnvelope("parabolaenvelope"),
+            dbpc2.getEnvelope("parabolaenvelope"),
+        ]
         for pbl2 in pblcopies:
             self.assertEqual(7, pbl2.a)
             self.assertEqual("asdf", pbl2.foobar)

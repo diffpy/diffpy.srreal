@@ -252,7 +252,9 @@ class TestPDFCalculator(unittest.TestCase):
         for a in pdfc._namesOfDoubleAttributes():
             self.assertEqual(getattr(pdfc, a), getattr(pdfc1, a))
         self.assertEqual(13.3, pdfc1.getEnvelope("sphericalshape").spdiameter)
-        self.assertEqual(pdfc._namesOfDoubleAttributes(), pdfc1._namesOfDoubleAttributes())
+        self.assertEqual(
+            pdfc._namesOfDoubleAttributes(), pdfc1._namesOfDoubleAttributes()
+        )
         self.assertEqual(pdfc.usedenvelopetypes, pdfc1.usedenvelopetypes)
         self.assertRaises(RuntimeError, pickle_with_attr, pdfc, foo="bar")
         return
@@ -269,7 +271,8 @@ class TestPDFCalculator(unittest.TestCase):
         return
 
     def test_pickling_derived_structure(self):
-        """Check pickling of PDFCalculator with DerivedStructureAdapter."""
+        """Check pickling of PDFCalculator with
+        DerivedStructureAdapter."""
         from testutils import DerivedStructureAdapter
 
         pdfc = self.pdfcalc
@@ -298,7 +301,9 @@ class TestPDFCalculator(unittest.TestCase):
         self.assertEqual("scale", pc.envelopes[0].type())
         pc.envelopes += ("qresolution",)
         self.assertEqual(("qresolution", "scale"), pc.usedenvelopetypes)
-        self.assertTrue(all([isinstance(e, PDFEnvelope) for e in pc.envelopes]))
+        self.assertTrue(
+            all([isinstance(e, PDFEnvelope) for e in pc.envelopes])
+        )
         return
 
 
@@ -349,7 +354,8 @@ class TestFFTRoutines(unittest.TestCase):
         return
 
     def test_fft_roundtrip(self):
-        """Check if forward and inverse transformation recover the input."""
+        """Check if forward and inverse transformation recover the
+        input."""
         fnipf2 = datafile("Ni-fit.fgr")
         g0 = numpy.loadtxt(fnipf2, usecols=(1,))
         dr0 = 0.01

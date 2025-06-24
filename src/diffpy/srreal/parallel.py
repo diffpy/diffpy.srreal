@@ -43,8 +43,8 @@ def createParallelCalculator(pqobj, ncpu, pmap):
     """
 
     class ParallelPairQuantity(Attributes):
-        """Class for running parallel calculations.  This is a proxy class to
-        the wrapper PairQuantity type with the same interface.
+        """Class for running parallel calculations.  This is a proxy
+        class to the wrapper PairQuantity type with the same interface.
 
         Instance data:
 
@@ -70,7 +70,8 @@ def createParallelCalculator(pqobj, ncpu, pmap):
             return
 
         def eval(self, stru=None):
-            """Perform parallel calculation and return internal value array.
+            """Perform parallel calculation and return internal value
+            array.
 
             stru -- object that can be converted to StructureAdapter,
                     e.g., example diffpy Structure or pyobjcryst Crystal.
@@ -163,7 +164,9 @@ def createParallelCalculator(pqobj, ncpu, pmap):
         return proxymethod
 
     for n, f in inspect.getmembers(pqtype, inspect.isroutine):
-        ignore = n not in proxy_forced and (n.startswith("_") or hasattr(ParallelPairQuantity, n))
+        ignore = n not in proxy_forced and (
+            n.startswith("_") or hasattr(ParallelPairQuantity, n)
+        )
         if ignore:
             continue
         setattr(ParallelPairQuantity, n, _make_proxymethod(n, f))
@@ -206,7 +209,8 @@ def createParallelCalculator(pqobj, ncpu, pmap):
 
 
 def _parallelData(kwd):
-    """Helper for calculating and fetching raw results from a worker node."""
+    """Helper for calculating and fetching raw results from a worker
+    node."""
     pqobj = kwd["pqobj"]
     pqobj._setupParallelRun(kwd["cpuindex"], kwd["ncpu"])
     pqobj.eval()

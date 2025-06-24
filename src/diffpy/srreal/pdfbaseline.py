@@ -48,8 +48,9 @@ LinearBaseline.slope = propertyFromExtDoubleAttr(
 
 
 def makePDFBaseline(name, fnc, replace=False, **dbattrs):
-    """Helper function for registering Python function as a PDFBaseline. This
-    is required for using Python function as PDFCalculator.baseline.
+    """Helper function for registering Python function as a PDFBaseline.
+    This is required for using Python function as
+    PDFCalculator.baseline.
 
     name     -- unique string name for registering Python function in the
                 global registry of PDFBaseline types.  This will be the
@@ -85,7 +86,9 @@ def makePDFBaseline(name, fnc, replace=False, **dbattrs):
     """
     from diffpy.srreal.wraputils import _wrapAsRegisteredUnaryFunction
 
-    rv = _wrapAsRegisteredUnaryFunction(PDFBaseline, name, fnc, replace=replace, **dbattrs)
+    rv = _wrapAsRegisteredUnaryFunction(
+        PDFBaseline, name, fnc, replace=replace, **dbattrs
+    )
     return rv
 
 

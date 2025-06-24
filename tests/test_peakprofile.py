@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-"""Unit tests for the PeakProfile classes from diffpy.srreal.peakprofile."""
+"""Unit tests for the PeakProfile classes from
+diffpy.srreal.peakprofile."""
 
 
 import pickle
@@ -28,7 +29,9 @@ class TestPeakProfile(unittest.TestCase):
     def test___init__(self):
         """Check PeakProfile.__init__()"""
         self.assertNotEqual(0.0, self.pkgauss.peakprecision)
-        self.assertEqual(self.pkgauss.peakprecision, self.pkcropped.peakprecision)
+        self.assertEqual(
+            self.pkgauss.peakprecision, self.pkcropped.peakprecision
+        )
         self.pkgauss._setDoubleAttr("peakprecision", 0.01)
         self.assertEqual(0.01, self.pkgauss.peakprecision)
         return
@@ -83,7 +86,8 @@ class TestPeakProfile(unittest.TestCase):
         return
 
     def test_ticker_override(self):
-        """Check method override for PeakProfile.ticker in a derived class."""
+        """Check method override for PeakProfile.ticker in a derived
+        class."""
         pkf = MySawTooth()
         self.assertEqual(0, pkf.tcnt)
         et0 = pkf.ticker()

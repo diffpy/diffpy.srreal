@@ -91,7 +91,9 @@ class TestOverlapCalculator(unittest.TestCase):
             self.assertEqual(getattr(olc, a), getattr(olc1, a))
         self.assertFalse(olc1.getPairMask(1, 2))
         self.assertTrue(olc1.getPairMask(0, 0))
-        self.assertTrue(numpy.array_equal(olc.sitesquareoverlaps, olc1.sitesquareoverlaps))
+        self.assertTrue(
+            numpy.array_equal(olc.sitesquareoverlaps, olc1.sitesquareoverlaps)
+        )
         self.assertRaises(RuntimeError, pickle_with_attr, olc, foo="bar")
         return
 
@@ -115,7 +117,8 @@ class TestOverlapCalculator(unittest.TestCase):
         return
 
     def test_pickling_derived_structure(self):
-        """Check pickling of OverlapCalculator with DerivedStructureAdapter."""
+        """Check pickling of OverlapCalculator with
+        DerivedStructureAdapter."""
         from testutils import DerivedStructureAdapter
 
         olc = self.olc
@@ -140,13 +143,18 @@ class TestOverlapCalculator(unittest.TestCase):
         ncpu = 4
         self.pool = multiprocessing.Pool(processes=ncpu)
         olc = self.olc
-        polc = createParallelCalculator(OverlapCalculator(), ncpu, self.pool.imap_unordered)
+        polc = createParallelCalculator(
+            OverlapCalculator(), ncpu, self.pool.imap_unordered
+        )
         olc.atomradiitable.fromString("Ti:1.6, O:0.66")
         polc.atomradiitable = olc.atomradiitable
         self.assertTrue(numpy.array_equal(olc(self.rutile), polc(self.rutile)))
         self.assertTrue(olc.totalsquareoverlap > 0.0)
         self.assertEqual(olc.totalsquareoverlap, polc.totalsquareoverlap)
-        self.assertEqual(sorted(zip(olc.sites0, olc.sites1)), sorted(zip(polc.sites0, polc.sites1)))
+        self.assertEqual(
+            sorted(zip(olc.sites0, olc.sites1)),
+            sorted(zip(polc.sites0, polc.sites1)),
+        )
         olc.atomradiitable.resetAll()
         self.assertEqual(0.0, sum(olc(self.rutile)))
         self.assertEqual(0.0, sum(polc(self.rutile)))
@@ -288,7 +296,9 @@ class TestOverlapCalculator(unittest.TestCase):
         self.assertFalse(numpy.any(olc.coordinations))
         olc.atomradiitable.fromString("Ti:1.6, O:0.66")
         olc(self.rutile)
-        self.assertTrue(numpy.array_equal([8, 8, 3, 3, 3, 3], olc.coordinations))
+        self.assertTrue(
+            numpy.array_equal([8, 8, 3, 3, 3, 3], olc.coordinations)
+        )
         return
 
     def test_coordinationByTypes(self):
@@ -350,7 +360,8 @@ class TestOverlapCalculatorObjCryst(unittest.TestCase):
         return
 
     def test_totalsquareoverlap(self):
-        """Check OverlapCalculator.totalsquareoverlap for ObjCryst crystal."""
+        """Check OverlapCalculator.totalsquareoverlap for ObjCryst
+        crystal."""
         olc = self.olc
         self.assertEqual(0.0, olc.totalsquareoverlap)
         olc(self.rutile)
@@ -361,7 +372,8 @@ class TestOverlapCalculatorObjCryst(unittest.TestCase):
         return
 
     def test_meansquareoverlap(self):
-        """Check OverlapCalculator.meansquareoverlap for ObjCryst crystal."""
+        """Check OverlapCalculator.meansquareoverlap for ObjCryst
+        crystal."""
         olc = self.olc
         self.assertEqual(0.0, olc.meansquareoverlap)
         olc(self.rutile)
@@ -372,7 +384,8 @@ class TestOverlapCalculatorObjCryst(unittest.TestCase):
         return
 
     def test_flipDiffTotal(self):
-        """Check OverlapCalculator.flipDiffTotal for an ObjCryst crystal."""
+        """Check OverlapCalculator.flipDiffTotal for an ObjCryst
+        crystal."""
         olc = self.olc
         olc(self.rutile)
         self.assertEqual(0.0, olc.flipDiffTotal(0, 1))
@@ -387,7 +400,8 @@ class TestOverlapCalculatorObjCryst(unittest.TestCase):
         return
 
     def test_flipDiffMean(self):
-        """Check OverlapCalculator.flipDiffMean for an ObjCryst crystal."""
+        """Check OverlapCalculator.flipDiffMean for an ObjCryst
+        crystal."""
         olc = self.olc
         olc(self.rutile)
         self.assertEqual(0.0, olc.flipDiffMean(0, 1))
@@ -405,7 +419,8 @@ class TestOverlapCalculatorObjCryst(unittest.TestCase):
         return
 
     def test_getNeighborSites(self):
-        """Check OverlapCalculator.getNeighborSites for an ObjCryst crystal."""
+        """Check OverlapCalculator.getNeighborSites for an ObjCryst
+        crystal."""
         olc = self.olc
         olc(self.rutile)
         self.assertEqual(set(), olc.getNeighborSites(0))
@@ -417,7 +432,8 @@ class TestOverlapCalculatorObjCryst(unittest.TestCase):
         return
 
     def test_coordinations(self):
-        """Check OverlapCalculator.coordinations for an ObjCryst crystal."""
+        """Check OverlapCalculator.coordinations for an ObjCryst
+        crystal."""
         olc = self.olc
         self.assertEqual(0, len(olc.coordinations))
         olc(self.rutile)
@@ -444,7 +460,8 @@ class TestOverlapCalculatorObjCryst(unittest.TestCase):
         return
 
     def test_neighborhoods(self):
-        """Check OverlapCalculator.neighborhoods for an ObjCryst crystal."""
+        """Check OverlapCalculator.neighborhoods for an ObjCryst
+        crystal."""
         olc = self.olc
         self.assertEqual([], olc.neighborhoods)
         olc(self.rutile)

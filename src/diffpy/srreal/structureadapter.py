@@ -12,8 +12,8 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-"""Class StructureAdapter -- adapter of any structure object to the interface
-expected by srreal PairQuantity calculators.
+"""Class StructureAdapter -- adapter of any structure object to the
+interface expected by srreal PairQuantity calculators.
 
 Routines:
 
@@ -73,11 +73,11 @@ def createStructureAdapter(stru):
 
 
 def RegisterStructureAdapter(fqname, fnc=None):
-    """Function decorator that marks it as a converter of specified object type
-    to StructureAdapter class in diffpy.srreal.  The registered structure
-    object types can be afterwards directly used with calculators in
-    diffpy.srreal as they would be implicitly converted to the internal
-    diffpy.srreal structure type.
+    """Function decorator that marks it as a converter of specified
+    object type to StructureAdapter class in diffpy.srreal.  The
+    registered structure object types can be afterwards directly used
+    with calculators in diffpy.srreal as they would be implicitly
+    converted to the internal diffpy.srreal structure type.
 
     fqname   -- fully qualified class name for the convertible objects.
                 This is the quoted string included in "str(type(obj))".

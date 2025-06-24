@@ -23,7 +23,9 @@ class TestDebyePDFCalculator(unittest.TestCase):
         if not TestDebyePDFCalculator.bucky:
             TestDebyePDFCalculator.bucky = loadDiffPyStructure("C60bucky.stru")
         if not TestDebyePDFCalculator.tio2rutile:
-            TestDebyePDFCalculator.tio2rutile = loadDiffPyStructure("TiO2_rutile-fit.stru")
+            TestDebyePDFCalculator.tio2rutile = loadDiffPyStructure(
+                "TiO2_rutile-fit.stru"
+            )
         return
 
     #   def tearDown(self):
@@ -166,7 +168,9 @@ class TestDebyePDFCalculator(unittest.TestCase):
         for a in dpdfc._namesOfDoubleAttributes():
             self.assertEqual(getattr(dpdfc, a), getattr(dpdfc1, a))
         self.assertEqual(13.3, dpdfc1.getEnvelope("sphericalshape").spdiameter)
-        self.assertEqual(dpdfc._namesOfDoubleAttributes(), dpdfc1._namesOfDoubleAttributes())
+        self.assertEqual(
+            dpdfc._namesOfDoubleAttributes(), dpdfc1._namesOfDoubleAttributes()
+        )
         self.assertEqual(dpdfc.usedenvelopetypes, dpdfc1.usedenvelopetypes)
         self.assertRaises(RuntimeError, pickle_with_attr, dpdfc, foo="bar")
         return

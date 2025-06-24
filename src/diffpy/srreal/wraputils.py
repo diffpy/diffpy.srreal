@@ -12,7 +12,8 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-"""Local utilities helpful for tweaking interfaces to boost python classes."""
+"""Local utilities helpful for tweaking interfaces to boost python
+classes."""
 
 
 import copy
@@ -59,10 +60,12 @@ def setattrFromKeywordArguments(obj, **kwargs):
     return
 
 
-def _wrapAsRegisteredUnaryFunction(cls, regname, fnc, replace=False, **dbattrs):
+def _wrapAsRegisteredUnaryFunction(
+    cls, regname, fnc, replace=False, **dbattrs
+):
     """Helper function for wrapping Python function as PDFBaseline or
-    PDFEnvelope functor.  Not intended for direct usage, this function is
-    rather called from makePDFBaseline or makePDFEnvelope wrappers.
+    PDFEnvelope functor.  Not intended for direct usage, this function
+    is rather called from makePDFBaseline or makePDFEnvelope wrappers.
 
     cls      -- the functor class for wrapping the Python function
     regname  -- string name for registering the function in the global
@@ -94,9 +97,9 @@ def _wrapAsRegisteredUnaryFunction(cls, regname, fnc, replace=False, **dbattrs):
             return copy.copy(self)
 
         def type(self):
-            """Unique string identifier of this functor type.  The string is
-            used for class registration and as an argument for the createByType
-            function.
+            """Unique string identifier of this functor type.  The
+            string is used for class registration and as an argument for
+            the createByType function.
 
             Return string identifier.
             """
@@ -149,7 +152,9 @@ def _pickle_getstate(self):
 
 def _pickle_setstate(self, state):
     if len(state) != 1:
-        emsg = "expected 1-item tuple in call to __setstate__, got " + repr(state)
+        emsg = "expected 1-item tuple in call to __setstate__, got " + repr(
+            state
+        )
         raise ValueError(emsg)
     self.__dict__.update(state[0])
     return

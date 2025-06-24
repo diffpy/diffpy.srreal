@@ -158,7 +158,8 @@ class TestScatteringFactorTable(unittest.TestCase):
         return
 
     def test_derived_create(self):
-        """Check override of ScatteringFactorTable.create in Python class."""
+        """Check override of ScatteringFactorTable.create in Python
+        class."""
         lsft = LocalTable()
         lsft.setCustomAs("Xy", "Na")
         lsft2 = lsft.create()
@@ -167,7 +168,8 @@ class TestScatteringFactorTable(unittest.TestCase):
         return
 
     def test_derived_clone(self):
-        """Check override of ScatteringFactorTable.clone in Python class."""
+        """Check override of ScatteringFactorTable.clone in Python
+        class."""
         lsft = LocalTable()
         lsft.setCustomAs("Xy", "Na")
         lsft2 = lsft.clone()
@@ -176,7 +178,8 @@ class TestScatteringFactorTable(unittest.TestCase):
         return
 
     def test_lookup(self):
-        """Check ScatteringFactorTable.lookup handling of array arguments."""
+        """Check ScatteringFactorTable.lookup handling of array
+        arguments."""
         qa = numpy.linspace(0, 50)
         qb = numpy.array([(x, 0.0) for x in qa])[:, 0]
         self.assertTrue(qb.strides > qa.strides)
@@ -184,8 +187,16 @@ class TestScatteringFactorTable(unittest.TestCase):
         fmn0 = numpy.array([sftx.lookup("Mn", x) for x in qa])
         self.assertTrue(numpy.array_equal(fmn0, sftx.lookup("Mn", qa)))
         self.assertTrue(numpy.array_equal(fmn0, sftx.lookup("Mn", qb)))
-        self.assertTrue(numpy.array_equal(fmn0.reshape(5, 10), sftx.lookup("Mn", qa.reshape(5, 10))))
-        self.assertTrue(numpy.array_equal(fmn0.reshape(5, 2, 5), sftx.lookup("Mn", qa.reshape(5, 2, 5))))
+        self.assertTrue(
+            numpy.array_equal(
+                fmn0.reshape(5, 10), sftx.lookup("Mn", qa.reshape(5, 10))
+            )
+        )
+        self.assertTrue(
+            numpy.array_equal(
+                fmn0.reshape(5, 2, 5), sftx.lookup("Mn", qa.reshape(5, 2, 5))
+            )
+        )
         self.assertTrue(numpy.array_equal(fmn0, sftx.lookup("Mn", list(qa))))
         self.assertRaises(TypeError, sftx.lookup, "Na", "asdf")
         self.assertRaises(TypeError, sftx.lookup, "Na", {})

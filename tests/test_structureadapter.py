@@ -74,7 +74,8 @@ class TestRoutines(unittest.TestCase):
         return
 
     def test_createStructureAdapter_int64_occupancy(self):
-        """Check Structure conversion when occupany is of numpy.int64 type."""
+        """Check Structure conversion when occupany is of numpy.int64
+        type."""
         self.nickel[0].occupancy = numpy.int64(0)
         self.nickel[1].occupancy = numpy.int64(1)
         adpt = createStructureAdapter(self.nickel)
@@ -90,11 +91,19 @@ class TestRoutines(unittest.TestCase):
         self.assertEqual(adpt.countSites(), adpt1.countSites())
         self.assertEqual(adpt.totalOccupancy(), adpt1.totalOccupancy())
         self.assertEqual(adpt.siteAtomType(1), adpt1.siteAtomType(1))
-        self.assertTrue(numpy.array_equal(adpt.siteCartesianPosition(1), adpt1.siteCartesianPosition(1)))
+        self.assertTrue(
+            numpy.array_equal(
+                adpt.siteCartesianPosition(1), adpt1.siteCartesianPosition(1)
+            )
+        )
         self.assertEqual(adpt.siteMultiplicity(1), adpt1.siteMultiplicity(1))
         self.assertEqual(adpt.siteOccupancy(1), adpt1.siteOccupancy(1))
         self.assertTrue(adpt.siteAnisotropy(1) is adpt1.siteAnisotropy(1))
-        self.assertTrue(numpy.array_equal(adpt.siteCartesianUij(1), adpt1.siteCartesianUij(1)))
+        self.assertTrue(
+            numpy.array_equal(
+                adpt.siteCartesianUij(1), adpt1.siteCartesianUij(1)
+            )
+        )
         return
 
     def test_pickle_nonwrapped(self):
@@ -251,7 +260,8 @@ class TestNoSymmetry(unittest.TestCase):
         return
 
     def test_nosymmetry_twice(self):
-        """Check that second call of nosymmetry returns the same object."""
+        """Check that second call of nosymmetry returns the same
+        object."""
         adpt1 = nosymmetry(self.nickel)
         adpt2 = nosymmetry(adpt1)
         self.assertTrue(adpt1 is adpt2)
@@ -294,10 +304,16 @@ class TestPyObjCrystAdapter(unittest.TestCase):
         self.assertTrue(True is self.rutile.siteAnisotropy(0))
         self.assertTrue(True is self.rutile.siteAnisotropy(1))
         self.assertTrue(
-            numpy.allclose(numpy.diag([0.008698, 0.008698, 0.005492]), self.rutile.siteCartesianUij(0))
+            numpy.allclose(
+                numpy.diag([0.008698, 0.008698, 0.005492]),
+                self.rutile.siteCartesianUij(0),
+            )
         )
         self.assertTrue(
-            numpy.allclose(numpy.diag([0.021733, 0.021733, 0.007707]), self.rutile.siteCartesianUij(1))
+            numpy.allclose(
+                numpy.diag([0.021733, 0.021733, 0.007707]),
+                self.rutile.siteCartesianUij(1),
+            )
         )
         return
 
@@ -334,14 +350,16 @@ class IndexRangeTests(object):
         return
 
     def test_siteCartesianPositionIndex(self):
-        """Check out-of-range arguments in AdptClass.siteCartesianPosition."""
+        """Check out-of-range arguments in
+        AdptClass.siteCartesianPosition."""
         cnt = self.adpt.countSites()
         self.assertRaises(IndexError, self.adpt.siteCartesianPosition, cnt)
         self.assertRaises(IndexError, self.adpt.siteCartesianPosition, -1)
         return
 
     def test_siteMultiplicityIndex(self):
-        """Check out-of-range arguments in AdptClass.siteMultiplicity."""
+        """Check out-of-range arguments in
+        AdptClass.siteMultiplicity."""
         cnt = self.adpt.countSites()
         self.assertRaises(IndexError, self.adpt.siteMultiplicity, cnt)
         self.assertRaises(IndexError, self.adpt.siteMultiplicity, -1)
@@ -362,7 +380,8 @@ class IndexRangeTests(object):
         return
 
     def test_siteCartesianUijIndex(self):
-        """Check out-of-range arguments in AdptClass.siteCartesianUij."""
+        """Check out-of-range arguments in
+        AdptClass.siteCartesianUij."""
         cnt = self.adpt.countSites()
         self.assertRaises(IndexError, self.adpt.siteCartesianUij, cnt)
         self.assertRaises(IndexError, self.adpt.siteCartesianUij, -1)
@@ -592,7 +611,14 @@ class TestAtom(unittest.TestCase):
         a.uc13 = 0.013
         a.uc23 = 0.023
         self.assertTrue(
-            numpy.array_equal(a.uij_cartn, [[0.01, 0.012, 0.013], [0.012, 0.01, 0.023], [0.013, 0.023, 0.01]])
+            numpy.array_equal(
+                a.uij_cartn,
+                [
+                    [0.01, 0.012, 0.013],
+                    [0.012, 0.01, 0.023],
+                    [0.013, 0.023, 0.01],
+                ],
+            )
         )
         self.assertEqual(0.01, a.uc11)
         self.assertEqual(0.01, a.uc22)

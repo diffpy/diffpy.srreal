@@ -12,7 +12,8 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-"""Class OverlapCalculator -- calculator of atom overlaps in a structure."""
+"""Class OverlapCalculator -- calculator of atom overlaps in a
+structure."""
 
 
 # exported items, these also makes them show in pydoc.
@@ -50,8 +51,8 @@ OverlapCalculator.rmaxused = propertyFromExtDoubleAttr(
 
 
 def _init_kwargs(self, **kwargs):
-    """Create a new instance of OverlapCalculator. Keyword arguments can be
-    used to configure calculator properties, for example:
+    """Create a new instance of OverlapCalculator. Keyword arguments can
+    be used to configure calculator properties, for example:
 
     olc = OverlapCalculator(rmax=2.5)
 

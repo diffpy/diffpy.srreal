@@ -79,7 +79,8 @@ class TestBondCalculator(unittest.TestCase):
         return
 
     def test_pickling_derived_structure(self):
-        """Check pickling of BondCalculator with DerivedStructureAdapter."""
+        """Check pickling of BondCalculator with
+        DerivedStructureAdapter."""
         from testutils import DerivedStructureAdapter
 
         bdc = self.bdc
@@ -134,7 +135,10 @@ class TestBondCalculator(unittest.TestCase):
         self.assertEqual(5, numpy.max(bdc.sites0))
         self.assertEqual(0, numpy.min(bdc.sites1))
         self.assertEqual(5, numpy.max(bdc.sites1))
-        dij = [(tuple(d) + (i0, i1)) for d, i0, i1 in zip(bdc.directions, bdc.sites0, bdc.sites1)]
+        dij = [
+            (tuple(d) + (i0, i1))
+            for d, i0, i1 in zip(bdc.directions, bdc.sites0, bdc.sites1)
+        ]
         self.assertEqual(len(dij), len(set(dij)))
         bdc.maskAllPairs(False)
         bdc(self.rutile)
@@ -287,7 +291,10 @@ class TestBondCalculatorObjCryst(unittest.TestCase):
         self.assertEqual(1, numpy.max(bdc.sites0))
         self.assertEqual(0, numpy.min(bdc.sites1))
         self.assertEqual(1, numpy.max(bdc.sites1))
-        dij = [(tuple(d) + (i0, i1)) for d, i0, i1 in zip(bdc.directions, bdc.sites0, bdc.sites1)]
+        dij = [
+            (tuple(d) + (i0, i1))
+            for d, i0, i1 in zip(bdc.directions, bdc.sites0, bdc.sites1)
+        ]
         self.assertEqual(len(dij), len(set(dij)))
         bdc.maskAllPairs(False)
         bdc(self.rutile)

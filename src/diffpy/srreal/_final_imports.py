@@ -25,7 +25,8 @@ This avoids unresolvable import dependencies for any order of imports.
 
 
 def import_now():
-    """Import all Python modules that tweak extension-defined classes."""
+    """Import all Python modules that tweak extension-defined
+    classes."""
     global _import_now_called
     if _import_now_called:
         return

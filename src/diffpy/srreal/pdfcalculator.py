@@ -86,7 +86,8 @@ assert all(
 
 
 def _defineCommonInterface(cls):
-    """This function defines shared properties of PDF calculator classes."""
+    """This function defines shared properties of PDF calculator
+    classes."""
 
     cls.scale = propertyFromExtDoubleAttr(
         "scale",
@@ -161,10 +162,10 @@ def _defineCommonInterface(cls):
     )
 
     def _call_kwargs(self, structure=None, **kwargs):
-        """Calculate PDF for the given structure as an (r, G) tuple. Keyword
-        arguments can be used to configure calculator attributes, these
-        override any properties that may be passed from the structure, such as
-        spdiameter.
+        """Calculate PDF for the given structure as an (r, G) tuple.
+        Keyword arguments can be used to configure calculator
+        attributes, these override any properties that may be passed
+        from the structure, such as spdiameter.
 
         structure    -- a structure object to be evaluated.  Reuse the last
                         structure when None.

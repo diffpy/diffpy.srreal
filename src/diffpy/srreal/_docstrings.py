@@ -18,7 +18,8 @@
 
 
 def get_registry_docstrings(cls):
-    """Build a dictionary of docstrings per each HasClassRegistry method.
+    """Build a dictionary of docstrings per each HasClassRegistry
+    method.
 
     Parameters
     ----------

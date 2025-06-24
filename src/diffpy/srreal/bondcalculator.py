@@ -43,8 +43,8 @@ BondCalculator.rmax = propertyFromExtDoubleAttr(
 
 
 def _init_kwargs(self, **kwargs):
-    """Create a new instance of BondCalculator. Keyword arguments can be used
-    to configure calculator properties, for example:
+    """Create a new instance of BondCalculator. Keyword arguments can be
+    used to configure calculator properties, for example:
 
     bdc = BondCalculator(rmin=1.5, rmax=2.5)
 

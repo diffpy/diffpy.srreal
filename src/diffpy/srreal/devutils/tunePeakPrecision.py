@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-"""Tune the peak precision parameter so that PDFCalculator gives equivalent
-results to diffpy.pdffit2.
+"""Tune the peak precision parameter so that PDFCalculator gives
+equivalent results to diffpy.pdffit2.
 
 Usage: tunePeakPrecision.py [qmax] [peakprecision] [createplot]
 """
@@ -108,7 +108,9 @@ def comparePDFCalculators(qmax, peakprecision=None):
     rv = {}
     rv["qmax"] = qmax
     rv["peakprecision"] = (
-        peakprecision is None and PDFCalculator()._getDoubleAttr("peakprecision") or peakprecision
+        peakprecision is None
+        and PDFCalculator()._getDoubleAttr("peakprecision")
+        or peakprecision
     )
     ttic = time.clock()
     rg0 = Gpdffit2(qmax)
@@ -175,7 +177,10 @@ def main():
     processCommandLineArguments()
     cmpdata = comparePDFCalculators(qmax, peakprecision)
     print(
-        ("qmax = %(qmax)g  pkprec = %(peakprecision)g  " + "grmsd = %(grmsd)g  t0 = %(t0).3f  t1 = %(t1).3f")
+        (
+            "qmax = %(qmax)g  pkprec = %(peakprecision)g  "
+            + "grmsd = %(grmsd)g  t0 = %(t0).3f  t1 = %(t1).3f"
+        )
         % cmpdata
     )
     if createplot:

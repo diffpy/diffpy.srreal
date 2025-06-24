@@ -17,7 +17,14 @@ isotopes."""
 
 
 # exported items, these also makes them show in pydoc.
-__all__ = ["ScatteringFactorTable", "SFTXray", "SFTElectron", "SFTNeutron", "SFTElectronNumber", "SFAverage"]
+__all__ = [
+    "ScatteringFactorTable",
+    "SFTXray",
+    "SFTElectron",
+    "SFTNeutron",
+    "SFTElectronNumber",
+    "SFAverage",
+]
 
 from diffpy.srreal.sfaverage import SFAverage
 from diffpy.srreal.srreal_ext import (

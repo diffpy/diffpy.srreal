@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-"""Demonstration of using PairQuantity class for calculation of Lennard Jones
-potential.
+"""Demonstration of using PairQuantity class for calculation of Lennard
+Jones potential.
 
 Vij = 4 * ( rij ** -12  -  rij ** -6 )
 """
