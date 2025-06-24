@@ -6,10 +6,10 @@ build-backend = "setuptools.build_meta"
 name = "diffpy.srreal"
 dynamic=['version', 'dependencies']
 authors = [
-  { name="Simon J.L. Billinge group", email="simon.billinge@gmail.com" },
+  { name="Simon Billinge", email="sb2896@columbia.edu" },
 ]
 maintainers = [
-  { name="Simon J.L. Billinge group", email="simon.billinge@gmail.com" },
+  { name="Simon Billinge", email="sb2896@columbia.edu" },
 ]
 description = "Calculators for PDF, bond valence sum, and other quantities based on atom pair interaction."
 keywords = ['PDF', 'BVS', 'atom', 'overlap', 'calculator', 'real-space']
@@ -56,6 +56,11 @@ exclude-file = ".codespell/ignore_lines.txt"
 ignore-words = ".codespell/ignore_words.txt"
 skip = "*.cif,*.dat"
 
+[tool.docformatter]
+recursive = true
+wrap-summaries = 72
+wrap-descriptions = 72
+
 [tool.black]
 line-length = 79
 include = '\.pyi?$'
@@ -78,8 +83,3 @@ exclude = '''
   | tests/data
 )/
 '''
-
-[tool.docformatter]
-recursive = true
-wrap-summaries = 72
-wrap-descriptions = 72
