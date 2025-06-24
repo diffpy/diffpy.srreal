@@ -38,10 +38,12 @@ jobs:
         run: >-
           conda config --set always_yes yes
           --set changeps1 no
+          
       - name: Install diffpy.srreal and requirements
         run: |
           conda install --file requirements/conda.txt
           conda install --file requirements/test.txt
           python -m pip install . --no-deps
+          
       - name: Validate diffpy.pdfgui
         run: pytest tests
