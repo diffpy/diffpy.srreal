@@ -12,24 +12,36 @@
 # See LICENSE.txt for license information.
 #
 ##############################################################################
+"""Converters from other structure representations in Python to
+diffpy.srreal StructureAdapter classes."""
 
-"""
-Converters from other structure representations in Python to diffpy.srreal
-StructureAdapter classes.
-"""
-
+from diffpy.srreal.srreal_ext import (
+    AtomicStructureAdapter,
+    PeriodicStructureAdapter,
+    convertObjCrystCrystal,
+    convertObjCrystMolecule,
+)
 from diffpy.srreal.structureadapter import RegisterStructureAdapter
-from diffpy.srreal.srreal_ext import AtomicStructureAdapter
-from diffpy.srreal.srreal_ext import PeriodicStructureAdapter
+
+# Converters for Molecule and Crystal from pyobjcryst ------------------------
+
+
+RegisterStructureAdapter(
+    "pyobjcryst._pyobjcryst.Molecule", convertObjCrystMolecule
+)
+RegisterStructureAdapter(
+    "pyobjcryst._pyobjcryst.Crystal", convertObjCrystCrystal
+)
 
 # Converter for Structure class from diffpy.structure ------------------------
 
+
 # TODO prune in version 1.4.
-@RegisterStructureAdapter('diffpy.Structure.structure.Structure')
-@RegisterStructureAdapter('diffpy.structure.structure.Structure')
+@RegisterStructureAdapter("diffpy.Structure.structure.Structure")
+@RegisterStructureAdapter("diffpy.structure.structure.Structure")
 def convertDiffPyStructure(stru):
-    'Adapt Structure class from diffpy.structure package.'
-    haslattice = ((1, 1, 1, 90, 90, 90) != stru.lattice.abcABG())
+    "Adapt Structure class from diffpy.structure package."
+    haslattice = (1, 1, 1, 90, 90, 90) != stru.lattice.abcABG()
     isperiodic = haslattice
     hasmeta = _DiffPyStructureMetadata.hasMetadata(stru)
     if hasmeta:
@@ -46,62 +58,54 @@ def convertDiffPyStructure(stru):
     _fetchDiffPyStructureData(adpt, stru)
     return adpt
 
-# Converters for Molecule and Crystal from pyobjcryst ------------------------
-
-from diffpy.srreal.srreal_ext import convertObjCrystMolecule
-RegisterStructureAdapter(
-        'pyobjcryst._pyobjcryst.Molecule', convertObjCrystMolecule)
-
-from diffpy.srreal.srreal_ext import convertObjCrystCrystal
-RegisterStructureAdapter(
-        'pyobjcryst._pyobjcryst.Crystal', convertObjCrystCrystal)
 
 # Adapter classes and helpers for diffpy.structure class ---------------------
 
-class _DiffPyStructureMetadata(object):
 
+class _DiffPyStructureMetadata(object):
     "Base class for handling metadata information in the pdffit attribute."
 
     pdffit = None
 
     @staticmethod
     def hasMetadata(stru):
-        """True if Structure object carries data in its pdffit attribute.
-        """
-        rv = hasattr(stru, 'pdffit') and bool(stru.pdffit)
+        """True if Structure object carries data in its pdffit
+        attribute."""
+        rv = hasattr(stru, "pdffit") and bool(stru.pdffit)
         return rv
 
-
     def _customPQConfig(self, pqobj):
-        """Apply PDF-related metadata if defined in PDFFit structure format.
-        """
+        """Apply PDF-related metadata if defined in PDFFit structure
+        format."""
         pqname = type(pqobj).__name__
-        if not pqname in ('PDFCalculator', 'DebyePDFCalculator'):  return
-        if not self.pdffit:  return
+        if pqname not in ("PDFCalculator", "DebyePDFCalculator"):
+            return
+        if not self.pdffit:
+            return
         # scale
         envtps = pqobj.usedenvelopetypes
-        if 'scale' not in envtps:
-            pqobj.addEnvelope('scale')
-        pqobj.scale = self.pdffit['scale']
+        if "scale" not in envtps:
+            pqobj.addEnvelope("scale")
+        pqobj.scale = self.pdffit["scale"]
         # spdiameter
         if "spdiameter" in self.pdffit:
-            if not 'sphericalshape' in envtps:
-                pqobj.addEnvelope('sphericalshape')
-            pqobj.spdiameter = self.pdffit['spdiameter']
+            if "sphericalshape" not in envtps:
+                pqobj.addEnvelope("sphericalshape")
+            pqobj.spdiameter = self.pdffit["spdiameter"]
         # stepcut
         if "stepcut" in self.pdffit:
-            if not 'stepcut' in envtps:
-                pqobj.addEnvelope('stepcut')
-            pqobj.stepcut = self.pdffit['stepcut']
+            if "stepcut" not in envtps:
+                pqobj.addEnvelope("stepcut")
+            pqobj.stepcut = self.pdffit["stepcut"]
         # delta1, delta2 - set these only when using JeongPeakWidth model
         if pqobj.peakwidthmodel.type() == "jeong":
-            pqobj.delta1 = self.pdffit['delta1']
-            pqobj.delta2 = self.pdffit['delta2']
+            pqobj.delta1 = self.pdffit["delta1"]
+            pqobj.delta2 = self.pdffit["delta2"]
         return
 
-
     def _fetchMetadata(self, stru):
-        """Copy data from the pdffit attribute of diffpy Structure object
+        """Copy data from the pdffit attribute of diffpy Structure
+        object.
 
         stru -- instance of Structure class from diffpy.structure
 
@@ -114,16 +118,19 @@ class _DiffPyStructureMetadata(object):
             self.pdffit.update(stru.pdffit)
         return
 
+
 # end of class _DiffPyStructureMetadata
 
 
 class DiffPyStructureAtomicAdapter(
-        _DiffPyStructureMetadata, AtomicStructureAdapter):
+    _DiffPyStructureMetadata, AtomicStructureAdapter
+):
     pass
 
 
 class DiffPyStructurePeriodicAdapter(
-        _DiffPyStructureMetadata, PeriodicStructureAdapter):
+    _DiffPyStructureMetadata, PeriodicStructureAdapter
+):
     pass
 
 
@@ -136,6 +143,7 @@ def _fetchDiffPyStructureData(adpt, stru):
     No return value.
     """
     from diffpy.srreal.srreal_ext import Atom as AdapterAtom
+
     # copy atoms
     del adpt[:]
     adpt.reserve(len(stru))
@@ -148,10 +156,11 @@ def _fetchDiffPyStructureData(adpt, stru):
         aa.xyz_cartn = a0.xyz
         aa.uij_cartn = a0.U
         adpt.append(aa)
-    if hasattr(adpt, 'setLatPar'):
+    if hasattr(adpt, "setLatPar"):
         adpt.setLatPar(*stru.lattice.abcABG())
         for aa in adpt:
             adpt.toCartesian(aa)
     return
+
 
 # End of file

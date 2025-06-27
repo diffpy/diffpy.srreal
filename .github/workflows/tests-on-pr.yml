@@ -1,0 +1,52 @@
+name: Tests on PR
+
+on:
+  push:
+    branches:
+      - main
+      - cookie
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-13, macos-14]
+        python-version: [3.11, 3.12, 3.13]
+
+    steps:
+      - name: Check out diffpy.srreal
+        uses: actions/checkout@v4
+
+      - name: Initialize miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          auto-activate-base: false
+          python-version: ${{ matrix.python-version }}
+      - name: Conda config
+        run: |
+          conda config --add channels conda-forge
+      - name: Install diffpy.srreal and requirements
+        run: |
+          conda create -n test python=${{ matrix.python-version }} -y
+          source $(conda info --base)/etc/profile.d/conda.sh
+          conda activate test
+          conda install pip -y
+          conda config --set always_yes yes --set changeps1 no
+          conda install --file requirements/conda.txt -y
+          conda install --file requirements/test.txt -y
+          python -m pip install . --no-deps
+
+      - name: Validate diffpy.pdfgui
+        run: |
+          source $(conda info --base)/etc/profile.d/conda.sh
+          conda activate test
+          pytest tests

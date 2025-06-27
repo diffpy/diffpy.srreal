@@ -1,0 +1,17 @@
+;; Please include explanations for each ignored word (lowercase).
+;; See https://docs.openverse.org/meta/codespell.html for docs.
+
+;; abbreviation for "materials" often used in a journal title
+mater
+
+;; Frobenius norm used in np.linalg.norm
+fro
+
+;; structure file format
+discus
+
+;; variable name within pdfbaseline module
+aline
+
+;; variable name within TestSFAverageObjCryst class
+fo

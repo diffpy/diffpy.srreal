@@ -12,10 +12,7 @@
 # See LICENSE.txt for license information.
 #
 ##############################################################################
-
-"""
-Compositional averaging of atom scattering factors.
-
+"""Compositional averaging of atom scattering factors.
 
 Examples
 --------
@@ -39,9 +36,9 @@ Examples
 
 # class SFAverage ------------------------------------------------------------
 
+
 class SFAverage(object):
-    """\
-    Calculate compositional statistics of atom scattering factors.
+    """Calculate compositional statistics of atom scattering factors.
 
     Compositional averages can be calculated for an array of Q-values.
     Results are stored in the class attributes.
@@ -64,7 +61,7 @@ class SFAverage(object):
         Compositional average of squared scattering factors.
         Float or NumPy array.
     composition :
-        Dictionary of atom symbols and their total abundancies.
+        Dictionary of atom symbols and their total abundance.
     """
 
     f1sum = 0
@@ -76,8 +73,7 @@ class SFAverage(object):
 
     @classmethod
     def fromStructure(cls, stru, sftb, q=0):
-        """\
-        Calculate average scattering factors from a structure object.
+        """Calculate average scattering factors from a structure object.
 
         Parameters
         ----------
@@ -103,12 +99,13 @@ class SFAverage(object):
             The calculated scattering factor averages.
         """
         # a bit of duck-typing for faster handling of diffpy.structure
-        if hasattr(type(stru), 'composition'):
+        if hasattr(type(stru), "composition"):
             composition = stru.composition
             if isinstance(composition, dict):
                 return cls.fromComposition(composition, sftb, q)
         # otherwise let's convert to a known structure type
         from diffpy.srreal.structureadapter import createStructureAdapter
+
         adpt = createStructureAdapter(stru)
         composition = {}
         for i in range(adpt.countSites()):
@@ -117,11 +114,10 @@ class SFAverage(object):
             composition[smbl] = composition.get(smbl, 0) + cnt
         return cls.fromComposition(composition, sftb, q)
 
-
     @classmethod
     def fromComposition(cls, composition, sftb, q=0):
-        """\
-        Calculate average scattering factors from atom concentrations.
+        """Calculate average scattering factors from atom
+        concentrations.
 
         Parameters
         ----------
@@ -142,20 +138,24 @@ class SFAverage(object):
             The calculated scattering factor averages.
         """
         from diffpy.srreal.scatteringfactortable import ScatteringFactorTable
+
         sfa = cls()
         sfa.composition = {}
         if isinstance(composition, dict):
             sfa.composition.update(composition)
         else:
             for smbl, cnt in composition:
-                if not smbl in sfa.composition:
+                if smbl not in sfa.composition:
                     sfa.composition[smbl] = 0
                 sfa.composition[smbl] += cnt
         sfa.f1sum = 0.0 * q
         sfa.f2sum = 0.0 * q
         # resolve the lookup table object `tb`
-        tb = (sftb if not isinstance(sftb, str)
-              else ScatteringFactorTable.createByType(sftb))
+        tb = (
+            sftb
+            if not isinstance(sftb, str)
+            else ScatteringFactorTable.createByType(sftb)
+        )
         for smbl, cnt in sfa.composition.items():
             sfq = tb.lookup(smbl, q)
             sfa.f1sum += cnt * sfq
@@ -165,5 +165,6 @@ class SFAverage(object):
         sfa.f1avg = sfa.f1sum / denom
         sfa.f2avg = sfa.f2sum / denom
         return sfa
+
 
 # End of class SFAverage

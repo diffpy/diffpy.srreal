@@ -12,7 +12,6 @@
 # See LICENSE_DANSE.txt for license information.
 #
 ##############################################################################
-
 """
 Class for configuring PDF profile function:
     PeakProfile
@@ -21,15 +20,14 @@ Class for configuring PDF profile function:
 
 
 # exported items
-__all__ = [
-    'PeakProfile',
-    'GaussianProfile',
-    'CroppedGaussianProfile'
-]
+__all__ = ["PeakProfile", "GaussianProfile", "CroppedGaussianProfile"]
 
 from diffpy.srreal import _final_imports
-from diffpy.srreal.srreal_ext import PeakProfile
-from diffpy.srreal.srreal_ext import GaussianProfile, CroppedGaussianProfile
+from diffpy.srreal.srreal_ext import (
+    CroppedGaussianProfile,
+    GaussianProfile,
+    PeakProfile,
+)
 from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
 
 # class PeakProfile ----------------------------------------------------------
@@ -41,10 +39,12 @@ CroppedGaussianProfile.__getstate_manages_dict__ = None
 
 # add attribute wrappers for PeakProfile and derived classes
 
-PeakProfile.peakprecision = propertyFromExtDoubleAttr('peakprecision',
-    '''Profile amplitude relative to the peak maximum for evaluating peak
+PeakProfile.peakprecision = propertyFromExtDoubleAttr(
+    "peakprecision",
+    """Profile amplitude relative to the peak maximum for evaluating peak
     bounds xboundlo and xboundhi. [3.33e-6 unitless]
-    ''')
+    """,
+)
 
 # Import delayed tweaks of the extension classes.
 

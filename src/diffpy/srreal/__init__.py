@@ -1,23 +1,21 @@
 #!/usr/bin/env python
 ##############################################################################
 #
-# diffpy.srreal     by DANSE Diffraction group
-#                   Simon J. L. Billinge
-#                   (c) 2008 The Trustees of Columbia University
-#                   in the City of New York.  All rights reserved.
+# (c) 2025 The Trustees of Columbia University in the City of New York.
+# All rights reserved.
 #
-# File coded by:    Pavol Juhas
+# File coded by: Billinge Group members and community contributors.
 #
-# See AUTHORS.txt for a list of people who contributed.
-# See LICENSE_DANSE.txt for license information.
+# See GitHub contributions for a more detailed list of contributors.
+# https://github.com/diffpy/diffpy.srreal/graphs/contributors
+#
+# See LICENSE.rst for license information.
 #
 ##############################################################################
-
-"""Tools for real space structure analysis.
-"""
+"""Tools for real space structure analysis."""
 
 # package version
-from diffpy.srreal._version_data import __version__
+from diffpy.srreal.version import __version__
 
 # silence the pyflakes syntax checker
 assert __version__ or True
