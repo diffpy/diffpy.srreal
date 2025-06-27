@@ -1,4 +1,0 @@
-python
-boost
-numpy
-# libobjcryst (if libdiffpy built with objcryst)
