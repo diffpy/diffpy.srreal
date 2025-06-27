@@ -1,4 +1,4 @@
-libdiffpy=1.4.1rc1
+libdiffpy
 libboost-devel
 libobjcryst
 pyobjcryst
