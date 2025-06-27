@@ -1,10 +1,12 @@
-####################################################
-diffpy.srreal documentation
-####################################################
+#######
+|title|
+#######
 
-diffpy.srreal - calculators for PDF, bond valence sum and other pair quantities.
+.. |title| replace:: diffpy.srreal documentation
 
-| Software version |release|.
+``diffpy.srreal`` - Calculators for PDF, bond valence sum, and other quantities based on atom pair interaction.
+
+| Software version |release|
 | Last updated |today|.
 
 The diffpy.srreal package provides calculators for atomic pair distribution
@@ -37,9 +39,9 @@ calculate PDF with a user-defined profile function.  A new calculator class
 can be also defined for any quantity that is obtained by iteration over atom
 pairs, by defining only the function that processes atom-pair contributions.
 
-========================================
+=======
 Authors
-========================================
+=======
 
 diffpy.srreal is developed by members of the Billinge Group at
 Columbia University and at Brookhaven National Laboratory including
@@ -48,28 +50,42 @@ Pavol Juhás, Christopher L. Farrow, Simon J.L. Billinge.
 For a detailed list of contributors see
 https://github.com/diffpy/diffpy.srreal/graphs/contributors.
 
-======================================
-Installation
-======================================
+Reference
+=========
 
-See the `README <https://github.com/diffpy/diffpy.srreal#requirements>`_
+If you use this program for a scientific research that leads
+to publication, we ask that you acknowledge use of the program
+by citing the following paper in your publication:
+
+   diffpy.srreal Package, https://github.com/diffpy/diffpy.srreal
+
+============
+Installation
+============
+
+See the `README <https://github.com/diffpy/diffpy.srreal#installation>`_
 file included with the distribution.
 
-======================================
-Table of contents
-======================================
+================
+Acknowledgements
+================
 
+``diffpy.srreal`` is built and maintained with `scikit-package <https://scikit-package.github.io/scikit-package/>`_.
+
+=================
+Table of contents
+=================
 .. toctree::
    :titlesonly:
 
    license
    release
+   examples
    Package API <api/diffpy.srreal>
 
-======================================
+=======
 Indices
-======================================
+=======
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
