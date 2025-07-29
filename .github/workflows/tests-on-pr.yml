@@ -42,7 +42,7 @@ jobs:
           conda install pip -y
           conda config --set always_yes yes --set changeps1 no
           conda install --file requirements/conda.txt -y
-          conda install --file requirements/test.txt -y
+          conda install --file requirements/tests.txt -y
           python -m pip install . --no-deps
 
       - name: Validate diffpy.pdfgui
