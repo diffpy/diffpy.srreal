@@ -24,8 +24,12 @@ import copy
 def propertyFromExtDoubleAttr(attrname, doc):
     """Create property wrapper to a DoubleAttr in C++ extension object.
 
-    attrname -- string name of the double attribute
-    doc      -- docstring for the Python class property
+    Attributes
+    ----------
+    attrname
+        string name of the double attribute
+    doc
+        docstring for the Python class property
 
     Return a property object.
     """
@@ -46,7 +50,10 @@ def setattrFromKeywordArguments(obj, **kwargs):
     For example:    setattrFromKeywordArguments(obj, qmax=24, scale=2)
     This is a shared helper function used by __init__ and __call__.
 
-    kwargs   -- one or more keyword arguments
+    Attributes
+    ----------
+    kwargs
+        one or more keyword arguments
 
     No return value.
     Raise TypeError for invalid keyword argument.
@@ -67,21 +74,28 @@ def _wrapAsRegisteredUnaryFunction(
     PDFEnvelope functor.  Not intended for direct usage, this function
     is rather called from makePDFBaseline or makePDFEnvelope wrappers.
 
-    cls      -- the functor class for wrapping the Python function
-    regname  -- string name for registering the function in the global
-                registry of cls functors.  This will be the string
-                identifier for the createByType factory.
-    fnc      -- Python function of a floating point argument and optional
-                float parameters.  The parameters need to be registered as
-                dbattrs in the functor class.  The function fnc
-                must be picklable and it must return a float.
-    replace  -- when set replace any functor already registered under
-                the regname.  Otherwise raise RuntimeError when regname
-                is taken.
-    dbattrs  -- optional float parameters of the wrapped function.
-                These will be registered as double attributes in the
-                functor class.  The wrapped function must be callable as
-                fnc(x, **dbattrs).
+    Attributes
+    ----------
+    cls
+        the functor class for wrapping the Python function
+    regname
+        string name for registering the function in the global
+        registry of cls functors.  This will be the string
+        identifier for the createByType factory.
+    fnc
+        Python function of a floating point argument and optional
+        float parameters.  The parameters need to be registered as
+        dbattrs in the functor class.  The function fnc
+        must be picklable and it must return a float.
+    replace
+        when set replace any functor already registered under
+        the regname.  Otherwise raise RuntimeError when regname
+        is taken.
+    dbattrs
+        optional float parameters of the wrapped function.
+        These will be registered as double attributes in the
+        functor class.  The wrapped function must be callable as
+        fnc(x, **dbattrs).
 
     Return an instance of the functor class.
     """

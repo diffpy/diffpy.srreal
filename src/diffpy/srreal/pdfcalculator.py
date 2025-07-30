@@ -167,9 +167,13 @@ def _defineCommonInterface(cls):
         attributes, these override any properties that may be passed
         from the structure, such as spdiameter.
 
-        structure    -- a structure object to be evaluated.  Reuse the last
-                        structure when None.
-        kwargs       -- optional parameter settings for this calculator
+        Attributes
+        ----------
+        structure
+            a structure object to be evaluated.  Reuse the last
+            structure when None.
+        kwargs
+            optional parameter settings for this calculator
 
         Example:    pdfcalc(structure, qmax=20, spdiameter=15)
 

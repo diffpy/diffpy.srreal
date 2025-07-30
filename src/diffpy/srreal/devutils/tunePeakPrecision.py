@@ -54,7 +54,10 @@ nickel.readStr(nickel_discus_data, format="discus")
 def Gpdffit2(qmax):
     """Calculate reference nickel PDF using diffpy.pdffit2.
 
-    qmax    -- vawevector cutoff value in 1/A
+    Attributes
+    ----------
+    qmax
+        vawevector cutoff value in 1/A
 
     Return numpy array of (r, g).
     """
@@ -70,9 +73,13 @@ def Gpdffit2(qmax):
 def Gsrreal(qmax, peakprecision=None):
     """Calculate nickel PDF using PDFCalculator from diffpy.srreal.
 
-    qmax            -- vawevector cutoff value in 1/A
-    peakprecision   -- precision factor affecting peak cutoff,
-                       keep at default value when None.
+    Attributes
+    ----------
+    qmax
+        vawevector cutoff value in 1/A
+    peakprecision
+        precision factor affecting peak cutoff,
+        keep at default value when None.
 
     Return numpy array of (r, g).
     """
@@ -91,19 +98,30 @@ def Gsrreal(qmax, peakprecision=None):
 def comparePDFCalculators(qmax, peakprecision=None):
     """Compare Ni PDF calculations with pdffit2 and PDFCalculator.
 
-    qmax            -- vawevector cutoff value in 1/A
-    peakprecision   -- precision factor affecting peak cutoff,
-                       keep at default value when None.
+    Attributes
+    ----------
+    qmax
+        vawevector cutoff value in 1/A
+    peakprecision
+        precision factor affecting peak cutoff,
+        keep at default value when None.
 
     Return a dictionary of benchmark results with the following keys:
 
-    qmax    -- vawevector cutoff value
-    peakprecision -- actual peak precision used in PDFCalculator
-    r       -- common r-grid for the PDF arrays
-    g0, g1  -- calculated PDF curves from pdffit2 and PDFCalculator
-    gdiff   -- PDF difference equal (g0 - g1)
-    grmsd   -- root mean square value of PDF curves difference
-    t0, t1  -- CPU times used by pdffit2 and PDFCalculator calls
+    Attributes
+    ----------
+    qmax
+        vawevector cutoff value
+    peakprecision
+        actual peak precision used in PDFCalculator
+    r
+        common r-grid for the PDF arrays
+        g0, g1  -- calculated PDF curves from pdffit2 and PDFCalculator
+    gdiff
+        PDF difference equal (g0 - g1)
+    grmsd
+        root mean square value of PDF curves difference
+        t0, t1  -- CPU times used by pdffit2 and PDFCalculator calls
     """
     rv = {}
     rv["qmax"] = qmax
@@ -147,7 +165,10 @@ def processCommandLineArguments():
 def plotComparison(cmpdata):
     """Plot comparison of PDF curves.
 
-    cmpdata -- dictionary returned from comparePDFCalculators
+    Attributes
+    ----------
+    cmpdata
+        dictionary returned from comparePDFCalculators
 
     No return value.
     """

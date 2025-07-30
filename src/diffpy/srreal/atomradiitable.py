@@ -35,7 +35,10 @@ class CovalentRadiiTable(AtomRadiiTable):
     def _standardLookup(self, smbl):
         """Return covalent atom radius in Angstroms.
 
-        smbl -- string symbol of an element
+        Attributes
+        ----------
+        smbl
+            string symbol of an element
 
         Return float.  Raise ValueError for unknown element symbol.
         """

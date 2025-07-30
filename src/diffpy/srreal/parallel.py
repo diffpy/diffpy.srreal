@@ -31,9 +31,14 @@ from diffpy.srreal.attributes import Attributes
 def createParallelCalculator(pqobj, ncpu, pmap):
     """Create a proxy parallel calculator to a PairQuantity instance.
 
-    pqobj    -- instance of PairQuantity calculator to be run in parallel
-    ncpu     -- number of parallel jobs
-    pmap     -- a parallel map function used to submit job to workers
+    Attributes
+    ----------
+    pqobj
+        instance of PairQuantity calculator to be run in parallel
+    ncpu
+        number of parallel jobs
+    pmap
+        a parallel map function used to submit job to workers
 
     The ``pqobj.evaluatortype`` is reset to 'BASIC' because other
     evaluator types are not supported within parallel calculations.
@@ -48,18 +53,28 @@ def createParallelCalculator(pqobj, ncpu, pmap):
 
         Instance data:
 
-        pqobj    -- the master PairQuantity object to be evaluated in parallel
-        ncpu     -- number of parallel jobs
-        pmap     -- a parallel map function used to submit job to workers
+        Attributes
+        ----------
+        pqobj
+            the master PairQuantity object to be evaluated in parallel
+        ncpu
+            number of parallel jobs
+        pmap
+            a parallel map function used to submit job to workers
         """
 
         def __init__(self, pqobj, ncpu, pmap):
             """Initialize a parallel proxy to the PairQuantity instance.
 
-            pqobj    -- instance of PairQuantity calculator to be run
-                        in parallel
-            ncpu     -- number of parallel jobs
-            pmap     -- a parallel map function used to submit job to workers
+            Attributes
+            ----------
+            pqobj
+                instance of PairQuantity calculator to be run
+                in parallel
+            ncpu
+                number of parallel jobs
+            pmap
+                a parallel map function used to submit job to workers
             """
             # use explicit assignment to avoid setattr forwarding to the pqobj
             object.__setattr__(self, "pqobj", pqobj)
@@ -73,9 +88,12 @@ def createParallelCalculator(pqobj, ncpu, pmap):
             """Perform parallel calculation and return internal value
             array.
 
-            stru -- object that can be converted to StructureAdapter,
-                    e.g., example diffpy Structure or pyobjcryst Crystal.
-                    Use the last structure when None.
+            Attributes
+            ----------
+            stru
+                object that can be converted to StructureAdapter,
+                e.g., example diffpy Structure or pyobjcryst Crystal.
+                Use the last structure when None.
 
             Return numpy array.
             """
