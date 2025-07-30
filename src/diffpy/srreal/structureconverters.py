@@ -40,7 +40,7 @@ RegisterStructureAdapter(
 @RegisterStructureAdapter("diffpy.Structure.structure.Structure")
 @RegisterStructureAdapter("diffpy.structure.structure.Structure")
 def convertDiffPyStructure(stru):
-    "Adapt Structure class from diffpy.structure package."
+    """Adapt Structure class from diffpy.structure package."""
     haslattice = (1, 1, 1, 90, 90, 90) != stru.lattice.abcABG()
     isperiodic = haslattice
     hasmeta = _DiffPyStructureMetadata.hasMetadata(stru)
@@ -63,7 +63,8 @@ def convertDiffPyStructure(stru):
 
 
 class _DiffPyStructureMetadata(object):
-    "Base class for handling metadata information in the pdffit attribute."
+    """Base class for handling metadata information in the pdffit
+    attribute."""
 
     pdffit = None
 
@@ -107,7 +108,10 @@ class _DiffPyStructureMetadata(object):
         """Copy data from the pdffit attribute of diffpy Structure
         object.
 
-        stru -- instance of Structure class from diffpy.structure
+        Attributes
+        ----------
+        stru
+            instance of Structure class from diffpy.structure
 
         No return value.
         """
@@ -137,8 +141,12 @@ class DiffPyStructurePeriodicAdapter(
 def _fetchDiffPyStructureData(adpt, stru):
     """Copy structure data from diffpy Structure object to this Adapter.
 
-    adpt -- instance of AtomicStructureAdapter or PeriodicStructureAdapter
-    stru -- instance of Structure class from diffpy.structure
+    Attributes
+    ----------
+    adpt
+        instance of AtomicStructureAdapter or PeriodicStructureAdapter
+    stru
+        instance of Structure class from diffpy.structure
 
     No return value.
     """
