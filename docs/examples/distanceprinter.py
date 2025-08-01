@@ -47,9 +47,9 @@ distprint._setDoubleAttr("rmax", 10)
 
 
 def get_pyobjcryst_sphalerite():
-    from pyobjcryst import loadCrystal
+    from pyobjcryst.crystal import create_crystal_from_cif
 
-    crst = loadCrystal("datafiles/sphalerite.cif")
+    crst = create_crystal_from_cif("datafiles/sphalerite.cif")
     return crst
 
 

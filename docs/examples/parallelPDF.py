@@ -38,9 +38,9 @@ opts, args = parser.parse_args(sys.argv[1:])
 if opts.pyobjcryst:
     # use pyobjcryst if requested by the user
     from numpy import pi
-    from pyobjcryst import loadCrystal
+    from pyobjcryst.crystal import create_crystal_from_cif
 
-    menthol = loadCrystal(mentholcif)
+    menthol = create_crystal_from_cif(mentholcif)
     for sc in menthol.GetScatteringComponentList():
         sp = sc.mpScattPow
         sp.Biso = sp.Biso or 8 * pi**2 * Uisodefault

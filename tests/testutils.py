@@ -28,10 +28,10 @@ def datafile(filename):
 
 
 def loadObjCrystCrystal(filename):
-    from pyobjcryst import loadCrystal
+    from pyobjcryst.crystal import create_crystal_from_cif
 
     fullpath = datafile(filename)
-    crst = loadCrystal(fullpath)
+    crst = create_crystal_from_cif(fullpath)
     return crst
 
 

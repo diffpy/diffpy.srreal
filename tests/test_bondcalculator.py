@@ -255,7 +255,7 @@ class TestBondCalculator(unittest.TestCase):
 class TestBondCalculatorObjCryst(unittest.TestCase):
 
     @pytest.fixture(autouse=True)
-    def _check_periodictable(self, has_pyobjcryst, _msg_nopyobjcryst):
+    def _check_pyobjcryst(self, has_pyobjcryst, _msg_nopyobjcryst):
         if not has_pyobjcryst:
             pytest.skip(_msg_nopyobjcryst)
 
