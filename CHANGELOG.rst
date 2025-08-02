@@ -4,6 +4,24 @@ Release notes
 
 .. current developments
 
+1.4.0
+=====
+
+**Added:**
+
+* Update linelength to sk-package standard of 79 characters.
+
+**Changed:**
+
+* Renamed CODE_OF_CONDUCTS.rst to CODE-OF-CONDUCTS.rst, doc folder to docs, and requirements/test.txt to requirements/tests.txt
+
+**Fixed:**
+
+* Configure ``black`` to have a linelength requirement of 79 characters.
+* Update requirements to use full release `libdiffpy` and remove wrong build dependencies.
+* Support ``scikit-package`` Level 5 standard (https://scikit-package.github.io/scikit-package/).
+
+
 
 Version 1.3.0  2019-03-13
 =========================
