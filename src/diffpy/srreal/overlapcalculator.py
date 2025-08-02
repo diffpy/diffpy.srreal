@@ -66,9 +66,13 @@ def _init_kwargs(self, **kwargs):
 def _call_kwargs(self, structure=None, **kwargs):
     """Return siteSquareOverlaps per each site of the structure.
 
-    structure    -- structure to be evaluated, an instance of diffpy Structure
-                    or pyobjcryst Crystal.  Reuse the last structure when None.
-    kwargs       -- optional parameter settings for this calculator
+    Attributes
+    ----------
+    structure
+        structure to be evaluated, an instance of diffpy Structure
+        or pyobjcryst Crystal.  Reuse the last structure when None.
+    kwargs
+        optional parameter settings for this calculator
 
     Return a numpy array.
     """

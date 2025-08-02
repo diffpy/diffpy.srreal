@@ -18,8 +18,14 @@
 #  __all__ = ["__date__", "__git_commit__", "__timestamp__", "__version__"]
 
 # obtain version information
-from importlib.metadata import version
+from importlib.metadata import PackageNotFoundError, version
 
-__version__ = version("diffpy.srreal")
+FALLBACK_VERSION = "1.3.0"
+
+try:
+    __version__ = version("diffpy.srreal")
+except PackageNotFoundError:
+    __version__ = FALLBACK_VERSION
+
 
 # End of file

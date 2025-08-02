@@ -52,21 +52,27 @@ def makePDFBaseline(name, fnc, replace=False, **dbattrs):
     This is required for using Python function as
     PDFCalculator.baseline.
 
-    name     -- unique string name for registering Python function in the
-                global registry of PDFBaseline types.  This will be the
-                string identifier for the createByType factory.
-    fnc      -- Python function of a floating point argument and optional
-                float parameters.  The parameters need to be registered as
-                double attributes in the functor class.  The function fnc
-                must be picklable and it must return a float.
-    replace  -- when set replace any PDFBaseline type already registered
-                under the name.  Otherwise raise RuntimeError when the
-                name is taken.
-    dbattrs  -- optional float parameters of the wrapped function.
-                These will be registered as double attributes in the
-                functor class.  The wrapped function must be callable as
-                fnc(x, **dbattrs).  Make sure to pick attribute names that
-                do not conflict with other PDFCalculator attributes.
+    Attributes
+    ----------
+    name
+        unique string name for registering Python function in the
+        global registry of PDFBaseline types.  This will be the
+        string identifier for the createByType factory.
+    fnc
+        Python function of a floating point argument and optional
+        float parameters.  The parameters need to be registered as
+        double attributes in the functor class.  The function fnc
+        must be picklable and it must return a float.
+    replace
+        when set replace any PDFBaseline type already registered
+        under the name.  Otherwise raise RuntimeError when the
+        name is taken.
+    dbattrs
+        optional float parameters of the wrapped function.
+        These will be registered as double attributes in the
+        functor class.  The wrapped function must be callable as
+        fnc(x, **dbattrs).  Make sure to pick attribute names that
+        do not conflict with other PDFCalculator attributes.
 
     Return an instance of the new PDFBaseline class.
 

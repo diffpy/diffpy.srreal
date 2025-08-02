@@ -48,9 +48,12 @@ from diffpy.srreal.srreal_ext import (
 def createStructureAdapter(stru):
     """Create StructureAdapter from a Python object.
 
-    stru -- an object that is convertible to StructureAdapter, i.e., it has
-            a registered factory that converts Python structure object to
-            StructureAdapter.  Return stru if already a StructureAdapter.
+    Attributes
+    ----------
+    stru
+        an object that is convertible to StructureAdapter, i.e., it has
+        a registered factory that converts Python structure object to
+        StructureAdapter.  Return stru if already a StructureAdapter.
 
     Return a StructureAdapter instance.
     Raise TypeError if stru cannot be converted to StructureAdapter.
@@ -79,11 +82,15 @@ def RegisterStructureAdapter(fqname, fnc=None):
     with calculators in diffpy.srreal as they would be implicitly
     converted to the internal diffpy.srreal structure type.
 
-    fqname   -- fully qualified class name for the convertible objects.
-                This is the quoted string included in "str(type(obj))".
-                The converter function would be called for object of the
-                same or derived types.
-    fnc      -- function that converts the fqname type to StructureAdapter.
+    Attributes
+    ----------
+    fqname
+        fully qualified class name for the convertible objects.
+        This is the quoted string included in "str(type(obj))".
+        The converter function would be called for object of the
+        same or derived types.
+    fnc
+        function that converts the fqname type to StructureAdapter.
 
     Note: When fnc is None RegisterStructureAdapter works as a decorator
     and the conversion function can be specified below, i.e.,
