@@ -4,7 +4,7 @@
 
 **Changed:**
 
-* Added support for Python 3.14 while removing support for Python 3.12.
+* Added support for Python 3.14 while removing support for Python 3.11.
 
 **Deprecated:**
 
