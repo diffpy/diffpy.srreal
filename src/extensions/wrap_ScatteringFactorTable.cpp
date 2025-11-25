@@ -158,8 +158,11 @@ const char* doc_ScatteringFactorTableOwner_setScatteringFactorTableByType = "\
 Set internal ScatteringFactorTable according to specified string type.\n\
 \n\
 tp   -- string identifier of a registered ScatteringFactorTable type.\n\
-        Use ScatteringFactorTable.getRegisteredTypes for the allowed values.\n\
+    Use ScatteringFactorTable.getRegisteredTypes for the allowed values.\n\
 \n\
+Deprecated: This method is deprecated and will be removed in a future release.\n\
+Use direct assignment to the `scatteringfactortable` property instead, for example:\n\
+    obj.scatteringfactortable = SFTNeutron()\n\
 No return value.\n\
 ";
 
@@ -399,10 +402,27 @@ void wrap_ScatteringFactorTable()
                 getsftable,
                 setsftable<ScatteringFactorTableOwner,ScatteringFactorTable>,
                 doc_ScatteringFactorTableOwner_scatteringfactortable)
+        // deprecated: prefer assigning the `scatteringfactortable` property
         .def("setScatteringFactorTableByType",
-                &SFTOwner::setScatteringFactorTableByType,
-                bp::arg("tp"),
-                doc_ScatteringFactorTableOwner_setScatteringFactorTableByType)
+            +[](SFTOwner& obj, const std::string& tp)
+            {
+                namespace bp = boost::python;
+                try
+                {
+                bp::object warnings = bp::import("warnings");
+                bp::object builtins = bp::import("builtins");
+                bp::object DeprecationWarning = builtins.attr("DeprecationWarning");
+                warnings.attr("warn")(
+                    std::string("setScatteringFactorTableByType is deprecated; "
+                            "assign the 'scatteringfactortable' property directly (for example, use SFTNeutron()/SFTXray())."),
+                    DeprecationWarning,
+                    2);
+                }
+                catch (...) { /* don't let warnings break the binding */ }
+                obj.setScatteringFactorTableByType(tp);
+            },
+            bp::arg("tp"),
+            doc_ScatteringFactorTableOwner_setScatteringFactorTableByType)
         .def("getRadiationType",
                 &SFTOwner::getRadiationType,
                 return_value_policy<copy_const_reference>(),

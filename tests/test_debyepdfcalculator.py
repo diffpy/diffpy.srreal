@@ -142,7 +142,8 @@ class TestDebyePDFCalculator(unittest.TestCase):
     def test_pickling(self):
         """Check pickling and unpickling of PDFCalculator."""
         dpdfc = self.dpdfc
-        dpdfc.setScatteringFactorTableByType("N")
+        with self.assertWarns(DeprecationWarning):
+            dpdfc.setScatteringFactorTableByType("N")
         dpdfc.scatteringfactortable.setCustomAs("Na", "Na", 7)
         dpdfc.addEnvelope("sphericalshape")
         dpdfc.debyeprecision = 0.001
