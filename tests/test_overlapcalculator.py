@@ -202,7 +202,7 @@ class TestOverlapCalculator(unittest.TestCase):
         tso0 = olc.totalsquareoverlap
         dx = 1e-8
         rutile2 = loadDiffPyStructure("rutile.cif")
-        rutile2[2].xyz_cartn += [dx, 0.0, 0.0]
+        rutile2[2].xyz_cartn[0] += dx
         olc.eval(rutile2)
         g2nx = (olc.totalsquareoverlap - tso0) / dx
         self.assertAlmostEqual(g2[0], g2nx, 6)
