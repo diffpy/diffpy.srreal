@@ -5,11 +5,13 @@
 
 import pickle
 import unittest
+import warnings
 
 import numpy
 from testutils import _maxNormDiff, loadDiffPyStructure, pickle_with_attr
 
 from diffpy.srreal.pdfcalculator import DebyePDFCalculator, PDFCalculator
+from diffpy.srreal.scatteringfactortable import SFTNeutron
 
 
 ##############################################################################
@@ -141,6 +143,25 @@ class TestDebyePDFCalculator(unittest.TestCase):
 
     def test_pickling(self):
         """Check pickling and unpickling of PDFCalculator."""
+        # New syntax: assign an SFT instance to the property (should not warn)
+        dpdfc = self.dpdfc
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            dpdfc.scatteringfactortable = SFTNeutron()
+        self.assertFalse(
+            any(isinstance(x.message, DeprecationWarning) for x in w)
+        )
+
+        dpdfc.scatteringfactortable.setCustomAs("Na", "Na", 7)
+        spkl = pickle.dumps(dpdfc)
+        dpdfc1_new = pickle.loads(spkl)
+        self.assertEqual(
+            dpdfc.scatteringfactortable.type(),
+            dpdfc1_new.scatteringfactortable.type(),
+        )
+        self.assertEqual(7.0, dpdfc1_new.scatteringfactortable.lookup("Na"))
+
+        # Old syntax: call the deprecated method (should warn)
         dpdfc = self.dpdfc
         with self.assertWarns(DeprecationWarning):
             dpdfc.setScatteringFactorTableByType("N")

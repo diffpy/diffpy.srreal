@@ -160,7 +160,7 @@ Set internal ScatteringFactorTable according to specified string type.\n\
 tp   -- string identifier of a registered ScatteringFactorTable type.\n\
     Use ScatteringFactorTable.getRegisteredTypes for the allowed values.\n\
 \n\
-Deprecated: This method is deprecated and will be removed in a future release.\n\
+Deprecated: This method is deprecated and will be removed in the 2.0.0 release.\n\
 Use direct assignment to the `scatteringfactortable` property instead, for example:\n\
     obj.scatteringfactortable = SFTNeutron()\n\
 No return value.\n\
@@ -414,7 +414,8 @@ void wrap_ScatteringFactorTable()
                 bp::object DeprecationWarning = builtins.attr("DeprecationWarning");
                 warnings.attr("warn")(
                     std::string("setScatteringFactorTableByType is deprecated; "
-                            "assign the 'scatteringfactortable' property directly (for example, use SFTNeutron()/SFTXray())."),
+                            "assign the 'scatteringfactortable' property directly, for example:\n"
+                            "obj.scatteringfactortable = SFTNeutron()"),
                     DeprecationWarning,
                     2);
                 }
