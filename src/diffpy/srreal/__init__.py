@@ -14,6 +14,20 @@
 ##############################################################################
 """Tools for real space structure analysis."""
 
+# Windows DLL loading fix for Python 3.8+
+# On Windows, add the conda library bin directory to DLL search path
+# before importing extension modules that depend on DLLs
+import os
+import sys
+
+if sys.platform == "win32" and sys.version_info >= (3, 8):
+    # Try to add conda library bin directory to DLL search path
+    conda_prefix = os.environ.get("CONDA_PREFIX")
+    if conda_prefix:
+        lib_bin_dir = os.path.join(conda_prefix, "Library", "bin")
+        if os.path.isdir(lib_bin_dir):
+            os.add_dll_directory(lib_bin_dir)
+
 # package version
 from diffpy.srreal.version import __version__
 
