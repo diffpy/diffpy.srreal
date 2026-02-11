@@ -29,6 +29,3 @@ def test_windows_dll_directory_handling():
             # but we don't assert this as it may not exist in all test
             # environments
             assert isinstance(lib_bin_dir, str)
-
-    # Test passes if no exceptions are raised
-    assert True
