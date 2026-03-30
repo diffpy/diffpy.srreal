@@ -25,6 +25,7 @@
         :target: https://anaconda.org/conda-forge/diffpy.srreal
 
 .. |PR| image:: https://img.shields.io/badge/PR-Welcome-29ab47ff
+        :target: https://github.com/diffpy/diffpy.srreal/pulls
 
 .. |PyPI| image:: https://img.shields.io/pypi/v/diffpy.srreal
         :target: https://pypi.org/project/diffpy.srreal/
@@ -111,6 +112,19 @@ and run the following ::
 
         pip install .
 
+This package also provides command-line utilities. To check the software has been installed correctly, type ::
+
+        diffpy.srreal --version
+
+You can also type the following command to verify the installation. ::
+
+        python -c "import diffpy.srreal; print(diffpy.srreal.__version__)"
+
+
+To view the basic usage and available commands, type ::
+
+        diffpy.srreal -h
+
 Getting Started
 ---------------
 
@@ -149,7 +163,7 @@ Before contributing, please read our `Code of Conduct <https://github.com/diffpy
 Contact
 -------
 
-For more information on diffpy.srreal please visit the project `web-page <https://diffpy.github.io/>`_ or email Simon Billinge at sb2896@columbia.edu.
+For more information on diffpy.srreal please visit the project `web-page <https://diffpy.github.io/>`_ or email the maintainers ``Simon Billinge(sbillinge@ucsb.edu)``.
 
 Acknowledgements
 ----------------

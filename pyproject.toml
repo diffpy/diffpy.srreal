@@ -1,20 +1,20 @@
 [build-system]
-requires = ["setuptools>=62.0", "setuptools-git-versioning>=2.0", "numpy"]
+requires = ["setuptools>=62.0", "setuptools-git-versioning>=2.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "diffpy.srreal"
 dynamic=['version', 'dependencies']
 authors = [
-  { name="Simon Billinge", email="sb2896@columbia.edu" },
+  {name='Simon Billinge', email='sbillinge@ucsb.edu'},
 ]
 maintainers = [
-  { name="Simon Billinge", email="sb2896@columbia.edu" },
+  {name='Simon Billinge', email='sbillinge@ucsb.edu'},
 ]
 description = "Calculators for PDF, bond valence sum, and other quantities based on atom pair interaction."
 keywords = ['PDF', 'BVS', 'atom', 'overlap', 'calculator', 'real-space']
 readme = "README.rst"
-requires-python = ">=3.11, <3.14"
+requires-python = ">=3.12, <3.15"
 classifiers = [
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
@@ -25,9 +25,9 @@ classifiers = [
         'Operating System :: Microsoft :: Windows',
         'Operating System :: POSIX',
         'Operating System :: Unix',
-        'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3.12',
         'Programming Language :: Python :: 3.13',
+        'Programming Language :: Python :: 3.14',
         'Topic :: Scientific/Engineering :: Physics',
         'Topic :: Scientific/Engineering :: Chemistry',
 ]
@@ -47,6 +47,9 @@ where = ["src"]  # list of folders that contain the packages (["."] by default)
 include = ["*"]  # package names should match these glob patterns (["*"] by default)
 exclude = []  # exclude packages matching these glob patterns (empty by default)
 namespaces = false  # to disable scanning PEP 420 namespaces (true by default)
+
+[project.scripts]
+diffpy-srreal = "diffpy.srreal.srreal_app:main"
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements/pip.txt"]}

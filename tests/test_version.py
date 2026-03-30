@@ -1,6 +1,6 @@
 """Unit tests for __version__.py."""
 
-import diffpy.srreal
+import diffpy.srreal  # noqa
 
 
 def test_package_version():

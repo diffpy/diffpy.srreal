@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 ##############################################################################
 #
-# (c) 2025 The Trustees of Columbia University in the City of New York.
+# (c) 2025-2026 The Trustees of Columbia University in the City of New York.
 # All rights reserved.
 #
 # File coded by: Billinge Group members and community contributors.
 #
 # See GitHub contributions for a more detailed list of contributors.
-# https://github.com/diffpy/diffpy.srreal/graphs/contributors
+# https://github.com/diffpy/diffpy.srreal/graphs/contributors  # noqa: E501
 #
 # See LICENSE.rst for license information.
 #
@@ -20,12 +20,7 @@
 # obtain version information
 from importlib.metadata import PackageNotFoundError, version
 
-FALLBACK_VERSION = "1.3.0"
-
 try:
     __version__ = version("diffpy.srreal")
 except PackageNotFoundError:
-    __version__ = FALLBACK_VERSION
-
-
-# End of file
+    __version__ = "unknown"

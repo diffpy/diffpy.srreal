@@ -9,6 +9,12 @@
 | Software version |release|
 | Last updated |today|.
 
+===============
+Getting started
+===============
+
+Welcome to the ``diffpy.srreal`` documentation!
+
 The diffpy.srreal package provides calculators for atomic pair distribution
 function (PDF), bond valence sums (BVS), atom overlaps for a hard-sphere
 model, bond distances and directions up to specified maximum distance.   The
@@ -43,11 +49,11 @@ pairs, by defining only the function that processes atom-pair contributions.
 Authors
 =======
 
-diffpy.srreal is developed by members of the Billinge Group at
+``diffpy.srreal`` is developed by members of the Billinge Group at
 Columbia University and at Brookhaven National Laboratory including
 Pavol Juhás, Christopher L. Farrow, Simon J.L. Billinge.
 
-For a detailed list of contributors see
+This project is maintained by Simon Billinge. For a detailed list of contributors see
 https://github.com/diffpy/diffpy.srreal/graphs/contributors.
 
 Reference
@@ -76,12 +82,12 @@ Acknowledgements
 Table of contents
 =================
 .. toctree::
-   :titlesonly:
+   :maxdepth: 2
 
-   license
-   release
    examples
    Package API <api/diffpy.srreal>
+   release
+   license
 
 =======
 Indices

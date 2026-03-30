@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 ##############################################################################
 #
-# (c) 2025 The Trustees of Columbia University in the City of New York.
+# (c) 2025-2026 The Trustees of Columbia University in the City of New York.
 # All rights reserved.
 #
 # File coded by: Billinge Group members and community contributors.
@@ -12,10 +12,11 @@
 # See LICENSE.rst for license information.
 #
 ##############################################################################
-"""Tools for real space structure analysis."""
+"""Calculators for PDF, bond valence sum, and other quantities based on
+atom pair interaction."""
 
 # package version
-from diffpy.srreal.version import __version__
+from diffpy.srreal.version import __version__  # noqa
 
 # silence the pyflakes syntax checker
 assert __version__ or True
