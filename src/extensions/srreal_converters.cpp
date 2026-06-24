@@ -17,15 +17,13 @@
 *
 *****************************************************************************/
 
-#include <boost/python/slice.hpp>
-#include <boost/python/stl_iterator.hpp>
-#include <boost/python/exception_translator.hpp>
+// TODO: replace Py_DECREF with nb::steal
 
 #include <string>
-#include <valarray>
 #include <stdexcept>
 #include <cassert>
 #include <cstdlib>
+#include <ranges>
 
 #include <diffpy/Attributes.hpp>
 #include <diffpy/srreal/StructureAdapter.hpp>
@@ -60,18 +58,26 @@ void translate_invalid_argument(const invalid_argument& e)
 }
 
 
-boost::python::object newNumPyArray(int dim, const int* sz, int typenum)
+nb::object newNumPyArray(int dim, const int* sz, int typenum)
 {
-    using namespace std;
-    using namespace boost;
-    // copy the size information to an array of npy_intp
-    valarray<npy_intp> npsza(dim);
-    npy_intp& npsz = npsza[0];
-    copy(sz, sz + dim, &npsz);
-    // create numpy array
-    python::object rv(
-            python::handle<>(PyArray_SimpleNew(dim, &npsz, typenum)));
-    return rv;
+    std::vector<npy_intp> dims(static_cast<size_t>(dim));
+    std::transform(
+        sz,
+        sz + dim,
+        dims.begin(),
+        [](int v) { return static_cast<npy_intp>(v); }
+    );
+    
+    PyObject *arr = PyArray_SimpleNew(
+        dim,
+        dims.empty() ? nullptr : dims.data(),
+        typenum
+    );
+
+    if (!arr)
+        throw nb::python_error();
+    
+    return nb::steal<nb::object>(arr);
 }
 
 }   // namespace
@@ -81,18 +87,31 @@ namespace srrealmodule {
 /// this function registers all exception translators
 void wrap_exceptions()
 {
-    using boost::python::register_exception_translator;
-    register_exception_translator<DoubleAttributeError>(
-            &translate_DoubleAttributeError);
-    register_exception_translator<invalid_argument>(
-            &translate_invalid_argument);
+    nb::register_exception_translator(
+        [](const std::exception_ptr& p, void*) 
+        {
+            try 
+            {
+                if (p)
+                    std::rethrow_exception(p);
+            } 
+            catch (const DoubleAttributeError& e) 
+            {
+                PyErr_SetString(PyExc_AttributeError, e.what());
+            } 
+            catch (const invalid_argument& e) 
+            {
+                PyErr_SetString(PyExc_ValueError, e.what());
+            }
+        }
+    );
 }
 
 
 /// helper for creating numpy array of doubles
 NumPyArray_DoublePtr createNumPyDoubleArray(int dim, const int* sz)
 {
-    boost::python::object rvobj = newNumPyArray(dim, sz, NPY_DOUBLE);
+    nb::object rvobj = newNumPyArray(dim, sz, NPY_DOUBLE);
     PyArrayObject* a = reinterpret_cast<PyArrayObject*>(rvobj.ptr());
     double* rvdata = static_cast<double*>(PyArray_DATA(a));
     NumPyArray_DoublePtr rv(rvobj, rvdata);
@@ -101,15 +120,22 @@ NumPyArray_DoublePtr createNumPyDoubleArray(int dim, const int* sz)
 
 
 /// helper for creating numpy array of the same shape as the argument
-NumPyArray_DoublePtr createNumPyDoubleArrayLike(boost::python::object& obj)
+NumPyArray_DoublePtr createNumPyDoubleArrayLike(nb::object& obj)
 {
     assert(PyArray_Check(obj.ptr()));
     PyArrayObject* a = reinterpret_cast<PyArrayObject*>(obj.ptr());
     // create numpy array
-    boost::python::object rvobj(
-            boost::python::handle<>(
-                PyArray_NewLikeArray(
-                    a, NPY_CORDER, PyArray_DescrFromType(NPY_DOUBLE), 0)));
+    PyObject *pobj = PyArray_NewLikeArray(
+        a,
+        NPY_CORDER,
+        PyArray_DescrFromType(NPY_DOUBLE),
+        0
+    );
+
+    if (!pobj)
+        throw nb::python_error();
+
+    nb::object rvobj = nb::steal<nb::object>(pobj);
     PyArrayObject* a1 = reinterpret_cast<PyArrayObject*>(rvobj.ptr());
     double* rvdata = static_cast<double*>(PyArray_DATA(a1));
     NumPyArray_DoublePtr rv(rvobj, rvdata);
@@ -118,23 +144,33 @@ NumPyArray_DoublePtr createNumPyDoubleArrayLike(boost::python::object& obj)
 
 
 /// helper for creating a numpy array view on a double array
-boost::python::object
+nb::object
 createNumPyDoubleView(double* data, int dim, const int* sz)
 {
-    using namespace std;
-    using namespace boost;
-    valarray<npy_intp> npsza(dim);
-    npy_intp* npsz = &(npsza[0]);
-    copy(sz, sz + dim, npsz);
-    python::object rv(
-            python::handle<>(
-                PyArray_SimpleNewFromData(dim, npsz, NPY_DOUBLE, data)));
-    return rv;
+    std::vector<npy_intp> dims(static_cast<size_t>(dim));
+    std::transform(
+        sz,
+        sz + dim,
+        dims.begin(),
+        [](int v) { return static_cast<npy_intp>(v); }
+    );
+
+    PyObject* pobj = PyArray_SimpleNewFromData(
+        dim,
+        dims.data(),
+        NPY_DOUBLE,
+        data
+    );
+
+    if (!pobj)
+        throw nb::python_error();
+
+    return nb::steal<nb::object>(pobj);
 }
 
 
 /// NumPy array view specializations for R3::Vector
-boost::python::object viewAsNumPyArray(::diffpy::srreal::R3::Vector& v)
+nb::object viewAsNumPyArray(::diffpy::srreal::R3::Vector& v)
 {
     using namespace diffpy::srreal;
     double* data = &(v[0]);
@@ -144,7 +180,7 @@ boost::python::object viewAsNumPyArray(::diffpy::srreal::R3::Vector& v)
 
 
 /// NumPy array view specializations for R3::Matrix
-boost::python::object viewAsNumPyArray(::diffpy::srreal::R3::Matrix& mx)
+nb::object viewAsNumPyArray(::diffpy::srreal::R3::Matrix& mx)
 {
     using namespace diffpy::srreal;
     double* data = &(mx(0, 0));
@@ -155,9 +191,8 @@ boost::python::object viewAsNumPyArray(::diffpy::srreal::R3::Matrix& mx)
 
 /// Copy NumPy array to R3::Vector
 void assignR3Vector(
-        ::diffpy::srreal::R3::Vector& dst, boost::python::object& value)
+        ::diffpy::srreal::R3::Vector& dst, nb::object& value)
 {
-    using namespace boost;
     using diffpy::srreal::R3::Ndim;
     // If value is numpy array, try direct data access
     if (PyArray_Check(value.ptr()))
@@ -167,30 +202,29 @@ void assignR3Vector(
         if (a && Ndim == PyArray_DIM(a, 0))
         {
             double* p = static_cast<double*>(PyArray_DATA(a));
-            std::copy(p, p + Ndim, dst.data().begin());
+            std::ranges::copy(p, p + Ndim, dst.data().begin());
             Py_DECREF(a);
             return;
         }
         Py_XDECREF(a);
     }
     // handle scalar assignment
-    python::extract<double> getvalue(value);
-    if (getvalue.check())
+    double scalar;
+    if (nb::try_cast<double>(value, scalar))
     {
-        std::fill(dst.data().begin(), dst.data().end(), getvalue());
+        std::ranges::fill(dst.data().begin(), dst.data().end(), scalar);
         return;
     }
     // finally assign using array view
-    python::object dstview = viewAsNumPyArray(dst);
-    dstview[python::slice()] = value;
+    nb::object dstview = viewAsNumPyArray(dst);
+    dstview[nb::slice(nb::none(), nb::none(), nb::none())] = value;
 }
 
 
 /// Copy possible NumPy array to R3::Matrix
 void assignR3Matrix(
-        ::diffpy::srreal::R3::Matrix& dst, boost::python::object& value)
+        ::diffpy::srreal::R3::Matrix& dst, nb::object& value)
 {
-    using namespace boost;
     using diffpy::srreal::R3::Ndim;
     // If value is numpy array, try direct data access
     if (PyArray_Check(value.ptr()))
@@ -200,29 +234,29 @@ void assignR3Matrix(
         if (a && Ndim == PyArray_DIM(a, 0) && Ndim == PyArray_DIM(a, 1))
         {
             double* p = static_cast<double*>(PyArray_DATA(a));
-            std::copy(p, p + Ndim * Ndim, dst.data().begin());
+            std::ranges::copy(p, p + Ndim * Ndim, dst.data().begin());
             Py_DECREF(a);
             return;
         }
         Py_XDECREF(a);
     }
     // handle scalar assignment
-    python::extract<double> getvalue(value);
-    if (getvalue.check())
+    double scalar;
+    if (nb::try_cast<double>(value, scalar))
     {
-        std::fill(dst.data().begin(), dst.data().end(), getvalue());
+        std::ranges::fill(dst.data().begin(), dst.data().end(), scalar);
         return;
     }
     // finally assign using array view
-    python::object dstview = viewAsNumPyArray(dst);
-    dstview[python::slice()] = value;
+    nb::object dstview = viewAsNumPyArray(dst);
+    dstview[nb::slice(nb::none(), nb::none(), nb::none())] = value;
 }
 
 
 /// helper for creating numpy array of integers
 NumPyArray_IntPtr createNumPyIntArray(int dim, const int* sz)
 {
-    boost::python::object rvobj = newNumPyArray(dim, sz, NPY_INT);
+    nb::object rvobj = newNumPyArray(dim, sz, NPY_INT);
     PyArrayObject* a = reinterpret_cast<PyArrayObject*>(rvobj.ptr());
     int* rvdata = static_cast<int*>(PyArray_DATA(a));
     NumPyArray_IntPtr rv(rvobj, rvdata);
@@ -233,14 +267,14 @@ NumPyArray_IntPtr createNumPyIntArray(int dim, const int* sz)
 /// efficient conversion of Python object to a QuantityType
 diffpy::srreal::QuantityType&
 extractQuantityType(
-        boost::python::object obj,
+        nb::object obj,
         diffpy::srreal::QuantityType& rv)
 {
-    using namespace boost;
     using diffpy::srreal::QuantityType;
     // extract QuantityType directly
-    python::extract<QuantityType&> getqt(obj);
-    if (getqt.check())  return getqt();
+    QuantityType* qt = nullptr;
+    if (nb::try_cast<QuantityType*>(obj, qt) && qt)
+        return *qt;
     // copy data directly if it is a numpy array of doubles
     PyArrayObject* a = PyArray_Check(obj.ptr()) ?
         reinterpret_cast<PyArrayObject*>(obj.ptr()) : NULL;
@@ -257,24 +291,38 @@ extractQuantityType(
         return rv;
     }
     // otherwise copy elementwise converting each element to a double
-    python::stl_input_iterator<double> begin(obj), end;
-    rv.assign(begin, end);
+    std::vector<double> tmp;
+
+    PyObject* iter = PyObject_GetIter(obj.ptr());
+    if (!iter)
+        throw nb::python_error();
+
+    nb::object it = nb::steal<nb::object>(iter);
+
+    while (PyObject* item = PyIter_Next(it.ptr())) 
+    {
+        nb::object item_obj = nb::steal<nb::object>(item);
+        tmp.push_back(nb::cast<double>(item_obj));
+    }
+
+    if (PyErr_Occurred())
+        throw nb::python_error();
+
+    rv.assign(tmp.begin(), tmp.end());
     return rv;
 }
 
 
 /// efficient conversion of Python object to a numpy array of doubles
-NumPyArray_DoublePtr extractNumPyDoubleArray(::boost::python::object& obj)
+NumPyArray_DoublePtr extractNumPyDoubleArray(::nb::object& obj)
 {
     PyObject* pobj = PyArray_ContiguousFromAny(obj.ptr(), NPY_DOUBLE, 0, 0);
     if (!pobj)
     {
-        const char* emsg = "Cannot convert this object to numpy array.";
-        PyErr_SetString(PyExc_TypeError, emsg);
-        boost::python::throw_error_already_set();
-        abort();
+        PyErr_Clear();
+        throw nb::type_error("Cannot convert this object to numpy array.");
     }
-    boost::python::object rvobj((boost::python::handle<>(pobj)));
+    nb::object rvobj = nb::steal<nb::object>(pobj);
     PyArrayObject* a = reinterpret_cast<PyArrayObject*>(pobj);
     double* rvdata = static_cast<double*>(PyArray_DATA(a));
     NumPyArray_DoublePtr rv(rvobj, rvdata);
@@ -283,46 +331,55 @@ NumPyArray_DoublePtr extractNumPyDoubleArray(::boost::python::object& obj)
 
 
 /// extract double with a support for numpy.int types
-double extractdouble(boost::python::object obj)
+double extractdouble(nb::object obj)
 {
-    using namespace boost;
-    python::extract<double> getx(obj);
-    if (getx.check())  return getx();
+    double x;
+    if (nb::try_cast<double>(obj, x))
+        return x;
+
     PyObject* pobj = obj.ptr();
     if (PyArray_CheckScalar(pobj))
     {
-        double x;
-        PyArray_CastScalarToCtype(pobj, &x,
-                PyArray_DescrFromType(NPY_DOUBLE));
+        PyArray_Descr* descr = PyArray_DescrFromType(NPY_DOUBLE);
+        if (!descr)
+            throw nb::python_error();
+
+        int ok = PyArray_CastScalarToCtype(pobj, &x, descr);
+        Py_DECREF(descr);
+
+        if (ok < 0)
+            throw nb::python_error();
+
         return x;
     }
-    // nothing worked, call getx which will raise an exception
-    return getx();
+    // nothing worked, call default behavior which will raise an exception
+    return nb::cast<double>(obj);
 }
 
 
 /// extract integer with a support for numpy.int types
-int extractint(boost::python::object obj)
+int extractint(nb::object obj)
 {
-    using namespace boost;
-    python::extract<int> geti(obj);
-    if (geti.check())  return geti();
+    int i;
+    if (nb::try_cast<int>(obj, i))
+        return i;
+
     PyObject* pobj = obj.ptr();
     if (PyArray_CheckScalar(pobj))
     {
         int rv = PyArray_PyIntAsInt(pobj);
-        if (rv == -1 && PyErr_Occurred())  python::throw_error_already_set();
+        if (rv == -1 && PyErr_Occurred())
+            throw nb::python_error();
         return rv;
     }
-    // nothing worked, call geti which will raise an exception
-    return geti();
+    // nothing worked, call default behavior which will raise an exception
+    return nb::cast<int>(obj);
 }
 
 
 /// extract a vector of integers from a numpy array, iterable or scalar
-std::vector<int> extractintvector(boost::python::object obj)
+std::vector<int> extractintvector(nb::object obj)
 {
-    using namespace boost::python;
     std::vector<int> rv;
     // iterable of integers
     if (isiterable(obj))
@@ -334,11 +391,14 @@ std::vector<int> extractintvector(boost::python::object obj)
             a && (1 == PyArray_NDIM(a)) && PyArray_ISINTEGER(a);
         if (isintegernumpyarray)
         {
-            object aobj = obj;
+            nb::object aobj = obj;
             if (NPY_INT != PyArray_TYPE(a))
             {
-                object a1(handle<>(PyArray_Cast(a, NPY_INT)));
-                aobj = a1;
+                PyObject* casted = PyArray_Cast(a, NPY_INT);
+                if (!casted)
+                    throw nb::python_error();
+
+                aobj = nb::steal<nb::object>(casted);
             }
             PyArrayObject* a1 = reinterpret_cast<PyArrayObject*>(aobj.ptr());
             assert(NPY_INT == PyArray_TYPE(a1));
@@ -348,13 +408,11 @@ std::vector<int> extractintvector(boost::python::object obj)
             return rv;
         }
         // otherwise translate every item in the iterable
-        stl_input_iterator<object> ii(obj), end;
         rv.reserve(len(obj));
-        for (; ii != end; ++ii)
-        {
-            int idx = extractint(*ii);
-            rv.push_back(idx);
-        }
+
+        for (nb::handle item : obj)
+            rv.push_back(extractint(nb::borrow<nb::object>(item)));
+
         return rv;
     }
     // try to handle it as a scalar
@@ -370,8 +428,7 @@ void throwPureVirtualCalled(const char* fncname)
     std::string emsg = "Pure virtual function '";
     emsg += fncname;
     emsg += "' called.";
-    PyErr_SetString(PyExc_RuntimeError, emsg.c_str());
-    boost::python::throw_error_already_set();
+    throw std::runtime_error(emsg);
 }
 
 }   // namespace srrealmodule
@@ -382,19 +439,15 @@ namespace srreal {
 
 /// shared converter that first tries to extract the pointer and then calls
 /// diffpy.srreal.structureadapter.createStructureAdapter
-StructureAdapterPtr createStructureAdapter(::boost::python::object stru)
+StructureAdapterPtr createStructureAdapter(nb::object stru)
 {
-    using namespace boost::python;
     StructureAdapterPtr adpt;
-    extract<StructureAdapterPtr> getadpt(stru);
-    if (getadpt.check())  adpt = getadpt();
-    else
-    {
-        object mod = import("diffpy.srreal.structureadapter");
-        object convertinpython = mod.attr("createStructureAdapter");
-        adpt = extract<StructureAdapterPtr>(convertinpython(stru));
-    }
-    return adpt;
+    if (nb::try_cast<StructureAdapterPtr>(stru, adpt))
+        return adpt;
+
+    nb::object mod = nb::module_::import_("diffpy.srreal.structureadapter");
+    nb::object convertinpython = mod.attr("createStructureAdapter");
+    return nb::cast<StructureAdapterPtr>(convertinpython(stru));
 }
 
 }   // namespace srreal

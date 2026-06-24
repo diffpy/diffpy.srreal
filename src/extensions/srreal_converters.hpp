@@ -20,11 +20,7 @@
 #ifndef SRREAL_CONVERTERS_HPP_INCLUDED
 #define SRREAL_CONVERTERS_HPP_INCLUDED
 
-#include <boost/python/object.hpp>
-#include <boost/python/import.hpp>
-#include <boost/python/list.hpp>
-#include <boost/python/dict.hpp>
-#include <boost/python/override.hpp>
+#include <nanobind/nanobind.h>
 
 #include <algorithm>
 #include <string>
@@ -38,6 +34,8 @@
 #error diffpy.srreal requires libdiffpy 1.4.0 or later.
 #endif
 
+namespace nb = nanobind;
+
 /// Conversion function that supports implicit conversions in
 /// PairQuantity::eval and PairQuantity::setStructure
 
@@ -45,7 +43,7 @@ namespace diffpy {
 namespace srreal {
 
 StructureAdapterPtr
-createStructureAdapter(::boost::python::object);
+createStructureAdapter(nb::object);
 
 }   // namespace srreal
 }   // namespace diffpy
@@ -58,16 +56,13 @@ using diffpy::srreal::createStructureAdapter;
 /// either instance or a type string
 #define DECLARE_BYTYPE_SETTER_WRAPPER(method, wrapper) \
     template <class T, class V> \
-    void wrapper(T& obj, ::boost::python::object value) \
+    void wrapper(T& obj, nb::object value) \
     { \
-        using ::boost::python::extract; \
-        extract<std::string> tp(value); \
-        if (tp.check())  obj.method##ByType(tp()); \
-        else \
-        { \
-            typename V::SharedPtr p = extract<typename V::SharedPtr>(value); \
-            obj.method(p); \
-        } \
+        std::string tp;                                       \
+        if (nb::try_cast<std::string>(value, tp))             \
+            obj.method##ByType(tp);                           \
+        else                                                  \
+            obj.method(nb::cast<typename V::SharedPtr>(value)); \
     } \
 
 
@@ -75,9 +70,9 @@ using diffpy::srreal::createStructureAdapter;
 /// that converts the result to numpy array
 #define DECLARE_PYARRAY_METHOD_WRAPPER(method, wrapper) \
     template <class T> \
-    ::boost::python::object wrapper(const T& obj) \
+    nb::object wrapper(const T& obj) \
     { \
-        ::boost::python::object rv = convertToNumPyArray(obj.method()); \
+        nb::object rv = convertToNumPyArray(obj.method()); \
         return rv; \
     } \
 
@@ -86,9 +81,9 @@ using diffpy::srreal::createStructureAdapter;
 /// that converts the result to numpy array
 #define DECLARE_PYARRAY_METHOD_WRAPPER1(method, wrapper) \
     template <class T, class T1> \
-    ::boost::python::object wrapper(const T& obj, const T1& a1) \
+    nb::object wrapper(const T& obj, const T1& a1) \
     { \
-        ::boost::python::object rv = convertToNumPyArray(obj.method(a1)); \
+        nb::object rv = convertToNumPyArray(obj.method(a1)); \
         return rv; \
     } \
 
@@ -97,12 +92,12 @@ using diffpy::srreal::createStructureAdapter;
 /// that converts the result to numpy character array
 #define DECLARE_PYCHARARRAY_METHOD_WRAPPER(method, wrapper) \
     template <class T> \
-    ::boost::python::object wrapper(const T& obj) \
+    nb::object wrapper(const T& obj) \
     { \
-        ::boost::python::list lst = convertToPythonList(obj.method()); \
-        ::boost::python::object tochararray = \
-            ::boost::python::import("numpy").attr("char").attr("array"); \
-        ::boost::python::object rv = tochararray(lst); \
+        nb::list lst = convertToPythonList(obj.method()); \
+        nb::object tochararray = \
+            nb::module_::import_("numpy").attr("char").attr("array"); \
+        nb::object rv = tochararray(lst); \
         return rv; \
     } \
 
@@ -111,9 +106,9 @@ using diffpy::srreal::createStructureAdapter;
 /// that converts the result to a python set
 #define DECLARE_PYSET_METHOD_WRAPPER(method, wrapper) \
     template <class T> \
-    ::boost::python::object wrapper(const T& obj) \
+    nb::object wrapper(const T& obj) \
     { \
-        ::boost::python::object rv = convertToPythonSet(obj.method()); \
+        nb::object rv = convertToPythonSet(obj.method()); \
         return rv; \
     } \
 
@@ -122,9 +117,9 @@ using diffpy::srreal::createStructureAdapter;
 /// that converts the result to a python set
 #define DECLARE_PYSET_METHOD_WRAPPER1(method, wrapper) \
     template <class T, class T1> \
-    ::boost::python::object wrapper(const T& obj, const T1& a1) \
+    nb::object wrapper(const T& obj, const T1& a1) \
     { \
-        ::boost::python::object rv = convertToPythonSet(obj.method(a1)); \
+        nb::object rv = convertToPythonSet(obj.method(a1)); \
         return rv; \
     } \
 
@@ -132,9 +127,9 @@ using diffpy::srreal::createStructureAdapter;
 /// this macro defines a wrapper for C++ function without arguments
 /// that converts the result to a python set
 #define DECLARE_PYSET_FUNCTION_WRAPPER(fnc, wrapper) \
-    ::boost::python::object wrapper() \
+    nb::object wrapper() \
     { \
-        ::boost::python::object rv = convertToPythonSet(fnc()); \
+        nb::object rv = convertToPythonSet(fnc()); \
         return rv; \
     } \
 
@@ -143,9 +138,9 @@ using diffpy::srreal::createStructureAdapter;
 /// that converts the result to a python list
 #define DECLARE_PYLIST_METHOD_WRAPPER(method, wrapper) \
     template <class T> \
-    ::boost::python::object wrapper(const T& obj) \
+    nb::object wrapper(const T& obj) \
     { \
-        ::boost::python::object rv = convertToPythonList(obj.method()); \
+        nb::object rv = convertToPythonList(obj.method()); \
         return rv; \
     } \
 
@@ -154,9 +149,9 @@ using diffpy::srreal::createStructureAdapter;
 /// that convert the result to python list
 #define DECLARE_PYLIST_METHOD_WRAPPER1(method, wrapper) \
     template <class T, class T1> \
-    ::boost::python::object wrapper(const T& obj, const T1& a1) \
+    nb::object wrapper(const T& obj, const T1& a1) \
     { \
-        ::boost::python::object rv = convertToPythonList(obj.method(a1)); \
+        nb::object rv = convertToPythonList(obj.method(a1)); \
         return rv; \
     } \
 
@@ -165,9 +160,9 @@ using diffpy::srreal::createStructureAdapter;
 /// that converts the result to a python list of NumPy arrays
 #define DECLARE_PYLISTARRAY_METHOD_WRAPPER(method, wrapper) \
     template <class T> \
-    ::boost::python::list wrapper(const T& obj) \
+    nb::list wrapper(const T& obj) \
     { \
-        ::boost::python::list rvlist; \
+        nb::list rvlist; \
         fillPyListWithArrays(rvlist, obj.method()); \
         return rvlist; \
     } \
@@ -177,9 +172,9 @@ using diffpy::srreal::createStructureAdapter;
 /// that converts the result to a list of Python sets
 #define DECLARE_PYLISTSET_METHOD_WRAPPER(method, wrapper) \
     template <class T> \
-    ::boost::python::list wrapper(const T& obj) \
+    nb::list wrapper(const T& obj) \
     { \
-        ::boost::python::list rvlist; \
+        nb::list rvlist; \
         fillPyListWithSets(rvlist, obj.method()); \
         return rvlist; \
     } \
@@ -189,9 +184,9 @@ using diffpy::srreal::createStructureAdapter;
 /// that converts the result to a python dict
 #define DECLARE_PYDICT_METHOD_WRAPPER(method, wrapper) \
     template <class T> \
-    ::boost::python::object wrapper(const T& obj) \
+    nb::object wrapper(const T& obj) \
     { \
-        ::boost::python::object rv = convertToPythonDict(obj.method()); \
+        nb::object rv = convertToPythonDict(obj.method()); \
         return rv; \
     } \
 
@@ -200,16 +195,16 @@ using diffpy::srreal::createStructureAdapter;
 /// that converts the result to a python dict
 #define DECLARE_PYDICT_METHOD_WRAPPER1(method, wrapper) \
     template <class T, class T1> \
-    ::boost::python::object wrapper(const T& obj, const T1& a1) \
+    nb::object wrapper(const T& obj, const T1& a1) \
     { \
-        ::boost::python::object rv = convertToPythonDict(obj.method(a1)); \
+        nb::object rv = convertToPythonDict(obj.method(a1)); \
         return rv; \
     } \
 
 
 /// helper template function for DECLARE_PYLISTARRAY_METHOD_WRAPPER
 template <class T>
-void fillPyListWithArrays(::boost::python::list lst, const T& value)
+void fillPyListWithArrays(nb::list lst, const T& value)
 {
     typename T::const_iterator v = value.begin();
     for (; v != value.end(); ++v)  lst.append(convertToNumPyArray(*v));
@@ -218,21 +213,19 @@ void fillPyListWithArrays(::boost::python::list lst, const T& value)
 
 /// template function for converting C++ STL container to a python set
 template <class T>
-::boost::python::object
+nb::object
 convertToPythonSet(const T& value)
 {
-    using namespace ::boost;
-    python::object rvset(python::handle<>(PySet_New(NULL)));
-    python::object rvset_add = rvset.attr("add");
-    typename T::const_iterator ii;
-    for (ii = value.begin(); ii != value.end(); ++ii)  rvset_add(*ii);
-    return rvset;
+    nb::set rv;
+    for (auto const& item : value)
+        rv.add(item);
+    return rv;
 }
 
 
 /// helper template function for DECLARE_PYLISTSET_METHOD_WRAPPER
 template <class T>
-void fillPyListWithSets(::boost::python::list lst, const T& value)
+void fillPyListWithSets(nb::list lst, const T& value)
 {
     typename T::const_iterator v = value.begin();
     for (; v != value.end(); ++v)  lst.append(convertToPythonSet(*v));
@@ -240,7 +233,7 @@ void fillPyListWithSets(::boost::python::list lst, const T& value)
 
 
 /// Type for numpy array object and a raw pointer to its double data
-typedef std::pair<boost::python::object, double*> NumPyArray_DoublePtr;
+typedef std::pair<nb::object, double*> NumPyArray_DoublePtr;
 
 
 /// helper for creating numpy array of doubles
@@ -248,16 +241,16 @@ NumPyArray_DoublePtr createNumPyDoubleArray(int dim, const int* sz);
 
 
 /// helper for creating numpy array of the same shape as the argument
-NumPyArray_DoublePtr createNumPyDoubleArrayLike(boost::python::object& obj);
+NumPyArray_DoublePtr createNumPyDoubleArrayLike(nb::object& obj);
 
 
 /// helper for creating numpy views on existing double array
-boost::python::object createNumPyDoubleView(double*, int dim, const int* sz);
+nb::object createNumPyDoubleView(double*, int dim, const int* sz);
 
 
 /// template function for converting iterables to numpy array of doubles
 template <class Iter>
-::boost::python::object
+nb::object
 convertToNumPyArray(Iter first, Iter last)
 {
     int sz = last - first;
@@ -268,7 +261,7 @@ convertToNumPyArray(Iter first, Iter last)
 
 
 /// specialization for R3::Vector
-inline ::boost::python::object
+inline nb::object
 convertToNumPyArray(const ::diffpy::srreal::R3::Vector& value)
 {
     return convertToNumPyArray(value.begin(), value.end());
@@ -276,7 +269,7 @@ convertToNumPyArray(const ::diffpy::srreal::R3::Vector& value)
 
 
 /// specialization for R3::Matrix
-inline ::boost::python::object
+inline nb::object
 convertToNumPyArray(const ::diffpy::srreal::R3::Matrix& mx)
 {
     using namespace diffpy::srreal;
@@ -291,7 +284,7 @@ convertToNumPyArray(const ::diffpy::srreal::R3::Matrix& mx)
 
 
 /// specialization for std::vector<R3::Vector>
-inline ::boost::python::object
+inline nb::object
 convertToNumPyArray(const ::std::vector<diffpy::srreal::R3::Vector>& vr3v)
 {
     using namespace diffpy::srreal;
@@ -312,7 +305,7 @@ convertToNumPyArray(const ::std::vector<diffpy::srreal::R3::Vector>& vr3v)
 
 
 /// specialization for QuantityType
-inline ::boost::python::object
+inline nb::object
 convertToNumPyArray(const ::diffpy::srreal::QuantityType& value)
 {
     return convertToNumPyArray(value.begin(), value.end());
@@ -320,27 +313,27 @@ convertToNumPyArray(const ::diffpy::srreal::QuantityType& value)
 
 
 /// NumPy array view specializations for R3::Vector
-boost::python::object
+nb::object
 viewAsNumPyArray(::diffpy::srreal::R3::Vector&);
 
 
 /// NumPy array view specializations for R3::Matrix
-boost::python::object
+nb::object
 viewAsNumPyArray(::diffpy::srreal::R3::Matrix&);
 
 
 /// Copy possible NumPy array to R3::Vector
 void assignR3Vector(
-        ::diffpy::srreal::R3::Vector& dst, boost::python::object& value);
+        ::diffpy::srreal::R3::Vector& dst, nb::object& value);
 
 
 /// Copy possible NumPy array to R3::Matrix
 void assignR3Matrix(
-        ::diffpy::srreal::R3::Matrix& dst, boost::python::object& value);
+        ::diffpy::srreal::R3::Matrix& dst, nb::object& value);
 
 
 /// Type for numpy array object and a raw pointer to its double data
-typedef std::pair<boost::python::object, int*> NumPyArray_IntPtr;
+typedef std::pair<nb::object, int*> NumPyArray_IntPtr;
 
 
 /// helper for creating numpy array of integers
@@ -348,7 +341,7 @@ NumPyArray_IntPtr createNumPyIntArray(int dim, const int* sz);
 
 
 /// specialization for a vector of integers
-inline ::boost::python::object
+inline nb::object
 convertToNumPyArray(const ::std::vector<int>& value)
 {
     int sz = value.size();
@@ -360,25 +353,24 @@ convertToNumPyArray(const ::std::vector<int>& value)
 
 /// template function for converting C++ STL container to a python list
 template <class T>
-::boost::python::list
+nb::list
 convertToPythonList(const T& value)
 {
-    using namespace ::boost;
-    python::list rvlist;
-    typename T::const_iterator ii;
-    for (ii = value.begin(); ii != value.end(); ++ii)  rvlist.append(*ii);
-    return rvlist;
+    nb::list rv;
+    for (auto const& item : value)
+        rv.append(item);
+    return rv;
 }
 
 
 /// template converter of a C++ map-like container to a python dictionary
 template <class T>
-::boost::python::dict
+nb::dict
 convertToPythonDict(const T& value)
 {
-    ::boost::python::dict rv;
-    typename T::const_iterator ii = value.begin();
-    for (; ii != value.end(); ++ii)  rv[ii->first] = ii->second;
+    nb::dict rv;
+    for (auto const& item : value)
+        rv[item.first] = item.second;
     return rv;
 }
 
@@ -387,48 +379,28 @@ convertToPythonDict(const T& value)
 /// If obj wraps a QuantityType reference, return that reference.
 /// Otherwise copy the obj values to rv and return rv.
 ::diffpy::srreal::QuantityType&
-extractQuantityType(::boost::python::object obj,
+extractQuantityType(nb::object obj,
         ::diffpy::srreal::QuantityType& rv);
 
 
 /// efficient conversion of Python object to a numpy array of doubles
-NumPyArray_DoublePtr extractNumPyDoubleArray(::boost::python::object& obj);
+NumPyArray_DoublePtr extractNumPyDoubleArray(nb::object& obj);
 
 
 /// extract double with a support for numpy numeric types
-double extractdouble(::boost::python::object obj);
+double extractdouble(nb::object obj);
 
 
 /// extract integer with a support for numpy.int types
-int extractint(::boost::python::object obj);
+int extractint(nb::object obj);
 
 
 /// extract a vector of integers from a numpy array, iterable or scalar
-std::vector<int> extractintvector(::boost::python::object obj);
+std::vector<int> extractintvector(nb::object obj);
 
 
 /// helper for raising RuntimeError on a call of pure virtual function
 void throwPureVirtualCalled(const char* fncname);
-
-
-/// template class for getting overrides to pure virtual method
-template <class T>
-class wrapper_srreal : public ::boost::python::wrapper<T>
-{
-    public:
-
-        typedef T base;
-
-    protected:
-
-        ::boost::python::override
-        get_pure_virtual_override(const char* name) const
-        {
-            ::boost::python::override f = this->get_override(name);
-            if (!f)  throwPureVirtualCalled(name);
-            return f;
-        }
-};
 
 }   // namespace srrealmodule
 
