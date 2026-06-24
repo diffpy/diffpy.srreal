@@ -29,6 +29,7 @@ def get_nanobind_config():
         "source": str(Path(nanobind.source_dir()) / "nb_combined.cpp"),
     }
 
+
 nanobind_macros = [("NB_COMPACT_ASSERTIONS", None)]
 
 
@@ -179,4 +180,7 @@ def ext_modules():
 
 
 if __name__ == "__main__":
-    setup(cmdclass={"build_ext": build_ext_with_nanobind}, ext_modules=ext_modules())
+    setup(
+        cmdclass={"build_ext": build_ext_with_nanobind},
+        ext_modules=ext_modules(),
+    )
