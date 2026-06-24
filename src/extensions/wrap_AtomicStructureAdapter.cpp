@@ -390,7 +390,7 @@ class MakeWrapper : public T, public wrapper_srreal<T>
 // Wrapper helpers for class AtomicStructureAdapter
 
 typedef MakeWrapper<AtomicStructureAdapter> AtomicStructureAdapterWrap;
-typedef boost::shared_ptr<AtomicStructureAdapterWrap> AtomicStructureAdapterWrapPtr;
+typedef std::shared_ptr<AtomicStructureAdapterWrap> AtomicStructureAdapterWrapPtr;
 
 class atomadapter_indexing : public vector_indexing_suite<
                          AtomicStructureAdapter, false, atomadapter_indexing>
@@ -406,7 +406,7 @@ class atomadapter_indexing : public vector_indexing_suite<
             // of any additional structure data.
             StructureAdapterPtr rv = container.clone();
             AtomicStructureAdapterPtr rva;
-            rva = boost::static_pointer_cast<AtomicStructureAdapter>(rv);
+            rva = std::static_pointer_cast<AtomicStructureAdapter>(rv);
             // handle index ranges for a valid and empty slice
             if (from <= to)
             {
@@ -458,7 +458,7 @@ void atomadapter_reserve(AtomicStructureAdapter& adpt, int sz)
 // Wrapper helpers for class PeriodicStructureAdapter
 
 typedef MakeWrapper<PeriodicStructureAdapter> PeriodicStructureAdapterWrap;
-typedef boost::shared_ptr<PeriodicStructureAdapterWrap> PeriodicStructureAdapterWrapPtr;
+typedef std::shared_ptr<PeriodicStructureAdapterWrap> PeriodicStructureAdapterWrapPtr;
 
 python::tuple periodicadapter_getlatpar(const PeriodicStructureAdapter& adpt)
 {
@@ -471,7 +471,7 @@ python::tuple periodicadapter_getlatpar(const PeriodicStructureAdapter& adpt)
 // Wrapper helpers for class CrystalStructureAdapter
 
 typedef MakeWrapper<CrystalStructureAdapter> CrystalStructureAdapterWrap;
-typedef boost::shared_ptr<CrystalStructureAdapterWrap> CrystalStructureAdapterWrapPtr;
+typedef std::shared_ptr<CrystalStructureAdapterWrap> CrystalStructureAdapterWrapPtr;
 
 double
 crystaladapter_getsymmetryprecision(const CrystalStructureAdapter& adpt)

@@ -446,7 +446,7 @@ class StructureProxyPickleSuite : public boost::python::pickle_suite
                 diffpy::srreal::StructureAdapterPtr adpt)
         {
             using namespace boost;
-            shared_ptr<T> tadpt = dynamic_pointer_cast<T>(adpt);
+            std::shared_ptr<T> tadpt = std::dynamic_pointer_cast<T>(adpt);
             StructureAdapterPtr srcadpt = tadpt->getSourceStructure();
             python::tuple rv = python::make_tuple(srcadpt);
             return rv;
@@ -540,7 +540,7 @@ void wrap_StructureAdapter()
     register_ptr_to_python<StructureAdapterPtr>();
     implicitly_convertible<StructureAdapterPtr, StructureAdapterConstPtr>();
 
-    typedef boost::shared_ptr<NoMetaStructureAdapter>
+    typedef std::shared_ptr<NoMetaStructureAdapter>
         NoMetaStructureAdapterPtr;
     class_<NoMetaStructureAdapter,
         bases<StructureAdapter>, NoMetaStructureAdapterPtr>(
@@ -550,7 +550,7 @@ void wrap_StructureAdapter()
         .def_pickle(StructureProxyPickleSuite<NoMetaStructureAdapter>())
         ;
 
-    typedef boost::shared_ptr<NoSymmetryStructureAdapter>
+    typedef std::shared_ptr<NoSymmetryStructureAdapter>
         NoSymmetryStructureAdapterPtr;
     class_<NoSymmetryStructureAdapter,
         bases<StructureAdapter>, NoSymmetryStructureAdapterPtr>(

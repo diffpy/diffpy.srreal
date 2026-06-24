@@ -90,11 +90,11 @@ def get_objcryst_libraries():
 
 
 if os.name == "nt":
-    compile_args = ["/std:c++14"]
+    compile_args = ["/std:c++23"]
     macros = [("_USE_MATH_DEFINES", None)]
     extra_link_args = ["/FORCE:MULTIPLE"]
 else:
-    compile_args = ["-std=c++11"]
+    compile_args = ["-std=c++23"]
     macros = []
     extra_link_args = []
 
