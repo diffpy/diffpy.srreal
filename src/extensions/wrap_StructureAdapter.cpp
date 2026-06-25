@@ -18,11 +18,9 @@
 *
 *****************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/def.hpp>
-#include <boost/python/copy_const_reference.hpp>
-#include <boost/python/register_ptr_to_python.hpp>
-#include <boost/python/implicit.hpp>
+#include <nanobind/nanobind.h>
+#include <nanobind/trampoline.h>
+#include <nanobind/stl/shared_ptr.h>
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
@@ -33,15 +31,15 @@
 #include <diffpy/srreal/PairQuantity.hpp>
 #include <diffpy/serialization.ipp>
 
+namespace nb = nanobind;
+
 namespace srrealmodule {
 
 // declarations
-void sync_StructureDifference(boost::python::object obj);
+void sync_StructureDifference(nb::object obj);
 
 namespace nswrap_StructureAdapter {
 
-using namespace boost;
-using namespace boost::python;
 using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
@@ -223,7 +221,7 @@ const std::string& siteAtomType_safe(const StructureAdapter& adpt, int i)
 DECLARE_PYARRAY_METHOD_WRAPPER1(siteCartesianPosition,
         siteCartesianPosition_asarray)
 
-python::object siteCartesianPosition_safe(const StructureAdapter& adpt, int i)
+nb::object siteCartesianPosition_safe(const StructureAdapter& adpt, int i)
 {
     checkindex(adpt, i);
     return siteCartesianPosition_asarray(adpt, i);
@@ -254,7 +252,7 @@ bool siteAnisotropy_safe(const StructureAdapter& adpt, int i)
 DECLARE_PYARRAY_METHOD_WRAPPER1(siteCartesianUij,
         siteCartesianUij_asarray)
 
-python::object siteCartesianUij_safe(const StructureAdapter& adpt, int i)
+nb::object siteCartesianUij_safe(const StructureAdapter& adpt, int i)
 {
     checkindex(adpt, i);
     return siteCartesianUij_asarray(adpt, i);
@@ -263,33 +261,34 @@ python::object siteCartesianUij_safe(const StructureAdapter& adpt, int i)
 // Helper class necessary for wrapping a pure virtual methods
 
 class StructureAdapterWrap :
-    public StructureAdapter,
-    public wrapper_srreal<StructureAdapter>
+    public StructureAdapter
 {
     public:
 
-        StructureAdapterPtr clone() const
+        NB_TRAMPOLINE(StructureAdapter, 13);
+
+        StructureAdapterPtr clone() const override
         {
-            return this->get_pure_virtual_override("clone")();
+            NB_OVERRIDE_PURE(clone);
         }
 
 
-        BaseBondGeneratorPtr createBondGenerator() const
+        BaseBondGeneratorPtr createBondGenerator() const override
         {
-            return this->get_pure_virtual_override("createBondGenerator")();
+            NB_OVERRIDE_PURE(createBondGenerator);
         }
 
 
-        int countSites() const
+        int countSites() const override
         {
-            return this->get_pure_virtual_override("countSites")();
+            NB_OVERRIDE_PURE(countSites);
         }
 
 
+        // TODO: totalOccupancy is not marked as virtual function
+        // need to check behaviour
         double totalOccupancy() const
         {
-            override f = this->get_override("totalOccupancy");
-            if (f)  return f();
             return this->default_totalOccupancy();
         }
 
@@ -299,11 +298,9 @@ class StructureAdapterWrap :
         }
 
 
-        double numberDensity() const
+        double numberDensity() const override
         {
-            override f = this->get_override("numberDensity");
-            if (f)  return f();
-            return this->default_numberDensity();
+            NB_OVERRIDE(numberDensity);
         }
 
         double default_numberDensity() const
@@ -312,16 +309,19 @@ class StructureAdapterWrap :
         }
 
 
-        const std::string& siteAtomType(int idx) const
+        const std::string& siteAtomType(int idx) const override
         {
             static std::string rv;
-            override f = this->get_override("siteAtomType");
-            if (f)
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(nb_trampoline, "siteAtomType", false);
+
+            if (ticket.key.is_valid()) 
             {
-                python::object atp = f(idx);
-                rv = python::extract<std::string>(atp);
+                nb::object atp = nb_trampoline.base().attr(ticket.key)(idx);
+                rv = nb::cast<std::string>(atp);
                 return rv;
             }
+
             return this->default_siteAtomType(idx);
         }
 
@@ -331,24 +331,31 @@ class StructureAdapterWrap :
         }
 
 
-        const R3::Vector& siteCartesianPosition(int idx) const
+        const R3::Vector& siteCartesianPosition(int idx) const override
         {
             static R3::Vector rv;
-            python::object pos =
-                this->get_pure_virtual_override("siteCartesianPosition")(idx);
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(nb_trampoline, "siteCartesianPosition", true);
+
+            if (!ticket.key.is_valid()) 
+            {
+                throw nb::type_error(
+                    "pure virtual method StructureAdapter.siteCartesianPosition() called"
+                );
+            }
+
+            nb::object pos = nb_trampoline.base().attr(ticket.key)(idx);
             for (int i = 0; i < R3::Ndim; ++i)
             {
-                rv[i] = python::extract<double>(pos[i]);
+                rv[i] = nb::cast<double>(pos[i]);
             }
             return rv;
         }
 
 
-        int siteMultiplicity(int idx) const
+        int siteMultiplicity(int idx) const override
         {
-            override f = this->get_override("siteMultiplicity");
-            if (f)  return f(idx);
-            return this->default_siteMultiplicity(idx);
+            NB_OVERRIDE(siteMultiplicity, idx);
         }
 
         int default_siteMultiplicity(int idx) const
@@ -357,11 +364,9 @@ class StructureAdapterWrap :
         }
 
 
-        double siteOccupancy(int idx) const
+        double siteOccupancy(int idx) const override
         {
-            override f = this->get_override("siteOccupancy");
-            if (f)  return f(idx);
-            return this->default_siteOccupancy(idx);
+            NB_OVERRIDE(siteOccupancy, idx);
         }
 
         double default_siteOccupancy(int idx) const
@@ -370,33 +375,40 @@ class StructureAdapterWrap :
         }
 
 
-        bool siteAnisotropy(int idx) const
+        bool siteAnisotropy(int idx) const override
         {
-            return this->get_pure_virtual_override("siteAnisotropy")(idx);
+            NB_OVERRIDE_PURE(siteAnisotropy, idx);
         }
 
 
-        const R3::Matrix& siteCartesianUij(int idx) const
+        const R3::Matrix& siteCartesianUij(int idx) const override
         {
             static R3::Matrix rv;
-            python::object uij =
-                this->get_pure_virtual_override("siteCartesianUij")(idx);
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(nb_trampoline, "siteCartesianUij", true);
+
+            if (!ticket.key.is_valid()) 
+            {
+                throw nb::type_error(
+                    "pure virtual method StructureAdapter.siteCartesianUij() called"
+                );
+            }
+
+            nb::object uij = nb_trampoline.base().attr(ticket.key)(idx);
             for (int i = 0; i < R3::Ndim; ++i)
             {
                 for (int j = 0; j < R3::Ndim; ++j)
                 {
-                    rv(i, j) = python::extract<double>(uij[i][j]);
+                    rv(i, j) = nb::cast<double>(uij[i][j]);
                 }
             }
             return rv;
         }
 
 
-        void customPQConfig(PairQuantity* pq) const
+        void customPQConfig(PairQuantity* pq) const override
         {
-            override f = this->get_override("_customPQConfig");
-            if (f)  f(ptr(pq));
-            else    this->default_customPQConfig(pq);
+            NB_OVERRIDE_NAME("_customPQConfig", customPQConfig, pq);
         }
 
         void default_customPQConfig(PairQuantity* pq) const
@@ -405,17 +417,19 @@ class StructureAdapterWrap :
         }
 
 
-        StructureDifference diff(StructureAdapterConstPtr other) const
+        StructureDifference diff(StructureAdapterConstPtr other) const override
         {
-            override f = this->get_override("diff");
-            if (f)
-            {
-                python::object sdobj = f(other);
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(nb_trampoline, "diff", false);
+
+            if (ticket.key.is_valid()) {
+                nb::object sdobj = nb_trampoline.base().attr(ticket.key)(other);
                 sync_StructureDifference(sdobj);
-                StructureDifference& sd =
-                    python::extract<StructureDifference&>(sdobj);
+                StructureDifference &sd =
+                    nb::cast<StructureDifference&>(sdobj);
                 return sd;
             }
+
             return this->default_diff(other);
         }
 
@@ -438,18 +452,24 @@ class StructureAdapterWrap :
 
 
 template <class T>
-class StructureProxyPickleSuite : public boost::python::pickle_suite
+class StructureProxyPickleSuite
 {
     public:
 
-        static boost::python::tuple getinitargs(
-                diffpy::srreal::StructureAdapterPtr adpt)
+        template <typename C>
+        static void bind(C& cls)
         {
-            using namespace boost;
-            std::shared_ptr<T> tadpt = std::dynamic_pointer_cast<T>(adpt);
-            StructureAdapterPtr srcadpt = tadpt->getSourceStructure();
-            python::tuple rv = python::make_tuple(srcadpt);
-            return rv;
+            cls
+                .def("__reduce__", [](const T& self)
+                {
+                    StructureAdapterPtr src = self.getSourceStructure();
+
+                    return nb::make_tuple(
+                        nb::type<T>(),
+                        nb::make_tuple(src)
+                    );
+                })
+                ;
         }
 
 };
@@ -465,7 +485,7 @@ void checkindex(const StructureAdapter& adpt, int i)
     // Prevent out-of-bounds crash from C++ objects.
     if (0 <= i && i < adpt.countSites())  return;
     PyErr_SetString(PyExc_IndexError, "Index out of range.");
-    throw_error_already_set();
+    throw nb::python_error();
 }
 
 }   // namespace
@@ -475,13 +495,15 @@ void checkindex(const StructureAdapter& adpt, int i)
 
 // Wrapper definition --------------------------------------------------------
 
-void wrap_StructureAdapter()
+void wrap_StructureAdapter(nb::module_& m)
 {
     using namespace nswrap_StructureAdapter;
 
-    class_<StructureAdapterWrap, noncopyable>(
-            "StructureAdapter", doc_StructureAdapter)
-        .def("__init__", StructureAdapter_constructor(),
+    nb::class_<StructureAdapter, StructureAdapterWrap> structureadapter(m,
+            "StructureAdapter", doc_StructureAdapter);
+    structureadapter
+        .def(nb::init<>())
+        .def("__init__", StructureAdapter_constructor<StructureAdapter>,
                 doc_StructureAdapter___init__fromstring)
         .def("clone",
                 &StructureAdapter::clone,
@@ -493,31 +515,21 @@ void wrap_StructureAdapter()
                 doc_StructureAdapter_countSites)
         .def("totalOccupancy",
                 &StructureAdapter::totalOccupancy,
-                &StructureAdapterWrap::default_totalOccupancy,
                 doc_StructureAdapter_totalOccupancy)
         .def("numberDensity", &StructureAdapter::numberDensity,
-                &StructureAdapterWrap::default_numberDensity,
                 doc_StructureAdapter_numberDensity)
         .def("siteAtomType",
                 siteAtomType_safe,
-                return_value_policy<copy_const_reference>(),
                 doc_StructureAdapter_siteAtomType)
-        .def("siteAtomType",
-                &StructureAdapterWrap::default_siteAtomType,
-                return_value_policy<copy_const_reference>())
         .def("siteCartesianPosition",
                     siteCartesianPosition_safe,
                     doc_StructureAdapter_siteCartesianPosition)
         .def("siteMultiplicity",
                 siteMultiplicity_safe,
                 doc_StructureAdapter_siteMultiplicity)
-        .def("siteMultiplicity",
-                &StructureAdapterWrap::default_siteMultiplicity)
         .def("siteOccupancy",
                 siteOccupancy_safe,
                 doc_StructureAdapter_siteOccupancy)
-        .def("siteOccupancy",
-                &StructureAdapterWrap::default_siteOccupancy)
         .def("siteAnisotropy",
                 siteAnisotropy_safe,
                 doc_StructureAdapter_siteAnisotropy)
@@ -526,43 +538,38 @@ void wrap_StructureAdapter()
                 doc_StructureAdapter_siteCartesianUij)
         .def("_customPQConfig",
                 &StructureAdapter::customPQConfig,
-                &StructureAdapterWrap::default_customPQConfig,
-                python::arg("pqobj"),
+                nb::arg("pqobj"),
                 doc_StructureAdapter__customPQConfig)
         .def("diff",
                 &StructureAdapter::diff,
-                &StructureAdapterWrap::default_diff,
-                python::arg("other"),
+                nb::arg("other"),
                 doc_StructureAdapter_diff)
-        .def_pickle(StructureAdapterPickleSuite<StructureAdapterWrap>())
         ;
-
-    register_ptr_to_python<StructureAdapterPtr>();
-    implicitly_convertible<StructureAdapterPtr, StructureAdapterConstPtr>();
+        StructureProxyPickleSuite<StructureAdapter>::bind(structureadapter);
 
     typedef std::shared_ptr<NoMetaStructureAdapter>
         NoMetaStructureAdapterPtr;
-    class_<NoMetaStructureAdapter,
-        bases<StructureAdapter>, NoMetaStructureAdapterPtr>(
-            "NoMetaStructureAdapter", doc_NoMetaStructureAdapter)
-        .def(init<StructureAdapterPtr>(python::arg("adapter"),
-                    doc_NoMetaStructureAdapter_init))
-        .def_pickle(StructureProxyPickleSuite<NoMetaStructureAdapter>())
+    nb::class_<NoMetaStructureAdapter, StructureAdapter> nometastructureadapter(m,
+            "NoMetaStructureAdapter", doc_NoMetaStructureAdapter);
+    nometastructureadapter
+        .def(nb::init<StructureAdapterPtr>(), nb::arg("adapter"),
+                    doc_NoMetaStructureAdapter_init)
         ;
+        StructureProxyPickleSuite<NoMetaStructureAdapter>::bind(nometastructureadapter);
 
     typedef std::shared_ptr<NoSymmetryStructureAdapter>
         NoSymmetryStructureAdapterPtr;
-    class_<NoSymmetryStructureAdapter,
-        bases<StructureAdapter>, NoSymmetryStructureAdapterPtr>(
-            "NoSymmetryStructureAdapter", doc_NoSymmetryStructureAdapter)
-        .def(init<StructureAdapterPtr>(python::arg("adapter"),
-                    doc_NoSymmetryStructureAdapter_init))
-        .def_pickle(StructureProxyPickleSuite<NoSymmetryStructureAdapter>())
+    nb::class_<NoSymmetryStructureAdapter, StructureAdapter> nosymmetrystructureadapter(m,
+            "NoSymmetryStructureAdapter", doc_NoSymmetryStructureAdapter);
+    nosymmetrystructureadapter
+        .def(nb::init<StructureAdapterPtr>(), nb::arg("adapter"),
+                    doc_NoSymmetryStructureAdapter_init)
         ;
+        StructureProxyPickleSuite<NoSymmetryStructureAdapter>::bind(nosymmetrystructureadapter);
 
-    def("nometa", nometa<object>, doc_nometa);
-    def("nosymmetry", nosymmetry<object>, doc_nosymmetry);
-    def("_emptyStructureAdapter", emptyStructureAdapter,
+    m.def("nometa", nometa<nb::object>, doc_nometa);
+    m.def("nosymmetry", nosymmetry<nb::object>, doc_nosymmetry);
+    m.def("_emptyStructureAdapter", emptyStructureAdapter,
             doc__emptyStructureAdapter);
 }
 
