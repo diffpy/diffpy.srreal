@@ -16,11 +16,14 @@
 *
 *****************************************************************************/
 
-#include <boost/python/class.hpp>
+#include <nanobind/nanobind.h>
+#include <nanobind/operators.h>
 
 #include <diffpy/EventTicker.hpp>
 
 #include "srreal_pickling.hpp"
+
+namespace nb = nanobind;
 
 namespace srrealmodule {
 namespace nswrap_EventTicker {
@@ -66,47 +69,47 @@ and the first one is zero unless there was an integer overflow.\n\
 
 // getter for the _value property
 
-python::tuple gettickervalue(const EventTicker& tc)
+nb::tuple gettickervalue(const EventTicker& tc)
 {
     EventTicker::value_type v = tc.value();
-    return python::make_tuple(v.first, v.second);
+    return nb::make_tuple(v.first, v.second);
 }
 
 // representation of EventTicker objects
 
-python::object repr_EventTicker(const EventTicker& tc)
+nb::object repr_EventTicker(const EventTicker& tc)
 {
-    python::object rv = ("EventTicker(%i, %i)" % gettickervalue(tc));
-    return rv;
+    auto v = tc.value();
+    return nb::str("EventTicker({}, {})").attr("format")(v.first, v.second);
 }
 
 }   // namespace nswrap_EventTicker
 
 // Wrapper definition --------------------------------------------------------
 
-void wrap_EventTicker()
+void wrap_EventTicker(nb::module_& m)
 {
     using namespace nswrap_EventTicker;
-    using namespace boost::python;
 
-    class_<EventTicker>("EventTicker", doc_EventTicker)
-        .def(init<const EventTicker&>(doc_EventTicker_cp))
+    nb::class_<EventTicker> eventticker(m, "EventTicker", doc_EventTicker);
+    eventticker
+        .def(nb::init<const EventTicker&>(), doc_EventTicker_cp)
         .def("__repr__", repr_EventTicker, doc_EventTicker___repr__)
-        .def(self < self)
-        .def(self <= self)
-        .def(self > self)
-        .def(self >= self)
-        .def(self == self)
-        .def(self != self)
+        .def(nb::self < nb::self)
+        .def(nb::self <= nb::self)
+        .def(nb::self > nb::self)
+        .def(nb::self >= nb::self)
+        .def(nb::self == nb::self)
+        .def(nb::self != nb::self)
         .def("click", &EventTicker::click,
                 doc_EventTicker_click)
         .def("updateFrom", &EventTicker::updateFrom,
-                python::arg("other"),
+                nb::arg("other"),
                 doc_EventTicker_updateFrom)
-        .add_property("_value", gettickervalue,
+        .def_prop_ro("_value", gettickervalue,
                 doc_EventTicker__value)
-        .def_pickle(SerializationPickleSuite<EventTicker,DICT_IGNORE>())
         ;
+        SerializationPickleSuite<EventTicker>::bind(eventticker);
 
 }
 
