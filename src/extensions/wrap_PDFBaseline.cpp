@@ -17,10 +17,8 @@
 *
 *****************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/def.hpp>
-#include <boost/python/copy_const_reference.hpp>
-#include <boost/python/register_ptr_to_python.hpp>
+#include <nanobind/nanobind.h>
+#include <nanobind/trampoline.h>
 
 #include <diffpy/srreal/PDFBaseline.hpp>
 #include <diffpy/srreal/ZeroBaseline.hpp>
@@ -37,11 +35,11 @@
 #include "srreal_pickling.hpp"
 #include "srreal_registry.hpp"
 
+namespace nb = nanobind;
+
 namespace srrealmodule {
 namespace nswrap_PDFBaseline {
 
-using namespace boost;
-using namespace boost::python;
 using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
@@ -72,28 +70,49 @@ PDF baseline function equal to (slope * r).\n\
 // Helper class allows overload of the PDFBaseline methods from Python.
 
 class PDFBaselineWrap :
-    public PDFBaseline,
-    public wrapper_srreal<PDFBaseline>
+    public PDFBaseline
 {
     public:
+
+        NB_TRAMPOLINE(PDFBaseline, 4);
 
         // HasClassRegistry methods
 
         PDFBaselinePtr create() const
         {
-            object rv = this->get_pure_virtual_override("create")();
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(nb_trampoline, "create", true);
+
+            if (!ticket.key.is_valid()) 
+            {
+                throw nb::type_error(
+                    "pure virtual method PDFBaseline.create() called"
+                );
+            }
+
+            nb::object rv = nb_trampoline.base().attr(ticket.key)();
             return mconfigurator.fetch(rv);
         }
 
         PDFBaselinePtr clone() const
         {
-            return this->get_pure_virtual_override("clone")();
+            NB_OVERRIDE_PURE(clone);
         }
 
         const std::string& type() const
         {
-            python::object tp = this->get_pure_virtual_override("type")();
-            mtype = python::extract<std::string>(tp);
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(nb_trampoline, "type", true);
+
+            if (!ticket.key.is_valid()) 
+            {
+                throw nb::type_error(
+                    "pure virtual method PDFBaseline.type() called"
+                );
+            }
+
+            nb::object tp = nb_trampoline.base().attr(ticket.key)();
+            mtype = nb::cast<std::string>(tp);
             return mtype;
         }
 
@@ -101,7 +120,7 @@ class PDFBaselineWrap :
 
         double operator()(const double& x) const
         {
-            return this->get_pure_virtual_override("__call__")(x);
+            NB_OVERRIDE_PURE_NAME("__call__", operator(), x);
         }
 
     protected:
@@ -130,7 +149,7 @@ class PDFBaselineWrap :
 };  // class PDFBaselineWrap
 
 
-object callnparray(const PDFBaseline* obj, object& x)
+nb::object callnparray(const PDFBaseline* obj, nb::object& x)
 {
     NumPyArray_DoublePtr xx = extractNumPyDoubleArray(x);
     NumPyArray_DoublePtr yy = createNumPyDoubleArrayLike(xx.first);
@@ -145,30 +164,32 @@ object callnparray(const PDFBaseline* obj, object& x)
 
 // Wrapper definition --------------------------------------------------------
 
-void wrap_PDFBaseline()
+void wrap_PDFBaseline(nb::module_& m)
 {
     using namespace nswrap_PDFBaseline;
     using diffpy::Attributes;
-    namespace bp = boost::python;
 
-    class_<PDFBaselineWrap, bases<Attributes>, noncopyable>
-        pdfbaseline("PDFBaseline", doc_PDFBaseline);
+    nb::class_<PDFBaseline, Attributes, PDFBaselineWrap>
+        pdfbaseline(m, "PDFBaseline", nb::dynamic_attr(), doc_PDFBaseline);
     wrap_registry_methods(pdfbaseline)
+        .def(nb::init<>())
         .def("__call__", callnparray,
-                bp::arg("r_array"))
+                nb::arg("r_array"))
         .def("__call__", &PDFBaseline::operator(),
-                bp::arg("r"), doc_PDFBaseline___call__)
-        .def_pickle(SerializationPickleSuite<PDFBaseline,DICT_PICKLE>())
+                nb::arg("r"), doc_PDFBaseline___call__)
         ;
+        SerializationPickleSuite<PDFBaseline, DICT_PICKLE>::bind(pdfbaseline);
 
-    register_ptr_to_python<PDFBaselinePtr>();
-
-    class_<ZeroBaseline, bases<PDFBaseline> >(
-            "ZeroBaseline", doc_ZeroBaseline)
-        .def_pickle(SerializationPickleSuite<ZeroBaseline>());
-    class_<LinearBaseline, bases<PDFBaseline> >(
-            "LinearBaseline", doc_ZeroBaseline)
-        .def_pickle(SerializationPickleSuite<LinearBaseline>());
+    nb::class_<ZeroBaseline, PDFBaseline>
+        zerobaseline(m, "ZeroBaseline", doc_ZeroBaseline);
+    zerobaseline
+        .def(nb::init<>());
+        SerializationPickleSuite<ZeroBaseline, DICT_IGNORE>::bind(zerobaseline);
+    nb::class_<LinearBaseline, PDFBaseline>
+        linearbaseline(m,"LinearBaseline", doc_LinearBaseline);
+    linearbaseline
+        .def(nb::init<>());
+        SerializationPickleSuite<LinearBaseline, DICT_IGNORE>::bind(linearbaseline);
 
 }
 

@@ -17,7 +17,7 @@
 *
 *****************************************************************************/
 
-#include <boost/python/def.hpp>
+#include <nanobind/nanobind.h>
 
 #include <cstdlib>
 
@@ -27,6 +27,8 @@
 #ifdef DIFFPY_HAS_OBJCRYST
 #include <diffpy/srreal/ObjCrystStructureAdapter.hpp>
 #endif
+
+namespace nb = nanobind;
 
 namespace srrealmodule {
 namespace nswrap_ObjCrystAdapters {
@@ -81,10 +83,7 @@ StructureAdapterPtr convertObjCrystCrystal(const Crystal& mol)
 
 StructureAdapterPtr convertObjCrystMolecule(python::object mol)
 {
-    std::string emsg = "ObjCryst support not available.";
-    PyErr_SetString(PyExc_TypeError, emsg.c_str());
-    boost::python::throw_error_already_set();
-    abort();
+    throw nb::type_error("ObjCryst support not available.");
 }
 
 StructureAdapterPtr convertObjCrystCrystal(python::object cryst)
@@ -99,14 +98,13 @@ StructureAdapterPtr convertObjCrystCrystal(python::object cryst)
 
 // Wrapper definitions -------------------------------------------------------
 
-void wrap_ObjCrystAdapters()
+void wrap_ObjCrystAdapters(nb::module_& m)
 {
     using namespace nswrap_ObjCrystAdapters;
-    using namespace boost::python;
 
-    def("convertObjCrystMolecule",
+    m.def("convertObjCrystMolecule",
             convertObjCrystMolecule, doc_convertObjCrystMolecule);
-    def("convertObjCrystCrystal",
+    m.def("convertObjCrystCrystal",
             convertObjCrystCrystal, doc_convertObjCrystCrystal);
 
 }
