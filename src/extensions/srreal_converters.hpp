@@ -17,6 +17,9 @@
 *
 *****************************************************************************/
 
+// TODO: Go through type casters, some of which are found redundant or could be
+// replaced with nanobind builtins.
+
 #ifndef SRREAL_CONVERTERS_HPP_INCLUDED
 #define SRREAL_CONVERTERS_HPP_INCLUDED
 
