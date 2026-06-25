@@ -17,9 +17,8 @@
 *
 *****************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/copy_const_reference.hpp>
-#include <boost/python/register_ptr_to_python.hpp>
+#include <nanobind/nanobind.h>
+#include <nanobind/trampoline.h>
 
 #include <diffpy/srreal/ScatteringFactorTable.hpp>
 #include <diffpy/srreal/SFTXray.hpp>
@@ -39,10 +38,11 @@
 #include "srreal_pickling.hpp"
 #include "srreal_registry.hpp"
 
+namespace nb = nanobind;
+
 namespace srrealmodule {
 namespace nswrap_ScatteringFactorTable {
 
-using namespace boost::python;
 using namespace diffpy::srreal;
 
 // docstrings
@@ -211,10 +211,11 @@ DECLARE_BYTYPE_SETTER_WRAPPER(setScatteringFactorTable, setsftable)
 // Helper class to support Python override of ScatteringFactorTable methods
 
 class ScatteringFactorTableWrap :
-    public ScatteringFactorTable,
-    public wrapper_srreal<ScatteringFactorTable>
+    public ScatteringFactorTable
 {
     public:
+
+        NB_TRAMPOLINE(ScatteringFactorTable, 6);
 
         // Copy Constructor
 
@@ -230,36 +231,66 @@ class ScatteringFactorTableWrap :
 
         // HasClassRegistry methods
 
-        ScatteringFactorTablePtr create() const
+        ScatteringFactorTablePtr create() const override
         {
-            object rv = this->get_pure_virtual_override("create")();
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(nb_trampoline, "create", true);
+
+            if (!ticket.key.is_valid()) 
+            {
+                throw nb::type_error(
+                    "pure virtual method ScatteringFactorTable.create() called"
+                );
+            }
+
+            nb::object rv = nb_trampoline.base().attr(ticket.key)();
             return mconfigurator.fetch(rv);
         }
 
-        ScatteringFactorTablePtr clone() const
+        ScatteringFactorTablePtr clone() const override
         {
-            return this->get_pure_virtual_override("clone")();
+            NB_OVERRIDE_PURE(clone);
         }
 
-        const std::string& type() const
+        const std::string& type() const override
         {
-            object tp = this->get_pure_virtual_override("type")();
-            mtype = extract<std::string>(tp);
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(nb_trampoline, "type", true);
+
+            if (!ticket.key.is_valid()) 
+            {
+                throw nb::type_error(
+                    "pure virtual method ScatteringFactorTable.type() called"
+                );
+            }
+
+            nb::object tp = nb_trampoline.base().attr(ticket.key)();
+            mtype = nb::cast<std::string>(tp);
             return mtype;
         }
 
         // own methods
 
-        const std::string& radiationType() const
+        const std::string& radiationType() const override
         {
-            object tp = this->get_pure_virtual_override("radiationType")();
-            mradiationtype = extract<std::string>(tp);
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(nb_trampoline, "radiationType", true);
+
+            if (!ticket.key.is_valid()) 
+            {
+                throw nb::type_error(
+                    "pure virtual method ScatteringFactorTable.radiationType() called"
+                );
+            }
+
+            nb::object tp = nb_trampoline.base().attr(ticket.key)();
+            mradiationtype = nb::cast<std::string>(tp);
             return mradiationtype;
         }
 
-        double standardLookup(const std::string& smbl, double q) const
+        double standardLookup(const std::string& smbl, double q) const override
         {
-            return this->get_pure_virtual_override("_standardLookup")(smbl, q);
+            NB_OVERRIDE_PURE_NAME("_standardLookup", standardLookup, smbl, q);
         }
 
 
@@ -268,13 +299,15 @@ class ScatteringFactorTableWrap :
         diffpy::eventticker::EventTicker& ticker() const
         {
             using diffpy::eventticker::EventTicker;
-            override f = this->get_override("ticker");
-            if (f)
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(nb_trampoline, "ticker", false);
+
+            if (ticket.key.is_valid()) 
             {
-                // avoid "dangling reference error" when used from C++
-                object ptic = f();
-                return extract<EventTicker&>(ptic);
+                nb::object ptic = nb_trampoline.base().attr(ticket.key)();
+                return nb::cast<EventTicker&>(ptic);
             }
+
             return this->default_ticker();
         }
 
@@ -287,7 +320,7 @@ class ScatteringFactorTableWrap :
 
         // HasClassRegistry method
 
-        void setupRegisteredObject(ScatteringFactorTablePtr p) const
+        void setupRegisteredObject(ScatteringFactorTablePtr p) const override
         {
             mconfigurator.setup(p);
         }
@@ -309,8 +342,8 @@ class ScatteringFactorTableWrap :
 
 };  // class ScatteringFactorTableWrap
 
-object lookupnparray(const ScatteringFactorTable& sftb,
-        std::string smbl, object& qobj)
+nb::object lookupnparray(const ScatteringFactorTable& sftb,
+        std::string smbl, nb::object& qobj)
 {
     NumPyArray_DoublePtr aa = extractNumPyDoubleArray(qobj);
     NumPyArray_DoublePtr bb = createNumPyDoubleArrayLike(aa.first);
@@ -328,77 +361,91 @@ object lookupnparray(const ScatteringFactorTable& sftb,
 }   // namespace nswrap_ScatteringFactorTable
 
 // Wrapper definition --------------------------------------------------------
+// TODO: rework pickle helpers
 
-void wrap_ScatteringFactorTable()
+void wrap_ScatteringFactorTable(nb::module_& m)
 {
-    namespace bp = boost::python;
-    using boost::noncopyable;
     using namespace nswrap_ScatteringFactorTable;
     typedef ScatteringFactorTableOwner SFTOwner;
 
-    class_<ScatteringFactorTableWrap, noncopyable>
-        sftb("ScatteringFactorTable", doc_ScatteringFactorTable);
+    nb::class_<ScatteringFactorTable, ScatteringFactorTableWrap>
+        sftb(m, "ScatteringFactorTable", nb::dynamic_attr(), doc_ScatteringFactorTable);
     wrap_registry_methods(sftb)
+        .def(nb::init<>())
         .def("radiationType",
-                &ScatteringFactorTable::radiationType,
-                return_value_policy<copy_const_reference>(),
+                [](const ScatteringFactorTable &obj) 
+                {
+                    return std::string(obj.radiationType());
+                },
                 doc_ScatteringFactorTable_radiationType)
         .def("lookup",
                 lookupnparray,
-                (bp::arg("smbl"), bp::arg("qarray")))
+                nb::arg("smbl"), nb::arg("qarray"))
         .def("lookup",
                 &ScatteringFactorTable::lookup,
-                (bp::arg("smbl"), bp::arg("q")=0.0),
+                nb::arg("smbl"), nb::arg("q")=0.0,
                 doc_ScatteringFactorTable_lookup)
         .def("_standardLookup",
                 &ScatteringFactorTable::standardLookup,
-                (bp::arg("smbl"), bp::arg("q")),
+                nb::arg("smbl"), nb::arg("q"),
                 doc_ScatteringFactorTable__standardLookup)
 
         .def("setCustomAs", (void (ScatteringFactorTable::*)
                 (const std::string&, const std::string&))
                 &ScatteringFactorTable::setCustomAs,
-                (bp::arg("smbl"), bp::arg("src")),
+                nb::arg("smbl"), nb::arg("src"),
                 doc_ScatteringFactorTable_setCustomAs2)
         .def("setCustomAs", (void (ScatteringFactorTable::*)
                 (const std::string&, const std::string&, double, double))
                 &ScatteringFactorTable::setCustomAs,
-                (bp::arg("smbl"), bp::arg("src"),
-                 bp::arg("sf"), bp::arg("q")=0.0),
+                nb::arg("smbl"), nb::arg("src"),
+                nb::arg("sf"), nb::arg("q")=0.0,
                 doc_ScatteringFactorTable_setCustomAs4)
 
         .def("resetCustom", &ScatteringFactorTable::resetCustom,
-                bp::arg("smbl"), doc_ScatteringFactorTable_resetCustom)
+                nb::arg("smbl"), doc_ScatteringFactorTable_resetCustom)
         .def("resetAll", &ScatteringFactorTable::resetAll,
                 doc_ScatteringFactorTable_resetAll)
         .def("getCustomSymbols", getCustomSymbols_asset<ScatteringFactorTable>,
                 doc_ScatteringFactorTable_getCustomSymbols)
         .def("ticker",
                 &ScatteringFactorTable::ticker,
-                &ScatteringFactorTableWrap::default_ticker,
-                return_internal_reference<>(),
+                nb::rv_policy::reference_internal,
                 doc_ScatteringFactorTable_ticker)
-        .def_pickle(SerializationPickleSuite<ScatteringFactorTable,DICT_PICKLE>())
         ;
+        SerializationPickleSuite<ScatteringFactorTable, DICT_PICKLE>::bind(sftb);
 
-    register_ptr_to_python<ScatteringFactorTablePtr>();
+    nb::class_<SFTXray, ScatteringFactorTable> sftxray(m,
+            "SFTXray", doc_SFTXray);
+    sftxray
+        .def(nb::init<>())
+        ;
+        SerializationPickleSuite<SFTXray, DICT_IGNORE>::bind(sftxray);
 
-    class_<SFTXray, bases<ScatteringFactorTable> >(
-            "SFTXray", doc_SFTXray)
-        .def_pickle(SerializationPickleSuite<SFTXray>());
-    class_<SFTElectron, bases<ScatteringFactorTable> >(
-            "SFTElectron", doc_SFTElectron)
-        .def_pickle(SerializationPickleSuite<SFTElectron>());
-    class_<SFTNeutron, bases<ScatteringFactorTable> >(
-            "SFTNeutron", doc_SFTNeutron)
-        .def_pickle(SerializationPickleSuite<SFTNeutron>());
-    class_<SFTElectronNumber, bases<ScatteringFactorTable> >(
-            "SFTElectronNumber", doc_SFTElectronNumber)
-        .def_pickle(SerializationPickleSuite<SFTElectronNumber>());
+    nb::class_<SFTElectron, ScatteringFactorTable> sftelectron(m,
+            "SFTElectron", doc_SFTElectron);
+    sftelectron
+        .def(nb::init<>())
+        ;
+        SerializationPickleSuite<SFTElectron, DICT_IGNORE>::bind(sftelectron);
 
-    class_<ScatteringFactorTableOwner>("ScatteringFactorTableOwner",
+    nb::class_<SFTNeutron, ScatteringFactorTable> sftneutron(m,
+            "SFTNeutron", doc_SFTNeutron);
+    sftneutron
+        .def(nb::init<>())
+        ;
+        SerializationPickleSuite<SFTNeutron, DICT_IGNORE>::bind(sftneutron);
+
+    nb::class_<SFTElectronNumber, ScatteringFactorTable> sftelectronnumber(m,
+            "SFTElectronNumber", doc_SFTElectronNumber);
+    sftelectronnumber
+        .def(nb::init<>())
+        ;
+        SerializationPickleSuite<SFTElectronNumber, DICT_IGNORE>::bind(sftelectronnumber);
+
+    nb::class_<ScatteringFactorTableOwner>(m, "ScatteringFactorTableOwner",
             doc_ScatteringFactorTableOwner)
-        .add_property("scatteringfactortable",
+        .def_prop_rw("scatteringfactortable",
                 getsftable,
                 setsftable<ScatteringFactorTableOwner,ScatteringFactorTable>,
                 doc_ScatteringFactorTableOwner_scatteringfactortable)
@@ -406,27 +453,28 @@ void wrap_ScatteringFactorTable()
         .def("setScatteringFactorTableByType",
             +[](SFTOwner& obj, const std::string& tp)
             {
-                namespace bp = boost::python;
                 try
                 {
-                bp::object warnings = bp::import("warnings");
-                bp::object builtins = bp::import("builtins");
-                bp::object DeprecationWarning = builtins.attr("DeprecationWarning");
-                warnings.attr("warn")(
-                    std::string("setScatteringFactorTableByType is deprecated; "
-                            "assign the 'scatteringfactortable' property directly, for example:\n"
-                            "obj.scatteringfactortable = SFTNeutron()"),
-                    DeprecationWarning,
-                    2);
+                    nb::object warnings = nb::module_::import_("warnings");
+                    nb::object builtins = nb::module_::import_("builtins");
+                    nb::object DeprecationWarning = builtins.attr("DeprecationWarning");
+                    warnings.attr("warn")(
+                        std::string("setScatteringFactorTableByType is deprecated; "
+                                "assign the 'scatteringfactortable' property directly, for example:\n"
+                                "obj.scatteringfactortable = SFTNeutron()"),
+                        DeprecationWarning,
+                        2);
                 }
                 catch (...) { /* don't let warnings break the binding */ }
                 obj.setScatteringFactorTableByType(tp);
             },
-            bp::arg("tp"),
+            nb::arg("tp"),
             doc_ScatteringFactorTableOwner_setScatteringFactorTableByType)
         .def("getRadiationType",
-                &SFTOwner::getRadiationType,
-                return_value_policy<copy_const_reference>(),
+                [](const SFTOwner &obj) 
+                {
+                    return std::string(obj.getRadiationType());
+                },
                 doc_ScatteringFactorTableOwner_getRadiationType)
         ;
 }

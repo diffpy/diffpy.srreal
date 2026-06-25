@@ -17,11 +17,8 @@
 *
 *****************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/def.hpp>
-#include <boost/python/copy_const_reference.hpp>
-#include <boost/python/register_ptr_to_python.hpp>
-#include <boost/serialization/export.hpp>
+#include <nanobind/nanobind.h>
+#include <nanobind/trampoline.h>
 
 #include <string>
 
@@ -35,11 +32,11 @@
 #include "srreal_pickling.hpp"
 #include "srreal_registry.hpp"
 
+namespace nb = nanobind;
+
 namespace srrealmodule {
 namespace nswrap_PeakWidthModel {
 
-using namespace boost;
-using namespace boost::python;
 using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
@@ -110,7 +107,7 @@ Use PeakWidthModel.getRegisteredTypes() for a set of registered names.\n\
 // wrappers ------------------------------------------------------------------
 
 double maxwidthwithpystructure(const PeakWidthModel& pwm,
-        python::object stru, double rmin, double rmax)
+        nb::object stru, double rmin, double rmax)
 {
     StructureAdapterPtr adpt = createStructureAdapter(stru);
     double rv = pwm.maxWidth(adpt, rmin, rmax);
@@ -129,57 +126,79 @@ DECLARE_BYTYPE_SETTER_WRAPPER(setPeakWidthModel, setpwmodel)
 // Support for Python override of the PeakWidthModel methods.
 
 class PeakWidthModelWrap :
-    public PeakWidthModel,
-    public wrapper_srreal<PeakWidthModel>
+    public PeakWidthModel
 {
     public:
 
+        NB_TRAMPOLINE(PeakWidthModel, 6);
+
         // HasClassRegistry methods
 
-        PeakWidthModelPtr create() const
+        PeakWidthModelPtr create() const override
         {
-            object rv = this->get_pure_virtual_override("create")();
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(nb_trampoline, "create", true);
+
+            if (!ticket.key.is_valid()) 
+            {
+                throw nb::type_error(
+                    "pure virtual method PeakWidthModel.create() called"
+                );
+            }
+
+            nb::object rv = nb_trampoline.base().attr(ticket.key)();
             return mconfigurator.fetch(rv);
         }
 
-        PeakWidthModelPtr clone() const
+        PeakWidthModelPtr clone() const override
         {
-            return this->get_pure_virtual_override("clone")();
+            NB_OVERRIDE_PURE(clone);
         }
 
-        const std::string& type() const
+        const std::string& type() const override
         {
-            python::object tp = this->get_pure_virtual_override("type")();
-            mtype = python::extract<std::string>(tp);
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(nb_trampoline, "type", true);
+
+            if (!ticket.key.is_valid()) 
+            {
+                throw nb::type_error(
+                    "pure virtual method PeakWidthModel.type() called"
+                );
+            }
+
+            nb::object tp = nb_trampoline.base().attr(ticket.key)();
+            mtype = nb::cast<std::string>(tp);
             return mtype;
         }
 
         // own methods
 
-        double calculate(const BaseBondGenerator& bnds) const
+        double calculate(const BaseBondGenerator& bnds) const override
         {
-            return this->get_pure_virtual_override("calculate")(ptr(&bnds));
+            NB_OVERRIDE_PURE(calculate, bnds);
         }
 
         double maxWidth(StructureAdapterPtr stru,
-                double rmin, double rmax) const
+                double rmin, double rmax) const override
         {
-            override f = this->get_pure_virtual_override("maxWidth");
-            return f(stru, rmin, rmax);
+            NB_OVERRIDE_PURE(maxWidth, stru, rmin, rmax);
         }
 
         // Make the ticker method overridable from Python
 
-        diffpy::eventticker::EventTicker& ticker() const
+        diffpy::eventticker::EventTicker& ticker() const override
         {
             using diffpy::eventticker::EventTicker;
-            override f = this->get_override("ticker");
-            if (f)
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(nb_trampoline, "ticker", false);
+
+            if (ticket.key.is_valid()) 
             {
-                // avoid "dangling reference error" when used from C++
-                python::object ptic = f();
-                return python::extract<EventTicker&>(ptic);
+                nb::object ptic = nb_trampoline.base().attr(ticket.key)();
+                return nb::cast<EventTicker&>(ptic);
             }
+
             return this->default_ticker();
         }
 
@@ -192,7 +211,7 @@ class PeakWidthModelWrap :
 
         // HasClassRegistry method
 
-        void setupRegisteredObject(PeakWidthModelPtr p) const
+        void setupRegisteredObject(PeakWidthModelPtr p) const override
         {
             mconfigurator.setup(p);
         }
@@ -217,53 +236,56 @@ class PeakWidthModelWrap :
 
 // Wrapper definition --------------------------------------------------------
 
-void wrap_PeakWidthModel()
+void wrap_PeakWidthModel(nb::module_& m)
 {
-    namespace bp = boost::python;
     using namespace nswrap_PeakWidthModel;
     using diffpy::Attributes;
 
-    class_<PeakWidthModelWrap, bases<Attributes>, noncopyable>
-        peakwidthmodel("PeakWidthModel", doc_PeakWidthModel);
+    nb::class_<PeakWidthModel, Attributes, PeakWidthModelWrap>
+        peakwidthmodel(m, "PeakWidthModel", nb::dynamic_attr(), doc_PeakWidthModel);
     wrap_registry_methods(peakwidthmodel)
+        .def(nb::init<>())
         .def("calculate",
                 &PeakWidthModel::calculate,
-                bp::arg("bnds"),
+                nb::arg("bnds"),
                 doc_PeakWidthModel_calculate)
         .def("maxWidth",
                 &PeakWidthModel::maxWidth,
-                (bp::arg("stru"), bp::arg("rmin"), bp::arg("rmax")),
+                nb::arg("stru"), nb::arg("rmin"), nb::arg("rmax"),
                 doc_PeakWidthModel_maxWidth)
         .def("maxWidth",
                 maxwidthwithpystructure,
-                (bp::arg("stru"), bp::arg("rmin"), bp::arg("rmax")))
+                nb::arg("stru"), nb::arg("rmin"), nb::arg("rmax"))
         .def("ticker",
                 &PeakWidthModel::ticker,
-                &PeakWidthModelWrap::default_ticker,
-                return_internal_reference<>(),
+                nb::rv_policy::reference_internal,
                 doc_PeakWidthModel_ticker)
-        .def_pickle(SerializationPickleSuite<PeakWidthModel,DICT_PICKLE>())
         ;
+        SerializationPickleSuite<PeakWidthModel, DICT_PICKLE>::bind(peakwidthmodel);
 
-    register_ptr_to_python<PeakWidthModelPtr>();
-
-    class_<ConstantPeakWidth, bases<PeakWidthModel> >(
-            "ConstantPeakWidth", doc_ConstantPeakWidth)
-        .def_pickle(SerializationPickleSuite<ConstantPeakWidth,DICT_IGNORE>())
+    nb::class_<ConstantPeakWidth, PeakWidthModel> constantpeakwidth(m,
+            "ConstantPeakWidth", doc_ConstantPeakWidth);
+    constantpeakwidth
+        .def(nb::init<>())
         ;
-
-    class_<DebyeWallerPeakWidth, bases<PeakWidthModel> >(
-            "DebyeWallerPeakWidth", doc_DebyeWallerPeakWidth)
-        .def_pickle(SerializationPickleSuite<DebyeWallerPeakWidth,DICT_IGNORE>())
+        SerializationPickleSuite<ConstantPeakWidth, DICT_IGNORE>::bind(constantpeakwidth);
+    
+    nb::class_<DebyeWallerPeakWidth, PeakWidthModel> debywallerpeakwidth(m,
+            "DebyeWallerPeakWidth", doc_DebyeWallerPeakWidth);
+    debywallerpeakwidth
+        .def(nb::init<>())
         ;
+        SerializationPickleSuite<DebyeWallerPeakWidth, DICT_IGNORE>::bind(debywallerpeakwidth);
 
-    class_<JeongPeakWidth, bases<DebyeWallerPeakWidth> >(
-            "JeongPeakWidth", doc_JeongPeakWidth)
-        .def_pickle(SerializationPickleSuite<JeongPeakWidth,DICT_IGNORE>())
+    nb::class_<JeongPeakWidth, DebyeWallerPeakWidth> jeongpeakwidth(m,
+            "JeongPeakWidth", doc_JeongPeakWidth);
+    jeongpeakwidth
+        .def(nb::init<>())
         ;
+        SerializationPickleSuite<JeongPeakWidth, DICT_IGNORE>::bind(jeongpeakwidth);
 
-    class_<PeakWidthModelOwner>("PeakWidthModelOwner", doc_PeakWidthModelOwner)
-        .add_property("peakwidthmodel",
+    nb::class_<PeakWidthModelOwner>(m, "PeakWidthModelOwner", doc_PeakWidthModelOwner)
+        .def_prop_rw("peakwidthmodel",
                 getpwmodel,
                 setpwmodel<PeakWidthModelOwner,PeakWidthModel>,
                 doc_PeakWidthModelOwner_peakwidthmodel)
