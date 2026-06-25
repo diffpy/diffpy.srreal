@@ -334,12 +334,13 @@ inline nb::bytes string_to_pybytes(const std::string &s)
 // representation of QuantityType objects
 nb::object repr_QuantityType(const QuantityType& v)
 {
-    nb::tuple t = nb::make_tuple(v.size());
+    nb::list values;
 
     for (size_t i = 0; i < v.size(); ++i) {
-        t[i] = nb::cast(v[i]);
+        values.append(v[i]);
     }
 
+    nb::object t = nb::module_::import_("builtins").attr("tuple")(values);
     return nb::str("QuantityType{}").attr("format")(nb::repr(t));
 }
 

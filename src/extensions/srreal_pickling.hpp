@@ -23,6 +23,7 @@
 
 #include <string>
 #include <sstream>
+#include <type_traits>
 
 #include <diffpy/serialization.hpp>
 #include <diffpy/srreal/forwardtypes.hpp>
@@ -82,14 +83,24 @@ nb::object resolve_state_object(nb::object value)
 template <class T>
 void assign_state_object(T target, nb::object value)
 {
-    if (!value.is_none())  target = nb::cast<T>(value);
+    if (!value.is_none())  target = value;
 }
 
 
 template <class T>
 void construct_for_unpickle(T* tobj)
 {
-    new (tobj) T();
+    if constexpr (std::is_default_constructible_v<T> && !std::is_abstract_v<T>)
+    {
+        new (tobj) T();
+    }
+    else
+    {
+        throw nb::type_error(
+            "cannot unpickle an uninitialized non-default-constructible "
+            "C++ instance"
+        );
+    }
 }
 
 
@@ -127,7 +138,7 @@ class SerializationPickleSuite
         static nb::tuple getstate(nb::object obj)
         {
             const T& tobj = nb::cast<const T&>(obj);
-            nb::bytes content = serialization_tobytes(*tobj);
+            nb::bytes content = serialization_tobytes(tobj);
 
             if constexpr (pickledict) 
             {

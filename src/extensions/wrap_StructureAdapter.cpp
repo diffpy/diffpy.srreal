@@ -460,7 +460,7 @@ class StructureProxyPickleSuite
         static void bind(C& cls)
         {
             cls
-                .def("__reduce__", [](const T& self)
+                .def("__reduce__", [](T& self)
                 {
                     StructureAdapterPtr src = self.getSourceStructure();
 
@@ -503,8 +503,6 @@ void wrap_StructureAdapter(nb::module_& m)
             "StructureAdapter", doc_StructureAdapter);
     structureadapter
         .def(nb::init<>())
-        .def("__init__", StructureAdapter_constructor<StructureAdapter>,
-                doc_StructureAdapter___init__fromstring)
         .def("clone",
                 &StructureAdapter::clone,
                 doc_StructureAdapter_clone)
@@ -545,7 +543,7 @@ void wrap_StructureAdapter(nb::module_& m)
                 nb::arg("other"),
                 doc_StructureAdapter_diff)
         ;
-        StructureProxyPickleSuite<StructureAdapter>::bind(structureadapter);
+        StructureAdapterPickleSuite<StructureAdapter>::bind(structureadapter);
 
     typedef std::shared_ptr<NoMetaStructureAdapter>
         NoMetaStructureAdapterPtr;

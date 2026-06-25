@@ -24,6 +24,7 @@
 #define SRREAL_CONVERTERS_HPP_INCLUDED
 
 #include <nanobind/nanobind.h>
+#include <nanobind/stl/string.h>
 
 #include <algorithm>
 #include <string>
@@ -373,7 +374,7 @@ convertToPythonDict(const T& value)
 {
     nb::dict rv;
     for (auto const& item : value)
-        rv[item.first] = item.second;
+        rv[nb::cast(item.first)] = nb::cast(item.second);
     return rv;
 }
 

@@ -18,6 +18,7 @@
 
 #include <nanobind/nanobind.h>
 
+#include "srreal_numpy_symbol.hpp"
 #include <numpy/arrayobject.h>
 
 // Declaration of the external wrappers --------------------------------------

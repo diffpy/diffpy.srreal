@@ -33,7 +33,6 @@ namespace nb = nanobind;
 namespace srrealmodule {
 namespace nswrap_ObjCrystAdapters {
 
-using namespace boost;
 using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
@@ -81,12 +80,12 @@ StructureAdapterPtr convertObjCrystCrystal(const Crystal& mol)
 
 #else
 
-StructureAdapterPtr convertObjCrystMolecule(python::object mol)
+StructureAdapterPtr convertObjCrystMolecule(nb::object)
 {
     throw nb::type_error("ObjCryst support not available.");
 }
 
-StructureAdapterPtr convertObjCrystCrystal(python::object cryst)
+StructureAdapterPtr convertObjCrystCrystal(nb::object cryst)
 {
     // raise the same exception as for the Molecule
     return convertObjCrystMolecule(cryst);
