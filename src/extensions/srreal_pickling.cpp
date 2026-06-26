@@ -17,7 +17,6 @@
 *****************************************************************************/
 
 #include "srreal_pickling.hpp"
-#include <boost/python/make_constructor.hpp>
 #include <diffpy/srreal/StructureAdapter.hpp>
 
 namespace srrealmodule {

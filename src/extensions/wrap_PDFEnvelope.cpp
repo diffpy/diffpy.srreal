@@ -232,10 +232,10 @@ void wrap_PDFEnvelope(nb::module_ &m)
         SerializationPickleSuite<SphericalShapeEnvelope, DICT_PICKLE>::bind(sphshapeenvelope);
     nb::class_<StepCutEnvelope, PDFEnvelope> stepcutenvelope(m,
             "StepCutEnvelope", doc_StepCutEnvelope);
-    sphshapeenvelope
+    stepcutenvelope
         .def(nb::init<>())
         ;
-        SerializationPickleSuite<StepCutEnvelope, DICT_PICKLE>::bind(sphshapeenvelope);
+        SerializationPickleSuite<StepCutEnvelope, DICT_PICKLE>::bind(stepcutenvelope);
 
 }
 

@@ -109,7 +109,7 @@ void set_add1(nb::object obj, nb::object value)
 {
     StructureDifference& sd = nb::cast<StructureDifference&>(obj);
     sd.add1 = extractintvector(value);
-    nb::cast<nb::object>(get_pop0(obj))[nb::slice(nb::none(), nb::none(), nb::none())] = convertToPythonList(sd.add1);
+    nb::cast<nb::object>(get_add1(obj))[nb::slice(nb::none(), nb::none(), nb::none())] = convertToPythonList(sd.add1);
 }
 
 
@@ -158,7 +158,8 @@ void wrap_StructureDifference(nb::module_& m)
 {
     using namespace nswrap_StructureDifference;
 
-    nb::class_<StructureDifference> sd(m, "StructureDifference", doc_StructureDifference);
+    nb::class_<StructureDifference> sd(m, "StructureDifference",
+            doc_StructureDifference, nb::dynamic_attr());
     sd
         .def(nb::init<>())
         .def(nb::init<const StructureDifference&>(), nb::arg("sd"),

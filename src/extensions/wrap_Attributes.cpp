@@ -177,7 +177,6 @@ void registerPythonDoubleAttribute(nb::object owner,
 void wrap_Attributes(nb::module_& m)
 {
     using namespace nswrap_Attributes;
-    const nb::object None;
     // ready for class definition
     nb::class_<Attributes>(m, "Attributes", nb::dynamic_attr(), doc_Attributes)
         .def(nb::init<>())

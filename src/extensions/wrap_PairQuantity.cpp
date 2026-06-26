@@ -32,6 +32,7 @@
 #include <nanobind/nanobind.h>
 #include <nanobind/trampoline.h>
 #include <nanobind/stl/bind_vector.h>
+#include <nanobind/stl/vector.h>
 
 #include <cstdlib>
 
@@ -716,7 +717,6 @@ void wrap_PairQuantity(nb::module_& m)
 {
     using namespace nswrap_PairQuantity;
     using diffpy::Attributes;
-    const nb::object None;
 
     typedef StructureAdapterPtr&(PairQuantity::*getstru)();
 
@@ -727,7 +727,7 @@ void wrap_PairQuantity(nb::module_& m)
         basepq(m, "BasePairQuantity");
     basepq
         .def(nb::init<>())
-        .def("eval", eval_asarray, nb::arg("stru")=None,
+        .def("eval", eval_asarray, nb::arg("stru")=nb::none(),
                 doc_BasePairQuantity_eval)
         .def_prop_ro("value", value_asarray<PairQuantity>,
                 doc_BasePairQuantity_value)
@@ -760,14 +760,14 @@ void wrap_PairQuantity(nb::module_& m)
                 doc_BasePairQuantity_invertMask)
         .def("setPairMask", set_pair_mask,
                 nb::arg("i"), nb::arg("j"), nb::arg("mask"),
-                 nb::arg("others")=None,
+                 nb::arg("others")=nb::none(),
                 doc_BasePairQuantity_setPairMask)
         .def("getPairMask", &PairQuantity::getPairMask,
                 nb::arg("i"), nb::arg("j"),
                 doc_BasePairQuantity_getPairMask)
         .def("setTypeMask", set_type_mask,
                 nb::arg("tpi"), nb::arg("tpj"), nb::arg("mask"),
-                 nb::arg("others")=None,
+                 nb::arg("others")=nb::none(),
                 doc_BasePairQuantity_setTypeMask)
         .def("getTypeMask", &PairQuantity::getTypeMask,
                 nb::arg("tpi"), nb::arg("tpj"),

@@ -20,6 +20,7 @@
 #define SRREAL_PICKLING_HPP_INCLUDED
 
 #include <nanobind/nanobind.h>
+#include <nanobind/stl/shared_ptr.h>
 
 #include <string>
 #include <sstream>

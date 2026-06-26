@@ -26,6 +26,7 @@
 #include <diffpy/srreal/ConstantPeakWidth.hpp>
 #include <diffpy/srreal/DebyeWallerPeakWidth.hpp>
 #include <diffpy/srreal/JeongPeakWidth.hpp>
+#include <diffpy/srreal/StructureAdapter.hpp>
 #include <diffpy/serialization.hpp>
 
 #include "srreal_converters.hpp"
