@@ -16,18 +16,18 @@
 *
 *****************************************************************************/
 
-#include <boost/python/class.hpp>
+#include <nanobind/nanobind.h>
 
 #include <diffpy/srreal/BondCalculator.hpp>
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
 
+namespace nb = nanobind;
+
 namespace srrealmodule {
 namespace nswrap_BondCalculator {
 
-namespace bp = boost::python;
-using namespace boost::python;
 using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
@@ -82,18 +82,16 @@ exclusive cone filter in a new direction.\n\
 
 
 void filter_cone(BondCalculator& obj,
-        object cartesiandir, double degrees)
+        nb::object cartesiandir, double degrees)
 {
     if (len(cartesiandir) != 3)
     {
-        const char* emsg = "cartesiandir must be a 3-element array.";
-        PyErr_SetString(PyExc_ValueError, emsg);
-        bp::throw_error_already_set();
+        throw nb::value_error("cartesiandir must be a 3-element array.");
     }
     R3::Vector cdir;
-    cdir[0] = extract<double>(cartesiandir[0]);
-    cdir[1] = extract<double>(cartesiandir[1]);
-    cdir[2] = extract<double>(cartesiandir[2]);
+    cdir[0] = nb::cast<double>(cartesiandir[0]);
+    cdir[1] = nb::cast<double>(cartesiandir[1]);
+    cdir[2] = nb::cast<double>(cartesiandir[2]);
     obj.filterCone(cdir, degrees);
 }
 
@@ -101,38 +99,39 @@ void filter_cone(BondCalculator& obj,
 
 // Wrapper definition --------------------------------------------------------
 
-void wrap_BondCalculator()
+void wrap_BondCalculator(nb::module_& m)
 {
     using namespace nswrap_BondCalculator;
 
-    class_<BondCalculator, bases<PairQuantity>
-        >("BondCalculator", doc_BondCalculator)
-        .add_property("distances",
+    nb::class_<BondCalculator, PairQuantity>
+        bondcalculator(m, "BondCalculator", doc_BondCalculator);
+    bondcalculator
+        .def(nb::init<>())
+        .def_prop_ro("distances",
                 distances_asarray<BondCalculator>,
                 doc_BondCalculator_distances)
-        .add_property("directions",
+        .def_prop_ro("directions",
                 directions_asarray<BondCalculator>,
                 doc_BondCalculator_directions)
-        .add_property("sites0",
+        .def_prop_ro("sites0",
                 sites0_asarray<BondCalculator>,
                 doc_BondCalculator_sites0)
-        .add_property("sites1",
+        .def_prop_ro("sites1",
                 sites1_asarray<BondCalculator>,
                 doc_BondCalculator_sites1)
-        .add_property("types0",
+        .def_prop_ro("types0",
                 types0_aschararray<BondCalculator>,
                 doc_BondCalculator_types0)
-        .add_property("types1",
+        .def_prop_ro("types1",
                 types1_aschararray<BondCalculator>,
                 doc_BondCalculator_types1)
         .def("filterCone", filter_cone,
-                (bp::arg("cartesiandir"), bp::arg("degrees")),
+                nb::arg("cartesiandir"), nb::arg("degrees"),
                 doc_BondCalculator_filterCone)
         .def("filterOff", &BondCalculator::filterOff,
                 doc_BondCalculator_filterOff)
-        .def_pickle(PairQuantityPickleSuite<BondCalculator>())
         ;
-
+        PairQuantityPickleSuite<BondCalculator>::bind(bondcalculator);
 }
 
 }   // namespace srrealmodule

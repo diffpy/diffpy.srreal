@@ -17,8 +17,7 @@
 *
 *****************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/slice.hpp>
+#include <nanobind/nanobind.h>
 
 #include <cstdlib>
 
@@ -27,16 +26,16 @@
 
 #include "srreal_converters.hpp"
 
+namespace nb = nanobind;
+
 namespace srrealmodule {
 
 // declarations
-void sync_StructureDifference(boost::python::object obj);
+void sync_StructureDifference(nb::object obj);
 
 namespace nswrap_StructureDifference {
 
-using namespace boost;
 using namespace diffpy::srreal;
-using boost::python::slice;
 
 // docstrings ----------------------------------------------------------------
 
@@ -72,45 +71,45 @@ from stru0 atoms at indices pop0 and addition of add1 atoms in stru1.\n\
 
 // wrappers ------------------------------------------------------------------
 
-python::list get_pop0(python::object obj)
+nb::list get_pop0(nb::object obj)
 {
-    python::object pypop0 = obj.attr("_pop0");
+    nb::object pypop0 = obj.attr("_pop0");
     if (pypop0.is_none())
     {
         const StructureDifference& sd =
-            python::extract<const StructureDifference&>(obj);
+            nb::cast<const StructureDifference&>(obj);
         pypop0 = obj.attr("_pop0") = convertToPythonList(sd.pop0);
     }
-    return python::extract<python::list>(pypop0);
+    return nb::borrow<nb::list>(pypop0);
 }
 
 
-void set_pop0(python::object obj, python::object value)
+void set_pop0(nb::object obj, nb::object value)
 {
-    StructureDifference& sd = python::extract<StructureDifference&>(obj);
+    StructureDifference& sd = nb::cast<StructureDifference&>(obj);
     sd.pop0 = extractintvector(value);
-    get_pop0(obj)[slice()] = convertToPythonList(sd.pop0);
+    nb::cast<nb::object>(get_pop0(obj))[nb::slice(nb::none(), nb::none(), nb::none())] = convertToPythonList(sd.pop0);
 }
 
 
-python::list get_add1(python::object obj)
+nb::list get_add1(nb::object obj)
 {
-    python::object pyadd1 = obj.attr("_add1");
+    nb::object pyadd1 = obj.attr("_add1");
     if (pyadd1.is_none())
     {
         const StructureDifference& sd =
-            python::extract<const StructureDifference&>(obj);
+            nb::cast<const StructureDifference&>(obj);
         pyadd1 = obj.attr("_add1") = convertToPythonList(sd.add1);
     }
-    return python::extract<python::list>(pyadd1);
+    return nb::borrow<nb::list>(pyadd1);
 }
 
 
-void set_add1(python::object obj, python::object value)
+void set_add1(nb::object obj, nb::object value)
 {
-    StructureDifference& sd = python::extract<StructureDifference&>(obj);
+    StructureDifference& sd = nb::cast<StructureDifference&>(obj);
     sd.add1 = extractintvector(value);
-    get_add1(obj)[slice()] = convertToPythonList(sd.add1);
+    nb::cast<nb::object>(get_add1(obj))[nb::slice(nb::none(), nb::none(), nb::none())] = convertToPythonList(sd.add1);
 }
 
 
@@ -127,15 +126,14 @@ std::string get_diffmethod(const StructureDifference& sd)
     }
     const char* emsg = "Unknown internal value of StructureDifference::Method.";
     PyErr_SetString(PyExc_NotImplementedError, emsg);
-    boost::python::throw_error_already_set();
-    abort();
+    throw nb::python_error();
 }
 
 
-bool sd_allowsfastupdate(python::object obj)
+bool sd_allowsfastupdate(nb::object obj)
 {
     sync_StructureDifference(obj);
-    StructureDifference& sd = python::extract<StructureDifference&>(obj);
+    StructureDifference& sd = nb::cast<StructureDifference&>(obj);
     return sd.allowsfastupdate();
 }
 
@@ -144,38 +142,36 @@ bool sd_allowsfastupdate(python::object obj)
 // this is a helper function to be called for Python-overridden
 // StructureAdapter::diff method
 
-void sync_StructureDifference(boost::python::object obj)
+void sync_StructureDifference(nb::object obj)
 {
-    using namespace boost::python;
     using diffpy::srreal::StructureDifference;
-    StructureDifference& sd = extract<StructureDifference&>(obj);
-    object pypop0 = obj.attr("_pop0");
+    StructureDifference& sd = nb::cast<StructureDifference&>(obj);
+    nb::object pypop0 = obj.attr("_pop0");
     if (!pypop0.is_none())  sd.pop0 = extractintvector(pypop0);
-    object pyadd1 = obj.attr("_add1");
+    nb::object pyadd1 = obj.attr("_add1");
     if (!pyadd1.is_none())  sd.add1 = extractintvector(pyadd1);
 }
 
 // Wrapper definitions -------------------------------------------------------
 
-void wrap_StructureDifference()
+void wrap_StructureDifference(nb::module_& m)
 {
     using namespace nswrap_StructureDifference;
-    using namespace boost::python;
-    namespace bp = boost::python;
 
-    class_<StructureDifference>("StructureDifference", doc_StructureDifference)
-        .def(init<const StructureDifference&>(bp::arg("sd"),
-                    doc_StructureDifference_init_copy))
-        .def(init<StructureAdapterPtr, StructureAdapterPtr>(
-                    (bp::arg("stru0"), bp::arg("stru1")),
-                    doc_StructureDifference_init_structures))
-        .def_readwrite("stru0", &StructureDifference::stru0)
-        .def_readwrite("stru1", &StructureDifference::stru1)
-        .add_property("pop0", get_pop0, set_pop0)
-        .setattr("_pop0", bp::object())
-        .add_property("add1", get_add1, set_add1)
-        .setattr("_add1", bp::object())
-        .add_property("diffmethod",
+    nb::class_<StructureDifference> sd(m, "StructureDifference",
+            doc_StructureDifference, nb::dynamic_attr());
+    sd
+        .def(nb::init<>())
+        .def(nb::init<const StructureDifference&>(), nb::arg("sd"),
+                    doc_StructureDifference_init_copy)
+        .def(nb::init<StructureAdapterPtr, StructureAdapterPtr>(), 
+                    nb::arg("stru0"), nb::arg("stru1"),
+                    doc_StructureDifference_init_structures)
+        .def_rw("stru0", &StructureDifference::stru0)
+        .def_rw("stru1", &StructureDifference::stru1)
+        .def_prop_rw("pop0", get_pop0, set_pop0)
+        .def_prop_rw("add1", get_add1, set_add1)
+        .def_prop_ro("diffmethod",
                 get_diffmethod,
                 doc_StructureDifference_diffmethod)
         .def("allowsfastupdate",
@@ -183,6 +179,8 @@ void wrap_StructureDifference()
                 doc_StructureDifference_allowsfastupdate)
         ;
 
+    sd.attr("_pop0") = nb::none();
+    sd.attr("_add1") = nb::none();
 }
 
 }   // namespace srrealmodule

@@ -16,27 +16,26 @@
 *
 *****************************************************************************/
 
-#include <boost/python/object.hpp>
-#include <boost/python/import.hpp>
+#include <nanobind/nanobind.h>
+
+namespace nb = nanobind;
 
 namespace srrealmodule {
 
-using namespace boost::python;
-
 void register_for_cleanup(PyObject* pobj)
 {
-    object obj(borrowed(pobj));
-    object reg = import("diffpy.srreal._cleanup").attr("registerForCleanUp");
+    nb::object obj = nb::borrow(pobj);
+    nb::object reg = nb::module_::import_("diffpy.srreal._cleanup").attr("registerForCleanUp");
     reg(obj);
 }
 
 
 /// get dictionary of Python-defined docstrings for the cls class.
-object get_registry_docstrings(object& cls)
+nb::object get_registry_docstrings(nb::object& cls)
 {
-    object mod = import("diffpy.srreal._docstrings");
-    object getdocs = mod.attr("get_registry_docstrings");
-    object rv = getdocs(cls);
+    nb::object mod = nb::module_::import_("diffpy.srreal._docstrings");
+    nb::object getdocs = mod.attr("get_registry_docstrings");
+    nb::object rv = getdocs(cls);
     return rv;
 }
 

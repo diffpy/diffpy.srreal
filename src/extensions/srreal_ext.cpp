@@ -16,39 +16,38 @@
 *
 *****************************************************************************/
 
-#include <boost/python/module.hpp>
-#include <boost/python/import.hpp>
-#include <boost/python/scope.hpp>
-#include <boost/python/extract.hpp>
-#include <boost/python/dict.hpp>
+#include <nanobind/nanobind.h>
+
 #include "srreal_numpy_symbol.hpp"
 #include <numpy/arrayobject.h>
 
 // Declaration of the external wrappers --------------------------------------
 
+namespace nb = nanobind;
+
 namespace srrealmodule {
 
-void wrap_libdiffpy_version();
+void wrap_libdiffpy_version(nb::module_& m);
 void wrap_exceptions();
-void wrap_EventTicker();
-void wrap_Attributes();
-void wrap_StructureDifference();
-void wrap_StructureAdapter();
-void wrap_AtomicStructureAdapter();
-void wrap_ObjCrystAdapters();
-void wrap_BaseBondGenerator();
-void wrap_PairQuantity();
-void wrap_PeakWidthModel();
-void wrap_ScatteringFactorTable();
-void wrap_PeakProfile();
-void wrap_BVParametersTable();
-void wrap_BVSCalculator();
-void wrap_PDFBaseline();
-void wrap_PDFEnvelope();
-void wrap_PDFCalculators();
-void wrap_BondCalculator();
-void wrap_AtomRadiiTable();
-void wrap_OverlapCalculator();
+void wrap_EventTicker(nb::module_& m);
+void wrap_Attributes(nb::module_& m);
+void wrap_StructureDifference(nb::module_& m);
+void wrap_StructureAdapter(nb::module_& m);
+void wrap_AtomicStructureAdapter(nb::module_& m);
+void wrap_ObjCrystAdapters(nb::module_& m);
+void wrap_BaseBondGenerator(nb::module_& m);
+void wrap_PairQuantity(nb::module_& m);
+void wrap_PeakWidthModel(nb::module_& m);
+void wrap_ScatteringFactorTable(nb::module_& m);
+void wrap_PeakProfile(nb::module_& m);
+void wrap_BVParametersTable(nb::module_& m);
+void wrap_BVSCalculator(nb::module_& m);
+void wrap_PDFBaseline(nb::module_& m);
+void wrap_PDFEnvelope(nb::module_& m);
+void wrap_PDFCalculators(nb::module_& m);
+void wrap_BondCalculator(nb::module_& m);
+void wrap_AtomRadiiTable(nb::module_& m);
+void wrap_OverlapCalculator(nb::module_& m);
 
 }   // namespace srrealmodule
 
@@ -64,46 +63,52 @@ namespace {
 
 // Module Definitions --------------------------------------------------------
 
-BOOST_PYTHON_MODULE(srreal_ext)
+NB_MODULE(srreal_ext, m)
 {
     using namespace srrealmodule;
     // initialize numpy module
     initialize_numpy();
     // execute external wrappers
-    wrap_libdiffpy_version();
+    wrap_libdiffpy_version(m);
     wrap_exceptions();
-    wrap_EventTicker();
-    wrap_Attributes();
-    wrap_StructureDifference();
-    wrap_StructureAdapter();
-    wrap_AtomicStructureAdapter();
-    wrap_ObjCrystAdapters();
-    wrap_BaseBondGenerator();
-    wrap_PairQuantity();
-    wrap_PeakWidthModel();
-    wrap_ScatteringFactorTable();
-    wrap_PeakProfile();
-    wrap_BVParametersTable();
-    wrap_BVSCalculator();
-    wrap_PDFBaseline();
-    wrap_PDFEnvelope();
-    wrap_PDFCalculators();
-    wrap_BondCalculator();
-    wrap_AtomRadiiTable();
-    wrap_OverlapCalculator();
+    wrap_EventTicker(m);
+    wrap_Attributes(m);
+    wrap_StructureDifference(m);
+    wrap_StructureAdapter(m);
+    wrap_AtomicStructureAdapter(m);
+    wrap_ObjCrystAdapters(m);
+    wrap_BaseBondGenerator(m);
+    wrap_PairQuantity(m);
+    wrap_PeakWidthModel(m);
+    wrap_ScatteringFactorTable(m);
+    wrap_PeakProfile(m);
+    wrap_BVParametersTable(m);
+    wrap_BVSCalculator(m);
+    wrap_PDFBaseline(m);
+    wrap_PDFEnvelope(m);
+    wrap_PDFCalculators(m);
+    wrap_BondCalculator(m);
+    wrap_AtomRadiiTable(m);
+    wrap_OverlapCalculator(m);
     // load Python modules that tweak the wrapped classes
-    using boost::python::object;
-    using boost::python::import;
-    using boost::python::scope;
-    using boost::python::extract;
-    using boost::python::dict;
-    object srreal = import("diffpy.srreal");
-    if (!PyObject_HasAttrString(srreal.ptr(), "_final_imports"))
+    nb::module_ srreal = nb::module_::import_("diffpy.srreal");
+    if (!nb::hasattr(srreal, "_final_imports"))
     {
-        dict sysmods = extract<dict>(import("sys").attr("modules"));
-        sysmods.setdefault("diffpy.srreal.srreal_ext", scope());
-        object import_now =
-            import("diffpy.srreal._final_imports").attr("import_now");
+        PyObject* sysmods = PyImport_GetModuleDict();
+
+        const char* fqname = "diffpy.srreal.srreal_ext";
+        if (PyDict_GetItemString(sysmods, fqname) == nullptr) 
+        {
+            if (PyDict_SetItemString(sysmods, fqname, m.ptr()) < 0) 
+            {
+                nb::raise_python_error();
+            }
+        }
+
+        nb::module_ final_imports =
+            nb::module_::import_("diffpy.srreal._final_imports");
+
+        nb::object import_now = final_imports.attr("import_now");
         import_now();
     }
 }

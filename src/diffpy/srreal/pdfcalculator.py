@@ -19,8 +19,8 @@ Top-level classes for PDF calculation:
 """
 
 from diffpy.srreal.srreal_ext import (
-    DebyePDFCalculator,
-    PDFCalculator,
+    DebyePDFCalculator as _DebyePDFCalculator,
+    PDFCalculator as _PDFCalculator,
     fftftog,
     fftgtof,
 )
@@ -194,6 +194,23 @@ def _defineCommonInterface(cls):
 
 # class DebyePDFCalculator ---------------------------------------------------
 
+class DebyePDFCalculator(_DebyePDFCalculator):
+    __doc__ = _DebyePDFCalculator.__doc__
+
+    def __init__(self, **kwargs):
+        """Create a new instance of the DebyePDFCalculator.
+        Keyword arguments can be used to configure the calculator properties,
+        for example:
+
+        dpc = DebyePDFCalculator(qmax=20, rmin=7, rmax=15)
+
+        Raise ValueError for invalid keyword argument.
+        """
+        super().__init__()
+        setattrFromKeywordArguments(self, **kwargs)
+        return
+
+
 # shared interface of the PDF calculator classes
 
 _defineCommonInterface(DebyePDFCalculator)
@@ -229,29 +246,26 @@ DebyePDFCalculator.qstep = propertyFromExtDoubleAttr(
         See also setOptimumQstep, isOptimumQstep.""",
 )
 
-# method overrides to support optional keyword arguments
-
-
-def _init_kwargs0(self, **kwargs):
-    """Create a new instance of the DebyePDFCalculator.
-    Keyword arguments can be used to configure the calculator properties,
-    for example:
-
-    dpc = DebyePDFCalculator(qmax=20, rmin=7, rmax=15)
-
-    Raise ValueError for invalid keyword argument.
-    """
-    DebyePDFCalculator.__boostpython__init(self)
-    setattrFromKeywordArguments(self, **kwargs)
-    return
-
-
-DebyePDFCalculator.__boostpython__init = DebyePDFCalculator.__init__
-DebyePDFCalculator.__init__ = _init_kwargs0
-
 # End of class DebyePDFCalculator
 
 # PDFCalculator --------------------------------------------------------------
+
+class PDFCalculator(_PDFCalculator):
+    __doc__ = _PDFCalculator.__doc__
+
+    def __init__(self, **kwargs):
+        """Create a new instance of PDFCalculator.
+        Keyword arguments can be used to configure the calculator properties,
+        for example:
+
+        pc = PDFCalculator(qmax=20, rmin=7, rmax=15)
+
+        Raise ValueError for invalid keyword argument.
+        """
+        super().__init__()
+        setattrFromKeywordArguments(self, **kwargs)
+        return
+
 
 # shared interface of the PDF calculator classes
 
@@ -309,26 +323,6 @@ PDFCalculator.stepcut = propertyFromExtDoubleAttr(
         Not used when zero.  Active for StepCutEnvelope.
         [0 A]""",
 )
-
-# method overrides to support optional keyword arguments
-
-
-def _init_kwargs1(self, **kwargs):
-    """Create a new instance of PDFCalculator.
-    Keyword arguments can be used to configure the calculator properties,
-    for example:
-
-    pc = PDFCalculator(qmax=20, rmin=7, rmax=15)
-
-    Raise ValueError for invalid keyword argument.
-    """
-    PDFCalculator.__boostpython__init(self)
-    setattrFromKeywordArguments(self, **kwargs)
-    return
-
-
-PDFCalculator.__boostpython__init = PDFCalculator.__init__
-PDFCalculator.__init__ = _init_kwargs1
 
 # End of class PDFCalculator
 

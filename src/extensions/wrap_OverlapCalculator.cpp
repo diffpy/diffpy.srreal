@@ -16,17 +16,19 @@
 *
 *****************************************************************************/
 
-#include <boost/python/class.hpp>
+#include <nanobind/nanobind.h>
 
+#include <diffpy/srreal/ConstantRadiiTable.hpp>
 #include <diffpy/srreal/OverlapCalculator.hpp>
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
 
+namespace nb = nanobind;
+
 namespace srrealmodule {
 namespace nswrap_OverlapCalculator {
 
-using namespace boost::python;
 using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
@@ -156,7 +158,7 @@ AtomRadiiTablePtr getatomradiitable(OverlapCalculator& obj)
 DECLARE_BYTYPE_SETTER_WRAPPER(setAtomRadiiTable, setatomradiitable)
 
 
-double flip_diff_total(const OverlapCalculator& obj, object i, object j)
+double flip_diff_total(const OverlapCalculator& obj, nb::object i, nb::object j)
 {
     int i1 = extractint(i);
     int j1 = extractint(j);
@@ -164,7 +166,7 @@ double flip_diff_total(const OverlapCalculator& obj, object i, object j)
 }
 
 
-double flip_diff_mean(const OverlapCalculator& obj, object i, object j)
+double flip_diff_mean(const OverlapCalculator& obj, nb::object i, nb::object j)
 {
     int i1 = extractint(i);
     int j1 = extractint(j);
@@ -172,10 +174,10 @@ double flip_diff_mean(const OverlapCalculator& obj, object i, object j)
 }
 
 
-object get_neighbor_sites(const OverlapCalculator& obj, object i)
+nb::object get_neighbor_sites(const OverlapCalculator& obj, nb::object i)
 {
     int i1 = extractint(i);
-    object rv = convertToPythonSet(obj.getNeighborSites(i1));
+    nb::object rv = convertToPythonSet(obj.getNeighborSites(i1));
     return rv;
 }
 
@@ -189,28 +191,54 @@ class OverlapCalculatorPickleSuite :
 
     public:
 
-        static boost::python::tuple getstate(boost::python::object obj)
+        template <typename C>
+        static void bind(C& cls)
         {
-            namespace bp = boost::python;
-            bp::object tb = obj.attr("atomradiitable");
-            bp::tuple rv = bp::make_tuple(
-                    Super::getstate(obj),
-                    resolve_state_object<AtomRadiiTable>(tb)
-                    );
-            return rv;
+            cls
+                .def("__getstate__", getstate)
+                .def("__setstate__", setstate)
+                .def("__reduce__", reduce)
+                ;
+            cls.attr("__getstate_manages_dict__") = nb::none();
+        }
+
+
+        static nb::tuple getstate(nb::object obj)
+        {
+            OverlapCalculator& calc = nb::cast<OverlapCalculator&>(obj);
+            ScopedSharedPtrReplacement<AtomRadiiTable> tb(
+                calc.getAtomRadiiTable(), AtomRadiiTablePtr(new ConstantRadiiTable));
+            try
+            {
+                nb::tuple rv = nb::make_tuple(
+                        Super::getstate(obj),
+                        tb.state_object()
+                        );
+                return rv;
+            }
+            catch (...)
+            {
+                tb.restore();
+                throw;
+            }
         }
 
 
         static void setstate(
-                boost::python::object obj, boost::python::tuple state)
+                nb::object obj, nb::tuple state)
         {
-            namespace bp = boost::python;
             ensure_tuple_length(state, 2);
             // restore the state using boost serialization
-            bp::tuple st0 = bp::extract<bp::tuple>(state[0]);
-            Super::setstate(obj, st0);
-            // atomradiitable is present only when restoring Python class
-            assign_state_object(obj.attr("atomradiitable"), state[1]);
+            nb::tuple state0(state[0]);
+            Super::setstate(obj, state0);
+            // restore component that was kept out of Boost serialization
+            OverlapCalculator& calc = nb::cast<OverlapCalculator&>(obj);
+            assign_pointer_state(calc.getAtomRadiiTable(), state[1]);
+        }
+
+        static nb::tuple reduce(nb::object obj)
+        {
+            return Super::reduce(obj);
         }
 };
 
@@ -218,73 +246,75 @@ class OverlapCalculatorPickleSuite :
 
 // Wrapper definition --------------------------------------------------------
 
-void wrap_OverlapCalculator()
+void wrap_OverlapCalculator(nb::module_& m)
 {
     using namespace nswrap_OverlapCalculator;
 
-    class_<OverlapCalculator, bases<PairQuantity> >("OverlapCalculator",
-            doc_OverlapCalculator)
-        .add_property("overlaps",
+    nb::class_<OverlapCalculator, PairQuantity> overlapcalculator(m, "OverlapCalculator",
+            doc_OverlapCalculator);
+    overlapcalculator
+        .def(nb::init<>())
+        .def_prop_ro("overlaps",
                 overlaps_asarray<OverlapCalculator>,
                 doc_OverlapCalculator_overlaps)
-        .add_property("distances",
+        .def_prop_ro("distances",
                 distances_asarray<OverlapCalculator>,
                 doc_OverlapCalculator_distances)
-        .add_property("directions",
+        .def_prop_ro("directions",
                 directions_asarray<OverlapCalculator>,
                 doc_OverlapCalculator_directions)
-        .add_property("sites0",
+        .def_prop_ro("sites0",
                 sites0_asarray<OverlapCalculator>,
                 doc_OverlapCalculator_sites0)
-        .add_property("sites1",
+        .def_prop_ro("sites1",
                 sites1_asarray<OverlapCalculator>,
                 doc_OverlapCalculator_sites1)
-        .add_property("types0",
+        .def_prop_ro("types0",
                 types0_aschararray<OverlapCalculator>,
                 doc_OverlapCalculator_types0)
-        .add_property("types1",
+        .def_prop_ro("types1",
                 types1_aschararray<OverlapCalculator>,
                 doc_OverlapCalculator_types1)
-        .add_property("sitesquareoverlaps",
+        .def_prop_ro("sitesquareoverlaps",
                 siteSquareOverlaps_asarray<OverlapCalculator>,
                 doc_OverlapCalculator_sitesquareoverlaps)
-        .add_property("totalsquareoverlap",
+        .def_prop_ro("totalsquareoverlap",
                 &OverlapCalculator::totalSquareOverlap,
                 doc_OverlapCalculator_totalsquareoverlap)
-        .add_property("meansquareoverlap",
+        .def_prop_ro("meansquareoverlap",
                 &OverlapCalculator::meanSquareOverlap,
                 doc_OverlapCalculator_meansquareoverlap)
         .def("flipDiffTotal",
                 flip_diff_total,
-                (arg("i"), arg("j")),
+                nb::arg("i"), nb::arg("j"),
                 doc_OverlapCalculator_flipDiffTotal)
         .def("flipDiffMean",
                 flip_diff_mean,
                 doc_OverlapCalculator_flipDiffMean)
-        .add_property("gradients",
+        .def_prop_ro("gradients",
                 gradients_asarray<OverlapCalculator>,
                 doc_OverlapCalculator_gradients)
         .def("getNeighborSites",
                 get_neighbor_sites,
-                arg("i"),
+                nb::arg("i"),
                 doc_OverlapCalculator_getNeighborSites)
-        .add_property("coordinations",
+        .def_prop_ro("coordinations",
                 coordinations_asarray<OverlapCalculator>,
                 doc_OverlapCalculator_coordinations)
         .def("coordinationByTypes",
                 coordinationByTypes_asdict<OverlapCalculator,int>,
-                arg("i"),
+                nb::arg("i"),
                 doc_OverlapCalculator_coordinationByTypes)
-        .add_property("neighborhoods",
+        .def_prop_ro("neighborhoods",
                 neighborhoods_aslistset<OverlapCalculator>,
                 doc_OverlapCalculator_neighborhoods)
-        .add_property("atomradiitable",
+        .def_prop_rw("atomradiitable",
                 getatomradiitable,
                 setatomradiitable<OverlapCalculator,AtomRadiiTable>,
                 doc_OverlapCalculator_atomradiitable)
-        .def_pickle(OverlapCalculatorPickleSuite())
         ;
-
+        OverlapCalculatorPickleSuite::bind(overlapcalculator);
+        
 }
 
 }   // namespace srrealmodule

@@ -16,10 +16,8 @@
 *
 *****************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/overloads.hpp>
-#include <boost/python/copy_const_reference.hpp>
-#include <boost/python/register_ptr_to_python.hpp>
+#include <nanobind/nanobind.h>
+#include <nanobind/operators.h>
 
 #include <string>
 
@@ -31,10 +29,11 @@
 
 #define BVPARMCIF "bvparm2011.cif"
 
+namespace nb = nanobind;
+
 namespace srrealmodule {
 namespace nswrap_BVParametersTable {
 
-using namespace boost::python;
 using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
@@ -218,27 +217,43 @@ Return a set of BVParam objects.\n\
 
 // wrappers ------------------------------------------------------------------
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(setcustom6, setCustom, 6, 7)
 DECLARE_PYSET_METHOD_WRAPPER(getAll, getAll_asset)
+void setCustom6(BVParametersTable& obj,
+                const std::string& atom0,
+                int valence0,
+                const std::string& atom1,
+                int valence1,
+                double Ro,
+                double B,
+                const std::string& ref_id) {
+    obj.setCustom(atom0, valence0, atom1, valence1, Ro, B, ref_id);
+}
 
-object repr_BVParam(const BVParam& bp)
+nb::object repr_BVParam(const BVParam& bp)
 {
-    if (bp == BVParametersTable::none())  return object("BVParam()");
-    object rv = ("BVParam(%r, %i, %r, %i, Ro=%s, B=%s, ref_id=%r)" %
-        make_tuple(bp.matom0, bp.mvalence0, bp.matom1, bp.mvalence1,
-            bp.mRo, bp.mB, bp.mref_id));
-    return rv;
+    if (bp == BVParametersTable::none())  return nb::str("BVParam()");
+    return nb::str(
+        "BVParam({!r}, {:d}, {!r}, {:d}, Ro={}, B={}, ref_id={!r})"
+    ).attr("format")(
+        bp.matom0,
+        bp.mvalence0,
+        bp.matom1,
+        bp.mvalence1,
+        bp.mRo,
+        bp.mB,
+        bp.mref_id
+    );
 }
 
 
-object singleton_none()
+nb::object singleton_none()
 {
     const char* nameofnone = "__BVParam_singleton_none";
-    object mod = import("diffpy.srreal.srreal_ext");
+    nb::module_ mod = nb::module_::import_("diffpy.srreal.srreal_ext");
     static bool noneassigned = false;
     if (!noneassigned)
     {
-        mod.attr(nameofnone) = object(BVParametersTable::none());
+        mod.attr(nameofnone) = nb::cast(BVParametersTable::none(), nb::rv_policy::copy);
         noneassigned = true;
     }
     return mod.attr(nameofnone);
@@ -248,89 +263,132 @@ object singleton_none()
 
 // Wrapper definition --------------------------------------------------------
 
-void wrap_BVParametersTable()
+void wrap_BVParametersTable(nb::module_& m)
 {
     using namespace nswrap_BVParametersTable;
-    using std::string;
 
-    class_<BVParam>("BVParam", doc_BVParam)
-        .def(init<const string&, int, const string&, int,
-                double, double, string>(doc_BVParam___init__,
-                    (arg("atom0"), arg("valence0"),
-                    arg("atom1"), arg("valence1"), arg("Ro")=0.0, arg("B")=0.0,
-                    arg("ref_id")="")))
+    nb::class_<BVParam> bvparam(m, "BVParam", doc_BVParam);
+    bvparam
+        .def(nb::init<>())
+        .def(nb::init<const std::string&, int,
+                      const std::string&, int,
+                      double, double, std::string>(),
+             nb::arg("atom0"),
+             nb::arg("valence0"),
+             nb::arg("atom1"),
+             nb::arg("valence1"),
+             nb::arg("Ro") = 0.0,
+             nb::arg("B") = 0.0,
+             nb::arg("ref_id") = "",
+             doc_BVParam___init__)
         .def("__repr__", repr_BVParam, doc_BVParam___repr__)
-        .def(self == self)
-        .def(self != self)
+        .def(nb::self == nb::self)
+        .def(nb::self != nb::self)
         .def("bondvalence", &BVParam::bondvalence,
-                arg("distance"), doc_BVParam_bondvalence)
+                nb::arg("distance"), doc_BVParam_bondvalence)
         .def("bondvalenceToDistance", &BVParam::bondvalenceToDistance,
-                arg("valence"), doc_BVParam_bondvalenceToDistance)
+                nb::arg("valence"), doc_BVParam_bondvalenceToDistance)
         .def("setFromCifLine", &BVParam::setFromCifLine,
                 doc_BVParam_setFromCifLine)
-        .def_readonly("atom0", &BVParam::matom0, doc_BVParam_atom0)
-        .def_readonly("valence0", &BVParam::mvalence0, doc_BVParam_valence0)
-        .def_readonly("atom1", &BVParam::matom1, doc_BVParam_atom1)
-        .def_readonly("valence1", &BVParam::mvalence1, doc_BVParam_valence1)
-        .def_readwrite("Ro", &BVParam::mRo, doc_BVParam_Ro)
-        .def_readwrite("B", &BVParam::mB, doc_BVParam_B)
-        .def_readwrite("ref_id", &BVParam::mref_id, doc_BVParam_ref_id)
-        .def_pickle(SerializationPickleSuite<BVParam>())
+        .def_ro("atom0", &BVParam::matom0, doc_BVParam_atom0)
+        .def_ro("valence0", &BVParam::mvalence0, doc_BVParam_valence0)
+        .def_ro("atom1", &BVParam::matom1, doc_BVParam_atom1)
+        .def_ro("valence1", &BVParam::mvalence1, doc_BVParam_valence1)
+        .def_rw("Ro", &BVParam::mRo, doc_BVParam_Ro)
+        .def_rw("B", &BVParam::mB, doc_BVParam_B)
+        .def_rw("ref_id", &BVParam::mref_id, doc_BVParam_ref_id)
         ;
+        SerializationPickleSuite<BVParam, DICT_GUARD>::bind(bvparam);
 
-    typedef const BVParam&(BVParametersTable::*bptb_bvparam_1)(
-            const BVParam&) const;
-    typedef const BVParam&(BVParametersTable::*bptb_bvparam_2)(
-            const string&, const string&) const;
-    typedef const BVParam&(BVParametersTable::*bptb_bvparam_4)(
-            const string&, int, const string&, int) const;
-    typedef void(BVParametersTable::*bptb_void_1)(
-            const BVParam&);
-    typedef void(BVParametersTable::*bptb_void_4)(
-            const string&, int, const string&, int);
-
-    class_<BVParametersTable>("BVParametersTable", doc_BVParametersTable)
-        .def("none", singleton_none, doc_BVParametersTable_none)
-        .staticmethod("none")
+    nb::class_<BVParametersTable>
+        bvtable(m, "BVParametersTable", doc_BVParametersTable);
+    bvtable
+        .def(nb::init<>())
+        .def_static("none", singleton_none, doc_BVParametersTable_none)
         .def("getAtomValence", &BVParametersTable::getAtomValence,
-                arg("smbl"),
+                nb::arg("smbl"),
                 doc_BVParametersTable_getAtomValence)
         .def("setAtomValence", &BVParametersTable::setAtomValence,
-                (arg("smbl"), arg("value")),
+                nb::arg("smbl"), nb::arg("value"),
                 doc_BVParametersTable_setAtomValence)
         .def("resetAtomValences", &BVParametersTable::resetAtomValences,
                 doc_BVParametersTable_resetAtomValences)
-        .def("lookup", bptb_bvparam_1(&BVParametersTable::lookup),
-                arg("bvparam"), doc_BVParametersTable_lookup1,
-                return_value_policy<copy_const_reference>())
-        .def("lookup", bptb_bvparam_2(&BVParametersTable::lookup),
-                (arg("smbl0"), arg("smbl1")),
-                doc_BVParametersTable_lookup2,
-                return_value_policy<copy_const_reference>())
-        .def("lookup", bptb_bvparam_4(&BVParametersTable::lookup),
-                (arg("atom0"), arg("valence0"), arg("atom1"), arg("valence1")),
-                doc_BVParametersTable_lookup4,
-                return_value_policy<copy_const_reference>())
-        .def("setCustom", bptb_void_1(&BVParametersTable::setCustom),
-                arg("bvparm"), doc_BVParametersTable_setCustom1)
-        .def("setCustom", (void(BVParametersTable::*)(const string&, int,
-                    const string&, int, double, double, string)) NULL,
-                setcustom6((arg("atom0"), arg("valence0"), arg("atom1"), arg("valence1"),
-                     arg("Ro"), arg("B"), arg("ref_id")=""),
-                    doc_BVParametersTable_setCustom6))
-        .def("resetCustom", bptb_void_1(&BVParametersTable::resetCustom),
-                doc_BVParametersTable_resetCustom1)
-        .def("resetCustom", bptb_void_4(&BVParametersTable::resetCustom),
-                (arg("atom0"), arg("valence0"), arg("atom1"), arg("valence1")),
-                doc_BVParametersTable_resetCustom4)
+        .def("lookup",
+             [](const BVParametersTable &obj,
+                const BVParam &bvparam) -> BVParam {
+                 return obj.lookup(bvparam);
+             },
+             nb::arg("bvparam"),
+             doc_BVParametersTable_lookup1)
+
+        .def("lookup",
+             [](const BVParametersTable &obj,
+                const std::string &smbl0,
+                const std::string &smbl1) -> BVParam {
+                 return obj.lookup(smbl0, smbl1);
+             },
+             nb::arg("smbl0"),
+             nb::arg("smbl1"),
+             doc_BVParametersTable_lookup2)
+
+        .def("lookup",
+             [](const BVParametersTable &obj,
+                const std::string &atom0,
+                int valence0,
+                const std::string &atom1,
+                int valence1) -> BVParam {
+                 return obj.lookup(atom0, valence0, atom1, valence1);
+             },
+             nb::arg("atom0"),
+             nb::arg("valence0"),
+             nb::arg("atom1"),
+             nb::arg("valence1"),
+             doc_BVParametersTable_lookup4)
+
+        .def("setCustom",
+             [](BVParametersTable &obj, const BVParam &bvparam) {
+                 obj.setCustom(bvparam);
+             },
+             nb::arg("bvparam"),
+             doc_BVParametersTable_setCustom1)
+
+        .def("setCustom",
+             &setCustom6,
+             nb::arg("atom0"),
+             nb::arg("valence0"),
+             nb::arg("atom1"),
+             nb::arg("valence1"),
+             nb::arg("Ro"),
+             nb::arg("B"),
+             nb::arg("ref_id") = "",
+             doc_BVParametersTable_setCustom6)
+        .def("resetCustom",
+             [](BVParametersTable &obj, const BVParam &bvparam) {
+                 obj.resetCustom(bvparam);
+             },
+             nb::arg("bvparam"),
+             doc_BVParametersTable_resetCustom1)
+
+        .def("resetCustom",
+             [](BVParametersTable &obj,
+                const std::string &atom0,
+                int valence0,
+                const std::string &atom1,
+                int valence1) {
+                 obj.resetCustom(atom0, valence0, atom1, valence1);
+             },
+             nb::arg("atom0"),
+             nb::arg("valence0"),
+             nb::arg("atom1"),
+             nb::arg("valence1"),
+             doc_BVParametersTable_resetCustom4)
         .def("resetAll", &BVParametersTable::resetAll,
                 doc_BVParametersTable_resetAll)
         .def("getAll", getAll_asset<BVParametersTable>,
                 doc_BVParametersTable_getAll)
-        .def_pickle(SerializationPickleSuite<BVParametersTable>())
         ;
-
-    register_ptr_to_python<BVParametersTablePtr>();
+        SerializationPickleSuite<BVParametersTable, DICT_GUARD>::bind(bvtable);
+        
 }
 
 }   // namespace srrealmodule

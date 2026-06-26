@@ -16,20 +16,22 @@
 *
 *****************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/def.hpp>
-#include <boost/python/stl_iterator.hpp>
+#include <nanobind/nanobind.h>
 
 #include <diffpy/srreal/DebyePDFCalculator.hpp>
 #include <diffpy/srreal/PDFCalculator.hpp>
-
+#include <diffpy/srreal/GaussianProfile.hpp>
+#include <diffpy/srreal/JeongPeakWidth.hpp>
+#include <diffpy/srreal/LinearBaseline.hpp>
+#include <diffpy/srreal/SFTXray.hpp>
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
+
+namespace nb = nanobind;
 
 namespace srrealmodule {
 namespace nswrap_PDFCalculators {
 
-using namespace boost::python;
 using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
@@ -164,6 +166,35 @@ Return a tuple of (f, qstep).  These can be used with the complementary\n\
 fftftog function to recover the original signal g.\n\
 ";
 
+const char* doc_PeakWidthModelOwner_peakwidthmodel = "\
+PeakWidthModel object used for calculating the FWHM of the PDF peaks.\n\
+This attribute can be assigned either a PeakWidthModel-derived object\n\
+or a string name of a registered PeakWidthModel class.\n\
+Use PeakWidthModel.getRegisteredTypes() for a set of registered names.\n\
+";
+
+const char* doc_ScatteringFactorTableOwner_scatteringfactortable = "\
+ScatteringFactorTable object used for a lookup of scattering factors.\n\
+This can be also set with the setScatteringFactorTableByType method.\n\
+";
+
+const char* doc_ScatteringFactorTableOwner_setScatteringFactorTableByType = "\
+Set internal ScatteringFactorTable according to specified string type.\n\
+\n\
+tp   -- string identifier of a registered ScatteringFactorTable type.\n\
+    Use ScatteringFactorTable.getRegisteredTypes for the allowed values.\n\
+\n\
+Deprecated: This method is deprecated and will be removed in the 2.0.0 release.\n\
+Use direct assignment to the `scatteringfactortable` property instead, for example:\n\
+    obj.scatteringfactortable = SFTNeutron()\n\
+No return value.\n\
+";
+
+const char* doc_ScatteringFactorTableOwner_getRadiationType = "\
+Return string identifying the radiation type.\n\
+'X' for x-rays, 'N' for neutrons.\n\
+";
+
 // wrappers ------------------------------------------------------------------
 
 DECLARE_PYARRAY_METHOD_WRAPPER(getPDF, getPDF_asarray)
@@ -193,36 +224,36 @@ DECLARE_BYTYPE_SETTER_WRAPPER(setBaseline, setbaseline)
 
 // wrappers for the envelopes property
 
-PDFEnvelopePtr pyobjtoenvelope(object evp)
+PDFEnvelopePtr pyobjtoenvelope(nb::object evp)
 {
-    extract<std::string> tp(evp);
-    if (tp.check())  return PDFEnvelope::createByType(tp());
-    PDFEnvelopePtr rv = extract<PDFEnvelopePtr>(evp);
-    return rv;
+    std::string tp;
+    if (nb::try_cast<std::string>(evp, tp, false))
+    {
+        return PDFEnvelope::createByType(tp);
+    }
+    return nb::cast<PDFEnvelopePtr>(evp);
 }
 
 
 template <class T>
-tuple getenvelopes(T& obj)
+nb::tuple getenvelopes(T& obj)
 {
     std::set<std::string> etps = obj.usedEnvelopeTypes();
     std::set<std::string>::const_iterator tpi;
-    list elst;
+    nb::list elst;
     for (tpi = etps.begin(); tpi != etps.end(); ++tpi)
     {
         elst.append(obj.getEnvelopeByType(*tpi));
     }
-    tuple rv(elst);
-    return rv;
+    return nb::tuple(elst);
 }
 
 template <class T>
-void setenvelopes(T& obj, object evps)
+void setenvelopes(T& obj, nb::object evps)
 {
-    stl_input_iterator<object> eit(evps), end;
     // first check if all evps items can be converted to PDFEnvelopePtr
     std::list<PDFEnvelopePtr> elst;
-    for (; eit != end; ++eit)  elst.push_back(pyobjtoenvelope(*eit));
+    for (nb::handle evp : evps)  elst.push_back(pyobjtoenvelope(nb::borrow<nb::object>(evp)));
     // if that worked, overwrite the original envelopes
     obj.clearEnvelopes();
     std::list<PDFEnvelopePtr>::iterator eii = elst.begin();
@@ -232,27 +263,30 @@ void setenvelopes(T& obj, object evps)
 // wrapper for the usedenvelopetypes
 
 template <class T>
-tuple getusedenvelopetypes(T& obj)
+nb::tuple getusedenvelopetypes(T& obj)
 {
-    tuple rv(usedEnvelopeTypes_aslist<T>(obj));
+    nb::tuple rv(usedEnvelopeTypes_aslist<T>(obj));
     return rv;
 }
 
 template <class T>
-void addenvelope(T& obj, object evp)
+void addenvelope(T& obj, nb::object evp)
 {
     PDFEnvelopePtr e = pyobjtoenvelope(evp);
     obj.addEnvelope(e);
 }
 
 template <class T>
-void popenvelope(T& obj, object evp)
+void popenvelope(T& obj, nb::object evp)
 {
-    extract<std::string> tp(evp);
-    if (tp.check())  obj.popEnvelopeByType(tp());
+    std::string tp;
+    if (nb::try_cast<std::string>(evp, tp, false))
+    {
+        obj.popEnvelopeByType(tp);
+    }
     else
     {
-        PDFEnvelopePtr e = extract<PDFEnvelopePtr>(evp);
+        PDFEnvelopePtr e = nb::cast<PDFEnvelopePtr>(evp);
         obj.popEnvelope(e);
     }
 }
@@ -264,110 +298,181 @@ PDFEnvelopePtr getoneenvelope(T& obj, const std::string& tp)
 }
 
 
-// wrap shared methods and attributes of PDFCalculators
+// wrappers for PeakWidthModelOwner behavior
 
-template <class C>
-C& wrap_PDFCommon(C& boostpythonclass)
+template <class T>
+PeakWidthModelPtr getpeakwidthmodel(T& obj)
 {
-    namespace bp = boost::python;
-    typedef typename C::wrapped_type W;
-    boostpythonclass
+    return obj.getPeakWidthModel();
+}
+
+DECLARE_BYTYPE_SETTER_WRAPPER(setPeakWidthModel, setpeakwidthmodel)
+
+// wrappers for ScatteringFactorTableOwner behavior
+
+template <class T>
+ScatteringFactorTablePtr getscatteringfactortable(T& obj)
+{
+    return obj.getScatteringFactorTable();
+}
+
+DECLARE_BYTYPE_SETTER_WRAPPER(setScatteringFactorTable, setscatteringfactortable)
+
+template <class T>
+void setscatteringfactortablebytype(T& obj, const std::string& tp)
+{
+    try
+    {
+        nb::object warnings = nb::module_::import_("warnings");
+        nb::object builtins = nb::module_::import_("builtins");
+        nb::object DeprecationWarning = builtins.attr("DeprecationWarning");
+        warnings.attr("warn")(
+            std::string("setScatteringFactorTableByType is deprecated; "
+                    "assign the 'scatteringfactortable' property directly, for example:\n"
+                    "obj.scatteringfactortable = SFTNeutron()"),
+            DeprecationWarning,
+            2);
+    }
+    catch (...) { /* don't let warnings break the binding */ }
+    obj.setScatteringFactorTableByType(tp);
+}
+
+template <class T>
+std::string getradiationtype(T& obj)
+{
+    return obj.getRadiationType();
+}
+
+
+// wrap shared methods and attributes of PDFCalculators
+// TODO: since nanobind doesn't allow multiple inheritance,
+// we may need to introduce a header to better address this.
+
+template <class W, class C>
+C& wrap_PDFCommon(C& cls)
+{
+    cls
         // result vectors
-        .add_property("pdf", getPDF_asarray<W>,
-                doc_PDFCommon_pdf)
-        .add_property("rdf", getRDF_asarray<W>,
-                doc_PDFCommon_rdf)
-        .add_property("rgrid", getRgrid_asarray<W>,
-                doc_PDFCommon_rgrid)
-        .add_property("fq", getF_asarray<W>,
-                doc_PDFCommon_fq)
-        .add_property("qgrid", getQgrid_asarray<W>,
-                doc_PDFCommon_qgrid)
+        .def_prop_ro("pdf", getPDF_asarray<W>, doc_PDFCommon_pdf)
+        .def_prop_ro("rdf", getRDF_asarray<W>, doc_PDFCommon_rdf)
+        .def_prop_ro("rgrid", getRgrid_asarray<W>, doc_PDFCommon_rgrid)
+        .def_prop_ro("fq", getF_asarray<W>, doc_PDFCommon_fq)
+        .def_prop_ro("qgrid", getQgrid_asarray<W>, doc_PDFCommon_qgrid)
         // PDF envelopes
-        .add_property("envelopes",
+        .def_prop_rw("envelopes",
                 getenvelopes<W>, setenvelopes<W>,
                 doc_PDFCommon_envelopes)
-        .add_property("usedenvelopetypes",
+        .def_prop_ro("usedenvelopetypes",
                 getusedenvelopetypes<W>,
                 doc_PDFCommon_usedenvelopetypes)
         .def("addEnvelope", addenvelope<W>,
-                bp::arg("envlp"), doc_PDFCommon_addEnvelope)
+                nb::arg("envlp"), doc_PDFCommon_addEnvelope)
         .def("popEnvelope", popenvelope<W>,
-                doc_PDFCommon_popEnvelope)
+                nb::arg("envlp"), doc_PDFCommon_popEnvelope)
         .def("getEnvelope", getoneenvelope<W>,
-                bp::arg("tp"), doc_PDFCommon_getEnvelope)
+                nb::arg("tp"), doc_PDFCommon_getEnvelope)
         .def("clearEnvelopes", &W::clearEnvelopes,
                 doc_PDFCommon_clearEnvelopes)
+        // PeakWidthModelOwner functions
+        .def_prop_rw("peakwidthmodel",
+                getpeakwidthmodel<W>,
+                setpeakwidthmodel<W, PeakWidthModel>,
+                doc_PeakWidthModelOwner_peakwidthmodel)
+        // ScatteringFactorTableOwner behavior
+        .def_prop_rw("scatteringfactortable",
+                getscatteringfactortable<W>,
+                setscatteringfactortable<W, ScatteringFactorTable>,
+                doc_ScatteringFactorTableOwner_scatteringfactortable)
+        .def("setScatteringFactorTableByType",
+                setscatteringfactortablebytype<W>,
+                nb::arg("tp"),
+                doc_ScatteringFactorTableOwner_setScatteringFactorTableByType)
+        .def("getRadiationType",
+                getradiationtype<W>,
+                doc_ScatteringFactorTableOwner_getRadiationType)
         ;
-    return boostpythonclass;
+    return cls;
 }
 
 // local helper for converting python object to a quantity type
 
-tuple fftftog_array_step(object f, double qstep, double qmin)
+nb::tuple fftftog_array_step(nb::object f, double qstep, double qmin)
 {
     QuantityType f0;
     const QuantityType& f1 = extractQuantityType(f, f0);
     QuantityType g = fftftog(f1, qstep, qmin);
-    object ga = convertToNumPyArray(g);
+    nb::object ga = convertToNumPyArray(g);
     double qmaxpad = g.size() * qstep;
     double rstep = (qmaxpad > 0) ? (M_PI / qmaxpad) : 0.0;
-    return make_tuple(ga, rstep);
+    return nb::make_tuple(ga, rstep);
 }
 
 
-tuple fftgtof_array_step(object g, double rstep, double rmin)
+nb::tuple fftgtof_array_step(nb::object g, double rstep, double rmin)
 {
     QuantityType g0;
     const QuantityType& g1 = extractQuantityType(g, g0);
     QuantityType f = fftgtof(g1, rstep, rmin);
-    object fa = convertToNumPyArray(f);
+    nb::object fa = convertToNumPyArray(f);
     double rmaxpad = f.size() * rstep;
     double qstep = (rmaxpad > 0) ? (M_PI / rmaxpad) : 0.0;
-    return make_tuple(fa, qstep);
+    return nb::make_tuple(fa, qstep);
 }
 
 // pickling support ----------------------------------------------------------
 
 template <class Super>
-tuple getstate_super(object& obj)
+nb::tuple getstate_super(nb::object obj)
 {
     // obtain C++ state without PDFEnvelopes
-    object envlps = obj.attr("envelopes");
-    obj.attr("clearEnvelopes")();
-    assert(len(obj.attr("envelopes")) == 0);
-    tuple rv(make_tuple(Super::getstate(obj)));
-    obj.attr("envelopes") = envlps;
-    assert(len(obj.attr("envelopes")) == len(envlps));
-    return rv;
+    nb::object envlps = obj.attr("envelopes");
+    bool needs_restore = false;
+    try
+    {
+        obj.attr("clearEnvelopes")();
+        needs_restore = true;
+        assert(nb::len(obj.attr("envelopes")) == 0);
+        nb::tuple super_state = Super::getstate(obj);
+        obj.attr("envelopes") = envlps;
+        needs_restore = false;
+        assert(nb::len(obj.attr("envelopes")) == nb::len(envlps));
+        return nb::make_tuple(super_state);
+    }
+    catch (...)
+    {
+        if (needs_restore)
+        {
+            obj.attr("envelopes") = envlps;
+        }
+        throw;
+    }
 }
 
 
-tuple getstate_common(object& obj)
+nb::tuple getstate_common(
+        nb::object obj, nb::object pwm_state, nb::object sft_state)
 {
-    auto resolve_pwm = resolve_state_object<PeakWidthModel>;
-    auto resolve_sft = resolve_state_object<ScatteringFactorTable>;
-    tuple rv = make_tuple(
-            resolve_pwm(obj.attr("peakwidthmodel")),
-            resolve_sft(obj.attr("scatteringfactortable")),
+    nb::tuple rv = make_tuple(
+            pwm_state,
+            sft_state,
             obj.attr("envelopes")
             );
     return rv;
 }
 
 
-template <class Iter>
-void setstate_common(object& obj, Iter& st)
+template <class T>
+void setstate_common(T& calc, nb::object obj, nb::tuple state, size_t& pos)
 {
-    assign_state_object(obj.attr("peakwidthmodel"), *(++st));
-    assign_state_object(obj.attr("scatteringfactortable"), *(++st));
-    assert(len(obj.attr("envelopes")) == 0);
-    obj.attr("envelopes") = *(++st);
+    assign_pointer_state(calc.getPeakWidthModel(), state[pos++]);
+    assign_pointer_state(calc.getScatteringFactorTable(), state[pos++]);
+    assert(nb::len(obj.attr("envelopes")) == 0);
+    obj.attr("envelopes") = nb::borrow<nb::object>(state[pos++]);
 }
 
 
 class DebyePDFCalculatorPickleSuite :
-    public PairQuantityPickleSuite<DebyePDFCalculator, DICT_IGNORE>
+    public PairQuantityPickleSuite<DebyePDFCalculator, DICT_GUARD>
 {
     private:
 
@@ -375,31 +480,68 @@ class DebyePDFCalculatorPickleSuite :
 
     public:
 
-        static tuple getstate(object obj)
+        template <class C>
+        static void bind(C& cls)
         {
-            tuple rv(
-                    getstate_super<Super>(obj) +
-                    getstate_common(obj)
-                    );
-            return rv;
+            cls
+                .def("__getstate__", getstate)
+                .def("__setstate__", setstate)
+                .def("__reduce__", reduce)
+                ;
+            cls.attr("__getstate_manages_dict__") = nb::none();
+        }
+        
+
+        static nb::tuple getstate(nb::object obj)
+        {
+            DebyePDFCalculator& calc = nb::cast<DebyePDFCalculator&>(obj);
+            ScopedSharedPtrReplacement<PeakWidthModel> pwm(
+                calc.getPeakWidthModel(), PeakWidthModelPtr(new JeongPeakWidth));
+            ScopedSharedPtrReplacement<ScatteringFactorTable> sft(
+                calc.getScatteringFactorTable(),
+                ScatteringFactorTablePtr(new SFTXray));
+            try
+            {
+                nb::tuple rv(
+                        getstate_super<Super>(obj) +
+                        getstate_common(
+                            obj,
+                            pwm.state_object(),
+                            sft.state_object()
+                            )
+                        );
+                return rv;
+            }
+            catch (...)
+            {
+                sft.restore();
+                pwm.restore();
+                throw;
+            }
         }
 
 
-        static void setstate(object obj, tuple state)
+        static void setstate(nb::object obj, nb::tuple state)
         {
             ensure_tuple_length(state, 4);
             // restore the state using boost serialization
-            tuple st0 = extract<tuple>(state[0]);
+            nb::tuple st0(state[0]);
             Super::setstate(obj, st0);
-            // other items are non-None only when restoring Python class
-            stl_input_iterator<object> st(state);
-            setstate_common(obj, st);
+            // restore components that were kept out of Boost serialization
+            DebyePDFCalculator& calc = nb::cast<DebyePDFCalculator&>(obj);
+            size_t pos = 1;
+            setstate_common(calc, obj, state, pos);
+        }
+
+        static nb::tuple reduce(nb::object obj)
+        {
+            return Super::reduce(obj);
         }
 };
 
 
 class PDFCalculatorPickleSuite :
-    public PairQuantityPickleSuite<PDFCalculator, DICT_IGNORE>
+    public PairQuantityPickleSuite<PDFCalculator, DICT_GUARD>
 {
     private:
 
@@ -407,32 +549,74 @@ class PDFCalculatorPickleSuite :
 
     public:
 
-        static tuple getstate(object obj)
+        template <class C>
+        static void bind(C& cls)
         {
-            tuple mystate = make_tuple(
-                    resolve_state_object<PeakProfile>(obj.attr("peakprofile")),
-                    resolve_state_object<PDFBaseline>(obj.attr("baseline"))
+            cls
+                .def("__getstate__", getstate)
+                .def("__setstate__", setstate)
+                .def("__reduce__", reduce)
+                ;
+            cls.attr("__getstate_manages_dict__") = nb::none();
+        }
+
+        static nb::tuple getstate(nb::object obj)
+        {
+            PDFCalculator& calc = nb::cast<PDFCalculator&>(obj);
+            ScopedSharedPtrReplacement<PeakWidthModel> pwm(
+                calc.getPeakWidthModel(), PeakWidthModelPtr(new JeongPeakWidth));
+            ScopedSharedPtrReplacement<ScatteringFactorTable> sft(
+                calc.getScatteringFactorTable(),
+                ScatteringFactorTablePtr(new SFTXray));
+            ScopedSharedPtrReplacement<PeakProfile> peakprofile(
+                calc.getPeakProfile(), PeakProfilePtr(new GaussianProfile));
+            ScopedSharedPtrReplacement<PDFBaseline> baseline(
+                calc.getBaseline(), PDFBaselinePtr(new LinearBaseline));
+            nb::tuple mystate = make_tuple(
+                    peakprofile.state_object(),
+                    baseline.state_object()
                     );
-            tuple rv(
-                    getstate_super<Super>(obj) +
-                    getstate_common(obj) +
-                    mystate
-                    );
-            return rv;
+            try
+            {
+                nb::tuple rv(
+                        getstate_super<Super>(obj) +
+                        getstate_common(
+                            obj,
+                            pwm.state_object(),
+                            sft.state_object()
+                            ) +
+                        mystate
+                        );
+                return rv;
+            }
+            catch (...)
+            {
+                baseline.restore();
+                peakprofile.restore();
+                sft.restore();
+                pwm.restore();
+                throw;
+            }
         }
 
 
-        static void setstate(object obj, tuple state)
+        static void setstate(nb::object obj, nb::tuple state)
         {
             ensure_tuple_length(state, 6);
             // restore the state using boost serialization
-            tuple st0 = extract<tuple>(state[0]);
+            nb::tuple st0(state[0]);
             Super::setstate(obj, st0);
-            // other items are non-None only when restoring Python class
-            stl_input_iterator<object> st(state);
-            setstate_common(obj, st);
-            assign_state_object(obj.attr("peakprofile"), *(++st));
-            assign_state_object(obj.attr("baseline"), *(++st));
+            // restore components that were kept out of Boost serialization
+            PDFCalculator& calc = nb::cast<PDFCalculator&>(obj);
+            size_t pos = 1;
+            setstate_common(calc, obj, state, pos);
+            assign_pointer_state(calc.getPeakProfile(), state[pos++]);
+            assign_pointer_state(calc.getBaseline(), state[pos++]);
+        }
+
+        static nb::tuple reduce(nb::object obj)
+        {
+            return Super::reduce(obj);
         }
 };
 
@@ -440,47 +624,47 @@ class PDFCalculatorPickleSuite :
 
 // Wrapper definition --------------------------------------------------------
 
-void wrap_PDFCalculators()
+void wrap_PDFCalculators(nb::module_& m)
 {
     using namespace nswrap_PDFCalculators;
-    namespace bp = boost::python;
 
+    // TODO: some types are flattened, we may need to add bindings manually
     // DebyePDFCalculator
-    class_<DebyePDFCalculator,
-        bases<PairQuantity, PeakWidthModelOwner, ScatteringFactorTableOwner> >
-            dbpdfc_class("DebyePDFCalculator", doc_DebyePDFCalculator);
-    wrap_PDFCommon(dbpdfc_class)
+    nb::class_<DebyePDFCalculator, PairQuantity>
+            dbpdfc_class(m, "DebyePDFCalculator", doc_DebyePDFCalculator);
+    wrap_PDFCommon<DebyePDFCalculator>(dbpdfc_class)
+        .def(nb::init<>())
         .def("setOptimumQstep", &DebyePDFCalculator::setOptimumQstep,
                 doc_DebyePDFCalculator_setOptimumQstep)
         .def("isOptimumQstep", &DebyePDFCalculator::isOptimumQstep,
                 doc_DebyePDFCalculator_isOptimumQstep)
-        .def_pickle(DebyePDFCalculatorPickleSuite())
         ;
+        DebyePDFCalculatorPickleSuite::bind(dbpdfc_class);
 
     // PDFCalculator
-    class_<PDFCalculator,
-        bases<PairQuantity, PeakWidthModelOwner, ScatteringFactorTableOwner> >
-        pdfc_class("PDFCalculator", doc_PDFCalculator);
-    wrap_PDFCommon(pdfc_class)
+    nb::class_<PDFCalculator, PairQuantity>
+        pdfc_class(m, "PDFCalculator", doc_PDFCalculator);
+    wrap_PDFCommon<PDFCalculator>(pdfc_class)
+        .def(nb::init<>())
         // PDF peak profile
-        .add_property("peakprofile",
+        .def_prop_rw("peakprofile",
                 getpeakprofile,
                 setpeakprofile<PDFCalculator,PeakProfile>,
                 doc_PDFCalculator_peakprofile)
         // PDF baseline
-        .add_property("baseline",
+        .def_prop_rw("baseline",
                 getbaseline,
                 setbaseline<PDFCalculator,PDFBaseline>,
                 doc_PDFCalculator_baseline)
-        .def_pickle(PDFCalculatorPickleSuite())
         ;
+        PDFCalculatorPickleSuite::bind(pdfc_class);
 
     // FFT functions
-    def("fftftog", fftftog_array_step,
-            (bp::arg("f"), bp::arg("qstep"), bp::arg("qmin")=0.0),
+    m.def("fftftog", fftftog_array_step,
+            nb::arg("f"), nb::arg("qstep"), nb::arg("qmin") = 0.0,
             doc_fftftog);
-    def("fftgtof", fftgtof_array_step,
-            (bp::arg("g"), bp::arg("rstep"), bp::arg("rmin")=0.0),
+    m.def("fftgtof", fftgtof_array_step,
+            nb::arg("g"), nb::arg("rstep"), nb::arg("rmin") = 0.0,
             doc_fftgtof);
 
 }

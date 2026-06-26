@@ -17,13 +17,12 @@
 *****************************************************************************/
 
 #include <diffpy/version.hpp>
-#include <boost/python/dict.hpp>
-#include <boost/python/def.hpp>
+#include <nanobind/nanobind.h>
+
+namespace nb = nanobind;
 
 namespace srrealmodule {
 namespace nswrap_libdiffpy_version {
-
-using namespace boost;
 
 // docstrings ----------------------------------------------------------------
 
@@ -33,9 +32,9 @@ Return dictionary with version data for the loaded libdiffpy library.\n\
 
 // wrappers ------------------------------------------------------------------
 
-python::dict get_libdiffpy_version_info_dict()
+nb::dict get_libdiffpy_version_info_dict()
 {
-    python::dict rv;
+    nb::dict rv;
     // Obtain version data from runtime values.
     rv["version"] = libdiffpy_version_info::version;
     rv["version_str"] = libdiffpy_version_info::version_str;
@@ -52,12 +51,11 @@ python::dict get_libdiffpy_version_info_dict()
 
 // Wrapper definition --------------------------------------------------------
 
-void wrap_libdiffpy_version()
+void wrap_libdiffpy_version(nb::module_& m)
 {
     using namespace nswrap_libdiffpy_version;
-    using boost::python::def;
 
-    def("_get_libdiffpy_version_info_dict",
+    m.def("_get_libdiffpy_version_info_dict",
             get_libdiffpy_version_info_dict,
             doc__get_libdiffpy_version_info_dict);
 

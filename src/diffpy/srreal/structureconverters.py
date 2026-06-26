@@ -125,16 +125,22 @@ class _DiffPyStructureMetadata(object):
 
 # end of class _DiffPyStructureMetadata
 
+def _installDiffPyStructureMetadata(cls):
+    """Install diffpy.structure metadata hooks without multiple inheritance."""
+    cls.pdffit = _DiffPyStructureMetadata.pdffit
+    cls.hasMetadata = staticmethod(_DiffPyStructureMetadata.hasMetadata)
+    cls._customPQConfig = _DiffPyStructureMetadata._customPQConfig
+    cls._fetchMetadata = _DiffPyStructureMetadata._fetchMetadata
+    return cls
 
-class DiffPyStructureAtomicAdapter(
-    _DiffPyStructureMetadata, AtomicStructureAdapter
-):
+
+@_installDiffPyStructureMetadata
+class DiffPyStructureAtomicAdapter(AtomicStructureAdapter):
     pass
 
 
-class DiffPyStructurePeriodicAdapter(
-    _DiffPyStructureMetadata, PeriodicStructureAdapter
-):
+@_installDiffPyStructureMetadata
+class DiffPyStructurePeriodicAdapter(PeriodicStructureAdapter):
     pass
 
 
@@ -153,7 +159,7 @@ def _fetchDiffPyStructureData(adpt, stru):
     from diffpy.srreal.srreal_ext import Atom as AdapterAtom
 
     # copy atoms
-    del adpt[:]
+    adpt.clear()
     adpt.reserve(len(stru))
     aa = AdapterAtom()
     for a0 in stru:

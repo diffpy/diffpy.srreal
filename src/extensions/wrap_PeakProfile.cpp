@@ -17,10 +17,8 @@
 *
 *****************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/def.hpp>
-#include <boost/python/copy_const_reference.hpp>
-#include <boost/python/register_ptr_to_python.hpp>
+#include <nanobind/nanobind.h>
+#include <nanobind/trampoline.h>
 
 #include <string>
 
@@ -35,8 +33,6 @@
 namespace srrealmodule {
 namespace nswrap_PeakProfile {
 
-using namespace boost;
-using namespace boost::python;
 using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
@@ -111,60 +107,84 @@ The profile is also rescaled to keep the integrated area of 1.\n\
 
 class PeakProfileWrap :
     public PeakProfile,
-    public wrapper_srreal<PeakProfile>
+    public PythonTrampolineTag
 {
     public:
 
+        NB_TRAMPOLINE(PeakProfile, 7);
+
         // HasClassRegistry methods
 
-        PeakProfilePtr create() const
+        PeakProfilePtr create() const override
         {
-            object rv = this->get_pure_virtual_override("create")();
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(nb_trampoline, "create", true);
+
+            if (!ticket.key.is_valid()) 
+            {
+                    throw nb::type_error(
+                        "pure virtual method PeakProfile.create() called"
+                    );
+            }
+
+            nb::object rv = nb_trampoline.base().attr(ticket.key)();
             return mconfigurator.fetch(rv);
         }
 
-        PeakProfilePtr clone() const
+        PeakProfilePtr clone() const override
         {
-            return this->get_pure_virtual_override("clone")();
+            NB_OVERRIDE_PURE(clone);
         }
 
 
-        const std::string& type() const
+        const std::string& type() const override
         {
-            python::object tp = this->get_pure_virtual_override("type")();
-            mtype = python::extract<std::string>(tp);
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(nb_trampoline, "type", true);
+
+            if (!ticket.key.is_valid()) 
+            {
+                throw nb::type_error(
+                    "pure virtual method PeakProfile.type() called"
+                );
+            }
+
+            nb::object tp = nb_trampoline.base().attr(ticket.key)();
+            mtype = nb::cast<std::string>(tp);
             return mtype;
         }
 
         // own methods
 
-        double operator()(double x, double fwhm) const
+        double operator()(double x, double fwhm) const override
         {
-            return this->get_pure_virtual_override("__call__")(x, fwhm);
+            NB_OVERRIDE_PURE_NAME("__call__", operator(), x, fwhm);
         }
 
-        double xboundlo(double fwhm) const
+        double xboundlo(double fwhm) const override
         {
-            return this->get_pure_virtual_override("xboundlo")(fwhm);
+            NB_OVERRIDE_PURE(xboundlo, fwhm);
         }
 
-        double xboundhi(double fwhm) const
+        double xboundhi(double fwhm) const override
         {
-            return this->get_pure_virtual_override("xboundhi")(fwhm);
+            NB_OVERRIDE_PURE(xboundhi, fwhm);
         }
 
         // Support for ticker override from Python.
 
-        diffpy::eventticker::EventTicker& ticker() const
+        diffpy::eventticker::EventTicker& ticker() const override
         {
             using diffpy::eventticker::EventTicker;
-            override f = this->get_override("ticker");
-            if (f)
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(nb_trampoline, "ticker", false);
+
+            if (ticket.key.is_valid()) 
             {
-                // avoid "dangling reference error" when used from C++
-                python::object ptic = f();
-                return python::extract<EventTicker&>(ptic);
+                nb::object ptic = nb_trampoline.base().attr(ticket.key)();
+                return nb::cast<EventTicker&>(ptic);
             }
+
             return this->default_ticker();
         }
 
@@ -177,7 +197,7 @@ class PeakProfileWrap :
 
         // HasClassRegistry method
 
-        void setupRegisteredObject(PeakProfilePtr p) const
+        void setupRegisteredObject(PeakProfilePtr p) const override
         {
             mconfigurator.setup(p);
         }
@@ -202,40 +222,52 @@ class PeakProfileWrap :
 
 // Wrapper definition --------------------------------------------------------
 
-void wrap_PeakProfile()
+void wrap_PeakProfile(nb::module_& m)
 {
     using namespace nswrap_PeakProfile;
     using diffpy::Attributes;
-    namespace bp = boost::python;
 
-    class_<PeakProfileWrap, bases<Attributes>, noncopyable>
-        peakprofile("PeakProfile", doc_PeakProfile);
+    nb::class_<PeakProfile, Attributes, PeakProfileWrap>
+        peakprofile(m, "PeakProfile", nb::dynamic_attr(), doc_PeakProfile);
     wrap_registry_methods(peakprofile)
+        .def(nb::init<>())
         .def("__call__", &PeakProfile::operator(),
-                (bp::arg("x"), bp::arg("fwhm")), doc_PeakProfile___call__)
+                nb::arg("x"), nb::arg("fwhm"), doc_PeakProfile___call__)
         .def("xboundlo", &PeakProfile::xboundlo,
-                bp::arg("fwhm"), doc_PeakProfile_xboundlo)
+                nb::arg("fwhm"), doc_PeakProfile_xboundlo)
         .def("xboundhi", &PeakProfile::xboundhi,
-                bp::arg("fwhm"), doc_PeakProfile_xboundhi)
+                nb::arg("fwhm"), doc_PeakProfile_xboundhi)
+        .def("ticker",
+                [](const PeakProfile& obj)
+                    -> diffpy::eventticker::EventTicker&
+                {
+                    return obj.PeakProfile::ticker();
+                },
+                nb::rv_policy::reference_internal)
         .def("ticker",
                 &PeakProfile::ticker,
-                &PeakProfileWrap::default_ticker,
-                return_internal_reference<>(),
+                nb::rv_policy::reference_internal,
                 doc_PeakProfile_ticker)
-        .def_pickle(SerializationPickleSuite<PeakProfile,DICT_PICKLE>())
         ;
 
-    register_ptr_to_python<PeakProfilePtr>();
+    SerializationPickleSuite<
+        PeakProfile,
+        DICT_PICKLE,
+        PeakProfileWrap>::bind(peakprofile);
 
-    class_<GaussianProfile, bases<PeakProfile> >(
-            "GaussianProfile", doc_GaussianProfile)
-        .def_pickle(SerializationPickleSuite<GaussianProfile>())
+    nb::class_<GaussianProfile, PeakProfile> gaussianprofile(m,
+            "GaussianProfile", doc_GaussianProfile);
+    gaussianprofile
+        .def(nb::init<>())
         ;
+        SerializationPickleSuite<GaussianProfile, DICT_GUARD>::bind(gaussianprofile);
 
-    class_<CroppedGaussianProfile, bases<GaussianProfile> >(
-            "CroppedGaussianProfile", doc_CroppedGaussianProfile)
-        .def_pickle(SerializationPickleSuite<CroppedGaussianProfile>())
+    nb::class_<CroppedGaussianProfile, GaussianProfile> croppedgaussianprofile(m,
+            "CroppedGaussianProfile", doc_CroppedGaussianProfile);
+    croppedgaussianprofile
+        .def(nb::init<>())
         ;
+        SerializationPickleSuite<CroppedGaussianProfile, DICT_GUARD>::bind(croppedgaussianprofile);
 
 }
 

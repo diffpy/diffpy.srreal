@@ -19,8 +19,9 @@
 *
 *****************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
+#include <nanobind/nanobind.h>
+#include <nanobind/trampoline.h>
+#include <nanobind/operators.h>
 
 #include <diffpy/srreal/AtomicStructureAdapter.hpp>
 #include <diffpy/srreal/PeriodicStructureAdapter.hpp>
@@ -36,12 +37,10 @@
 namespace srrealmodule {
 
 // declarations
-void sync_StructureDifference(boost::python::object obj);
+void sync_StructureDifference(nb::object obj);
 
 namespace nswrap_AtomicStructureAdapter {
 
-using namespace boost;
-using namespace boost::python;
 using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
@@ -251,23 +250,23 @@ implicitly called from createBondGenerator.\n\
 
 // Wrapper helpers for the class Atom
 
-object get_xyz_cartn(Atom& a)
+nb::object get_xyz_cartn(Atom& a)
 {
     return viewAsNumPyArray(a.xyz_cartn);
 }
 
-void set_xyz_cartn(Atom& a, object value)
+void set_xyz_cartn(Atom& a, nb::object value)
 {
     assignR3Vector(a.xyz_cartn, value);
 }
 
 
-object get_uij_cartn(Atom& a)
+nb::object get_uij_cartn(Atom& a)
 {
     return viewAsNumPyArray(a.uij_cartn);
 }
 
-void set_uij_cartn(Atom& a, object& value)
+void set_uij_cartn(Atom& a, nb::object& value)
 {
     assignR3Matrix(a.uij_cartn, value);
 }
@@ -280,7 +279,7 @@ double get_xyz(const Atom& a)
 }
 
 template <const int i>
-void set_xyz(Atom& a, object value)
+void set_xyz(Atom& a, nb::object value)
 {
     a.xyz_cartn[i] = extractdouble(value);
 }
@@ -291,7 +290,7 @@ double get_occ(const Atom& a)
     return a.occupancy;
 }
 
-void set_occ(Atom& a, object value)
+void set_occ(Atom& a, nb::object value)
 {
     a.occupancy = extractdouble(value);
 }
@@ -302,9 +301,12 @@ bool get_anisotropy(const Atom& a)
     return a.anisotropy;
 }
 
-void set_anisotropy(Atom& a, object value)
+void set_anisotropy(Atom& a, nb::object value)
 {
-    a.anisotropy = bool(value);
+    int truth = PyObject_IsTrue(value.ptr());
+    if (truth < 0)
+        nb::raise_python_error();
+    a.anisotropy = truth != 0;
 }
 
 
@@ -316,7 +318,7 @@ double get_uc(const Atom& a)
 }
 
 template <const int i, const int j>
-void set_uc(Atom& a, object value)
+void set_uc(Atom& a, nb::object value)
 {
     assert(i <= j);
     a.uij_cartn(i, j) = extractdouble(value);
@@ -326,15 +328,17 @@ void set_uc(Atom& a, object value)
 // template wrapper class for overloading of clone and _customPQConfig
 
 template <class T>
-class MakeWrapper : public T, public wrapper_srreal<T>
+class MakeWrapper :
+    public T,
+    public PythonTrampolineTag
 {
     public:
 
-        StructureAdapterPtr clone() const
+        NB_TRAMPOLINE(T, 3);
+
+        StructureAdapterPtr clone() const override
         {
-            override f = this->get_override("clone");
-            if (f)  return f();
-            else  return this->default_clone();
+            NB_OVERRIDE(clone);
         }
 
         StructureAdapterPtr default_clone() const
@@ -343,11 +347,9 @@ class MakeWrapper : public T, public wrapper_srreal<T>
         }
 
 
-        void customPQConfig(PairQuantity* pq) const
+        void customPQConfig(PairQuantity* pq) const override
         {
-            override f = this->get_override("_customPQConfig");
-            if (f)  f(ptr(pq));
-            else    this->default_customPQConfig(pq);
+            NB_OVERRIDE_NAME("_customPQConfig", customPQConfig, pq);
         }
 
         void default_customPQConfig(PairQuantity* pq) const
@@ -356,15 +358,16 @@ class MakeWrapper : public T, public wrapper_srreal<T>
         }
 
 
-        StructureDifference diff(StructureAdapterConstPtr other) const
+        StructureDifference diff(StructureAdapterConstPtr other) const override
         {
-            override f = this->get_override("diff");
-            if (f)
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(nb_trampoline, "diff", false);
+            if (ticket.key.is_valid()) 
             {
-                python::object sdobj = f(other);
+                nb::object sdobj = nb_trampoline.base().attr(ticket.key)(other);
                 sync_StructureDifference(sdobj);
                 StructureDifference& sd =
-                    python::extract<StructureDifference&>(sdobj);
+                    nb::cast<StructureDifference&>(sdobj);
                 return sd;
             }
             return this->default_diff(other);
@@ -390,35 +393,96 @@ class MakeWrapper : public T, public wrapper_srreal<T>
 // Wrapper helpers for class AtomicStructureAdapter
 
 typedef MakeWrapper<AtomicStructureAdapter> AtomicStructureAdapterWrap;
-typedef boost::shared_ptr<AtomicStructureAdapterWrap> AtomicStructureAdapterWrapPtr;
+typedef std::shared_ptr<AtomicStructureAdapterWrap> AtomicStructureAdapterWrapPtr;
+typedef AtomicStructureAdapter::value_type data_type;
 
-class atomadapter_indexing : public vector_indexing_suite<
-                         AtomicStructureAdapter, false, atomadapter_indexing>
+class AtomAdapterIterator
+{
+    public:
+
+        explicit AtomAdapterIterator(AtomicStructureAdapter& container) :
+            mcontainer(&container), midx(0)
+        { }
+
+        Atom& next()
+        {
+            if (midx >= mcontainer->size())
+            {
+                throw nb::stop_iteration();
+            }
+            return (*mcontainer)[static_cast<int>(midx++)];
+        }
+
+    private:
+
+        AtomicStructureAdapter* mcontainer;
+        size_t midx;
+
+};
+
+class atomadapter_indexing : public nb::def_visitor<atomadapter_indexing>
 {
     public:
 
         typedef AtomicStructureAdapter Container;
 
-        static object
-        get_slice(Container& container, index_type from, index_type to)
+        
+        template <typename Class, typename... Extra>
+        void execute(Class& cls, const Extra&...)
         {
+            cls
+                .def("__len__", [](const Container& container) {
+                    return container.size();
+                })
+                .def("__getitem__",
+                    [](Container& container, int idx) -> Atom& {
+                        return container[normalize_index(container, idx)];
+                    },
+                    nb::rv_policy::reference_internal)
+                .def("__getitem__", get_slice)
+                .def("__iter__",
+                    [](Container& container) {
+                        return AtomAdapterIterator(container);
+                    },
+                    nb::keep_alive<0,1>())
+                .def("__setitem__",
+                    [](Container& container, int idx, const Atom& atom) {
+                        container[normalize_index(container, idx)] = atom;
+                    })
+                .def("__delitem__",
+                    [](Container& container, int idx) {
+                        container.erase(normalize_index(container, idx));
+                    })
+                ;
+        }
+
+
+        static nb::object
+        get_slice(Container& container, nb::slice slice)
+        {
+            const size_t n = container.countSites();
+            auto [from, to, step, slice_len] = slice.compute(n);
             // make sure slice is of a correct type and has a copy
             // of any additional structure data.
             StructureAdapterPtr rv = container.clone();
-            AtomicStructureAdapterPtr rva;
-            rva = boost::static_pointer_cast<AtomicStructureAdapter>(rv);
+            AtomicStructureAdapterPtr rva = 
+                std::static_pointer_cast<AtomicStructureAdapter>(rv);
+            rva->clear();
             // handle index ranges for a valid and empty slice
-            if (from <= to)
+            Py_ssize_t idx = from;
+            for (size_t i = 0; i < slice_len; ++i, idx += step)
             {
-                rva->erase(rva->begin() + to, rva->end());
-                rva->erase(rva->begin(), rva->begin() + from);
+                rva->append(container[static_cast<int>(idx)]);
             }
-            else  rva->clear();
+
             // save memory by making a new copy for short slices
-            const index_type halflength = rva->countSites() / 2;
-            const bool longslice = ((to - from) > halflength);
-            object pyrv(longslice ? rv : rv->clone());
-            return pyrv;
+            const bool longslice = slice_len > n / 2;
+            AtomicStructureAdapterPtr out =
+                longslice
+                    ? rva
+                    : std::static_pointer_cast<AtomicStructureAdapter>(rva->clone());
+
+            return nb::cast(out);
         }
 
 
@@ -428,6 +492,14 @@ class atomadapter_indexing : public vector_indexing_suite<
             container.append(v);
         }
 
+    private:
+
+    
+        static int normalize_index(const Container& container, int idx)
+        {
+            ensure_index_bounds(idx, -int(container.size()), container.size());
+            return (idx >= 0) ? idx : int(container.size()) + idx;
+        }
 };
 
 
@@ -458,12 +530,12 @@ void atomadapter_reserve(AtomicStructureAdapter& adpt, int sz)
 // Wrapper helpers for class PeriodicStructureAdapter
 
 typedef MakeWrapper<PeriodicStructureAdapter> PeriodicStructureAdapterWrap;
-typedef boost::shared_ptr<PeriodicStructureAdapterWrap> PeriodicStructureAdapterWrapPtr;
+typedef std::shared_ptr<PeriodicStructureAdapterWrap> PeriodicStructureAdapterWrapPtr;
 
-python::tuple periodicadapter_getlatpar(const PeriodicStructureAdapter& adpt)
+nb::tuple periodicadapter_getlatpar(const PeriodicStructureAdapter& adpt)
 {
     const Lattice& L = adpt.getLattice();
-    python::tuple rv = python::make_tuple(
+    nb::tuple rv = nb::make_tuple(
             L.a(), L.b(), L.c(), L.alpha(), L.beta(), L.gamma());
     return rv;
 }
@@ -471,7 +543,7 @@ python::tuple periodicadapter_getlatpar(const PeriodicStructureAdapter& adpt)
 // Wrapper helpers for class CrystalStructureAdapter
 
 typedef MakeWrapper<CrystalStructureAdapter> CrystalStructureAdapterWrap;
-typedef boost::shared_ptr<CrystalStructureAdapterWrap> CrystalStructureAdapterWrapPtr;
+typedef std::shared_ptr<CrystalStructureAdapterWrap> CrystalStructureAdapterWrapPtr;
 
 double
 crystaladapter_getsymmetryprecision(const CrystalStructureAdapter& adpt)
@@ -481,7 +553,7 @@ crystaladapter_getsymmetryprecision(const CrystalStructureAdapter& adpt)
 
 
 void crystaladapter_addsymop(CrystalStructureAdapter& adpt,
-        python::object R, python::object t)
+        nb::object R, nb::object t)
 {
     static SymOpRotTrans op;
     assignR3Matrix(op.R, R);
@@ -490,20 +562,19 @@ void crystaladapter_addsymop(CrystalStructureAdapter& adpt,
 }
 
 
-python::tuple
+nb::tuple
 crystaladapter_getsymop(const CrystalStructureAdapter& adpt, int idx)
 {
     ensure_index_bounds(idx, 0, adpt.countSymOps());
     const SymOpRotTrans& op = adpt.getSymOp(idx);
-    python::tuple rv = python::make_tuple(
+    return nb::make_tuple(
             convertToNumPyArray(op.R), convertToNumPyArray(op.t));
-    return rv;
 }
 
 
 DECLARE_PYLIST_METHOD_WRAPPER1(getEquivalentAtoms, getEquivalentAtoms_aslist)
 
-python::object crystaladapter_getequivalentatoms(
+nb::object crystaladapter_getequivalentatoms(
         const CrystalStructureAdapter& adpt, int idx)
 {
     ensure_index_bounds(idx, 0, adpt.countSymOps());
@@ -523,150 +594,175 @@ extern const char* doc_StructureAdapter_diff;
 
 // Wrapper definitions -------------------------------------------------------
 
-void wrap_AtomicStructureAdapter()
+void wrap_AtomicStructureAdapter(nb::module_& m)
 {
-    namespace bp = boost::python;
     using namespace nswrap_AtomicStructureAdapter;
     using diffpy::srreal::hash_value;
 
     // class Atom
-    class_<Atom> atom_class("Atom", doc_Atom);
+    nb::class_<Atom> atom_class(m, "Atom", doc_Atom);
     // first define copy constructor and property helper methods
     atom_class
-        .def(init<const Atom&>(bp::arg("atom"), doc_Atom_init_copy))
-        .def(self == self)
-        .def(self != self)
-        .def(self < self)
-        .def(self > self)
-        .def(self <= self)
-        .def(self >= self)
-        .def("__hash__", hash_value)
+        .def(nb::init<>())
+        .def(nb::init<const Atom&>(), nb::arg("atom"), doc_Atom_init_copy)
+        .def(nb::self == nb::self)
+        .def(nb::self != nb::self)
+        .def(nb::self < nb::self)
+        .def(nb::self > nb::self)
+        .def(nb::self <= nb::self)
+        .def(nb::self >= nb::self)
+        .def("__hash__", static_cast<size_t (*)(const Atom&)>(&hash_value))
         .def("_get_xyz_cartn",
                 get_xyz_cartn,
-                with_custodian_and_ward_postcall<0,1>())
+                nb::keep_alive<0,1>())
         .def("_get_uij_cartn",
                 get_uij_cartn,
-                with_custodian_and_ward_postcall<0,1>())
+                nb::keep_alive<0,1>())
         ;
     // now we can finalize the Atom class interface
     atom_class
-        .def_readwrite("atomtype", &Atom::atomtype)
-        .add_property("xyz_cartn",
-                atom_class.attr("_get_xyz_cartn"),
-                set_xyz_cartn)
-        .add_property("xc", get_xyz<0>, set_xyz<0>, doc_Atom_xic)
-        .add_property("yc", get_xyz<1>, set_xyz<1>, doc_Atom_xic)
-        .add_property("zc", get_xyz<2>, set_xyz<2>, doc_Atom_xic)
-        .add_property("occupancy", get_occ, set_occ, doc_Atom_occ)
-        .add_property("anisotropy", get_anisotropy, set_anisotropy,
+        .def_rw("atomtype", &Atom::atomtype)
+        .def_prop_rw("xyz_cartn",
+                get_xyz_cartn,
+                set_xyz_cartn,
+                nb::keep_alive<0,1>())
+        .def_prop_rw("xc", get_xyz<0>, set_xyz<0>, doc_Atom_xic)
+        .def_prop_rw("yc", get_xyz<1>, set_xyz<1>, doc_Atom_xic)
+        .def_prop_rw("zc", get_xyz<2>, set_xyz<2>, doc_Atom_xic)
+        .def_prop_rw("occupancy", get_occ, set_occ, doc_Atom_occ)
+        .def_prop_rw("anisotropy", get_anisotropy, set_anisotropy,
                 doc_Atom_anisotropy)
-        .add_property("uij_cartn",
-                atom_class.attr("_get_uij_cartn"),
-                set_uij_cartn)
-        .add_property("uc11", get_uc<0, 0>, set_uc<0, 0>, doc_Atom_uijc)
-        .add_property("uc22", get_uc<1, 1>, set_uc<1, 1>, doc_Atom_uijc)
-        .add_property("uc33", get_uc<2, 2>, set_uc<2, 2>, doc_Atom_uijc)
-        .add_property("uc12", get_uc<0, 1>, set_uc<0, 1>, doc_Atom_uijc)
-        .add_property("uc13", get_uc<0, 2>, set_uc<0, 2>, doc_Atom_uijc)
-        .add_property("uc23", get_uc<1, 2>, set_uc<1, 2>, doc_Atom_uijc)
-        .def_pickle(SerializationPickleSuite<Atom,DICT_IGNORE>())
+        .def_prop_rw("uij_cartn",
+                get_uij_cartn,
+                set_uij_cartn,
+                nb::keep_alive<0,1>())
+        .def_prop_rw("uc11", get_uc<0, 0>, set_uc<0, 0>, doc_Atom_uijc)
+        .def_prop_rw("uc22", get_uc<1, 1>, set_uc<1, 1>, doc_Atom_uijc)
+        .def_prop_rw("uc33", get_uc<2, 2>, set_uc<2, 2>, doc_Atom_uijc)
+        .def_prop_rw("uc12", get_uc<0, 1>, set_uc<0, 1>, doc_Atom_uijc)
+        .def_prop_rw("uc13", get_uc<0, 2>, set_uc<0, 2>, doc_Atom_uijc)
+        .def_prop_rw("uc23", get_uc<1, 2>, set_uc<1, 2>, doc_Atom_uijc)
+        ;
+        SerializationPickleSuite<Atom, DICT_GUARD>::bind(atom_class);
+
+    nb::class_<AtomAdapterIterator>(m, "_AtomicStructureAdapterIterator")
+        .def("__iter__", [](AtomAdapterIterator& it) -> AtomAdapterIterator& {
+            return it;
+        }, nb::rv_policy::reference_internal)
+        .def("__next__", &AtomAdapterIterator::next,
+            nb::rv_policy::reference_internal)
         ;
 
     // class AtomicStructureAdapter
-    class_<AtomicStructureAdapterWrap, bases<StructureAdapter>,
-        noncopyable, AtomicStructureAdapterWrapPtr>(
-            "AtomicStructureAdapter", doc_AtomicStructureAdapter)
-        .def("__init__", StructureAdapter_constructor(),
+    nb::class_<AtomicStructureAdapter,
+            StructureAdapter,
+            AtomicStructureAdapterWrap>
+    adapter_class(m, "AtomicStructureAdapter", doc_AtomicStructureAdapter,
+            nb::dynamic_attr());
+    adapter_class
+        .def(nb::init<>())
+        .def("__init__",
+                StructureAdapter_constructor<AtomicStructureAdapter>,
+                nb::arg("content"),
                 doc_StructureAdapter___init__fromstring)
         .def(atomadapter_indexing())
-        .def(self == self)
-        .def(self != self)
+        .def(nb::self == nb::self)
+        .def(nb::self != nb::self)
         .def("clone",
                 &AtomicStructureAdapter::clone,
-                &AtomicStructureAdapterWrap::default_clone,
                 doc_AtomicStructureAdapter_clone)
         .def("_customPQConfig",
                 &AtomicStructureAdapter::customPQConfig,
-                &AtomicStructureAdapterWrap::default_customPQConfig,
-                python::arg("pqobj"),
+                nb::arg("pqobj"),
                 doc_StructureAdapter__customPQConfig)
         .def("diff",
                 &AtomicStructureAdapter::diff,
-                &AtomicStructureAdapterWrap::default_diff,
-                python::arg("other"),
+                nb::arg("other"),
                 doc_StructureAdapter_diff)
         .def("insert", atomadapter_insert,
-                (bp::arg("index"), bp::arg("atom")),
+                nb::arg("index"), nb::arg("atom"),
                 doc_AtomicStructureAdapter_insert)
         .def("append", &AtomicStructureAdapter::append,
+                nb::arg("atom"),
                 doc_AtomicStructureAdapter_append)
         .def("pop", atomadapter_pop,
-                bp::arg("index"), doc_AtomicStructureAdapter_pop)
+                nb::arg("index"), doc_AtomicStructureAdapter_pop)
         .def("clear", &AtomicStructureAdapter::clear,
                 doc_AtomicStructureAdapter_clear)
         .def("reserve", atomadapter_reserve,
-                bp::arg("sz"), doc_AtomicStructureAdapter_reserve)
-        .def_pickle(StructureAdapterPickleSuite<AtomicStructureAdapterWrap>())
+                nb::arg("sz"), doc_AtomicStructureAdapter_reserve)
         ;
+    StructureAdapterPickleSuite<
+        AtomicStructureAdapter,
+        AtomicStructureAdapterWrap>::bind(adapter_class);
 
     // class PeriodicStructureAdapter
-    class_<PeriodicStructureAdapterWrap, bases<AtomicStructureAdapter>,
-        noncopyable, PeriodicStructureAdapterWrapPtr>(
-            "PeriodicStructureAdapter", doc_PeriodicStructureAdapter)
-        .def("__init__", StructureAdapter_constructor(),
+    nb::class_<PeriodicStructureAdapter,
+            AtomicStructureAdapter,
+            PeriodicStructureAdapterWrap>
+    periodic_class(m, "PeriodicStructureAdapter", doc_PeriodicStructureAdapter,
+            nb::dynamic_attr());
+    periodic_class
+        .def(nb::init<>())
+        .def("__init__",
+                StructureAdapter_constructor<PeriodicStructureAdapter>,
+                nb::arg("content"),
                 doc_StructureAdapter___init__fromstring)
-        .def(self == self)
-        .def(self != self)
+        .def(nb::self == nb::self)
+        .def(nb::self != nb::self)
         .def("clone",
                 &PeriodicStructureAdapter::clone,
-                &PeriodicStructureAdapterWrap::default_clone,
                 doc_PeriodicStructureAdapter_clone)
         .def("_customPQConfig",
                 &PeriodicStructureAdapter::customPQConfig,
-                &PeriodicStructureAdapterWrap::default_customPQConfig,
-                python::arg("pqobj"),
+                nb::arg("pqobj"),
                 doc_StructureAdapter__customPQConfig)
         .def("diff",
                 &PeriodicStructureAdapter::diff,
-                &PeriodicStructureAdapterWrap::default_diff,
-                python::arg("other"),
+                nb::arg("other"),
                 doc_StructureAdapter_diff)
         .def("getLatPar", periodicadapter_getlatpar,
                 doc_PeriodicStructureAdapter_getLatPar)
         .def("setLatPar", &PeriodicStructureAdapter::setLatPar,
-                (bp::arg("a"), bp::arg("b"), bp::arg("c"),
-                 bp::arg("alphadeg"), bp::arg("betadeg"), bp::arg("gammadeg")),
+                nb::arg("a"), nb::arg("b"), nb::arg("c"),
+                nb::arg("alphadeg"), nb::arg("betadeg"),
+                nb::arg("gammadeg"),
                 doc_PeriodicStructureAdapter_setLatPar)
         .def("toCartesian", &PeriodicStructureAdapter::toCartesian,
-                bp::arg("atom"), doc_PeriodicStructureAdapter_toCartesian)
+                nb::arg("atom"), doc_PeriodicStructureAdapter_toCartesian)
         .def("toFractional", &PeriodicStructureAdapter::toFractional,
-                bp::arg("atom"), doc_PeriodicStructureAdapter_toFractional)
-        .def_pickle(StructureAdapterPickleSuite<PeriodicStructureAdapterWrap>())
+                nb::arg("atom"), doc_PeriodicStructureAdapter_toFractional)
         ;
+    StructureAdapterPickleSuite<
+        PeriodicStructureAdapter,
+        PeriodicStructureAdapterWrap>::bind(periodic_class);
 
     // class CrystalStructureAdapter
-    class_<CrystalStructureAdapterWrap, bases<PeriodicStructureAdapter>,
-        noncopyable, CrystalStructureAdapterWrapPtr>(
-            "CrystalStructureAdapter", doc_CrystalStructureAdapter)
-        .def("__init__", StructureAdapter_constructor(),
+    nb::class_<CrystalStructureAdapter,
+            PeriodicStructureAdapter,
+            CrystalStructureAdapterWrap>
+    crystal_class(m, "CrystalStructureAdapter", doc_CrystalStructureAdapter,
+            nb::dynamic_attr());
+    crystal_class
+        .def(nb::init<>())
+        .def("__init__",
+                StructureAdapter_constructor<CrystalStructureAdapter>,
+                nb::arg("content"),
                 doc_StructureAdapter___init__fromstring)
-        .def(self == self)
-        .def(self != self)
+        .def(nb::self == nb::self)
+        .def(nb::self != nb::self)
         .def("clone",
                 &CrystalStructureAdapter::clone,
-                &CrystalStructureAdapterWrap::default_clone,
                 doc_CrystalStructureAdapter_clone)
         .def("_customPQConfig",
                 &CrystalStructureAdapter::customPQConfig,
-                &CrystalStructureAdapterWrap::default_customPQConfig,
-                python::arg("pqobj"),
+                nb::arg("pqobj"),
                 doc_StructureAdapter__customPQConfig)
         .def("diff",
                 &CrystalStructureAdapter::diff,
-                &CrystalStructureAdapterWrap::default_diff,
-                python::arg("other"),
+                nb::arg("other"),
                 doc_StructureAdapter_diff)
-        .add_property("symmetryprecision",
+        .def_prop_rw("symmetryprecision",
             crystaladapter_getsymmetryprecision,
             &CrystalStructureAdapter::setSymmetryPrecision,
             doc_CrystalStructureAdapter_symmetryprecision)
@@ -675,22 +771,24 @@ void wrap_AtomicStructureAdapter()
         .def("clearSymOps", &CrystalStructureAdapter::clearSymOps,
                 doc_CrystalStructureAdapter_clearSymOps)
         .def("addSymOp", crystaladapter_addsymop,
-                (bp::arg("R"), bp::arg("t")),
+                nb::arg("R"), nb::arg("t"),
                 doc_CrystalStructureAdapter_addSymOp)
-        .def("getSymOp", crystaladapter_getsymop, bp::arg("index"),
+        .def("getSymOp", crystaladapter_getsymop, nb::arg("index"),
                 doc_CrystalStructureAdapter_getSymOp)
         .def("getEquivalentAtoms",
-                crystaladapter_getequivalentatoms, bp::arg("index"),
+                crystaladapter_getequivalentatoms, nb::arg("index"),
                 doc_CrystalStructureAdapter_getEquivalentAtoms)
         .def("expandLatticeAtom",
                 expandLatticeAtom_aslist<CrystalStructureAdapter, Atom>,
-                bp::arg("atom"),
+                nb::arg("atom"),
                 doc_CrystalStructureAdapter_expandLatticeAtom)
         .def("updateSymmetryPositions",
                 &CrystalStructureAdapter::updateSymmetryPositions,
                 doc_CrystalStructureAdapter_updateSymmetryPositions)
-        .def_pickle(StructureAdapterPickleSuite<CrystalStructureAdapterWrap>())
         ;
+    StructureAdapterPickleSuite<
+        CrystalStructureAdapter,
+        CrystalStructureAdapterWrap>::bind(crystal_class);
 
 }
 

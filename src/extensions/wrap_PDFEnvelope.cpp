@@ -17,10 +17,8 @@
 *
 *****************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/def.hpp>
-#include <boost/python/copy_const_reference.hpp>
-#include <boost/python/register_ptr_to_python.hpp>
+#include <nanobind/nanobind.h>
+#include <nanobind/trampoline.h>
 
 #include <diffpy/srreal/PDFEnvelope.hpp>
 #include <diffpy/srreal/QResolutionEnvelope.hpp>
@@ -39,11 +37,11 @@
 #include "srreal_pickling.hpp"
 #include "srreal_registry.hpp"
 
+namespace nb = nanobind;
+
 namespace srrealmodule {
 namespace nswrap_PDFEnvelope {
 
-using namespace boost;
-using namespace boost::python;
 using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
@@ -94,42 +92,75 @@ Returns   0 when x > stepcut.\n\
 
 class PDFEnvelopeWrap :
     public PDFEnvelope,
-    public wrapper_srreal<PDFEnvelope>
+    public PythonTrampolineTag
 {
     public:
 
+        NB_TRAMPOLINE(PDFEnvelope, 4);
+
         // HasClassRegistry methods
 
-        PDFEnvelopePtr create() const
+        PDFEnvelopePtr create() const override
         {
-            object rv = this->get_pure_virtual_override("create")();
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(nb_trampoline, "create", true);
+
+            if (!ticket.key.is_valid()) 
+            {
+                throw nb::type_error(
+                    "pure virtual method PDFEnvelope.create() called"
+                );
+            }
+
+            nb::object rv = nb_trampoline.base().attr(ticket.key)();
             return mconfigurator.fetch(rv);
         }
 
-        PDFEnvelopePtr clone() const
+        PDFEnvelopePtr clone() const override
         {
-            return this->get_pure_virtual_override("clone")();
+            NB_OVERRIDE_PURE(clone);
         }
 
-        const std::string& type() const
+        const std::string& type() const override
         {
-            python::object tp = this->get_pure_virtual_override("type")();
-            mtype = python::extract<std::string>(tp);
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(nb_trampoline, "type", true);
+
+            if (!ticket.key.is_valid()) 
+            {
+                throw nb::type_error(
+                    "pure virtual method PDFEnvelope.type() called"
+                );
+            }
+
+            nb::object tp = nb_trampoline.base().attr(ticket.key)();
+            mtype = nb::cast<std::string>(tp);
             return mtype;
         }
 
         // own methods
 
-        double operator()(const double& x) const
+        double operator()(const double& x) const override
         {
-            return this->get_pure_virtual_override("__call__")(x);
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(nb_trampoline, "__call__", true);
+
+            if (!ticket.key.is_valid()) 
+            {
+                throw nb::type_error(
+                    "pure virtual method PDFEnvelope.__call__() called"
+                );
+            }
+
+            nb::object rv = nb_trampoline.base().attr(ticket.key)(x);
+            return nb::cast<double>(rv);
         }
 
     protected:
 
         // HasClassRegistry method
 
-        void setupRegisteredObject(PDFEnvelopePtr p) const
+        void setupRegisteredObject(PDFEnvelopePtr p) const override
         {
             mconfigurator.setup(p);
         }
@@ -151,7 +182,7 @@ class PDFEnvelopeWrap :
 };  // class PDFEnvelopeWrap
 
 
-object callnparray(const PDFEnvelope* obj, object& x)
+nb::object callnparray(const PDFEnvelope* obj, nb::object& x)
 {
     NumPyArray_DoublePtr xx = extractNumPyDoubleArray(x);
     NumPyArray_DoublePtr yy = createNumPyDoubleArrayLike(xx.first);
@@ -166,40 +197,49 @@ object callnparray(const PDFEnvelope* obj, object& x)
 
 // Wrapper definition --------------------------------------------------------
 
-void wrap_PDFEnvelope()
+void wrap_PDFEnvelope(nb::module_ &m)
 {
     using namespace nswrap_PDFEnvelope;
     using diffpy::Attributes;
-    namespace bp = boost::python;
 
-    class_<PDFEnvelopeWrap, bases<Attributes>, noncopyable>
-        pdfenvelope("PDFEnvelope", doc_PDFEnvelope);
+    nb::class_<PDFEnvelope, Attributes, PDFEnvelopeWrap>
+        pdfenvelope(m, "PDFEnvelope", nb::dynamic_attr(), doc_PDFEnvelope);
     wrap_registry_methods(pdfenvelope)
+        .def(nb::init<>())
         .def("__call__", callnparray,
-                bp::arg("r_array"))
+                nb::arg("r_array"))
         .def("__call__", &PDFEnvelope::operator(),
-                bp::arg("r"), doc_PDFEnvelope___call__)
-        .def_pickle(SerializationPickleSuite<PDFEnvelope,DICT_PICKLE>())
+                nb::arg("r"), doc_PDFEnvelope___call__)
         ;
+        SerializationPickleSuite<
+            PDFEnvelope,
+            DICT_PICKLE,
+            PDFEnvelopeWrap>::bind(pdfenvelope);
 
-    register_ptr_to_python<PDFEnvelopePtr>();
-
-    class_<QResolutionEnvelope, bases<PDFEnvelope> >(
-            "QResolutionEnvelope", doc_QResolutionEnvelope)
-        .def_pickle(SerializationPickleSuite<QResolutionEnvelope>())
+    nb::class_<QResolutionEnvelope, PDFEnvelope> qresenvelope(m,
+            "QResolutionEnvelope", doc_QResolutionEnvelope);
+    qresenvelope
+        .def(nb::init<>())
         ;
-    class_<ScaleEnvelope, bases<PDFEnvelope> >(
-            "ScaleEnvelope", doc_ScaleEnvelope)
-        .def_pickle(SerializationPickleSuite<ScaleEnvelope>())
+        SerializationPickleSuite<QResolutionEnvelope, DICT_GUARD>::bind(qresenvelope);
+    nb::class_<ScaleEnvelope, PDFEnvelope> scaleenvelope(m,
+            "ScaleEnvelope", doc_ScaleEnvelope);
+    scaleenvelope
+        .def(nb::init<>())
         ;
-    class_<SphericalShapeEnvelope, bases<PDFEnvelope> >(
-            "SphericalShapeEnvelope", doc_SphericalShapeEnvelope)
-        .def_pickle(SerializationPickleSuite<SphericalShapeEnvelope>())
+        SerializationPickleSuite<ScaleEnvelope, DICT_GUARD>::bind(scaleenvelope);
+    nb::class_<SphericalShapeEnvelope, PDFEnvelope> sphshapeenvelope(m,
+            "SphericalShapeEnvelope", doc_SphericalShapeEnvelope);
+    sphshapeenvelope
+        .def(nb::init<>())
         ;
-    class_<StepCutEnvelope, bases<PDFEnvelope> >(
-            "StepCutEnvelope", doc_StepCutEnvelope)
-        .def_pickle(SerializationPickleSuite<StepCutEnvelope>())
+        SerializationPickleSuite<SphericalShapeEnvelope, DICT_GUARD>::bind(sphshapeenvelope);
+    nb::class_<StepCutEnvelope, PDFEnvelope> stepcutenvelope(m,
+            "StepCutEnvelope", doc_StepCutEnvelope);
+    stepcutenvelope
+        .def(nb::init<>())
         ;
+        SerializationPickleSuite<StepCutEnvelope, DICT_GUARD>::bind(stepcutenvelope);
 
 }
 

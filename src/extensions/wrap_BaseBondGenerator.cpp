@@ -18,10 +18,7 @@
 *
 *****************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/args.hpp>
-#include <boost/python/copy_const_reference.hpp>
-#include <boost/python/register_ptr_to_python.hpp>
+#include <nanobind/nanobind.h>
 
 #include <string>
 
@@ -29,6 +26,8 @@
 #include <diffpy/srreal/StructureAdapter.hpp>
 
 #include "srreal_converters.hpp"
+
+namespace nb = nanobind;
 
 namespace srrealmodule {
 namespace nswrap_BaseBondGenerator {
@@ -152,14 +151,13 @@ DECLARE_PYARRAY_METHOD_WRAPPER(Ucartesian1, Ucartesian1_asarray)
 
 // Wrapper definition --------------------------------------------------------
 
-void wrap_BaseBondGenerator()
+void wrap_BaseBondGenerator(nb::module_& m)
 {
-    using namespace boost::python;
     using namespace diffpy::srreal;
     using namespace nswrap_BaseBondGenerator;
 
-    class_<BaseBondGenerator>("BaseBondGenerator", doc_BaseBondGenerator,
-            init<StructureAdapterPtr>())
+    nb::class_<BaseBondGenerator>(m, "BaseBondGenerator", doc_BaseBondGenerator)
+        .def(nb::init<StructureAdapterPtr>())
         .def("rewind", &BaseBondGenerator::rewind,
                 doc_BaseBondGenerator_rewind)
         .def("finished", &BaseBondGenerator::finished,
@@ -167,19 +165,19 @@ void wrap_BaseBondGenerator()
         .def("next", &BaseBondGenerator::next,
                 doc_BaseBondGenerator_next)
         .def("selectAnchorSite", &BaseBondGenerator::selectAnchorSite,
-                arg("anchor"), doc_BaseBondGenerator_selectAnchorSite)
+                nb::arg("anchor"), doc_BaseBondGenerator_selectAnchorSite)
         .def("selectSiteRange", &BaseBondGenerator::selectSiteRange,
-                (arg("first"), arg("last")),
+                nb::arg("first"), nb::arg("last"),
                 doc_BaseBondGenerator_selectSiteRange)
         .def("setRmin", &BaseBondGenerator::setRmin,
-                arg("rmin"), doc_BaseBondGenerator_setRmin)
+                nb::arg("rmin"), doc_BaseBondGenerator_setRmin)
         .def("setRmax", &BaseBondGenerator::setRmax,
-                arg("rmax"), doc_BaseBondGenerator_setRmax)
+                nb::arg("rmax"), doc_BaseBondGenerator_setRmax)
         .def("getRmin", &BaseBondGenerator::getRmin,
-                return_value_policy<copy_const_reference>(),
+                nb::rv_policy::copy,
                 doc_BaseBondGenerator_getRmin)
         .def("getRmax", &BaseBondGenerator::getRmax,
-                return_value_policy<copy_const_reference>(),
+                nb::rv_policy::copy,
                 doc_BaseBondGenerator_getRmax)
         .def("site0", &BaseBondGenerator::site0,
                 doc_BaseBondGenerator_site0)
@@ -192,7 +190,7 @@ void wrap_BaseBondGenerator()
         .def("r1", r1_asarray<BaseBondGenerator>,
                 doc_BaseBondGenerator_r1)
         .def("distance", &BaseBondGenerator::distance,
-                return_value_policy<copy_const_reference>(),
+                nb::rv_policy::copy,
                 doc_BaseBondGenerator_distance)
         .def("r01", r01_asarray<BaseBondGenerator>,
                 doc_BaseBondGenerator_r01)
@@ -203,8 +201,6 @@ void wrap_BaseBondGenerator()
         .def("msd", &BaseBondGenerator::msd,
                 doc_BaseBondGenerator_msd)
         ;
-
-    register_ptr_to_python<BaseBondGeneratorPtr>();
 }
 
 }   // namespace srrealmodule

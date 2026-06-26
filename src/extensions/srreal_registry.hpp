@@ -19,8 +19,11 @@
 #ifndef SRREAL_REGISTRY_HPP_INCLUDED
 #define SRREAL_REGISTRY_HPP_INCLUDED
 
-#include <boost/python/object.hpp>
-#include <boost/python/extract.hpp>
+#include <nanobind/nanobind.h>
+#include <nanobind/stl/shared_ptr.h>
+#include <nanobind/stl/string.h>
+
+namespace nb = nanobind;
 
 namespace srrealmodule {
 
@@ -44,9 +47,9 @@ class wrapper_registry_configurator
         /// the fetch method should be called only from the wrapped method
         /// create() to remember pointers to the last Python object and
         /// the C++ instance that it wraps.
-        TSharedPtr fetch(::boost::python::object& obj) const
+        TSharedPtr fetch(nb::object& obj) const
         {
-            TSharedPtr p = ::boost::python::extract<TSharedPtr>(obj);
+            TSharedPtr p = nb::cast<TSharedPtr>(obj);
             mcptr = p.get();
             mpyptr = obj.ptr();
             return p;
@@ -73,73 +76,69 @@ class wrapper_registry_configurator
 
 
 /// retrieve a dictionary of Python-defined docstrings for the cls class.
-::boost::python::object get_registry_docstrings(::boost::python::object& cls);
+nb::object get_registry_docstrings(nb::object& cls);
 
 
 /// helper wrapper functions for return value conversions.
 
 template <class W>
-::boost::python::object getAliasedTypes_asdict()
+nb::object getAliasedTypes_asdict()
 {
     return convertToPythonDict(W::getAliasedTypes());
 }
 
 template <class W>
-::boost::python::object getRegisteredTypes_asset()
+nb::object getRegisteredTypes_asset()
 {
     return convertToPythonSet(W::getRegisteredTypes());
 }
 
 
 /// template function that wraps HasClassRegistry methods
-template <class C>
-C& wrap_registry_methods(C& boostpythonclass)
+template <class C, class... Extra>
+nb::class_<C, Extra...>& wrap_registry_methods(nb::class_<C, Extra...>& cls)
 {
-    namespace bp = boost::python;
-    using namespace boost::python;
-    typedef typename C::wrapped_type::base B;
-    typedef extract<const char*> CString;
     // get docstrings for the class registry methods.
-    object d = get_registry_docstrings(boostpythonclass);
-    const char* doc_create = CString(d["create"]);
-    const char* doc_clone = CString(d["clone"]);
-    const char* doc_type = CString(d["type"]);
-    const char* doc__registerThisType = CString(d["_registerThisType"]);
-    const char* doc__aliasType = CString(d["_aliasType"]);
-    const char* doc__deregisterType = CString(d["_deregisterType"]);
-    const char* doc_createByType = CString(d["createByType"]);
-    const char* doc_isRegisteredType = CString(d["isRegisteredType"]);
-    const char* doc_getAliasedTypes = CString(d["getAliasedTypes"]);
-    const char* doc_getRegisteredTypes = CString(d["getRegisteredTypes"]);
+    nb::object d = get_registry_docstrings(cls);
+    std::string doc_create = nb::cast<std::string>(d["create"]);
+    std::string doc_clone = nb::cast<std::string>(d["clone"]);
+    std::string doc_type = nb::cast<std::string>(d["type"]);
+    std::string doc__registerThisType = nb::cast<std::string>(d["_registerThisType"]);
+    std::string doc__aliasType = nb::cast<std::string>(d["_aliasType"]);
+    std::string doc__deregisterType = nb::cast<std::string>(d["_deregisterType"]);
+    std::string doc_createByType = nb::cast<std::string>(d["createByType"]);
+    std::string doc_isRegisteredType = nb::cast<std::string>(d["isRegisteredType"]);
+    std::string doc_getAliasedTypes = nb::cast<std::string>(d["getAliasedTypes"]);
+    std::string doc_getRegisteredTypes = nb::cast<std::string>(d["getRegisteredTypes"]);
     // define the class registry related methods.
-    boostpythonclass
-        .def("create", &B::create, doc_create)
-        .def("clone", &B::clone, doc_clone)
-        .def("type", &B::type,
-                return_value_policy<copy_const_reference>(),
-                doc_type)
-        .def("_registerThisType", &B::registerThisType,
-                doc__registerThisType)
-        .def("_aliasType", &B::aliasType,
-                (bp::arg("tp"), bp::arg("alias")), doc__aliasType)
-        .staticmethod("_aliasType")
-        .def("_deregisterType", &B::deregisterType,
-                bp::arg("tp"), doc__deregisterType)
-        .staticmethod("_deregisterType")
-        .def("createByType", &B::createByType,
-                bp::arg("tp"), doc_createByType)
-        .staticmethod("createByType")
-        .def("isRegisteredType", &B::isRegisteredType,
-                bp::arg("tp"), doc_isRegisteredType)
-        .staticmethod("isRegisteredType")
-        .def("getAliasedTypes", getAliasedTypes_asdict<B>,
-                doc_getAliasedTypes)
-        .staticmethod("getAliasedTypes")
-        .def("getRegisteredTypes", getRegisteredTypes_asset<B>,
-                doc_getRegisteredTypes)
-        .staticmethod("getRegisteredTypes")
+    cls
+        .def("create", &C::create,
+                doc_create.c_str())
+        .def("clone", &C::clone,
+                doc_clone.c_str())
+        .def("type", &C::type,
+                nb::rv_policy::copy,
+                doc_type.c_str())
+        .def("_registerThisType", &C::registerThisType,
+                doc__registerThisType.c_str())
+        .def_static("_aliasType", &C::aliasType,
+                nb::arg("tp"), nb::arg("alias"),
+                doc__aliasType.c_str())
+        .def_static("_deregisterType", &C::deregisterType,
+                nb::arg("tp"),
+                doc__deregisterType.c_str())
+        .def_static("createByType", &C::createByType,
+                nb::arg("tp"),
+                doc_createByType.c_str())
+        .def_static("isRegisteredType", &C::isRegisteredType,
+                nb::arg("tp"),
+                doc_isRegisteredType.c_str())
+        .def_static("getAliasedTypes", &getAliasedTypes_asdict<C>,
+                doc_getAliasedTypes.c_str())
+        .def_static("getRegisteredTypes", &getRegisteredTypes_asset<C>,
+                doc_getRegisteredTypes.c_str())
         ;
-    return boostpythonclass;
+    return cls;
 }
 
 
