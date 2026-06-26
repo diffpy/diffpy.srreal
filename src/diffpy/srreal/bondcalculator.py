@@ -14,7 +14,6 @@
 ##############################################################################
 """Class BondCalculator -- distances between atoms in the structure."""
 
-
 # exported items, these also makes them show in pydoc.
 __all__ = ["BondCalculator"]
 
@@ -28,14 +27,12 @@ from diffpy.srreal.wraputils import (
 
 BondCalculator.rmin = propertyFromExtDoubleAttr(
     "rmin",
-    """Lower bound for the bond distances.
-        [0 A]""",
+    "Lower bound for the bond distances. [0 A]",
 )
 
 BondCalculator.rmax = propertyFromExtDoubleAttr(
     "rmax",
-    """Upper bound for the bond distances.
-        [5 A]""",
+    "Upper bound for the bond distances. [5 A]",
 )
 
 

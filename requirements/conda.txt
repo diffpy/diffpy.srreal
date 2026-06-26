@@ -4,3 +4,4 @@ libobjcryst
 pyobjcryst
 diffpy.structure
 periodictable
+nanobind

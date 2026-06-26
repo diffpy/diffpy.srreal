@@ -14,6 +14,23 @@ from pathlib import Path
 
 import numpy
 from setuptools import Extension, setup
+from setuptools.command.build_ext import build_ext
+
+
+def get_nanobind_config():
+    import nanobind
+
+    package_dir = Path(nanobind.__file__).parent
+    return {
+        "include_dirs": [
+            nanobind.include_dir(),
+            str(package_dir / "ext" / "robin_map" / "include"),
+        ],
+        "source": str(Path(nanobind.source_dir()) / "nb_combined.cpp"),
+    }
+
+
+nanobind_macros = [("NB_COMPACT_ASSERTIONS", None)]
 
 
 def get_boost_libraries():
@@ -90,11 +107,13 @@ def get_objcryst_libraries():
 
 
 if os.name == "nt":
-    compile_args = ["/std:c++14"]
+    compile_args = ["/std:c++23"]
+    nanobind_compile_args = ["/std:c++23"]
     macros = [("_USE_MATH_DEFINES", None)]
     extra_link_args = ["/FORCE:MULTIPLE"]
 else:
-    compile_args = ["-std=c++11"]
+    compile_args = ["-std=c++23"]
+    nanobind_compile_args = ["-std=c++23", "-fno-strict-aliasing"]
     macros = []
     extra_link_args = []
 
@@ -112,13 +131,44 @@ ext_kws = {
 }
 
 
+class build_ext_with_nanobind(build_ext):
+    def build_extension(self, ext):
+        nanobind_source = getattr(ext, "nanobind_source", None)
+        if not nanobind_source:
+            super().build_extension(ext)
+            return
+
+        original_extra_objects = list(ext.extra_objects or [])
+        try:
+            nanobind_objects = self.compiler.compile(
+                [nanobind_source],
+                output_dir=self.build_temp,
+                macros=(ext.define_macros or []) + nanobind_macros,
+                include_dirs=ext.include_dirs,
+                debug=self.debug,
+                extra_postargs=nanobind_compile_args,
+                depends=ext.depends,
+            )
+            ext.extra_objects = original_extra_objects + nanobind_objects
+            super().build_extension(ext)
+        finally:
+            ext.extra_objects = original_extra_objects
+
+
 def create_extensions():
     "Initialize Extension objects for the setup function."
+    nanobind_cfg = get_nanobind_config()
     ext = Extension(
         "diffpy.srreal.srreal_ext",
         glob.glob("src/extensions/*.cpp"),
-        **ext_kws,
+        **{
+            **ext_kws,
+            "include_dirs": (
+                ext_kws["include_dirs"] + nanobind_cfg["include_dirs"]
+            ),
+        },
     )
+    ext.nanobind_source = nanobind_cfg["source"]
     return [ext]
 
 
@@ -130,4 +180,7 @@ def ext_modules():
 
 
 if __name__ == "__main__":
-    setup(ext_modules=ext_modules())
+    setup(
+        cmdclass={"build_ext": build_ext_with_nanobind},
+        ext_modules=ext_modules(),
+    )

@@ -245,7 +245,7 @@ class StructureAdapterPickleSuite : public boost::python::pickle_suite
         static bool frompython(
                 diffpy::srreal::StructureAdapterPtr adpt)
         {
-            return bool(boost::dynamic_pointer_cast<T>(adpt));
+            return bool(std::dynamic_pointer_cast<T>(adpt));
         }
 
 };  // class StructureAdapterPickleSuite

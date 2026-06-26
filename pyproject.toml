@@ -1,5 +1,10 @@
 [build-system]
-requires = ["setuptools>=62.0", "setuptools-git-versioning>=2.0", "numpy"]
+requires = [
+    "setuptools>=62.0",
+    "setuptools-git-versioning>=2.0",
+    "numpy",
+    "nanobind",
+]
 build-backend = "setuptools.build_meta"
 
 [project]

@@ -3,7 +3,6 @@
 """Unit tests for the PDFEnvelope class from
 diffpy.srreal.pdfcalculator."""
 
-
 import pickle
 import unittest
 
