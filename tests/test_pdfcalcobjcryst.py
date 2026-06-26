@@ -2,7 +2,6 @@
 
 """Unit tests for pdfcalculator.py on ObjCryst crystal structures."""
 
-
 import re
 import unittest
 

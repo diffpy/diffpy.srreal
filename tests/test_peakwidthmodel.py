@@ -3,7 +3,6 @@
 """Unit tests for the PeakWidthModel classes from
 diffpy.srreal.peakwidthmodel."""
 
-
 import pickle
 import unittest
 

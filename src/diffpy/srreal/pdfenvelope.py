@@ -18,7 +18,6 @@ Classes for configuring PDF scaling envelope:
     SphericalShapeEnvelope, StepCutEnvelope
 """
 
-
 # exported items
 __all__ = """
    PDFEnvelope makePDFEnvelope
@@ -51,26 +50,22 @@ StepCutEnvelope.__getstate_manages_dict__ = None
 
 QResolutionEnvelope.qdamp = propertyFromExtDoubleAttr(
     "qdamp",
-    """Dampening parameter in the Gaussian envelope function.
-    """,
+    "Dampening parameter in the Gaussian envelope function.",
 )
 
 ScaleEnvelope.scale = propertyFromExtDoubleAttr(
     "scale",
-    """Overall scale for a uniform scaling envelope.
-    """,
+    "Overall scale for a uniform scaling envelope.",
 )
 
 SphericalShapeEnvelope.spdiameter = propertyFromExtDoubleAttr(
     "spdiameter",
-    """Particle diameter in Angstroms for a spherical shape damping.
-    """,
+    "Particle diameter in Angstroms for a spherical shape damping.",
 )
 
 StepCutEnvelope.stepcut = propertyFromExtDoubleAttr(
     "stepcut",
-    """Cutoff for a step-function envelope.
-    """,
+    "Cutoff for a step-function envelope.",
 )
 
 # Python functions wrapper

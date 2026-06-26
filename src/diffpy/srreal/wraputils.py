@@ -15,7 +15,6 @@
 """Local utilities helpful for tweaking interfaces to boost python
 classes."""
 
-
 import copy
 
 # Routines -------------------------------------------------------------------
@@ -111,9 +110,10 @@ def _wrapAsRegisteredUnaryFunction(
             return copy.copy(self)
 
         def type(self):
-            """Unique string identifier of this functor type.  The
-            string is used for class registration and as an argument for
-            the createByType function.
+            """Unique string identifier of this functor type.
+
+            The string is used for class registration and as an argument
+            for the createByType function.
 
             Return string identifier.
             """

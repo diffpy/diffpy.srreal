@@ -16,7 +16,6 @@
 into parallel calculators.
 """
 
-
 # exported items
 __all__ = ["createParallelCalculator"]
 
@@ -48,8 +47,10 @@ def createParallelCalculator(pqobj, ncpu, pmap):
     """
 
     class ParallelPairQuantity(Attributes):
-        """Class for running parallel calculations.  This is a proxy
-        class to the wrapper PairQuantity type with the same interface.
+        """Class for running parallel calculations.
+
+        This is a proxy class to the wrapper PairQuantity type
+        with the same interface.
 
         Instance data:
 
@@ -144,7 +145,7 @@ def createParallelCalculator(pqobj, ncpu, pmap):
 
         @property
         def evaluatortype(self):
-            """str : Type of evaluation procedure.
+            """Str : Type of evaluation procedure.
 
             Parallel calculations allow only the 'BASIC' type.
             """
@@ -166,11 +167,9 @@ def createParallelCalculator(pqobj, ncpu, pmap):
 
     # create proxy methods to all public methods and some protected methods
 
-    proxy_forced = set(
-        """_getDoubleAttr _setDoubleAttr _hasDoubleAttr
+    proxy_forced = set("""_getDoubleAttr _setDoubleAttr _hasDoubleAttr
         _namesOfDoubleAttributes _namesOfWritableDoubleAttributes
-        """.split()
-    )
+        """.split())
 
     def _make_proxymethod(name, f):
         def proxymethod(self, *args, **kwargs):

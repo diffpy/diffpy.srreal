@@ -2,7 +2,6 @@
 
 """Unit tests for diffpy.srreal.sfaverage."""
 
-
 import unittest
 
 import numpy

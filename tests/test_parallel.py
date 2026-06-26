@@ -2,7 +2,6 @@
 
 """Unit tests for diffpy.srreal.parallel."""
 
-
 import multiprocessing
 import unittest
 

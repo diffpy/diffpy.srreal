@@ -2,7 +2,6 @@
 
 """Unit tests for the AtomRadiiTable class."""
 
-
 import pickle
 import unittest
 
