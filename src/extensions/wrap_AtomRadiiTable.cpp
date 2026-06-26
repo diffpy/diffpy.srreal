@@ -151,7 +151,8 @@ DECLARE_PYDICT_METHOD_WRAPPER(getAllCustom, getAllCustom_asdict)
 // Helper class for overloads of AtomRadiiTable methods from Python
 
 class AtomRadiiTableWrap :
-    public AtomRadiiTable
+    public AtomRadiiTable,
+    public PythonTrampolineTag
 {
     public:
 
@@ -269,7 +270,10 @@ void wrap_AtomRadiiTable(nb::module_& m)
                 &AtomRadiiTable::toString, nb::arg("separator")=",",
                 doc_AtomRadiiTable_toString)
         ;
-        SerializationPickleSuite<AtomRadiiTable, DICT_PICKLE>::bind(atomradiitable);
+        SerializationPickleSuite<
+            AtomRadiiTable,
+            DICT_PICKLE,
+            AtomRadiiTableWrap>::bind(atomradiitable);
 
     nb::class_<ConstantRadiiTable, AtomRadiiTable>
         constantradiitable(m, "ConstantRadiiTable", doc_ConstantRadiiTable);

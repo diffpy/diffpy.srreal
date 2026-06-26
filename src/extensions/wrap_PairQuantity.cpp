@@ -327,10 +327,20 @@ Reference to the internal vector of total contributions.\n\
 
 // wrappers ------------------------------------------------------------------
 
-inline nb::bytes string_to_pybytes(const std::string &s) 
+inline nb::bytes to_bytes(const std::string &s)
 {
     return nb::bytes(s.data(), s.size());
 }
+
+
+inline std::string from_bytes(nb::bytes b)
+{
+    return std::string(
+        static_cast<const char *>(b.data()),
+        b.size()
+    );
+}
+
 
 // representation of QuantityType objects
 nb::object repr_QuantityType(const QuantityType& v)
@@ -572,7 +582,8 @@ class PairQuantityExposed : public PairQuantity
 // methods from Python.
 
 class PairQuantityWrap :
-    public PairQuantityExposed
+    public PairQuantityExposed,
+    public PythonTrampolineTag
 {
     public:
 
@@ -582,7 +593,18 @@ class PairQuantityWrap :
 
         std::string getParallelData() const override
         {
-            NB_OVERRIDE_NAME("_getParallelData", getParallelData);
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(
+                nb_trampoline, "_getParallelData", false);
+
+            if (ticket.key.is_valid())
+            {
+                nb::object pdata =
+                    nb_trampoline.base().attr(ticket.key)();
+                return from_bytes(nb::cast<nb::bytes>(pdata));
+            }
+
+            return this->PairQuantityExposed::getParallelData();
         }
 
         std::string default_getParallelData() const
@@ -666,7 +688,17 @@ class PairQuantityWrap :
 
         void executeParallelMerge(const std::string& pdata) override
         {
-            NB_OVERRIDE_NAME("_executeParallelMerge", executeParallelMerge, pdata);
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(
+                nb_trampoline, "_executeParallelMerge", false);
+
+            if (ticket.key.is_valid())
+            {
+                nb_trampoline.base().attr(ticket.key)(to_bytes(pdata));
+                return;
+            }
+
+            this->PairQuantityExposed::executeParallelMerge(pdata);
         }
 
         void default_executeParallelMerge(const std::string& pdata)
@@ -731,10 +763,18 @@ void wrap_PairQuantity(nb::module_& m)
                 doc_BasePairQuantity_eval)
         .def_prop_ro("value", value_asarray<PairQuantity>,
                 doc_BasePairQuantity_value)
-        .def("_mergeParallelData", &PairQuantity::mergeParallelData,
+        .def("_mergeParallelData",
+                [](PairQuantity &pq, nb::bytes pdata, int ncpu)
+                {
+                    pq.mergeParallelData(from_bytes(pdata), ncpu);
+                },
                 nb::arg("pdata"), nb::arg("ncpu"),
                 doc_BasePairQuantity__mergeParallelData)
-        .def("_getParallelData", &PairQuantity::getParallelData,
+        .def("_getParallelData",
+                [](const PairQuantity &pq)
+                {
+                    return to_bytes(pq.getParallelData());
+                },
                 doc_BasePairQuantity__getParallelData)
         .def("setStructure", [](PairQuantity &pq, nb::object stru) 
                 {
@@ -788,7 +828,7 @@ void wrap_PairQuantity(nb::module_& m)
                 doc_PairQuantity_ticker)
         .def("_getParallelData", [](const PairQuantityExposed &pq) 
                 {
-                    return string_to_pybytes(pq.getParallelData());
+                    return to_bytes(pq.getParallelData());
                 },
                 doc_PairQuantity__getParallelData)
         .def("_resizeValue",
@@ -807,7 +847,10 @@ void wrap_PairQuantity(nb::module_& m)
                 nb::arg("bnds"), nb::arg("sumscale"),
                 doc_PairQuantity__addPairContribution)
         .def("_executeParallelMerge",
-                &PairQuantityExposed::executeParallelMerge,
+                [](PairQuantityExposed &pq, nb::bytes pdata)
+                {
+                    pq.executeParallelMerge(from_bytes(pdata));
+                },
                 nb::arg("pdata"),
                 doc_PairQuantity__executeParallelMerge)
         .def("_finishValue",
@@ -828,7 +871,10 @@ void wrap_PairQuantity(nb::module_& m)
         ;
         // classes PairQuantityExposed, PairQuantityWrap add no members,
         // therefore we can create pickle suite from C++ base class.
-        PairQuantityPickleSuite<PairQuantity, DICT_PICKLE>::bind(pq);
+        PairQuantityPickleSuite<
+            PairQuantity,
+            DICT_PICKLE,
+            PairQuantityExposed>::bind(pq);
 
 }
 

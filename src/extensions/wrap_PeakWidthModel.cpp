@@ -127,7 +127,8 @@ DECLARE_BYTYPE_SETTER_WRAPPER(setPeakWidthModel, setpwmodel)
 // Support for Python override of the PeakWidthModel methods.
 
 class PeakWidthModelWrap :
-    public PeakWidthModel
+    public PeakWidthModel,
+    public PythonTrampolineTag
 {
     public:
 
@@ -262,7 +263,10 @@ void wrap_PeakWidthModel(nb::module_& m)
                 nb::rv_policy::reference_internal,
                 doc_PeakWidthModel_ticker)
         ;
-        SerializationPickleSuite<PeakWidthModel, DICT_PICKLE>::bind(peakwidthmodel);
+        SerializationPickleSuite<
+            PeakWidthModel,
+            DICT_PICKLE,
+            PeakWidthModelWrap>::bind(peakwidthmodel);
 
     nb::class_<ConstantPeakWidth, PeakWidthModel> constantpeakwidth(m,
             "ConstantPeakWidth", doc_ConstantPeakWidth);

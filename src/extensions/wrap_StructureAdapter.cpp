@@ -258,10 +258,51 @@ nb::object siteCartesianUij_safe(const StructureAdapter& adpt, int i)
     return siteCartesianUij_asarray(adpt, i);
 }
 
+
+PyObject* restoreStructureAdapter(PyObject*, PyObject* args)
+{
+    PyObject* content = nullptr;
+    if (!PyArg_UnpackTuple(args, "_restoreStructureAdapter", 1, 1, &content))
+        return nullptr;
+    if (!PyBytes_Check(content))
+    {
+        PyErr_SetString(PyExc_TypeError, "expected bytes");
+        return nullptr;
+    }
+
+    char* buffer = nullptr;
+    Py_ssize_t size = 0;
+    if (PyBytes_AsStringAndSize(content, &buffer, &size) < 0)
+        return nullptr;
+
+    try
+    {
+        StructureAdapterPtr adapter =
+            createStructureAdapterFromString(std::string(buffer, size));
+        nb::object pyadapter = nb::cast(adapter);
+        return pyadapter.release().ptr();
+    }
+    catch (const std::exception& e)
+    {
+        PyErr_SetString(PyExc_RuntimeError, e.what());
+        return nullptr;
+    }
+}
+
+
+PyMethodDef restoreStructureAdapterDef = {
+    "_restoreStructureAdapter",
+    restoreStructureAdapter,
+    METH_VARARGS,
+    "Restore native C++ StructureAdapter from serialized bytes."
+};
+
+
 // Helper class necessary for wrapping a pure virtual methods
 
 class StructureAdapterWrap :
-    public StructureAdapter
+    public StructureAdapter,
+    public PythonTrampolineTag
 {
     public:
 
@@ -460,13 +501,24 @@ class StructureProxyPickleSuite
         static void bind(C& cls)
         {
             cls
-                .def("__reduce__", [](T& self)
+                .def("__reduce__", [](nb::object self)
                 {
-                    StructureAdapterPtr src = self.getSourceStructure();
+                    T& adapter = nb::cast<T&>(self);
+                    StructureAdapterPtr src = adapter.getSourceStructure();
+                    nb::object dict = get_instance_dict(self);
+
+                    if (dict.is_none() || nb::len(dict) == 0)
+                    {
+                        return nb::make_tuple(
+                            runtime_type(self),
+                            nb::make_tuple(src)
+                        );
+                    }
 
                     return nb::make_tuple(
-                        nb::type<T>(),
-                        nb::make_tuple(src)
+                        runtime_type(self),
+                        nb::make_tuple(src),
+                        nb::make_tuple(nb::none(), dict)
                     );
                 })
                 ;
@@ -543,7 +595,8 @@ void wrap_StructureAdapter(nb::module_& m)
                 nb::arg("other"),
                 doc_StructureAdapter_diff)
         ;
-        StructureAdapterPickleSuite<StructureAdapter>::bind(structureadapter);
+        StructureAdapterPickleSuite<StructureAdapter, StructureAdapterWrap>::bind(
+            structureadapter);
 
     typedef std::shared_ptr<NoMetaStructureAdapter>
         NoMetaStructureAdapterPtr;
@@ -569,6 +622,17 @@ void wrap_StructureAdapter(nb::module_& m)
     m.def("nosymmetry", nosymmetry<nb::object>, doc_nosymmetry);
     m.def("_emptyStructureAdapter", emptyStructureAdapter,
             doc__emptyStructureAdapter);
+    nb::object module_name = nb::str("diffpy.srreal.srreal_ext");
+    PyObject* restore_function = PyCFunction_NewEx(
+        &restoreStructureAdapterDef, nullptr, module_name.ptr());
+    if (!restore_function)
+        nb::raise_python_error();
+    if (PyModule_AddObject(m.ptr(), "_restoreStructureAdapter",
+            restore_function) < 0)
+    {
+        Py_DECREF(restore_function);
+        nb::raise_python_error();
+    }
 }
 
 // Export shared docstrings

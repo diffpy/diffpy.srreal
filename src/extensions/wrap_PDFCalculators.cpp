@@ -20,7 +20,10 @@
 
 #include <diffpy/srreal/DebyePDFCalculator.hpp>
 #include <diffpy/srreal/PDFCalculator.hpp>
-
+#include <diffpy/srreal/GaussianProfile.hpp>
+#include <diffpy/srreal/JeongPeakWidth.hpp>
+#include <diffpy/srreal/LinearBaseline.hpp>
+#include <diffpy/srreal/SFTXray.hpp>
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
 
@@ -423,32 +426,46 @@ nb::tuple getstate_super(nb::object obj)
 {
     // obtain C++ state without PDFEnvelopes
     nb::object envlps = obj.attr("envelopes");
-    obj.attr("clearEnvelopes")();
-    assert(nb::len(obj.attr("envelopes")) == 0);
-    nb::tuple super_state = Super::getstate(obj);
-    obj.attr("envelopes") = envlps;
-    assert(nb::len(obj.attr("envelopes")) == nb::len(envlps));
-    return nb::make_tuple(super_state);
+    bool needs_restore = false;
+    try
+    {
+        obj.attr("clearEnvelopes")();
+        needs_restore = true;
+        assert(nb::len(obj.attr("envelopes")) == 0);
+        nb::tuple super_state = Super::getstate(obj);
+        obj.attr("envelopes") = envlps;
+        needs_restore = false;
+        assert(nb::len(obj.attr("envelopes")) == nb::len(envlps));
+        return nb::make_tuple(super_state);
+    }
+    catch (...)
+    {
+        if (needs_restore)
+        {
+            obj.attr("envelopes") = envlps;
+        }
+        throw;
+    }
 }
 
 
-nb::tuple getstate_common(nb::object obj)
+nb::tuple getstate_common(
+        nb::object obj, nb::object pwm_state, nb::object sft_state)
 {
-    auto resolve_pwm = resolve_state_object<PeakWidthModel>;
-    auto resolve_sft = resolve_state_object<ScatteringFactorTable>;
     nb::tuple rv = make_tuple(
-            resolve_pwm(obj.attr("peakwidthmodel")),
-            resolve_sft(obj.attr("scatteringfactortable")),
+            pwm_state,
+            sft_state,
             obj.attr("envelopes")
             );
     return rv;
 }
 
 
-void setstate_common(nb::object obj, nb::tuple state, size_t& pos)
+template <class T>
+void setstate_common(T& calc, nb::object obj, nb::tuple state, size_t& pos)
 {
-    assign_state_object(obj.attr("peakwidthmodel"), state[pos++]);
-    assign_state_object(obj.attr("scatteringfactortable"), state[pos++]);
+    assign_pointer_state(calc.getPeakWidthModel(), state[pos++]);
+    assign_pointer_state(calc.getScatteringFactorTable(), state[pos++]);
     assert(nb::len(obj.attr("envelopes")) == 0);
     obj.attr("envelopes") = nb::borrow<nb::object>(state[pos++]);
 }
@@ -469,17 +486,38 @@ class DebyePDFCalculatorPickleSuite :
             cls
                 .def("__getstate__", getstate)
                 .def("__setstate__", setstate)
+                .def("__reduce__", reduce)
                 ;
+            cls.attr("__getstate_manages_dict__") = nb::none();
         }
         
 
         static nb::tuple getstate(nb::object obj)
         {
-            nb::tuple rv(
-                    getstate_super<Super>(obj) +
-                    getstate_common(obj)
-                    );
-            return rv;
+            DebyePDFCalculator& calc = nb::cast<DebyePDFCalculator&>(obj);
+            ScopedSharedPtrReplacement<PeakWidthModel> pwm(
+                calc.getPeakWidthModel(), PeakWidthModelPtr(new JeongPeakWidth));
+            ScopedSharedPtrReplacement<ScatteringFactorTable> sft(
+                calc.getScatteringFactorTable(),
+                ScatteringFactorTablePtr(new SFTXray));
+            try
+            {
+                nb::tuple rv(
+                        getstate_super<Super>(obj) +
+                        getstate_common(
+                            obj,
+                            pwm.state_object(),
+                            sft.state_object()
+                            )
+                        );
+                return rv;
+            }
+            catch (...)
+            {
+                sft.restore();
+                pwm.restore();
+                throw;
+            }
         }
 
 
@@ -489,9 +527,15 @@ class DebyePDFCalculatorPickleSuite :
             // restore the state using boost serialization
             nb::tuple st0(state[0]);
             Super::setstate(obj, st0);
-            // other items are non-None only when restoring Python class
+            // restore components that were kept out of Boost serialization
+            DebyePDFCalculator& calc = nb::cast<DebyePDFCalculator&>(obj);
             size_t pos = 1;
-            setstate_common(obj, state, pos);
+            setstate_common(calc, obj, state, pos);
+        }
+
+        static nb::tuple reduce(nb::object obj)
+        {
+            return Super::reduce(obj);
         }
 };
 
@@ -511,21 +555,48 @@ class PDFCalculatorPickleSuite :
             cls
                 .def("__getstate__", getstate)
                 .def("__setstate__", setstate)
+                .def("__reduce__", reduce)
                 ;
+            cls.attr("__getstate_manages_dict__") = nb::none();
         }
 
         static nb::tuple getstate(nb::object obj)
         {
+            PDFCalculator& calc = nb::cast<PDFCalculator&>(obj);
+            ScopedSharedPtrReplacement<PeakWidthModel> pwm(
+                calc.getPeakWidthModel(), PeakWidthModelPtr(new JeongPeakWidth));
+            ScopedSharedPtrReplacement<ScatteringFactorTable> sft(
+                calc.getScatteringFactorTable(),
+                ScatteringFactorTablePtr(new SFTXray));
+            ScopedSharedPtrReplacement<PeakProfile> peakprofile(
+                calc.getPeakProfile(), PeakProfilePtr(new GaussianProfile));
+            ScopedSharedPtrReplacement<PDFBaseline> baseline(
+                calc.getBaseline(), PDFBaselinePtr(new LinearBaseline));
             nb::tuple mystate = make_tuple(
-                    resolve_state_object<PeakProfile>(obj.attr("peakprofile")),
-                    resolve_state_object<PDFBaseline>(obj.attr("baseline"))
+                    peakprofile.state_object(),
+                    baseline.state_object()
                     );
-            nb::tuple rv(
-                    getstate_super<Super>(obj) +
-                    getstate_common(obj) +
-                    mystate
-                    );
-            return rv;
+            try
+            {
+                nb::tuple rv(
+                        getstate_super<Super>(obj) +
+                        getstate_common(
+                            obj,
+                            pwm.state_object(),
+                            sft.state_object()
+                            ) +
+                        mystate
+                        );
+                return rv;
+            }
+            catch (...)
+            {
+                baseline.restore();
+                peakprofile.restore();
+                sft.restore();
+                pwm.restore();
+                throw;
+            }
         }
 
 
@@ -535,11 +606,17 @@ class PDFCalculatorPickleSuite :
             // restore the state using boost serialization
             nb::tuple st0(state[0]);
             Super::setstate(obj, st0);
-            // other items are non-None only when restoring Python class
+            // restore components that were kept out of Boost serialization
+            PDFCalculator& calc = nb::cast<PDFCalculator&>(obj);
             size_t pos = 1;
-            setstate_common(obj, state, pos);
-            assign_state_object(obj.attr("peakprofile"), state[pos++]);
-            assign_state_object(obj.attr("baseline"), state[pos++]);
+            setstate_common(calc, obj, state, pos);
+            assign_pointer_state(calc.getPeakProfile(), state[pos++]);
+            assign_pointer_state(calc.getBaseline(), state[pos++]);
+        }
+
+        static nb::tuple reduce(nb::object obj)
+        {
+            return Super::reduce(obj);
         }
 };
 

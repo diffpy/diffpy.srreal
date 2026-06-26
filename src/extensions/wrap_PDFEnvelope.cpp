@@ -91,7 +91,8 @@ Returns   0 when x > stepcut.\n\
 // Helper class allows overload of the PDFEnvelope methods from Python.
 
 class PDFEnvelopeWrap :
-    public PDFEnvelope
+    public PDFEnvelope,
+    public PythonTrampolineTag
 {
     public:
 
@@ -210,32 +211,35 @@ void wrap_PDFEnvelope(nb::module_ &m)
         .def("__call__", &PDFEnvelope::operator(),
                 nb::arg("r"), doc_PDFEnvelope___call__)
         ;
-        SerializationPickleSuite<PDFEnvelope, DICT_PICKLE>::bind(pdfenvelope);
+        SerializationPickleSuite<
+            PDFEnvelope,
+            DICT_PICKLE,
+            PDFEnvelopeWrap>::bind(pdfenvelope);
 
     nb::class_<QResolutionEnvelope, PDFEnvelope> qresenvelope(m,
             "QResolutionEnvelope", doc_QResolutionEnvelope);
     qresenvelope
         .def(nb::init<>())
         ;
-        SerializationPickleSuite<QResolutionEnvelope, DICT_PICKLE>::bind(qresenvelope);
+        SerializationPickleSuite<QResolutionEnvelope, DICT_IGNORE>::bind(qresenvelope);
     nb::class_<ScaleEnvelope, PDFEnvelope> scaleenvelope(m,
             "ScaleEnvelope", doc_ScaleEnvelope);
     scaleenvelope
         .def(nb::init<>())
         ;
-        SerializationPickleSuite<ScaleEnvelope, DICT_PICKLE>::bind(scaleenvelope);
+        SerializationPickleSuite<ScaleEnvelope, DICT_IGNORE>::bind(scaleenvelope);
     nb::class_<SphericalShapeEnvelope, PDFEnvelope> sphshapeenvelope(m,
             "SphericalShapeEnvelope", doc_SphericalShapeEnvelope);
     sphshapeenvelope
         .def(nb::init<>())
         ;
-        SerializationPickleSuite<SphericalShapeEnvelope, DICT_PICKLE>::bind(sphshapeenvelope);
+        SerializationPickleSuite<SphericalShapeEnvelope, DICT_IGNORE>::bind(sphshapeenvelope);
     nb::class_<StepCutEnvelope, PDFEnvelope> stepcutenvelope(m,
             "StepCutEnvelope", doc_StepCutEnvelope);
     stepcutenvelope
         .def(nb::init<>())
         ;
-        SerializationPickleSuite<StepCutEnvelope, DICT_PICKLE>::bind(stepcutenvelope);
+        SerializationPickleSuite<StepCutEnvelope, DICT_IGNORE>::bind(stepcutenvelope);
 
 }
 

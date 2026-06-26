@@ -211,7 +211,8 @@ DECLARE_BYTYPE_SETTER_WRAPPER(setScatteringFactorTable, setsftable)
 // Helper class to support Python override of ScatteringFactorTable methods
 
 class ScatteringFactorTableWrap :
-    public ScatteringFactorTable
+    public ScatteringFactorTable,
+    public PythonTrampolineTag
 {
     public:
 
@@ -413,7 +414,10 @@ void wrap_ScatteringFactorTable(nb::module_& m)
                 nb::rv_policy::reference_internal,
                 doc_ScatteringFactorTable_ticker)
         ;
-        SerializationPickleSuite<ScatteringFactorTable, DICT_PICKLE>::bind(sftb);
+        SerializationPickleSuite<
+            ScatteringFactorTable,
+            DICT_PICKLE,
+            ScatteringFactorTableWrap>::bind(sftb);
 
     nb::class_<SFTXray, ScatteringFactorTable> sftxray(m,
             "SFTXray", doc_SFTXray);

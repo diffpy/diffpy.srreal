@@ -18,6 +18,7 @@
 
 #include <nanobind/nanobind.h>
 
+#include <diffpy/srreal/ConstantRadiiTable.hpp>
 #include <diffpy/srreal/OverlapCalculator.hpp>
 
 #include "srreal_converters.hpp"
@@ -196,18 +197,30 @@ class OverlapCalculatorPickleSuite :
             cls
                 .def("__getstate__", getstate)
                 .def("__setstate__", setstate)
+                .def("__reduce__", reduce)
                 ;
+            cls.attr("__getstate_manages_dict__") = nb::none();
         }
 
 
         static nb::tuple getstate(nb::object obj)
         {
-            nb::object tb = obj.attr("atomradiitable");
-            nb::tuple rv = nb::make_tuple(
-                    Super::getstate(obj),
-                    resolve_state_object<AtomRadiiTable>(tb)
-                    );
-            return rv;
+            OverlapCalculator& calc = nb::cast<OverlapCalculator&>(obj);
+            ScopedSharedPtrReplacement<AtomRadiiTable> tb(
+                calc.getAtomRadiiTable(), AtomRadiiTablePtr(new ConstantRadiiTable));
+            try
+            {
+                nb::tuple rv = nb::make_tuple(
+                        Super::getstate(obj),
+                        tb.state_object()
+                        );
+                return rv;
+            }
+            catch (...)
+            {
+                tb.restore();
+                throw;
+            }
         }
 
 
@@ -218,8 +231,14 @@ class OverlapCalculatorPickleSuite :
             // restore the state using boost serialization
             nb::tuple state0(state[0]);
             Super::setstate(obj, state0);
-            // atomradiitable is present only when restoring Python class
-            assign_state_object(obj.attr("atomradiitable"), state[1]);
+            // restore component that was kept out of Boost serialization
+            OverlapCalculator& calc = nb::cast<OverlapCalculator&>(obj);
+            assign_pointer_state(calc.getAtomRadiiTable(), state[1]);
+        }
+
+        static nb::tuple reduce(nb::object obj)
+        {
+            return Super::reduce(obj);
         }
 };
 

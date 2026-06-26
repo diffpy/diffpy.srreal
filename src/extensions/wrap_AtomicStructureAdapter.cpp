@@ -325,7 +325,9 @@ void set_uc(Atom& a, nb::object value)
 // template wrapper class for overloading of clone and _customPQConfig
 
 template <class T>
-class MakeWrapper : public T
+class MakeWrapper :
+    public T,
+    public PythonTrampolineTag
 {
     public:
 
@@ -687,7 +689,9 @@ void wrap_AtomicStructureAdapter(nb::module_& m)
         .def("reserve", atomadapter_reserve,
                 nb::arg("sz"), doc_AtomicStructureAdapter_reserve)
         ;
-    StructureAdapterPickleSuite<AtomicStructureAdapter>::bind(adapter_class);
+    StructureAdapterPickleSuite<
+        AtomicStructureAdapter,
+        AtomicStructureAdapterWrap>::bind(adapter_class);
 
     // class PeriodicStructureAdapter
     nb::class_<PeriodicStructureAdapter,
@@ -726,7 +730,9 @@ void wrap_AtomicStructureAdapter(nb::module_& m)
         .def("toFractional", &PeriodicStructureAdapter::toFractional,
                 nb::arg("atom"), doc_PeriodicStructureAdapter_toFractional)
         ;
-    StructureAdapterPickleSuite<PeriodicStructureAdapter>::bind(periodic_class);
+    StructureAdapterPickleSuite<
+        PeriodicStructureAdapter,
+        PeriodicStructureAdapterWrap>::bind(periodic_class);
 
     // class CrystalStructureAdapter
     nb::class_<CrystalStructureAdapter,
@@ -777,7 +783,9 @@ void wrap_AtomicStructureAdapter(nb::module_& m)
                 &CrystalStructureAdapter::updateSymmetryPositions,
                 doc_CrystalStructureAdapter_updateSymmetryPositions)
         ;
-    StructureAdapterPickleSuite<CrystalStructureAdapter>::bind(crystal_class);
+    StructureAdapterPickleSuite<
+        CrystalStructureAdapter,
+        CrystalStructureAdapterWrap>::bind(crystal_class);
 
 }
 

@@ -106,7 +106,8 @@ The profile is also rescaled to keep the integrated area of 1.\n\
 // Support for override of PeakProfile methods from Python.
 
 class PeakProfileWrap :
-    public PeakProfile
+    public PeakProfile,
+    public PythonTrampolineTag
 {
     public:
 
@@ -242,7 +243,10 @@ void wrap_PeakProfile(nb::module_& m)
                 doc_PeakProfile_ticker)
         ;
 
-    SerializationPickleSuite<PeakProfile, DICT_PICKLE>::bind(peakprofile);
+    SerializationPickleSuite<
+        PeakProfile,
+        DICT_PICKLE,
+        PeakProfileWrap>::bind(peakprofile);
 
     nb::class_<GaussianProfile, PeakProfile> gaussianprofile(m,
             "GaussianProfile", doc_GaussianProfile);

@@ -70,7 +70,8 @@ PDF baseline function equal to (slope * r).\n\
 // Helper class allows overload of the PDFBaseline methods from Python.
 
 class PDFBaselineWrap :
-    public PDFBaseline
+    public PDFBaseline,
+    public PythonTrampolineTag
 {
     public:
 
@@ -178,7 +179,10 @@ void wrap_PDFBaseline(nb::module_& m)
         .def("__call__", &PDFBaseline::operator(),
                 nb::arg("r"), doc_PDFBaseline___call__)
         ;
-        SerializationPickleSuite<PDFBaseline, DICT_PICKLE>::bind(pdfbaseline);
+        SerializationPickleSuite<
+            PDFBaseline,
+            DICT_PICKLE,
+            PDFBaselineWrap>::bind(pdfbaseline);
 
     nb::class_<ZeroBaseline, PDFBaseline>
         zerobaseline(m, "ZeroBaseline", doc_ZeroBaseline);
