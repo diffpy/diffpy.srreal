@@ -15,7 +15,6 @@
 """Class EventTicker -- storage of modification times of dependent
 objects."""
 
-
 # exported items
 __all__ = ["EventTicker"]
 
