@@ -163,6 +163,35 @@ Return a tuple of (f, qstep).  These can be used with the complementary\n\
 fftftog function to recover the original signal g.\n\
 ";
 
+const char* doc_PeakWidthModelOwner_peakwidthmodel = "\
+PeakWidthModel object used for calculating the FWHM of the PDF peaks.\n\
+This attribute can be assigned either a PeakWidthModel-derived object\n\
+or a string name of a registered PeakWidthModel class.\n\
+Use PeakWidthModel.getRegisteredTypes() for a set of registered names.\n\
+";
+
+const char* doc_ScatteringFactorTableOwner_scatteringfactortable = "\
+ScatteringFactorTable object used for a lookup of scattering factors.\n\
+This can be also set with the setScatteringFactorTableByType method.\n\
+";
+
+const char* doc_ScatteringFactorTableOwner_setScatteringFactorTableByType = "\
+Set internal ScatteringFactorTable according to specified string type.\n\
+\n\
+tp   -- string identifier of a registered ScatteringFactorTable type.\n\
+    Use ScatteringFactorTable.getRegisteredTypes for the allowed values.\n\
+\n\
+Deprecated: This method is deprecated and will be removed in the 2.0.0 release.\n\
+Use direct assignment to the `scatteringfactortable` property instead, for example:\n\
+    obj.scatteringfactortable = SFTNeutron()\n\
+No return value.\n\
+";
+
+const char* doc_ScatteringFactorTableOwner_getRadiationType = "\
+Return string identifying the radiation type.\n\
+'X' for x-rays, 'N' for neutrons.\n\
+";
+
 // wrappers ------------------------------------------------------------------
 
 DECLARE_PYARRAY_METHOD_WRAPPER(getPDF, getPDF_asarray)
@@ -266,7 +295,55 @@ PDFEnvelopePtr getoneenvelope(T& obj, const std::string& tp)
 }
 
 
+// wrappers for PeakWidthModelOwner behavior
+
+template <class T>
+PeakWidthModelPtr getpeakwidthmodel(T& obj)
+{
+    return obj.getPeakWidthModel();
+}
+
+DECLARE_BYTYPE_SETTER_WRAPPER(setPeakWidthModel, setpeakwidthmodel)
+
+// wrappers for ScatteringFactorTableOwner behavior
+
+template <class T>
+ScatteringFactorTablePtr getscatteringfactortable(T& obj)
+{
+    return obj.getScatteringFactorTable();
+}
+
+DECLARE_BYTYPE_SETTER_WRAPPER(setScatteringFactorTable, setscatteringfactortable)
+
+template <class T>
+void setscatteringfactortablebytype(T& obj, const std::string& tp)
+{
+    try
+    {
+        nb::object warnings = nb::module_::import_("warnings");
+        nb::object builtins = nb::module_::import_("builtins");
+        nb::object DeprecationWarning = builtins.attr("DeprecationWarning");
+        warnings.attr("warn")(
+            std::string("setScatteringFactorTableByType is deprecated; "
+                    "assign the 'scatteringfactortable' property directly, for example:\n"
+                    "obj.scatteringfactortable = SFTNeutron()"),
+            DeprecationWarning,
+            2);
+    }
+    catch (...) { /* don't let warnings break the binding */ }
+    obj.setScatteringFactorTableByType(tp);
+}
+
+template <class T>
+std::string getradiationtype(T& obj)
+{
+    return obj.getRadiationType();
+}
+
+
 // wrap shared methods and attributes of PDFCalculators
+// TODO: since nanobind doesn't allow multiple inheritance,
+// we may need to introduce a header to better address this.
 
 template <class W, class C>
 C& wrap_PDFCommon(C& cls)
@@ -293,6 +370,23 @@ C& wrap_PDFCommon(C& cls)
                 nb::arg("tp"), doc_PDFCommon_getEnvelope)
         .def("clearEnvelopes", &W::clearEnvelopes,
                 doc_PDFCommon_clearEnvelopes)
+        // PeakWidthModelOwner functions
+        .def_prop_rw("peakwidthmodel",
+                getpeakwidthmodel<W>,
+                setpeakwidthmodel<W, PeakWidthModel>,
+                doc_PeakWidthModelOwner_peakwidthmodel)
+        // ScatteringFactorTableOwner behavior
+        .def_prop_rw("scatteringfactortable",
+                getscatteringfactortable<W>,
+                setscatteringfactortable<W, ScatteringFactorTable>,
+                doc_ScatteringFactorTableOwner_scatteringfactortable)
+        .def("setScatteringFactorTableByType",
+                setscatteringfactortablebytype<W>,
+                nb::arg("tp"),
+                doc_ScatteringFactorTableOwner_setScatteringFactorTableByType)
+        .def("getRadiationType",
+                getradiationtype<W>,
+                doc_ScatteringFactorTableOwner_getRadiationType)
         ;
     return cls;
 }
