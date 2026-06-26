@@ -15,13 +15,15 @@
 """Finalize tweak of classes from the extension module srreal_ext.
 
 This private module handles loading of Python-level tweaks of the
-extension-defined classes.  Any client that imports this module
-must call the `import_now` function.  If this module is not loaded
-by the time of srreal_ext initialization, `import_now` is executed
-from srreal_ext.
+extension-defined classes.  Any client that imports this module must
+call the `import_now` function.  If this module is not loaded by the
+time of srreal_ext initialization, `import_now` is executed from
+srreal_ext.
 
 This avoids unresolvable import dependencies for any order of imports.
 """
+
+_import_now_called = False
 
 
 def import_now():
@@ -46,6 +48,3 @@ def import_now():
     import_module("diffpy.srreal.pdfcalculator")
     import_module("diffpy.srreal.structureconverters")
     return
-
-
-_import_now_called = False

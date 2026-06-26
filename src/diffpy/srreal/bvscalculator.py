@@ -14,7 +14,6 @@
 ##############################################################################
 """Class BVSCalculator -- bond valence sums calculator."""
 
-
 # exported items
 __all__ = ["BVSCalculator"]
 
@@ -28,30 +27,32 @@ from diffpy.srreal.wraputils import (
 
 BVSCalculator.valenceprecision = propertyFromExtDoubleAttr(
     "valenceprecision",
-    """Cutoff value for valence contributions at long distances.
-        [1e-5]""",
+    "Cutoff value for valence contributions at long distances. [1e-5]",
 )
 
 BVSCalculator.rmaxused = propertyFromExtDoubleAttr(
     "rmaxused",
-    """Effective bound for bond lengths, where valence contributions
-        become smaller than valenceprecission, read-only.  Always smaller or
-        equal to rmax.  The value depends on ions present in the structure.
-        """,
+    (
+        "Effective bound for bond lengths, where valence contributions"
+        " become smaller than valenceprecission, read-only."
+        "  Always smaller or equal to rmax."
+        "  The value depends on ions present in the structure."
+    ),
 )
 
 BVSCalculator.rmin = propertyFromExtDoubleAttr(
     "rmin",
-    """Lower bound for the summed bond lengths.
-        [0 A]""",
+    "Lower bound for the summed bond lengths. [0 A]",
 )
 
 BVSCalculator.rmax = propertyFromExtDoubleAttr(
     "rmax",
-    """Upper bound for the summed bond lengths.  The calculation is
-        actually cut off much earlier when valence contributions get below
-        valenceprecission.  See also rmaxused and valenceprecission.
-        [1e6 A]""",
+    (
+        "Upper bound for the summed bond lengths."
+        "  The calculation is actually cut off much earlier when"
+        " valence contributions get below valenceprecission."
+        "  See also rmaxused and valenceprecission. [1e6 A]"
+    ),
 )
 
 

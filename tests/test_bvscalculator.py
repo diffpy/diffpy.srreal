@@ -2,7 +2,6 @@
 
 """Unit tests for diffpy.srreal.bvscalculator."""
 
-
 import pickle
 import unittest
 

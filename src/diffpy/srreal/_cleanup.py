@@ -24,7 +24,6 @@ This module is not intended for direct use.  It is used implicitly within
 a call of _registerThisType.
 """
 
-
 import atexit
 import weakref
 

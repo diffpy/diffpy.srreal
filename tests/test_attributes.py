@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
-"""Unit tests for the wrapped diffpy::Attributes
-"""
-
+"""Unit tests for the wrapped diffpy::Attributes"""
 
 import gc
 import unittest
