@@ -23,6 +23,7 @@
 #include <stdexcept>
 #include <cassert>
 #include <cstdlib>
+#include <limits>
 #include <ranges>
 
 #include <diffpy/Attributes.hpp>
@@ -360,10 +361,6 @@ double extractdouble(nb::object obj)
 /// extract integer with a support for numpy.int types
 int extractint(nb::object obj)
 {
-    int i;
-    if (nb::try_cast<int>(obj, i))
-        return i;
-
     PyObject* pobj = obj.ptr();
     if (PyArray_CheckScalar(pobj))
     {
@@ -372,8 +369,24 @@ int extractint(nb::object obj)
             throw nb::python_error();
         return rv;
     }
-    // nothing worked, call default behavior which will raise an exception
-    return nb::cast<int>(obj);
+
+    PyObject* idx = PyNumber_Index(pobj);
+    if (!idx)
+        throw nb::python_error();
+
+    nb::object idx_obj = nb::steal<nb::object>(idx);
+    long value = PyLong_AsLong(idx_obj.ptr());
+    if (value == -1 && PyErr_Occurred())
+        throw nb::python_error();
+
+    if (value < std::numeric_limits<int>::min() ||
+            value > std::numeric_limits<int>::max())
+    {
+        PyErr_SetString(PyExc_OverflowError, "integer index out of range");
+        throw nb::python_error();
+    }
+
+    return static_cast<int>(value);
 }
 
 

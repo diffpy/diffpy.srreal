@@ -178,7 +178,11 @@ void wrap_Attributes(nb::module_& m)
 {
     using namespace nswrap_Attributes;
     // ready for class definition
-    nb::class_<Attributes>(m, "Attributes", nb::dynamic_attr(), doc_Attributes)
+    nb::class_<Attributes>(
+            m, "Attributes",
+            nb::dynamic_attr(),
+            nb::is_weak_referenceable(),
+            doc_Attributes)
         .def(nb::init<>())
         .def("_getDoubleAttr", &Attributes::getDoubleAttr,
                 doc_Attributes__getDoubleAttr)

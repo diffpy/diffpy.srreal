@@ -410,6 +410,13 @@ void wrap_ScatteringFactorTable(nb::module_& m)
         .def("getCustomSymbols", getCustomSymbols_asset<ScatteringFactorTable>,
                 doc_ScatteringFactorTable_getCustomSymbols)
         .def("ticker",
+                [](const ScatteringFactorTable& obj)
+                    -> diffpy::eventticker::EventTicker&
+                {
+                    return obj.ScatteringFactorTable::ticker();
+                },
+                nb::rv_policy::reference_internal)
+        .def("ticker",
                 &ScatteringFactorTable::ticker,
                 nb::rv_policy::reference_internal,
                 doc_ScatteringFactorTable_ticker)
@@ -424,28 +431,28 @@ void wrap_ScatteringFactorTable(nb::module_& m)
     sftxray
         .def(nb::init<>())
         ;
-        SerializationPickleSuite<SFTXray, DICT_IGNORE>::bind(sftxray);
+        SerializationPickleSuite<SFTXray, DICT_GUARD>::bind(sftxray);
 
     nb::class_<SFTElectron, ScatteringFactorTable> sftelectron(m,
             "SFTElectron", doc_SFTElectron);
     sftelectron
         .def(nb::init<>())
         ;
-        SerializationPickleSuite<SFTElectron, DICT_IGNORE>::bind(sftelectron);
+        SerializationPickleSuite<SFTElectron, DICT_GUARD>::bind(sftelectron);
 
     nb::class_<SFTNeutron, ScatteringFactorTable> sftneutron(m,
             "SFTNeutron", doc_SFTNeutron);
     sftneutron
         .def(nb::init<>())
         ;
-        SerializationPickleSuite<SFTNeutron, DICT_IGNORE>::bind(sftneutron);
+        SerializationPickleSuite<SFTNeutron, DICT_GUARD>::bind(sftneutron);
 
     nb::class_<SFTElectronNumber, ScatteringFactorTable> sftelectronnumber(m,
             "SFTElectronNumber", doc_SFTElectronNumber);
     sftelectronnumber
         .def(nb::init<>())
         ;
-        SerializationPickleSuite<SFTElectronNumber, DICT_IGNORE>::bind(sftelectronnumber);
+        SerializationPickleSuite<SFTElectronNumber, DICT_GUARD>::bind(sftelectronnumber);
 
     nb::class_<ScatteringFactorTableOwner>(m, "ScatteringFactorTableOwner",
             doc_ScatteringFactorTableOwner)

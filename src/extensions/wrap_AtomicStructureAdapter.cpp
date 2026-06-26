@@ -303,7 +303,10 @@ bool get_anisotropy(const Atom& a)
 
 void set_anisotropy(Atom& a, nb::object value)
 {
-    a.anisotropy = bool(value);
+    int truth = PyObject_IsTrue(value.ptr());
+    if (truth < 0)
+        nb::raise_python_error();
+    a.anisotropy = truth != 0;
 }
 
 
@@ -640,7 +643,7 @@ void wrap_AtomicStructureAdapter(nb::module_& m)
         .def_prop_rw("uc13", get_uc<0, 2>, set_uc<0, 2>, doc_Atom_uijc)
         .def_prop_rw("uc23", get_uc<1, 2>, set_uc<1, 2>, doc_Atom_uijc)
         ;
-        SerializationPickleSuite<Atom, DICT_IGNORE>::bind(atom_class);
+        SerializationPickleSuite<Atom, DICT_GUARD>::bind(atom_class);
 
     nb::class_<AtomAdapterIterator>(m, "_AtomicStructureAdapterIterator")
         .def("__iter__", [](AtomAdapterIterator& it) -> AtomAdapterIterator& {

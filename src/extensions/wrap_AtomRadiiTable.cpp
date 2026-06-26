@@ -296,7 +296,7 @@ void wrap_AtomRadiiTable(nb::module_& m)
                 &ConstantRadiiTable::getDefault,
                 doc_ConstantRadiiTable_getDefault)
         ;
-        SerializationPickleSuite<ConstantRadiiTable, DICT_IGNORE>::bind(constantradiitable);
+        SerializationPickleSuite<ConstantRadiiTable, DICT_DISCARD>::bind(constantradiitable);
 
 }
 

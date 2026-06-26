@@ -115,6 +115,14 @@ double maxwidthwithpystructure(const PeakWidthModel& pwm,
     return rv;
 }
 
+
+nb::object borrowed_bond_generator(const BaseBondGenerator& bnds)
+{
+    return nb::cast(
+        const_cast<BaseBondGenerator*>(&bnds),
+        nb::rv_policy::reference);
+}
+
 // wrappers for the peakwidthmodel property
 
 PeakWidthModelPtr getpwmodel(PeakWidthModelOwner& obj)
@@ -178,7 +186,19 @@ class PeakWidthModelWrap :
 
         double calculate(const BaseBondGenerator& bnds) const override
         {
-            NB_OVERRIDE_PURE(calculate, bnds);
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(nb_trampoline, "calculate", true);
+
+            if (!ticket.key.is_valid())
+            {
+                throw nb::type_error(
+                    "pure virtual method PeakWidthModel.calculate() called"
+                );
+            }
+
+            nb::object pybnds = borrowed_bond_generator(bnds);
+            return nb::cast<double>(
+                nb_trampoline.base().attr(ticket.key)(pybnds));
         }
 
         double maxWidth(StructureAdapterPtr stru,
@@ -259,6 +279,13 @@ void wrap_PeakWidthModel(nb::module_& m)
                 maxwidthwithpystructure,
                 nb::arg("stru"), nb::arg("rmin"), nb::arg("rmax"))
         .def("ticker",
+                [](const PeakWidthModel& obj)
+                    -> diffpy::eventticker::EventTicker&
+                {
+                    return obj.PeakWidthModel::ticker();
+                },
+                nb::rv_policy::reference_internal)
+        .def("ticker",
                 &PeakWidthModel::ticker,
                 nb::rv_policy::reference_internal,
                 doc_PeakWidthModel_ticker)
@@ -273,21 +300,21 @@ void wrap_PeakWidthModel(nb::module_& m)
     constantpeakwidth
         .def(nb::init<>())
         ;
-        SerializationPickleSuite<ConstantPeakWidth, DICT_IGNORE>::bind(constantpeakwidth);
+        SerializationPickleSuite<ConstantPeakWidth, DICT_GUARD>::bind(constantpeakwidth);
     
     nb::class_<DebyeWallerPeakWidth, PeakWidthModel> debywallerpeakwidth(m,
             "DebyeWallerPeakWidth", doc_DebyeWallerPeakWidth);
     debywallerpeakwidth
         .def(nb::init<>())
         ;
-        SerializationPickleSuite<DebyeWallerPeakWidth, DICT_IGNORE>::bind(debywallerpeakwidth);
+        SerializationPickleSuite<DebyeWallerPeakWidth, DICT_GUARD>::bind(debywallerpeakwidth);
 
     nb::class_<JeongPeakWidth, DebyeWallerPeakWidth> jeongpeakwidth(m,
             "JeongPeakWidth", doc_JeongPeakWidth);
     jeongpeakwidth
         .def(nb::init<>())
         ;
-        SerializationPickleSuite<JeongPeakWidth, DICT_IGNORE>::bind(jeongpeakwidth);
+        SerializationPickleSuite<JeongPeakWidth, DICT_GUARD>::bind(jeongpeakwidth);
 
     nb::class_<PeakWidthModelOwner>(m, "PeakWidthModelOwner", doc_PeakWidthModelOwner)
         .def(nb::init<>())

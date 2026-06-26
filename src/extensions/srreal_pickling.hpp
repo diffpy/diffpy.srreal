@@ -276,9 +276,14 @@ class ScopedSharedPtrReplacement
 };
 
 
-enum {DICT_IGNORE=false, DICT_PICKLE=true};
+enum PickleDictPolicy
+{
+    DICT_GUARD,
+    DICT_PICKLE,
+    DICT_DISCARD
+};
 
-template <class T, bool pickledict=DICT_IGNORE, class Storage=T>
+template <class T, PickleDictPolicy dictpolicy=DICT_GUARD, class Storage=T>
 class SerializationPickleSuite
 {
     public:
@@ -291,7 +296,7 @@ class SerializationPickleSuite
                 .def("__setstate__", setstate)
                 .def("__reduce__", reduce)
                 ;
-            if constexpr (pickledict)
+            if constexpr (dictpolicy == DICT_PICKLE)
             {
                 cls.attr("__getstate_manages_dict__") = nb::bool_(true);
             }
@@ -306,14 +311,16 @@ class SerializationPickleSuite
             const T& tobj = nb::cast<const T&>(obj);
             nb::bytes content = serialization_tobytes(tobj);
 
-            bool manages_dict = state_manages_dict(obj, pickledict);
-            ensure_dict_is_managed_or_empty(obj, manages_dict);
-            if (manages_dict)
+            if constexpr (dictpolicy == DICT_PICKLE)
             {
                 return nb::make_tuple(
                     content,
                     get_instance_dict(obj)
                 );
+            }
+            if constexpr (dictpolicy == DICT_GUARD)
+            {
+                ensure_dict_is_managed_or_empty(obj, false);
             }
             return nb::make_tuple(content);
         }
@@ -322,15 +329,15 @@ class SerializationPickleSuite
         static void setstate(
                 nb::object obj, nb::tuple state)
         {
-            bool manages_dict = state_manages_dict(obj, pickledict);
-            ensure_tuple_length(state, manages_dict ? 2 : 1);
+            ensure_tuple_length(
+                state,
+                dictpolicy == DICT_PICKLE ? 2 : 1);
             // load the C++ object
             T& tobj = nb::cast<T&>(obj);
             diffpy::serialization_fromstring(tobj, bytes_to_string(state[0]));
             // restore the object's __dict__
-            if (manages_dict)
+            if constexpr (dictpolicy == DICT_PICKLE)
             {
-                ensure_dict_is_managed_or_empty(obj, manages_dict);
                 restore_instance_dict(obj, state[1]);
             }
         }
@@ -344,18 +351,21 @@ class SerializationPickleSuite
             );
         }
 
-        static bool getstate_manages_dict()  { return pickledict; }
+        static bool getstate_manages_dict()
+        {
+            return dictpolicy == DICT_PICKLE;
+        }
 
 };  // class SerializationPickleSuite
 
 
-template <class T, bool pickledict=DICT_IGNORE, class Storage=T>
+template <class T, PickleDictPolicy dictpolicy=DICT_GUARD, class Storage=T>
 class PairQuantityPickleSuite :
-    public SerializationPickleSuite<T, pickledict, Storage>
+    public SerializationPickleSuite<T, dictpolicy, Storage>
 {
     private:
 
-        typedef SerializationPickleSuite<T, pickledict, Storage> Super;
+        typedef SerializationPickleSuite<T, dictpolicy, Storage> Super;
 
     public:
 
@@ -367,7 +377,7 @@ class PairQuantityPickleSuite :
                 .def("__setstate__", setstate)
                 .def("__reduce__", reduce)
                 ;
-            if constexpr (pickledict)
+            if constexpr (dictpolicy == DICT_PICKLE)
             {
                 cls.attr("__getstate_manages_dict__") = nb::bool_(true);
             }

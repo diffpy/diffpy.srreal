@@ -472,7 +472,7 @@ void setstate_common(T& calc, nb::object obj, nb::tuple state, size_t& pos)
 
 
 class DebyePDFCalculatorPickleSuite :
-    public PairQuantityPickleSuite<DebyePDFCalculator, DICT_IGNORE>
+    public PairQuantityPickleSuite<DebyePDFCalculator, DICT_GUARD>
 {
     private:
 
@@ -541,7 +541,7 @@ class DebyePDFCalculatorPickleSuite :
 
 
 class PDFCalculatorPickleSuite :
-    public PairQuantityPickleSuite<PDFCalculator, DICT_IGNORE>
+    public PairQuantityPickleSuite<PDFCalculator, DICT_GUARD>
 {
     private:
 

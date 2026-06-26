@@ -492,6 +492,48 @@ class StructureAdapterWrap :
 };  // class StructureAdapterWrap
 
 
+double numberDensity_dispatch(const StructureAdapter& adpt)
+{
+    const StructureAdapterWrap *wrap =
+        dynamic_cast<const StructureAdapterWrap *>(&adpt);
+    return wrap ? wrap->default_numberDensity() : adpt.numberDensity();
+}
+
+
+const std::string& siteAtomType_dispatch(const StructureAdapter& adpt, int i)
+{
+    const StructureAdapterWrap *wrap =
+        dynamic_cast<const StructureAdapterWrap *>(&adpt);
+    return wrap ? wrap->default_siteAtomType(i) : siteAtomType_safe(adpt, i);
+}
+
+
+int siteMultiplicity_dispatch(const StructureAdapter& adpt, int i)
+{
+    const StructureAdapterWrap *wrap =
+        dynamic_cast<const StructureAdapterWrap *>(&adpt);
+    return wrap ?
+        wrap->default_siteMultiplicity(i) :
+        siteMultiplicity_safe(adpt, i);
+}
+
+
+double siteOccupancy_dispatch(const StructureAdapter& adpt, int i)
+{
+    const StructureAdapterWrap *wrap =
+        dynamic_cast<const StructureAdapterWrap *>(&adpt);
+    return wrap ?
+        wrap->default_siteOccupancy(i) :
+        siteOccupancy_safe(adpt, i);
+}
+
+
+BaseBondGeneratorPtr createBondGenerator_shared(StructureAdapterPtr adpt)
+{
+    return adpt->createBondGenerator();
+}
+
+
 template <class T>
 class StructureProxyPickleSuite
 {
@@ -559,26 +601,26 @@ void wrap_StructureAdapter(nb::module_& m)
                 &StructureAdapter::clone,
                 doc_StructureAdapter_clone)
         .def("createBondGenerator",
-                &StructureAdapter::createBondGenerator,
+                createBondGenerator_shared,
                 doc_StructureAdapter_createBondGenerator)
         .def("countSites", &StructureAdapter::countSites,
                 doc_StructureAdapter_countSites)
         .def("totalOccupancy",
                 &StructureAdapter::totalOccupancy,
                 doc_StructureAdapter_totalOccupancy)
-        .def("numberDensity", &StructureAdapter::numberDensity,
+        .def("numberDensity", numberDensity_dispatch,
                 doc_StructureAdapter_numberDensity)
         .def("siteAtomType",
-                siteAtomType_safe,
+                siteAtomType_dispatch,
                 doc_StructureAdapter_siteAtomType)
         .def("siteCartesianPosition",
                     siteCartesianPosition_safe,
                     doc_StructureAdapter_siteCartesianPosition)
         .def("siteMultiplicity",
-                siteMultiplicity_safe,
+                siteMultiplicity_dispatch,
                 doc_StructureAdapter_siteMultiplicity)
         .def("siteOccupancy",
-                siteOccupancy_safe,
+                siteOccupancy_dispatch,
                 doc_StructureAdapter_siteOccupancy)
         .def("siteAnisotropy",
                 siteAnisotropy_safe,

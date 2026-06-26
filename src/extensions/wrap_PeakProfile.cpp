@@ -238,6 +238,13 @@ void wrap_PeakProfile(nb::module_& m)
         .def("xboundhi", &PeakProfile::xboundhi,
                 nb::arg("fwhm"), doc_PeakProfile_xboundhi)
         .def("ticker",
+                [](const PeakProfile& obj)
+                    -> diffpy::eventticker::EventTicker&
+                {
+                    return obj.PeakProfile::ticker();
+                },
+                nb::rv_policy::reference_internal)
+        .def("ticker",
                 &PeakProfile::ticker,
                 nb::rv_policy::reference_internal,
                 doc_PeakProfile_ticker)
@@ -253,14 +260,14 @@ void wrap_PeakProfile(nb::module_& m)
     gaussianprofile
         .def(nb::init<>())
         ;
-        SerializationPickleSuite<GaussianProfile, DICT_IGNORE>::bind(gaussianprofile);
+        SerializationPickleSuite<GaussianProfile, DICT_GUARD>::bind(gaussianprofile);
 
     nb::class_<CroppedGaussianProfile, GaussianProfile> croppedgaussianprofile(m,
             "CroppedGaussianProfile", doc_CroppedGaussianProfile);
     croppedgaussianprofile
         .def(nb::init<>())
         ;
-        SerializationPickleSuite<CroppedGaussianProfile, DICT_IGNORE>::bind(croppedgaussianprofile);
+        SerializationPickleSuite<CroppedGaussianProfile, DICT_GUARD>::bind(croppedgaussianprofile);
 
 }
 

@@ -188,12 +188,12 @@ void wrap_PDFBaseline(nb::module_& m)
         zerobaseline(m, "ZeroBaseline", doc_ZeroBaseline);
     zerobaseline
         .def(nb::init<>());
-        SerializationPickleSuite<ZeroBaseline, DICT_IGNORE>::bind(zerobaseline);
+        SerializationPickleSuite<ZeroBaseline, DICT_GUARD>::bind(zerobaseline);
     nb::class_<LinearBaseline, PDFBaseline>
         linearbaseline(m,"LinearBaseline", doc_LinearBaseline);
     linearbaseline
         .def(nb::init<>());
-        SerializationPickleSuite<LinearBaseline, DICT_IGNORE>::bind(linearbaseline);
+        SerializationPickleSuite<LinearBaseline, DICT_GUARD>::bind(linearbaseline);
 
 }
 

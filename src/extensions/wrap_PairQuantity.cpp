@@ -448,13 +448,42 @@ std::vector<std::string> parsepairtypes(nb::object smbl)
         return { nb::cast<std::string>(smbl) };
     }
 
-    return nb::cast<std::vector<std::string>>(smbl);
+    if (!isiterable(smbl))
+    {
+        PyErr_SetString(
+            PyExc_TypeError,
+            "atom type argument must be a string or iterable of strings");
+        throw nb::python_error();
+    }
+
+    std::vector<std::string> rv;
+    for (nb::handle item : smbl)
+    {
+        if (!nb::isinstance<nb::str>(item))
+        {
+            PyErr_SetString(
+                PyExc_TypeError,
+                "atom type iterable must contain strings");
+            throw nb::python_error();
+        }
+        rv.push_back(nb::cast<std::string>(item));
+    }
+    return rv;
+}
+
+
+bool extractbool(nb::object obj)
+{
+    int truth = PyObject_IsTrue(obj.ptr());
+    if (truth < 0)
+        nb::raise_python_error();
+    return truth != 0;
 }
 
 
 void mask_all_pairs(PairQuantity& obj, nb::object msk)
 {
-    obj.maskAllPairs(nb::cast<bool>(msk));
+    obj.maskAllPairs(extractbool(msk));
 }
 
 
@@ -463,7 +492,7 @@ void set_pair_mask(PairQuantity& obj,
         nb::object others)
 {
     if (!others.is_none())  mask_all_pairs(obj, others);
-    bool mask = nb::cast<bool>(msk);
+    bool mask = extractbool(msk);
     // short circuit for normal call with scalar values
     if (!isiterable(i) && !isiterable(j))
     {
@@ -492,7 +521,7 @@ void set_type_mask(PairQuantity& obj,
     using namespace std;
     if (!others.is_none())  mask_all_pairs(obj, others);
 
-    bool mask = nb::cast<bool>(msk);
+    bool mask = extractbool(msk);
 
     std::vector<std::string> isymbols = parsepairtypes(smbli);
     std::vector<std::string> jsymbols = parsepairtypes(smblj);
@@ -513,6 +542,20 @@ nb::object pqcopy(nb::object pqobj)
 {
     nb::object copy = nb::module_::import_("copy").attr("copy");
     return copy(pqobj);
+}
+
+
+nb::object borrowed_bond_generator(BaseBondGenerator& bnds)
+{
+    return nb::cast(&bnds, nb::rv_policy::reference);
+}
+
+
+nb::object borrowed_bond_generator(const BaseBondGenerator& bnds)
+{
+    return nb::cast(
+        const_cast<BaseBondGenerator*>(&bnds),
+        nb::rv_policy::reference);
 }
 
 // Helper C++ class for publicizing the protected methods.
@@ -661,7 +704,18 @@ class PairQuantityWrap :
 
         void configureBondGenerator(BaseBondGenerator& bnds) const override
         {
-            NB_OVERRIDE_NAME("_configureBondGenerator", configureBondGenerator, bnds);
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(
+                nb_trampoline, "_configureBondGenerator", false);
+
+            if (ticket.key.is_valid())
+            {
+                nb_trampoline.base().attr(ticket.key)(
+                    borrowed_bond_generator(bnds));
+                return;
+            }
+
+            this->default_configureBondGenerator(bnds);
         }
 
         void default_configureBondGenerator(BaseBondGenerator& bnds) const
@@ -673,10 +727,19 @@ class PairQuantityWrap :
         void addPairContribution(const BaseBondGenerator& bnds,
                 int summationscale) override
         {
-            NB_OVERRIDE_NAME("_addPairContribution",
-                            addPairContribution,
-                            bnds,
-                            summationscale);
+            nb::gil_scoped_acquire gil;
+            nb::detail::ticket ticket(
+                nb_trampoline, "_addPairContribution", false);
+
+            if (ticket.key.is_valid())
+            {
+                nb_trampoline.base().attr(ticket.key)(
+                    borrowed_bond_generator(bnds),
+                    summationscale);
+                return;
+            }
+
+            this->default_addPairContribution(bnds, summationscale);
         }
 
         void default_addPairContribution(const BaseBondGenerator& bnds,
@@ -756,7 +819,7 @@ void wrap_PairQuantity(nb::module_& m)
         .def("__repr__", &repr_QuantityType);
 
     nb::class_<PairQuantity, Attributes>
-        basepq(m, "BasePairQuantity");
+        basepq(m, "BasePairQuantity", nb::is_weak_referenceable());
     basepq
         .def(nb::init<>())
         .def("eval", eval_asarray, nb::arg("stru")=nb::none(),
@@ -817,11 +880,26 @@ void wrap_PairQuantity(nb::module_& m)
                 doc_BasePairQuantity_ticker)
         .def("copy", pqcopy,
                 doc_BasePairQuantity_copy)
+        .def("__reduce__", [](nb::object) -> nb::object 
+        {
+            throw std::runtime_error("cannot pickle BasePairQuantity object");
+        });
         ;
 
-    nb::class_<PairQuantityExposed, PairQuantity, PairQuantityWrap> pq(m, "PairQuantity", doc_PairQuantity);
+    nb::class_<PairQuantityExposed, PairQuantity, PairQuantityWrap> pq(
+            m, "PairQuantity",
+            nb::dynamic_attr(),
+            nb::is_weak_referenceable(),
+            doc_PairQuantity);
     pq
         .def(nb::init<>())
+        .def("ticker",
+                [](const PairQuantityExposed& obj)
+                    -> diffpy::eventticker::EventTicker&
+                {
+                    return obj.PairQuantity::ticker();
+                },
+                nb::rv_policy::reference_internal)
         .def("ticker",
                 &PairQuantityExposed::ticker,
                 nb::rv_policy::reference_internal,

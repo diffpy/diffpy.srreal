@@ -221,25 +221,25 @@ void wrap_PDFEnvelope(nb::module_ &m)
     qresenvelope
         .def(nb::init<>())
         ;
-        SerializationPickleSuite<QResolutionEnvelope, DICT_IGNORE>::bind(qresenvelope);
+        SerializationPickleSuite<QResolutionEnvelope, DICT_GUARD>::bind(qresenvelope);
     nb::class_<ScaleEnvelope, PDFEnvelope> scaleenvelope(m,
             "ScaleEnvelope", doc_ScaleEnvelope);
     scaleenvelope
         .def(nb::init<>())
         ;
-        SerializationPickleSuite<ScaleEnvelope, DICT_IGNORE>::bind(scaleenvelope);
+        SerializationPickleSuite<ScaleEnvelope, DICT_GUARD>::bind(scaleenvelope);
     nb::class_<SphericalShapeEnvelope, PDFEnvelope> sphshapeenvelope(m,
             "SphericalShapeEnvelope", doc_SphericalShapeEnvelope);
     sphshapeenvelope
         .def(nb::init<>())
         ;
-        SerializationPickleSuite<SphericalShapeEnvelope, DICT_IGNORE>::bind(sphshapeenvelope);
+        SerializationPickleSuite<SphericalShapeEnvelope, DICT_GUARD>::bind(sphshapeenvelope);
     nb::class_<StepCutEnvelope, PDFEnvelope> stepcutenvelope(m,
             "StepCutEnvelope", doc_StepCutEnvelope);
     stepcutenvelope
         .def(nb::init<>())
         ;
-        SerializationPickleSuite<StepCutEnvelope, DICT_IGNORE>::bind(stepcutenvelope);
+        SerializationPickleSuite<StepCutEnvelope, DICT_GUARD>::bind(stepcutenvelope);
 
 }
 

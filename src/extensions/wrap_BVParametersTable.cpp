@@ -298,7 +298,7 @@ void wrap_BVParametersTable(nb::module_& m)
         .def_rw("B", &BVParam::mB, doc_BVParam_B)
         .def_rw("ref_id", &BVParam::mref_id, doc_BVParam_ref_id)
         ;
-        SerializationPickleSuite<BVParam, DICT_IGNORE>::bind(bvparam);
+        SerializationPickleSuite<BVParam, DICT_GUARD>::bind(bvparam);
 
     nb::class_<BVParametersTable>
         bvtable(m, "BVParametersTable", doc_BVParametersTable);
@@ -387,7 +387,7 @@ void wrap_BVParametersTable(nb::module_& m)
         .def("getAll", getAll_asset<BVParametersTable>,
                 doc_BVParametersTable_getAll)
         ;
-        SerializationPickleSuite<BVParametersTable, DICT_IGNORE>::bind(bvtable);
+        SerializationPickleSuite<BVParametersTable, DICT_GUARD>::bind(bvtable);
         
 }
 
