@@ -275,6 +275,7 @@ void wrap_AtomRadiiTable(nb::module_& m)
         constantradiitable(m, "ConstantRadiiTable", doc_ConstantRadiiTable);
         // docstring updates
     constantradiitable
+        .def(nb::init<>())
         .def("create", &ConstantRadiiTable::create,
                 doc_ConstantRadiiTable_create)
         .def("clone", &ConstantRadiiTable::clone,

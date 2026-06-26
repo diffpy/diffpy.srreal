@@ -445,6 +445,7 @@ void wrap_ScatteringFactorTable(nb::module_& m)
 
     nb::class_<ScatteringFactorTableOwner>(m, "ScatteringFactorTableOwner",
             doc_ScatteringFactorTableOwner)
+        .def(nb::init<>())
         .def_prop_rw("scatteringfactortable",
                 getsftable,
                 setsftable<ScatteringFactorTableOwner,ScatteringFactorTable>,

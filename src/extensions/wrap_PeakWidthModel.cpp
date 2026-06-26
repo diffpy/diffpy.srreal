@@ -285,6 +285,7 @@ void wrap_PeakWidthModel(nb::module_& m)
         SerializationPickleSuite<JeongPeakWidth, DICT_IGNORE>::bind(jeongpeakwidth);
 
     nb::class_<PeakWidthModelOwner>(m, "PeakWidthModelOwner", doc_PeakWidthModelOwner)
+        .def(nb::init<>())
         .def_prop_rw("peakwidthmodel",
                 getpwmodel,
                 setpwmodel<PeakWidthModelOwner,PeakWidthModel>,

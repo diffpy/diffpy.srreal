@@ -726,6 +726,7 @@ void wrap_PairQuantity(nb::module_& m)
     nb::class_<PairQuantity, Attributes>
         basepq(m, "BasePairQuantity");
     basepq
+        .def(nb::init<>())
         .def("eval", eval_asarray, nb::arg("stru")=None,
                 doc_BasePairQuantity_eval)
         .def_prop_ro("value", value_asarray<PairQuantity>,
@@ -780,6 +781,7 @@ void wrap_PairQuantity(nb::module_& m)
 
     nb::class_<PairQuantityExposed, PairQuantity, PairQuantityWrap> pq(m, "PairQuantity", doc_PairQuantity);
     pq
+        .def(nb::init<>())
         .def("ticker",
                 &PairQuantityExposed::ticker,
                 nb::rv_policy::reference_internal,

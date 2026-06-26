@@ -234,6 +234,7 @@ void wrap_OverlapCalculator(nb::module_& m)
     nb::class_<OverlapCalculator, PairQuantity> overlapcalculator(m, "OverlapCalculator",
             doc_OverlapCalculator);
     overlapcalculator
+        .def(nb::init<>())
         .def_prop_ro("overlaps",
                 overlaps_asarray<OverlapCalculator>,
                 doc_OverlapCalculator_overlaps)

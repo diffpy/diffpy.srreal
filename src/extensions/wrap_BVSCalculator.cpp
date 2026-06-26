@@ -89,6 +89,7 @@ void wrap_BVSCalculator(nb::module_& m)
     nb::class_<BVSCalculator, PairQuantity> bvscalculator(m, "BVSCalculator",
             doc_BVSCalculator);
     bvscalculator
+        .def(nb::init<>())
         .def_prop_ro("value", value_asarray<BVSCalculator>,
                 doc_BVSCalculator_value)
         .def_prop_ro("valences", valences_asarray<BVSCalculator>,

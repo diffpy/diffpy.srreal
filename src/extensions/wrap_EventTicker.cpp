@@ -93,6 +93,7 @@ void wrap_EventTicker(nb::module_& m)
 
     nb::class_<EventTicker> eventticker(m, "EventTicker", doc_EventTicker);
     eventticker
+        .def(nb::init<>())
         .def(nb::init<const EventTicker&>(), doc_EventTicker_cp)
         .def("__repr__", repr_EventTicker, doc_EventTicker___repr__)
         .def(nb::self < nb::self)

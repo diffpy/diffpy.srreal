@@ -269,6 +269,7 @@ void wrap_BVParametersTable(nb::module_& m)
 
     nb::class_<BVParam> bvparam(m, "BVParam", doc_BVParam);
     bvparam
+        .def(nb::init<>())
         .def(nb::init<const std::string&, int,
                       const std::string&, int,
                       double, double, std::string>(),
