@@ -16,11 +16,13 @@
 Top-level classes for PDF calculation:
     DebyePDFCalculator -- simulate PDF by evaluating Debye sum in Q-space
     PDFCalculator      -- calculate PDF by peak summation in real space
+    PDF3DCalculator    -- calculate 3D real-space PDF on a cubic grid
 """
 
 from diffpy.srreal.srreal_ext import (
     DebyePDFCalculator,
     PDFCalculator,
+    PDF3DCalculator,
     fftftog,
     fftgtof,
 )
@@ -31,7 +33,7 @@ from diffpy.srreal.wraputils import (
 
 # exported items
 __all__ = """
-    DebyePDFCalculator PDFCalculator
+    DebyePDFCalculator PDFCalculator PDF3DCalculator
     fftftog fftgtof
     """.split()
 
@@ -340,5 +342,101 @@ PDFCalculator.__boostpython__init = PDFCalculator.__init__
 PDFCalculator.__init__ = _init_kwargs1
 
 # End of class PDFCalculator
+
+
+# PDF3DCalculator ------------------------------------------------------------
+
+# shared interface of the PDF calculator classes
+
+_defineCommonInterface(PDF3DCalculator)
+
+# Property wrappers to double attributes of the C++ PDF3DCalculator
+
+PDF3DCalculator.calculation_mode3d = propertyFromExtDoubleAttr(
+    "calculation_mode3d",
+    (
+        "3D calculation mode: 0 = full ADP-broadened PDF3D,"
+        " 1 = raw pair-vector histogram. [0]"
+    ),
+)
+PDF3DCalculator.histogram_weight_mode3d = propertyFromExtDoubleAttr(
+    "histogram_weight_mode3d",
+    (
+        "Histogram weight mode when calculation_mode3d=1:"
+        " 0 = scattering weighted, 1 = raw pair count. [0]"
+    ),
+)
+PDF3DCalculator.enable_nn_delta3d = propertyFromExtDoubleAttr(
+    "enable_nn_delta3d",
+    "Enable 3D covariance delta correction. Use 1.0 for on and 0.0 for off. [0]",
+)
+PDF3DCalculator.nn_delta3d = propertyFromExtDoubleAttr(
+    "nn_delta3d",
+    "Legacy shell-constant 3D delta subtracted along the pair direction. [0 A**2]",
+)
+PDF3DCalculator.nn_delta_positive_eta3d = propertyFromExtDoubleAttr(
+    "nn_delta_positive_eta3d",
+    "Safety factor for the positive-definite covariance bound. [0.9]",
+)
+PDF3DCalculator.delta1_3d = propertyFromExtDoubleAttr(
+    "delta1_3d",
+    "Coefficient for the 1/r part of distance-decay 3D covariance delta. [0 A]",
+)
+PDF3DCalculator.delta2_3d = propertyFromExtDoubleAttr(
+    "delta2_3d",
+    (
+        "Coefficient for the 1/r**2 part of distance-decay 3D covariance"
+        " delta. [0 A**2]"
+    ),
+)
+PDF3DCalculator.delta_shell_index3d = propertyFromExtDoubleAttr(
+    "delta_shell_index3d",
+    "Shell index for the legacy shell-constant 3D delta mode. [1]",
+)
+PDF3DCalculator.delta_shell_tolerance3d = propertyFromExtDoubleAttr(
+    "delta_shell_tolerance3d",
+    "Distance tolerance used to group neighbor shells for legacy 3D delta. [0.05 A]",
+)
+PDF3DCalculator.delta_key_tolerance3d = propertyFromExtDoubleAttr(
+    "delta_key_tolerance3d",
+    "Coordinate rounding tolerance for matching legacy 3D delta shell pairs. [1e-6 A]",
+)
+PDF3DCalculator.use_adp_scale_sensitivity3d = propertyFromExtDoubleAttr(
+    "use_adp_scale_sensitivity3d",
+    (
+        "Enable ADP scale sensitivity for 3D delta."
+        " Use 1.0 for on and 0.0 for off. [0]"
+    ),
+)
+PDF3DCalculator.adp_scale3d = propertyFromExtDoubleAttr(
+    "adp_scale3d",
+    "Scale factor applied to pair covariance in 3D delta calculations. [1]",
+)
+PDF3DCalculator.rho0_background_scale3d = propertyFromExtDoubleAttr(
+    "rho0_background_scale3d",
+    "Scale factor for the rho0 background subtraction in 3D PDF output. [1]",
+)
+
+# method overrides to support optional keyword arguments
+
+
+def _init_kwargs2(self, **kwargs):
+    """Create a new instance of PDF3DCalculator.
+    Keyword arguments can be used to configure the calculator properties,
+    for example:
+
+    p3c = PDF3DCalculator(rmax=10.0, gridstep=0.1, qmax=12)
+
+    Raise ValueError for invalid keyword argument.
+    """
+    PDF3DCalculator.__boostpython__init(self)
+    setattrFromKeywordArguments(self, **kwargs)
+    return
+
+
+PDF3DCalculator.__boostpython__init = PDF3DCalculator.__init__
+PDF3DCalculator.__init__ = _init_kwargs2
+
+# End of class PDF3DCalculator
 
 # End of file
