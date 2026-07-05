@@ -21,8 +21,8 @@ Top-level classes for PDF calculation:
 
 from diffpy.srreal.srreal_ext import (
     DebyePDFCalculator,
-    PDFCalculator,
     PDF3DCalculator,
+    PDFCalculator,
     fftftog,
     fftgtof,
 )
