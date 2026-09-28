@@ -10,7 +10,6 @@ jobs:
     with:
       project: diffpy.srreal
       c_extension: true
-      submodules: recursive
       headless: false
       run: |
         set -e

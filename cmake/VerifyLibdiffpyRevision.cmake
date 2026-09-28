@@ -20,8 +20,8 @@ function(verify_libdiffpy_revision source_dir expected_revision)
         message(FATAL_ERROR
             "libdiffpy revision mismatch: cmake/LibdiffpyVersion.cmake records "
             "${expected_revision}, but ${source_dir} is at ${actual_revision}. "
-            "Run git submodule update --init --recursive to restore the pin, "
-            "or update LibdiffpyVersion.cmake together with the submodule."
+            "Use a checkout of the pinned commit, or unset "
+            "FETCHCONTENT_SOURCE_DIR_LIBDIFFPY to download the pinned archive."
         )
     endif()
 endfunction()

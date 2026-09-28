@@ -1,3 +1,0 @@
-[submodule "extern/libdiffpy"]
-	path = extern/libdiffpy
-	url = https://github.com/diffpy/libdiffpy.git

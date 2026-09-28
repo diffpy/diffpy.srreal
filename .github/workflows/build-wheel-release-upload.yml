@@ -12,8 +12,6 @@ jobs:
     with:
       project: diffpy.srreal
       c_extension: true
-      submodules: recursive
-      bundle_shared_libraries: true
       maintainer_github_username: sbillinge
     secrets:
       PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}

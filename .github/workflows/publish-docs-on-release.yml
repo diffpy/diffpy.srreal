@@ -9,6 +9,5 @@ jobs:
     with:
       project: diffpy.srreal
       c_extension: true
-      submodules: recursive
       python_version: 0
       headless: false

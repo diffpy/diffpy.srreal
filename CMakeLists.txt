@@ -22,12 +22,7 @@ find_package(nanobind CONFIG REQUIRED)
 find_package(Boost CONFIG REQUIRED COMPONENTS serialization)
 find_package(GSL REQUIRED)
 
-set(LIBDIFFPY_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/extern/libdiffpy")
-if(NOT EXISTS "${LIBDIFFPY_SOURCE_DIR}/src/diffpy/version.tpl")
-    message(FATAL_ERROR "Missing libdiffpy sources. Run git submodule update --init --recursive.")
-endif()
-
-include(cmake/LibdiffpyVersion.cmake)
+include(cmake/FetchLibdiffpy.cmake)
 configure_file("${LIBDIFFPY_SOURCE_DIR}/src/diffpy/version.tpl"
                "include/diffpy/version.hpp")
 set(DIFFPY_HAS_OBJCRYST 0)
