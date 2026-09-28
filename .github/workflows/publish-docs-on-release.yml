@@ -2,38 +2,13 @@ name: Deploy Documentation on Release
 
 on:
   workflow_dispatch:
-  workflow_call:
-
-permissions:
-  contents: write
 
 jobs:
   docs:
-    runs-on: ubuntu-24.04
-    defaults:
-      run:
-        shell: bash -l {0}
-    env:
-      CMAKE_BUILD_PARALLEL_LEVEL: "2"
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-          submodules: recursive
-      - uses: conda-incubator/setup-miniconda@v3
-        with:
-          activate-environment: docs
-          channels: conda-forge
-          auto-activate-base: false
-          python-version: "3.14"
-      - name: Install package and documentation dependencies
-        run: |
-          conda install -y --file requirements/conda.txt
-          python -m pip install -r requirements/docs.txt
-          python -m pip install -e .
-      - name: Build documentation
-        run: make -C docs html
-      - uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/build/html
+    uses: scikit-package/release-scripts/.github/workflows/_release-docs.yml@v0
+    with:
+      project: diffpy.srreal
+      c_extension: true
+      submodules: recursive
+      python_version: 0
+      headless: false
