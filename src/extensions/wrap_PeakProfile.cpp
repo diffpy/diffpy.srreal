@@ -18,7 +18,7 @@
 *****************************************************************************/
 
 #include <nanobind/nanobind.h>
-#include <nanobind/trampoline.h>
+#include "srreal_trampoline.hpp"
 
 #include <string>
 
@@ -118,7 +118,7 @@ class PeakProfileWrap :
         PeakProfilePtr create() const override
         {
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(nb_trampoline, "create", true);
+            OverrideTicket ticket(nb_trampoline, "create", true);
 
             if (!ticket.key.is_valid())
             {
@@ -140,7 +140,7 @@ class PeakProfileWrap :
         const std::string& type() const override
         {
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(nb_trampoline, "type", true);
+            OverrideTicket ticket(nb_trampoline, "type", true);
 
             if (!ticket.key.is_valid())
             {
@@ -177,7 +177,7 @@ class PeakProfileWrap :
         {
             using diffpy::eventticker::EventTicker;
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(nb_trampoline, "ticker", false);
+            OverrideTicket ticket(nb_trampoline, "ticker", false);
 
             if (ticket.key.is_valid())
             {

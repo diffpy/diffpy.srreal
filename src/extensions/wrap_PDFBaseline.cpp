@@ -18,7 +18,7 @@
 *****************************************************************************/
 
 #include <nanobind/nanobind.h>
-#include <nanobind/trampoline.h>
+#include "srreal_trampoline.hpp"
 
 #include <diffpy/srreal/PDFBaseline.hpp>
 #include <diffpy/srreal/ZeroBaseline.hpp>
@@ -82,7 +82,7 @@ class PDFBaselineWrap :
         PDFBaselinePtr create() const
         {
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(nb_trampoline, "create", true);
+            OverrideTicket ticket(nb_trampoline, "create", true);
 
             if (!ticket.key.is_valid())
             {
@@ -103,7 +103,7 @@ class PDFBaselineWrap :
         const std::string& type() const
         {
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(nb_trampoline, "type", true);
+            OverrideTicket ticket(nb_trampoline, "type", true);
 
             if (!ticket.key.is_valid())
             {

@@ -12,10 +12,6 @@ on:
 
 jobs:
   matrix-coverage:
-    uses: scikit-package/release-scripts/.github/workflows/_matrix-and-codecov-on-merge-to-main.yml@v0
-    with:
-      project: diffpy.srreal
-      c_extension: true
-      headless: false
+    uses: ./.github/workflows/_build-and-test.yml
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

@@ -17,7 +17,7 @@
 *****************************************************************************/
 
 #include <nanobind/nanobind.h>
-#include <nanobind/trampoline.h>
+#include "srreal_trampoline.hpp"
 #include <nanobind/operators.h>
 
 #include "srreal_converters.hpp"
@@ -163,7 +163,7 @@ class AtomRadiiTableWrap :
         AtomRadiiTablePtr create() const override
         {
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(nb_trampoline, "create", true);
+            OverrideTicket ticket(nb_trampoline, "create", true);
 
             if (!ticket.key.is_valid())
             {
@@ -184,7 +184,7 @@ class AtomRadiiTableWrap :
         const std::string& type() const override
         {
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(nb_trampoline, "type", true);
+            OverrideTicket ticket(nb_trampoline, "type", true);
 
             if (!ticket.key.is_valid())
             {

@@ -30,7 +30,7 @@
 *****************************************************************************/
 
 #include <nanobind/nanobind.h>
-#include <nanobind/trampoline.h>
+#include "srreal_trampoline.hpp"
 #include <nanobind/stl/bind_vector.h>
 #include <nanobind/stl/vector.h>
 
@@ -637,7 +637,7 @@ class PairQuantityWrap :
         std::string getParallelData() const override
         {
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(
+            OverrideTicket ticket(
                 nb_trampoline, "_getParallelData", false);
 
             if (ticket.key.is_valid())
@@ -661,7 +661,7 @@ class PairQuantityWrap :
         {
             using diffpy::eventticker::EventTicker;
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(nb_trampoline, "ticker", false);
+            OverrideTicket ticket(nb_trampoline, "ticker", false);
 
             if (ticket.key.is_valid())
             {
@@ -705,7 +705,7 @@ class PairQuantityWrap :
         void configureBondGenerator(BaseBondGenerator& bnds) const override
         {
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(
+            OverrideTicket ticket(
                 nb_trampoline, "_configureBondGenerator", false);
 
             if (ticket.key.is_valid())
@@ -728,7 +728,7 @@ class PairQuantityWrap :
                 int summationscale) override
         {
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(
+            OverrideTicket ticket(
                 nb_trampoline, "_addPairContribution", false);
 
             if (ticket.key.is_valid())
@@ -752,7 +752,7 @@ class PairQuantityWrap :
         void executeParallelMerge(const std::string& pdata) override
         {
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(
+            OverrideTicket ticket(
                 nb_trampoline, "_executeParallelMerge", false);
 
             if (ticket.key.is_valid())

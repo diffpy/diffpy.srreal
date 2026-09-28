@@ -1,7 +1,9 @@
-libdiffpy
 libboost-devel
-libobjcryst
-pyobjcryst
+gsl
 diffpy.structure
 periodictable
-nanobind
+nanobind>=2.13,<4
+scikit-build-core
+setuptools-scm
+cmake
+ninja

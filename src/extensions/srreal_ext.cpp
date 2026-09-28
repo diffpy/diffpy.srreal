@@ -12,7 +12,7 @@
 *
 ******************************************************************************
 *
-* srreal_ext - boost python interface to the srreal C++ codes in libdiffpy
+* srreal_ext - nanobind interface to the srreal C++ codes in libdiffpy
 *
 *****************************************************************************/
 

@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include <nanobind/nanobind.h>
-#include <nanobind/trampoline.h>
+#include "srreal_trampoline.hpp"
 #include <nanobind/operators.h>
 
 #include <diffpy/srreal/AtomicStructureAdapter.hpp>
@@ -361,7 +361,7 @@ class MakeWrapper :
         StructureDifference diff(StructureAdapterConstPtr other) const override
         {
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(nb_trampoline, "diff", false);
+            OverrideTicket ticket(nb_trampoline, "diff", false);
             if (ticket.key.is_valid())
             {
                 nb::object sdobj = nb_trampoline.base().attr(ticket.key)(other);

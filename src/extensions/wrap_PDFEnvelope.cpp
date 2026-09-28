@@ -18,7 +18,7 @@
 *****************************************************************************/
 
 #include <nanobind/nanobind.h>
-#include <nanobind/trampoline.h>
+#include "srreal_trampoline.hpp"
 
 #include <diffpy/srreal/PDFEnvelope.hpp>
 #include <diffpy/srreal/QResolutionEnvelope.hpp>
@@ -103,7 +103,7 @@ class PDFEnvelopeWrap :
         PDFEnvelopePtr create() const override
         {
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(nb_trampoline, "create", true);
+            OverrideTicket ticket(nb_trampoline, "create", true);
 
             if (!ticket.key.is_valid())
             {
@@ -124,7 +124,7 @@ class PDFEnvelopeWrap :
         const std::string& type() const override
         {
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(nb_trampoline, "type", true);
+            OverrideTicket ticket(nb_trampoline, "type", true);
 
             if (!ticket.key.is_valid())
             {
@@ -143,7 +143,7 @@ class PDFEnvelopeWrap :
         double operator()(const double& x) const override
         {
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(nb_trampoline, "__call__", true);
+            OverrideTicket ticket(nb_trampoline, "__call__", true);
 
             if (!ticket.key.is_valid())
             {

@@ -18,7 +18,7 @@
 *****************************************************************************/
 
 #include <nanobind/nanobind.h>
-#include <nanobind/trampoline.h>
+#include "srreal_trampoline.hpp"
 
 #include <diffpy/srreal/ScatteringFactorTable.hpp>
 #include <diffpy/srreal/SFTXray.hpp>
@@ -235,7 +235,7 @@ class ScatteringFactorTableWrap :
         ScatteringFactorTablePtr create() const override
         {
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(nb_trampoline, "create", true);
+            OverrideTicket ticket(nb_trampoline, "create", true);
 
             if (!ticket.key.is_valid())
             {
@@ -256,7 +256,7 @@ class ScatteringFactorTableWrap :
         const std::string& type() const override
         {
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(nb_trampoline, "type", true);
+            OverrideTicket ticket(nb_trampoline, "type", true);
 
             if (!ticket.key.is_valid())
             {
@@ -275,7 +275,7 @@ class ScatteringFactorTableWrap :
         const std::string& radiationType() const override
         {
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(nb_trampoline, "radiationType", true);
+            OverrideTicket ticket(nb_trampoline, "radiationType", true);
 
             if (!ticket.key.is_valid())
             {
@@ -301,7 +301,7 @@ class ScatteringFactorTableWrap :
         {
             using diffpy::eventticker::EventTicker;
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(nb_trampoline, "ticker", false);
+            OverrideTicket ticket(nb_trampoline, "ticker", false);
 
             if (ticket.key.is_valid())
             {

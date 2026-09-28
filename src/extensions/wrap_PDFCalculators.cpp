@@ -345,8 +345,8 @@ std::string getradiationtype(T& obj)
 
 
 // wrap shared methods and attributes of PDFCalculators
-// TODO: since nanobind doesn't allow multiple inheritance,
-// we may need to introduce a header to better address this.
+// Forward mixin methods through the concrete type: nanobind exposes one base,
+// and the compiler performs the C++ pointer adjustments for the other bases.
 
 template <class W, class C>
 C& wrap_PDFCommon(C& cls)
@@ -628,7 +628,7 @@ void wrap_PDFCalculators(nb::module_& m)
 {
     using namespace nswrap_PDFCalculators;
 
-    // TODO: some types are flattened, we may need to add bindings manually
+    // Expose PairQuantity as the base and forward mixin APIs with wrap_PDFCommon.
     // DebyePDFCalculator
     nb::class_<DebyePDFCalculator, PairQuantity>
             dbpdfc_class(m, "DebyePDFCalculator", doc_DebyePDFCalculator);

@@ -19,7 +19,7 @@
 *****************************************************************************/
 
 #include <nanobind/nanobind.h>
-#include <nanobind/trampoline.h>
+#include "srreal_trampoline.hpp"
 #include <nanobind/stl/shared_ptr.h>
 
 #include "srreal_converters.hpp"
@@ -354,7 +354,7 @@ class StructureAdapterWrap :
         {
             static std::string rv;
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(nb_trampoline, "siteAtomType", false);
+            OverrideTicket ticket(nb_trampoline, "siteAtomType", false);
 
             if (ticket.key.is_valid())
             {
@@ -376,7 +376,7 @@ class StructureAdapterWrap :
         {
             static R3::Vector rv;
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(nb_trampoline, "siteCartesianPosition", true);
+            OverrideTicket ticket(nb_trampoline, "siteCartesianPosition", true);
 
             if (!ticket.key.is_valid())
             {
@@ -426,7 +426,7 @@ class StructureAdapterWrap :
         {
             static R3::Matrix rv;
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(nb_trampoline, "siteCartesianUij", true);
+            OverrideTicket ticket(nb_trampoline, "siteCartesianUij", true);
 
             if (!ticket.key.is_valid())
             {
@@ -461,7 +461,7 @@ class StructureAdapterWrap :
         StructureDifference diff(StructureAdapterConstPtr other) const override
         {
             nb::gil_scoped_acquire gil;
-            nb::detail::ticket ticket(nb_trampoline, "diff", false);
+            OverrideTicket ticket(nb_trampoline, "diff", false);
 
             if (ticket.key.is_valid()) {
                 nb::object sdobj = nb_trampoline.base().attr(ticket.key)(other);

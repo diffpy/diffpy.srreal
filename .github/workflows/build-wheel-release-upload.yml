@@ -4,15 +4,47 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - "*" # Trigger on all tags initially, but tag and release privilege are verified in _build-wheel-release-upload.yml
+      - "*"
+
+permissions:
+  contents: write
 
 jobs:
-  release:
-    uses: scikit-package/release-scripts/.github/workflows/_build-wheel-release-upload.yml@v0
+  check-tag-privilege:
+    uses: scikit-package/release-scripts/.github/workflows/_check-tag-privilege.yml@v0
     with:
-      project: diffpy.srreal
-      c_extension: true
-      maintainer_GITHUB_username: sbillinge
+      maintainer_github_username: sbillinge
+
+  check-pat-token:
+    uses: scikit-package/release-scripts/.github/workflows/_check-pat-token-validity.yml@v0
+    secrets:
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+
+  check-pypi-token:
+    uses: scikit-package/release-scripts/.github/workflows/_check-pypi-token-validity.yml@v0
     secrets:
       PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+
+  build:
+    needs: [check-tag-privilege, check-pat-token, check-pypi-token]
+    uses: ./.github/workflows/_build-and-test.yml
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  release-github:
+    needs: build
+    uses: scikit-package/release-scripts/.github/workflows/_release-github.yml@v0
+    secrets:
       PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+
+  release-pypi:
+    needs: release-github
+    uses: scikit-package/release-scripts/.github/workflows/_release-pypi.yml@v0
+    with:
+      python_version: 3.14
+    secrets:
+      PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+
+  docs:
+    needs: release-github
+    uses: ./.github/workflows/publish-docs-on-release.yml
