@@ -28,6 +28,7 @@
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
+#include "srreal_legacy.hpp"
 #include "srreal_registry.hpp"
 
 namespace srrealmodule {
@@ -207,15 +208,6 @@ class PeakProfileWrap :
         mutable std::string mtype;
         wrapper_registry_configurator<PeakProfile> mconfigurator;
 
-        // serialization
-        friend class boost::serialization::access;
-        template<class Archive>
-            void serialize(Archive& ar, const unsigned int version)
-        {
-            using boost::serialization::base_object;
-            ar & base_object<PeakProfile>(*this);
-        }
-
 };  // class PeakProfileWrap
 
 }   // namespace nswrap_PeakProfile
@@ -252,8 +244,7 @@ void wrap_PeakProfile(nb::module_& m)
 
     SerializationPickleSuite<
         PeakProfile,
-        DICT_PICKLE,
-        PeakProfileWrap>::bind(peakprofile);
+        DICT_PICKLE>::bind(peakprofile);
 
     nb::class_<GaussianProfile, PeakProfile> gaussianprofile(m,
             "GaussianProfile", doc_GaussianProfile);
@@ -275,6 +266,7 @@ void wrap_PeakProfile(nb::module_& m)
 
 // Serialization -------------------------------------------------------------
 
-BOOST_CLASS_EXPORT(srrealmodule::nswrap_PeakProfile::PeakProfileWrap)
+BOOST_CLASS_EXPORT_GUID(srrealmodule::LegacyComponent<diffpy::srreal::PeakProfile>,
+    "srrealmodule::nswrap_PeakProfile::PeakProfileWrap")
 
 // End of file

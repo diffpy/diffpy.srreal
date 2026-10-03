@@ -49,8 +49,12 @@ def test_indexed_and_iterated_atoms_follow_survivors(cls):
 
 @pytest.mark.parametrize("cls", ADAPTERS)
 @pytest.mark.parametrize("field", ["xyz_cartn", "uij_cartn"])
-@pytest.mark.parametrize("operation", ["append", "reserve", "delete", "clear", "replace", "load"])
-def test_views_become_safe_snapshots_before_structural_edits(cls, field, operation):
+@pytest.mark.parametrize(
+    "operation", ["append", "reserve", "delete", "clear", "replace", "load"]
+)
+def test_views_become_safe_snapshots_before_structural_edits(
+    cls, field, operation
+):
     adapter = make_structure(cls)
     atom = adapter[0]
     view = getattr(atom, field)

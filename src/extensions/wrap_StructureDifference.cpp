@@ -159,16 +159,18 @@ void wrap_StructureDifference(nb::module_& m)
     using namespace nswrap_StructureDifference;
 
     nb::class_<StructureDifference> sd(m, "StructureDifference",
-            doc_StructureDifference, nb::dynamic_attr());
+            doc_StructureDifference, nb::dynamic_attr(), nb::is_weak_referenceable());
     sd
         .def(nb::init<>())
         .def(nb::init<const StructureDifference&>(), nb::arg("sd"),
                     doc_StructureDifference_init_copy)
         .def(nb::init<StructureAdapterPtr, StructureAdapterPtr>(),
-                    nb::arg("stru0"), nb::arg("stru1"),
+                    nb::arg("stru0").none(), nb::arg("stru1").none(),
                     doc_StructureDifference_init_structures)
-        .def_rw("stru0", &StructureDifference::stru0)
-        .def_rw("stru1", &StructureDifference::stru1)
+        .def_rw("stru0", &StructureDifference::stru0,
+                nb::for_setter(nb::arg("value").none()))
+        .def_rw("stru1", &StructureDifference::stru1,
+                nb::for_setter(nb::arg("value").none()))
         .def_prop_rw("pop0", get_pop0, set_pop0)
         .def_prop_rw("add1", get_add1, set_add1)
         .def_prop_ro("diffmethod",

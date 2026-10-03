@@ -267,7 +267,7 @@ void wrap_BVParametersTable(nb::module_& m)
 {
     using namespace nswrap_BVParametersTable;
 
-    nb::class_<BVParam> bvparam(m, "BVParam", doc_BVParam);
+    nb::class_<BVParam> bvparam(m, "BVParam", doc_BVParam, nb::dynamic_attr(), nb::is_weak_referenceable());
     bvparam
         .def(nb::init<>())
         .def(nb::init<const std::string&, int,
@@ -301,7 +301,7 @@ void wrap_BVParametersTable(nb::module_& m)
         SerializationPickleSuite<BVParam, DICT_GUARD>::bind(bvparam);
 
     nb::class_<BVParametersTable>
-        bvtable(m, "BVParametersTable", doc_BVParametersTable);
+        bvtable(m, "BVParametersTable", doc_BVParametersTable, nb::dynamic_attr(), nb::is_weak_referenceable());
     bvtable
         .def(nb::init<>())
         .def_static("none", singleton_none, doc_BVParametersTable_none)
@@ -345,6 +345,14 @@ void wrap_BVParametersTable(nb::module_& m)
              nb::arg("valence1"),
              doc_BVParametersTable_lookup4)
 
+        .def("setCustom",
+             [](BVParametersTable &obj, const BVParam &bvparam) {
+                 obj.setCustom(bvparam);
+             },
+             nb::arg("bvparm"),
+             doc_BVParametersTable_setCustom1)
+
+        // Also retain the spelling introduced during the migration.
         .def("setCustom",
              [](BVParametersTable &obj, const BVParam &bvparam) {
                  obj.setCustom(bvparam);

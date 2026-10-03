@@ -1,5 +1,6 @@
 """Calculation hooks must execute each contribution exactly once."""
 
+import numpy as np
 import pytest
 
 import diffpy.srreal.srreal_ext as ext
@@ -77,3 +78,70 @@ def test_finish_value_customization_applies_once_from_python_and_cpp():
     assert calc.calls == 1
     calc.eval()
     assert calc.calls == 2
+
+
+@pytest.mark.parametrize(
+    "cls",
+    [
+        ext.StructureAdapter,
+        *[
+            ext.AtomicStructureAdapter,
+            ext.PeriodicStructureAdapter,
+            ext.CrystalStructureAdapter,
+        ],
+    ],
+)
+def test_custom_config_super_runs_once(cls):
+    class Derived(cls):
+        calls = 0
+
+        def countSites(self):
+            return 0
+
+        def _customPQConfig(self, calc):
+            self.calls += 1
+            super()._customPQConfig(calc)
+
+    adapter = Derived()
+    calc = ext.PairQuantity()
+    adapter._customPQConfig(calc)
+    assert adapter.calls == 1
+    calc.setStructure(adapter)
+    assert adapter.calls == 2
+
+
+class CallbackAnisotropyAdapter(ext.StructureAdapter):
+    anisotropy = False
+
+    def clone(self):
+        return self
+
+    def countSites(self):
+        return 2
+
+    def createBondGenerator(self):
+        return ext.BaseBondGenerator(self)
+
+    def siteCartesianPosition(self, index):
+        return [index, 0, 0]
+
+    def siteAtomType(self, index):
+        return "C"
+
+    def siteAnisotropy(self, index):
+        return self.anisotropy
+
+    def siteCartesianUij(self, index):
+        return np.eye(3) * 0.005
+
+
+@pytest.mark.parametrize(
+    "flag", [False, True, 0, 1, np.bool_(True), np.int64(0)]
+)
+def test_python_adapter_truth_values_produce_the_same_pdf(flag):
+    adapter = CallbackAnisotropyAdapter()
+    adapter.anisotropy = flag
+    actual = ext.PDFCalculator(rmax=2)(adapter)
+    adapter.anisotropy = bool(flag)
+    expected = ext.PDFCalculator(rmax=2)(adapter)
+    np.testing.assert_allclose(actual, expected)

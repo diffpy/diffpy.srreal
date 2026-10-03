@@ -31,6 +31,7 @@
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
+#include "srreal_legacy.hpp"
 #include "srreal_registry.hpp"
 
 namespace nb = nanobind;
@@ -243,15 +244,6 @@ class PeakWidthModelWrap :
         mutable std::string mtype;
         wrapper_registry_configurator<PeakWidthModel> mconfigurator;
 
-        // serialization
-        friend class boost::serialization::access;
-        template<class Archive>
-            void serialize(Archive& ar, const unsigned int version)
-        {
-            using boost::serialization::base_object;
-            ar & base_object<PeakWidthModel>(*this);
-        }
-
 };  // class PeakWidthModelWrap
 
 }   // namespace nswrap_PeakWidthModel
@@ -273,7 +265,7 @@ void wrap_PeakWidthModel(nb::module_& m)
                 doc_PeakWidthModel_calculate)
         .def("maxWidth",
                 &PeakWidthModel::maxWidth,
-                nb::arg("stru"), nb::arg("rmin"), nb::arg("rmax"),
+                nb::arg("stru").none(), nb::arg("rmin"), nb::arg("rmax"),
                 doc_PeakWidthModel_maxWidth)
         .def("maxWidth",
                 maxwidthwithpystructure,
@@ -292,8 +284,7 @@ void wrap_PeakWidthModel(nb::module_& m)
         ;
         SerializationPickleSuite<
             PeakWidthModel,
-            DICT_PICKLE,
-            PeakWidthModelWrap>::bind(peakwidthmodel);
+            DICT_PICKLE>::bind(peakwidthmodel);
 
     nb::class_<ConstantPeakWidth, PeakWidthModel> constantpeakwidth(m,
             "ConstantPeakWidth", doc_ConstantPeakWidth);
@@ -316,7 +307,8 @@ void wrap_PeakWidthModel(nb::module_& m)
         ;
         SerializationPickleSuite<JeongPeakWidth, DICT_GUARD>::bind(jeongpeakwidth);
 
-    nb::class_<PeakWidthModelOwner>(m, "PeakWidthModelOwner", doc_PeakWidthModelOwner)
+    nb::class_<PeakWidthModelOwner>(m, "PeakWidthModelOwner", doc_PeakWidthModelOwner,
+            nb::dynamic_attr(), nb::is_weak_referenceable())
         .def(nb::init<>())
         .def_prop_rw("peakwidthmodel",
                 getpwmodel,
@@ -329,6 +321,7 @@ void wrap_PeakWidthModel(nb::module_& m)
 
 // Serialization -------------------------------------------------------------
 
-BOOST_CLASS_EXPORT(srrealmodule::nswrap_PeakWidthModel::PeakWidthModelWrap)
+BOOST_CLASS_EXPORT_GUID(srrealmodule::LegacyComponent<diffpy::srreal::PeakWidthModel>,
+    "srrealmodule::nswrap_PeakWidthModel::PeakWidthModelWrap")
 
 // End of file

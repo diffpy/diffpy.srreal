@@ -33,6 +33,7 @@
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
+#include "srreal_legacy.hpp"
 #include "srreal_registry.hpp"
 
 namespace nb = nanobind;
@@ -138,20 +139,14 @@ class PDFBaselineWrap :
         mutable std::string mtype;
         wrapper_registry_configurator<PDFBaseline> mconfigurator;
 
-        // serialization
-        friend class boost::serialization::access;
-        template<class Archive>
-            void serialize(Archive& ar, const unsigned int version)
-        {
-            using boost::serialization::base_object;
-            ar & base_object<PDFBaseline>(*this);
-        }
-
 };  // class PDFBaselineWrap
 
 
 nb::object callnparray(const PDFBaseline* obj, nb::object& x)
 {
+    // Return a float for Python scalars and an array for array-like inputs.
+    if (PyFloat_Check(x.ptr()) || PyLong_Check(x.ptr()))
+        return nb::float_((*obj)(extractdouble(x)));
     NumPyArray_DoublePtr xx = extractNumPyDoubleArray(x);
     NumPyArray_DoublePtr yy = createNumPyDoubleArrayLike(xx.first);
     double* src = xx.second;
@@ -181,8 +176,7 @@ void wrap_PDFBaseline(nb::module_& m)
         ;
         SerializationPickleSuite<
             PDFBaseline,
-            DICT_PICKLE,
-            PDFBaselineWrap>::bind(pdfbaseline);
+            DICT_PICKLE>::bind(pdfbaseline);
 
     nb::class_<ZeroBaseline, PDFBaseline>
         zerobaseline(m, "ZeroBaseline", doc_ZeroBaseline);
@@ -201,6 +195,7 @@ void wrap_PDFBaseline(nb::module_& m)
 
 // Serialization -------------------------------------------------------------
 
-BOOST_CLASS_EXPORT(srrealmodule::nswrap_PDFBaseline::PDFBaselineWrap)
+BOOST_CLASS_EXPORT_GUID(srrealmodule::LegacyComponent<diffpy::srreal::PDFBaseline>,
+    "srrealmodule::nswrap_PDFBaseline::PDFBaselineWrap")
 
 // End of file

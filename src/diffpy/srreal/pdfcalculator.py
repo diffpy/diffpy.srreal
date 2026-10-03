@@ -18,6 +18,7 @@ Top-level classes for PDF calculation:
     PDFCalculator      -- calculate PDF by peak summation in real space
 """
 
+from diffpy.srreal import srreal_ext as _srreal_ext
 from diffpy.srreal.srreal_ext import DebyePDFCalculator as _DebyePDFCalculator
 from diffpy.srreal.srreal_ext import PDFCalculator as _PDFCalculator
 from diffpy.srreal.srreal_ext import fftftog, fftgtof
@@ -334,5 +335,9 @@ PDFCalculator.stepcut = propertyFromExtDoubleAttr(
 )
 
 # End of class PDFCalculator
+
+# Historical pickles and direct extension imports use these public names.
+_srreal_ext.DebyePDFCalculator = DebyePDFCalculator
+_srreal_ext.PDFCalculator = PDFCalculator
 
 # End of file

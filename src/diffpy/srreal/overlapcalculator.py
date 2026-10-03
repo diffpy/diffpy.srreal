@@ -18,6 +18,7 @@ structure."""
 # exported items, these also makes them show in pydoc.
 __all__ = ["OverlapCalculator"]
 
+from diffpy.srreal import srreal_ext as _srreal_ext
 from diffpy.srreal.srreal_ext import OverlapCalculator as _OverlapCalculator
 from diffpy.srreal.wraputils import (
     propertyFromExtDoubleAttr,
@@ -78,5 +79,8 @@ OverlapCalculator.rmaxused = propertyFromExtDoubleAttr(
         " atom radius in the structure or rmax."
     ),
 )
+
+# Historical pickles and direct extension imports use this public name.
+_srreal_ext.OverlapCalculator = OverlapCalculator
 
 # End of file

@@ -91,7 +91,8 @@ void wrap_EventTicker(nb::module_& m)
 {
     using namespace nswrap_EventTicker;
 
-    nb::class_<EventTicker> eventticker(m, "EventTicker", doc_EventTicker);
+    nb::class_<EventTicker> eventticker(m, "EventTicker", doc_EventTicker,
+            nb::dynamic_attr(), nb::is_weak_referenceable());
     eventticker
         .def(nb::init<>())
         .def(nb::init<const EventTicker&>(), doc_EventTicker_cp)

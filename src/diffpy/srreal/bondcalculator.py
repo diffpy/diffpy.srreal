@@ -17,6 +17,7 @@
 # exported items, these also makes them show in pydoc.
 __all__ = ["BondCalculator"]
 
+from diffpy.srreal import srreal_ext as _srreal_ext
 from diffpy.srreal.srreal_ext import BondCalculator as _BondCalculator
 from diffpy.srreal.wraputils import (
     propertyFromExtDoubleAttr,
@@ -69,5 +70,8 @@ BondCalculator.rmax = propertyFromExtDoubleAttr(
     "Upper bound for the bond distances. [5 A]",
 )
 
+
+# Historical pickles and direct extension imports use this public name.
+_srreal_ext.BondCalculator = BondCalculator
 
 # End of file

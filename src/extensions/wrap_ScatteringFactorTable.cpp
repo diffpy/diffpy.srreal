@@ -36,6 +36,7 @@
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
+#include "srreal_legacy.hpp"
 #include "srreal_registry.hpp"
 
 namespace nb = nanobind;
@@ -332,20 +333,13 @@ class ScatteringFactorTableWrap :
         mutable std::string mradiationtype;
         wrapper_registry_configurator<ScatteringFactorTable> mconfigurator;
 
-        // serialization
-        friend class boost::serialization::access;
-        template<class Archive>
-            void serialize(Archive& ar, const unsigned int version)
-        {
-            using boost::serialization::base_object;
-            ar & base_object<ScatteringFactorTable>(*this);
-        }
-
 };  // class ScatteringFactorTableWrap
 
 nb::object lookupnparray(const ScatteringFactorTable& sftb,
         std::string smbl, nb::object& qobj)
 {
+    if (PyFloat_Check(qobj.ptr()) || PyLong_Check(qobj.ptr()))
+        return nb::float_(sftb.lookup(smbl, extractdouble(qobj)));
     NumPyArray_DoublePtr aa = extractNumPyDoubleArray(qobj);
     NumPyArray_DoublePtr bb = createNumPyDoubleArrayLike(aa.first);
     double* src = aa.second;
@@ -370,7 +364,7 @@ void wrap_ScatteringFactorTable(nb::module_& m)
     typedef ScatteringFactorTableOwner SFTOwner;
 
     nb::class_<ScatteringFactorTable, ScatteringFactorTableWrap>
-        sftb(m, "ScatteringFactorTable", nb::dynamic_attr(), doc_ScatteringFactorTable);
+        sftb(m, "ScatteringFactorTable", nb::dynamic_attr(), nb::is_weak_referenceable(), doc_ScatteringFactorTable);
     wrap_registry_methods(sftb)
         .def(nb::init<>())
         .def("radiationType",
@@ -423,8 +417,7 @@ void wrap_ScatteringFactorTable(nb::module_& m)
         ;
         SerializationPickleSuite<
             ScatteringFactorTable,
-            DICT_PICKLE,
-            ScatteringFactorTableWrap>::bind(sftb);
+            DICT_PICKLE>::bind(sftb);
 
     nb::class_<SFTXray, ScatteringFactorTable> sftxray(m,
             "SFTXray", doc_SFTXray);
@@ -455,7 +448,7 @@ void wrap_ScatteringFactorTable(nb::module_& m)
         SerializationPickleSuite<SFTElectronNumber, DICT_GUARD>::bind(sftelectronnumber);
 
     nb::class_<ScatteringFactorTableOwner>(m, "ScatteringFactorTableOwner",
-            doc_ScatteringFactorTableOwner)
+            doc_ScatteringFactorTableOwner, nb::dynamic_attr(), nb::is_weak_referenceable())
         .def(nb::init<>())
         .def_prop_rw("scatteringfactortable",
                 getsftable,
@@ -495,6 +488,7 @@ void wrap_ScatteringFactorTable(nb::module_& m)
 
 // Serialization -------------------------------------------------------------
 
-BOOST_CLASS_EXPORT(srrealmodule::nswrap_ScatteringFactorTable::ScatteringFactorTableWrap)
+BOOST_CLASS_EXPORT_GUID(srrealmodule::LegacyComponent<diffpy::srreal::ScatteringFactorTable>,
+    "srrealmodule::nswrap_ScatteringFactorTable::ScatteringFactorTableWrap")
 
 // End of file

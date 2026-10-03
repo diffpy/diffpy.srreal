@@ -156,7 +156,8 @@ void wrap_BaseBondGenerator(nb::module_& m)
     using namespace diffpy::srreal;
     using namespace nswrap_BaseBondGenerator;
 
-    nb::class_<BaseBondGenerator>(m, "BaseBondGenerator", doc_BaseBondGenerator)
+    nb::class_<BaseBondGenerator>(m, "BaseBondGenerator", doc_BaseBondGenerator,
+            nb::dynamic_attr(), nb::is_weak_referenceable())
         .def(nb::init<StructureAdapterPtr>())
         .def("rewind", &BaseBondGenerator::rewind,
                 doc_BaseBondGenerator_rewind)

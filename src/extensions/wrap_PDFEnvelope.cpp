@@ -35,6 +35,7 @@
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
+#include "srreal_legacy.hpp"
 #include "srreal_registry.hpp"
 
 namespace nb = nanobind;
@@ -170,20 +171,13 @@ class PDFEnvelopeWrap :
         mutable std::string mtype;
         wrapper_registry_configurator<PDFEnvelope> mconfigurator;
 
-        // serialization
-        friend class boost::serialization::access;
-        template<class Archive>
-            void serialize(Archive& ar, const unsigned int version)
-        {
-            using boost::serialization::base_object;
-            ar & base_object<PDFEnvelope>(*this);
-        }
-
 };  // class PDFEnvelopeWrap
 
 
 nb::object callnparray(const PDFEnvelope* obj, nb::object& x)
 {
+    if (PyFloat_Check(x.ptr()) || PyLong_Check(x.ptr()))
+        return nb::float_((*obj)(extractdouble(x)));
     NumPyArray_DoublePtr xx = extractNumPyDoubleArray(x);
     NumPyArray_DoublePtr yy = createNumPyDoubleArrayLike(xx.first);
     double* src = xx.second;
@@ -213,8 +207,7 @@ void wrap_PDFEnvelope(nb::module_ &m)
         ;
         SerializationPickleSuite<
             PDFEnvelope,
-            DICT_PICKLE,
-            PDFEnvelopeWrap>::bind(pdfenvelope);
+            DICT_PICKLE>::bind(pdfenvelope);
 
     nb::class_<QResolutionEnvelope, PDFEnvelope> qresenvelope(m,
             "QResolutionEnvelope", doc_QResolutionEnvelope);
@@ -247,6 +240,7 @@ void wrap_PDFEnvelope(nb::module_ &m)
 
 // Serialization -------------------------------------------------------------
 
-BOOST_CLASS_EXPORT(srrealmodule::nswrap_PDFEnvelope::PDFEnvelopeWrap)
+BOOST_CLASS_EXPORT_GUID(srrealmodule::LegacyComponent<diffpy::srreal::PDFEnvelope>,
+    "srrealmodule::nswrap_PDFEnvelope::PDFEnvelopeWrap")
 
 // End of file

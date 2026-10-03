@@ -17,6 +17,7 @@
 # exported items
 __all__ = ["BVSCalculator"]
 
+from diffpy.srreal import srreal_ext as _srreal_ext
 from diffpy.srreal.srreal_ext import BVSCalculator as _BVSCalculator
 from diffpy.srreal.wraputils import (
     propertyFromExtDoubleAttr,
@@ -91,5 +92,8 @@ BVSCalculator.rmax = propertyFromExtDoubleAttr(
     ),
 )
 
+
+# Historical pickles and direct extension imports use this public name.
+_srreal_ext.BVSCalculator = BVSCalculator
 
 # End of file

@@ -30,12 +30,15 @@
 #include <memory>
 
 #include <diffpy/serialization.hpp>
+#include <diffpy/serialization.ipp>
 #include <diffpy/srreal/forwardtypes.hpp>
 
 namespace nb = nanobind;
 
 namespace srrealmodule {
 
+diffpy::srreal::StructureAdapterPtr pickle_structure(
+        diffpy::srreal::StructureAdapterPtr);
 void prepare_structure_load(diffpy::srreal::StructureAdapter&);
 
 struct PythonTrampolineTag
@@ -109,11 +112,28 @@ nb::object get_instance_dict(nb::handle obj)
 
 
 inline
+nb::tuple pickle_initargs(nb::handle obj)
+{
+    PyObject* method = PyObject_GetAttrString(obj.ptr(), "__getinitargs__");
+    if (!method)
+    {
+        if (!PyErr_ExceptionMatches(PyExc_AttributeError))
+            nb::raise_python_error();
+        PyErr_Clear();
+        return nb::make_tuple();
+    }
+    nb::object args = nb::steal<nb::object>(method)();
+    if (!nb::isinstance<nb::tuple>(args))
+        throw nb::type_error("__getinitargs__ must return a tuple");
+    return nb::borrow<nb::tuple>(args);
+}
+
+
+inline
 bool state_manages_dict(nb::handle obj, bool default_policy)
 {
     PyObject *flag =
-        PyObject_GetAttrString(reinterpret_cast<PyObject *>(Py_TYPE(obj.ptr())),
-                               "__getstate_manages_dict__");
+        PyObject_GetAttrString(obj.ptr(), "__getstate_manages_dict__");
     if (!flag)
     {
         if (PyErr_ExceptionMatches(PyExc_AttributeError))
@@ -124,10 +144,9 @@ bool state_manages_dict(nb::handle obj, bool default_policy)
         nb::raise_python_error();
     }
     nb::object flag_obj = nb::steal<nb::object>(flag);
-    if (flag_obj.is_none())  return false;
-    int rv = PyObject_IsTrue(flag_obj.ptr());
-    if (rv < 0)  nb::raise_python_error();
-    return rv != 0;
+    int result = PyObject_IsTrue(flag_obj.ptr());
+    if (result < 0) nb::raise_python_error();
+    return result != 0;
 }
 
 
@@ -285,7 +304,7 @@ enum PickleDictPolicy
     DICT_DISCARD
 };
 
-template <class T, PickleDictPolicy dictpolicy=DICT_GUARD, class Storage=T>
+template <class T, PickleDictPolicy dictpolicy=DICT_GUARD>
 class SerializationPickleSuite
 {
     public:
@@ -322,7 +341,7 @@ class SerializationPickleSuite
             }
             if constexpr (dictpolicy == DICT_GUARD)
             {
-                ensure_dict_is_managed_or_empty(obj, false);
+                ensure_dict_is_managed_or_empty(obj, state_manages_dict(obj, false));
             }
             return nb::make_tuple(content);
         }
@@ -346,9 +365,16 @@ class SerializationPickleSuite
 
         static nb::tuple reduce(nb::object obj)
         {
+            // Check independently of __getstate__: a Python override may not
+            // call the native implementation and could silently lose metadata.
+            if constexpr (dictpolicy != DICT_DISCARD)
+            {
+                ensure_dict_is_managed_or_empty(obj,
+                        state_manages_dict(obj, dictpolicy == DICT_PICKLE));
+            }
             return nb::make_tuple(
                 runtime_type(obj),
-                nb::make_tuple(),
+                pickle_initargs(obj),
                 obj.attr("__getstate__")()
             );
         }
@@ -361,13 +387,13 @@ class SerializationPickleSuite
 };  // class SerializationPickleSuite
 
 
-template <class T, PickleDictPolicy dictpolicy=DICT_GUARD, class Storage=T>
+template <class T, PickleDictPolicy dictpolicy=DICT_GUARD>
 class PairQuantityPickleSuite :
-    public SerializationPickleSuite<T, dictpolicy, Storage>
+    public SerializationPickleSuite<T, dictpolicy>
 {
     private:
 
-        typedef SerializationPickleSuite<T, dictpolicy, Storage> Super;
+        typedef SerializationPickleSuite<T, dictpolicy> Super;
 
     public:
 
@@ -417,16 +443,7 @@ class PairQuantityPickleSuite :
                 }
             } restore{structure_slot, pstru};
 
-            nb::object state0;
-            try
-            {
-                state0 = Super::getstate(obj);
-            }
-            catch (...)
-            {
-                restore.restore();
-                throw;
-            }
+            nb::object state0 = Super::getstate(obj);
             restore.restore();
             return nb::make_tuple(state0, stru);
         }
@@ -454,15 +471,31 @@ class PairQuantityPickleSuite :
 };  // class PairQuantityPickleSuite
 
 
-template <class T, class Storage=T>
+template <class T>
 class StructureAdapterPickleSuite
 {
+    private:
+
+        // Boost.Python serialized the trampoline, whose only serialized
+        // member was its C++ base. Use the same archive layout for reading
+        // and writing, without constructing a trampoline outside Python.
+        struct WrappedState
+        {
+            T& value;
+            template <class Archive>
+            void serialize(Archive& ar, const unsigned int)
+            {
+                ar & value;
+            }
+        };
+
     public:
 
         template <typename C>
         static void bind(C& cls)
         {
             cls
+                .def("__getinitargs__", getinitargs)
                 .def("__getstate__", getstate)
                 .def("__setstate__", setstate)
                 .def("__reduce__", reduce)
@@ -471,15 +504,27 @@ class StructureAdapterPickleSuite
         }
 
 
+        static nb::tuple getinitargs(nb::object obj)
+        {
+            diffpy::srreal::StructureAdapterPtr adpt =
+                pickle_structure(nb::cast<diffpy::srreal::StructureAdapterPtr>(obj));
+            // Python subclasses restore their data through __setstate__.
+            // Native adapters need the archive constructor, including clones
+            // and otherwise unexposed adapter types such as EMPTY.
+            if (frompython(adpt)) return nb::make_tuple();
+            return nb::make_tuple(serialization_tobytes(adpt));
+        }
+
+
         static nb::tuple getstate(nb::object obj)
         {
             diffpy::srreal::StructureAdapterPtr adpt =
-                nb::cast<diffpy::srreal::StructureAdapterPtr>(obj);
+                pickle_structure(nb::cast<diffpy::srreal::StructureAdapterPtr>(obj));
             nb::object content = nb::none();
             if (frompython(adpt))
             {
-                const T& tobj = nb::cast<const T&>(obj);
-                content = serialization_tobytes(tobj);
+                WrappedState state{nb::cast<T&>(obj)};
+                content = serialization_tobytes(state);
             }
             return nb::make_tuple(content, get_instance_dict(obj));
         }
@@ -497,7 +542,8 @@ class StructureAdapterPickleSuite
             {
                 T& tobj = nb::cast<T&>(obj);
                 prepare_structure_load(tobj);
-                diffpy::serialization_fromstring(tobj, bytes_to_string(st0));
+                WrappedState wrapped{tobj};
+                diffpy::serialization_fromstring(wrapped, bytes_to_string(st0));
             }
             // restore the object's __dict__
             restore_instance_dict(obj, state[1]);
@@ -506,12 +552,13 @@ class StructureAdapterPickleSuite
         static nb::tuple reduce(nb::object obj)
         {
             diffpy::srreal::StructureAdapterPtr adpt =
-                nb::cast<diffpy::srreal::StructureAdapterPtr>(obj);
+                pickle_structure(nb::cast<diffpy::srreal::StructureAdapterPtr>(obj));
             if (frompython(adpt))
             {
+                ensure_dict_is_managed_or_empty(obj, state_manages_dict(obj, true));
                 return nb::make_tuple(
                     runtime_type(obj),
-                    nb::make_tuple(),
+                    pickle_initargs(obj),
                     obj.attr("__getstate__")()
                 );
             }

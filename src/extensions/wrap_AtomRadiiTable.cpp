@@ -22,6 +22,7 @@
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
+#include "srreal_legacy.hpp"
 #include "srreal_registry.hpp"
 
 #include <diffpy/srreal/AtomRadiiTable.hpp>
@@ -219,15 +220,6 @@ class AtomRadiiTableWrap :
         mutable std::string mtype;
         wrapper_registry_configurator<AtomRadiiTable> mconfigurator;
 
-        // serialization
-        friend class boost::serialization::access;
-        template<class Archive>
-            void serialize(Archive& ar, const unsigned int version)
-        {
-            using boost::serialization::base_object;
-            ar & base_object<AtomRadiiTable>(*this);
-        }
-
 };  // class AtomRadiiTableWrap
 
 }   // namespace nswrap_AtomRadiiTable
@@ -240,7 +232,7 @@ void wrap_AtomRadiiTable(nb::module_& m)
 
     nb::class_<AtomRadiiTable, AtomRadiiTableWrap>
         atomradiitable(m, "AtomRadiiTable", doc_AtomRadiiTable,
-                   nb::dynamic_attr());
+                   nb::dynamic_attr(), nb::is_weak_referenceable());
     wrap_registry_methods(atomradiitable)
         .def(nb::init<>())
         .def("lookup",
@@ -272,8 +264,7 @@ void wrap_AtomRadiiTable(nb::module_& m)
         ;
         SerializationPickleSuite<
             AtomRadiiTable,
-            DICT_PICKLE,
-            AtomRadiiTableWrap>::bind(atomradiitable);
+            DICT_PICKLE>::bind(atomradiitable);
 
     nb::class_<ConstantRadiiTable, AtomRadiiTable>
         constantradiitable(m, "ConstantRadiiTable", doc_ConstantRadiiTable);
@@ -304,6 +295,7 @@ void wrap_AtomRadiiTable(nb::module_& m)
 
 // Serialization -------------------------------------------------------------
 
-BOOST_CLASS_EXPORT(srrealmodule::nswrap_AtomRadiiTable::AtomRadiiTableWrap)
+BOOST_CLASS_EXPORT_GUID(srrealmodule::LegacyComponent<diffpy::srreal::AtomRadiiTable>,
+    "srrealmodule::nswrap_AtomRadiiTable::AtomRadiiTableWrap")
 
 // End of file
