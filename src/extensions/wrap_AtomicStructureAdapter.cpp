@@ -33,6 +33,7 @@
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
 #include "srreal_validators.hpp"
+#include "srreal_atom.hpp"
 
 namespace srrealmodule {
 
@@ -250,80 +251,100 @@ implicitly called from createBondGenerator.\n\
 
 // Wrapper helpers for the class Atom
 
-nb::object get_xyz_cartn(Atom& a)
+nb::object get_xyz_cartn(PythonAtom& a)
 {
-    return viewAsNumPyArray(a.xyz_cartn);
+    return pin_atom_view(a, viewAsNumPyArray(a.value().xyz_cartn));
 }
 
-void set_xyz_cartn(Atom& a, nb::object value)
+void set_xyz_cartn(PythonAtom& a, nb::object value)
 {
-    assignR3Vector(a.xyz_cartn, value);
+    assignR3Vector(a.value().xyz_cartn, value);
 }
 
 
-nb::object get_uij_cartn(Atom& a)
+nb::object get_uij_cartn(PythonAtom& a)
 {
-    return viewAsNumPyArray(a.uij_cartn);
+    return pin_atom_view(a, viewAsNumPyArray(a.value().uij_cartn));
 }
 
-void set_uij_cartn(Atom& a, nb::object& value)
+void set_uij_cartn(PythonAtom& a, nb::object& value)
 {
-    assignR3Matrix(a.uij_cartn, value);
+    assignR3Matrix(a.value().uij_cartn, value);
 }
 
 
 template <const int i>
-double get_xyz(const Atom& a)
+double get_xyz(const PythonAtom& a)
 {
-    return a.xyz_cartn[i];
+    return a.value().xyz_cartn[i];
 }
 
 template <const int i>
-void set_xyz(Atom& a, nb::object value)
+void set_xyz(PythonAtom& a, nb::object value)
 {
-    a.xyz_cartn[i] = extractdouble(value);
+    a.value().xyz_cartn[i] = extractdouble(value);
 }
 
 
-double get_occ(const Atom& a)
+double get_occ(const PythonAtom& a)
 {
-    return a.occupancy;
+    return a.value().occupancy;
 }
 
-void set_occ(Atom& a, nb::object value)
+void set_occ(PythonAtom& a, nb::object value)
 {
-    a.occupancy = extractdouble(value);
+    a.value().occupancy = extractdouble(value);
 }
 
 
-bool get_anisotropy(const Atom& a)
+bool get_anisotropy(const PythonAtom& a)
 {
-    return a.anisotropy;
+    return a.value().anisotropy;
 }
 
-void set_anisotropy(Atom& a, nb::object value)
+void set_anisotropy(PythonAtom& a, nb::object value)
 {
     int truth = PyObject_IsTrue(value.ptr());
     if (truth < 0)
         nb::raise_python_error();
-    a.anisotropy = truth != 0;
+    a.value().anisotropy = truth != 0;
 }
 
 
 template <const int i, const int j>
-double get_uc(const Atom& a)
+double get_uc(const PythonAtom& a)
 {
     assert(i <= j);
-    return a.uij_cartn(i, j);
+    return a.value().uij_cartn(i, j);
 }
 
 template <const int i, const int j>
-void set_uc(Atom& a, nb::object value)
+void set_uc(PythonAtom& a, nb::object value)
 {
     assert(i <= j);
-    a.uij_cartn(i, j) = extractdouble(value);
-    if (i != j)  a.uij_cartn(j, i) = a.uij_cartn(i, j);
+    a.value().uij_cartn(i, j) = extractdouble(value);
+    if (i != j)  a.value().uij_cartn(j, i) = a.value().uij_cartn(i, j);
 }
+
+class AtomPickleSuite : public SerializationPickleSuite<Atom>
+{
+    public:
+        template <class C>
+        static void bind(C& cls)
+        {
+            cls.def("__getstate__", [](nb::object obj) {
+                ensure_dict_is_managed_or_empty(obj, state_manages_dict(obj, false));
+                return nb::make_tuple(serialization_tobytes(nb::cast<PythonAtom&>(obj).value()));
+            })
+            .def("__setstate__", [](nb::object obj, nb::tuple state) {
+                ensure_tuple_length(state, 1);
+                PythonAtom& atom = nb::cast<PythonAtom&>(obj);
+                diffpy::serialization_fromstring(atom.value(), bytes_to_string(state[0]));
+            })
+            .def("__reduce__", reduce);
+            cls.attr("__getstate_manages_dict__") = nb::none();
+        }
+};
 
 // template wrapper class for overloading of clone and _customPQConfig
 
@@ -390,6 +411,31 @@ class MakeWrapper :
 
 };  // class MakeWrapper
 
+template <class T>
+StructureDifference atomadapter_diff(std::shared_ptr<T> self,
+        StructureAdapterConstPtr other)
+{
+    // Establish shared_from_this() ownership, and allow Python overrides to
+    // call super().diff() without dispatching back into the same override.
+    auto* wrapper = dynamic_cast<MakeWrapper<T>*>(self.get());
+    return wrapper ? wrapper->default_diff(other) : self->diff(other);
+}
+
+template <class T>
+StructureAdapterPtr atomadapter_clone(const T& self)
+{
+    auto* wrapper = dynamic_cast<const MakeWrapper<T>*>(&self);
+    return wrapper ? wrapper->default_clone() : self.clone();
+}
+
+template <class T>
+void atomadapter_customPQConfig(const T& self, PairQuantity* pq)
+{
+    auto* wrapper = dynamic_cast<const MakeWrapper<T>*>(&self);
+    if (wrapper) wrapper->default_customPQConfig(pq);
+    else self.customPQConfig(pq);
+}
+
 // Wrapper helpers for class AtomicStructureAdapter
 
 typedef MakeWrapper<AtomicStructureAdapter> AtomicStructureAdapterWrap;
@@ -400,22 +446,22 @@ class AtomAdapterIterator
 {
     public:
 
-        explicit AtomAdapterIterator(AtomicStructureAdapter& container) :
-            mcontainer(&container), midx(0)
+        explicit AtomAdapterIterator(nb::object container) :
+            mcontainer(std::move(container)), midx(0)
         { }
 
-        Atom& next()
+        nb::object next()
         {
-            if (midx >= mcontainer->size())
+            if (midx >= nb::cast<AtomicStructureAdapter&>(mcontainer).size())
             {
                 throw nb::stop_iteration();
             }
-            return (*mcontainer)[static_cast<int>(midx++)];
+            return atom_reference(mcontainer, midx++);
         }
 
     private:
 
-        AtomicStructureAdapter* mcontainer;
+        nb::object mcontainer;
         size_t midx;
 
 };
@@ -435,24 +481,31 @@ class atomadapter_indexing : public nb::def_visitor<atomadapter_indexing>
                     return container.size();
                 })
                 .def("__getitem__",
-                    [](Container& container, int idx) -> Atom& {
-                        return container[normalize_index(container, idx)];
-                    },
-                    nb::rv_policy::reference_internal)
+                    [](nb::object owner, int idx) {
+                        auto& container = nb::cast<Container&>(owner);
+                        return atom_reference(owner, normalize_index(container, idx));
+                    })
                 .def("__getitem__", get_slice)
                 .def("__iter__",
-                    [](Container& container) {
+                    [](nb::object container) {
                         return AtomAdapterIterator(container);
-                    },
-                    nb::keep_alive<0,1>())
-                .def("__setitem__",
-                    [](Container& container, int idx, const Atom& atom) {
-                        container[normalize_index(container, idx)] = atom;
                     })
+                .def("__setitem__",
+                    [](Container& container, int idx, const PythonAtom& atom) {
+                        const int i = normalize_index(container, idx);
+                        Atom value = atom.value();
+                        replace_atom_references(container, i, i + 1, 1);
+                        container[i] = value;
+                    })
+                .def("__setitem__", set_slice)
                 .def("__delitem__",
                     [](Container& container, int idx) {
-                        container.erase(normalize_index(container, idx));
+                        const int i = normalize_index(container, idx);
+                        replace_atom_references(container, i, i + 1, 0);
+                        container.erase(i);
                     })
+                .def("__delitem__", delete_slice)
+                .def("extend", extend, nb::arg("atoms"))
                 ;
         }
 
@@ -486,10 +539,75 @@ class atomadapter_indexing : public nb::def_visitor<atomadapter_indexing>
         }
 
 
-        static void
-        append(Container& container, data_type const& v)
+        static std::vector<Atom> extract_atoms(nb::handle values)
         {
-            container.append(v);
+            std::vector<Atom> atoms;
+            if (nb::isinstance<PythonAtom>(values))
+                atoms.push_back(nb::cast<const PythonAtom&>(values).value());
+            else
+            {
+                for (nb::handle value : nb::borrow<nb::object>(values))
+                {
+                    const PythonAtom* atom = nullptr;
+                    if (!nb::try_cast(value, atom, false) || !atom)
+                        throw nb::type_error("expected an Atom in the replacement sequence");
+                    atoms.push_back(atom->value());
+                }
+            }
+            return atoms;
+        }
+
+        static void extend(Container& container, nb::object values)
+        {
+            auto atoms = extract_atoms(values);
+            if (atoms.empty()) return;
+            prepare_atom_resize(container);
+            container.insert(container.end(), atoms.begin(), atoms.end());
+        }
+
+        static void set_slice(Container& container, nb::slice slice, nb::object values)
+        {
+            auto [first, last, step, count] = slice.compute(container.size());
+            auto atoms = extract_atoms(values);
+            if (step != 1)
+            {
+                if (atoms.size() != count)
+                    throw nb::value_error("extended slice and replacement have different sizes");
+                Py_ssize_t index = first;
+                for (size_t i = 0; i < count; ++i, index += step)
+                {
+                    replace_atom_references(container, index, index + 1, 1);
+                    container[static_cast<int>(index)] = atoms[i];
+                }
+                return;
+            }
+            last = first + count;
+            replace_atom_references(container, first, last, atoms.size());
+            container.erase(container.begin() + first, container.begin() + last);
+            container.insert(container.begin() + first, atoms.begin(), atoms.end());
+        }
+
+        static void delete_slice(Container& container, nb::slice slice)
+        {
+            auto [first, last, step, count] = slice.compute(container.size());
+            if (!count) return;
+            if (step == 1)
+            {
+                last = first + count;
+                replace_atom_references(container, first, last, 0);
+                container.erase(container.begin() + first, container.begin() + last);
+                return;
+            }
+            std::vector<int> indices;
+            Py_ssize_t index = first;
+            for (size_t i = 0; i < count; ++i, index += step)
+                indices.push_back(static_cast<int>(index));
+            std::sort(indices.rbegin(), indices.rend());
+            for (int i : indices)
+            {
+                replace_atom_references(container, i, i + 1, 0);
+                container.erase(i);
+            }
         }
 
     private:
@@ -503,27 +621,32 @@ class atomadapter_indexing : public nb::def_visitor<atomadapter_indexing>
 };
 
 
-void atomadapter_insert(AtomicStructureAdapter& adpt, const Atom& a, int idx)
+void atomadapter_insert(AtomicStructureAdapter& adpt, const PythonAtom& atom, int idx)
 {
     ensure_index_bounds(idx, -int(adpt.size()), adpt.size() + 1);
-    int idx1 = (idx >= 0) ? idx : int(adpt.size()) - idx;
-    adpt.insert(idx1, a);
+    const int index = idx >= 0 ? idx : int(adpt.size()) + idx;
+    Atom value = atom.value();
+    replace_atom_references(adpt, index, index, 1);
+    adpt.insert(index, value);
 }
 
 
-Atom atomadapter_pop(AtomicStructureAdapter& adpt, int idx)
+PythonAtom atomadapter_pop(AtomicStructureAdapter& adpt, int idx)
 {
     ensure_index_bounds(idx, -int(adpt.size()), adpt.size());
-    int idx1 = (idx >= 0) ? idx : int(adpt.size()) - idx;
-    Atom a = adpt[idx1];
-    adpt.erase(idx1);
-    return a;
+    const int index = idx >= 0 ? idx : int(adpt.size()) + idx;
+    Atom value = adpt[index];
+    replace_atom_references(adpt, index, index + 1, 0);
+    adpt.erase(index);
+    return PythonAtom(value);
 }
 
 
 void atomadapter_reserve(AtomicStructureAdapter& adpt, int sz)
 {
     ensure_non_negative(sz);
+    if (static_cast<size_t>(sz) <= adpt.size()) return;
+    prepare_atom_resize(adpt);
     adpt.reserve(sz);
 }
 
@@ -572,19 +695,37 @@ crystaladapter_getsymop(const CrystalStructureAdapter& adpt, int idx)
 }
 
 
-DECLARE_PYLIST_METHOD_WRAPPER1(getEquivalentAtoms, getEquivalentAtoms_aslist)
+template <class Range>
+nb::list atoms_aslist(const Range& atoms)
+{
+    nb::list result;
+    for (const Atom& atom : atoms) result.append(PythonAtom(atom));
+    return result;
+}
 
 nb::object crystaladapter_getequivalentatoms(
         const CrystalStructureAdapter& adpt, int idx)
 {
     ensure_index_bounds(idx, 0, adpt.countSymOps());
-    return getEquivalentAtoms_aslist(adpt, idx);
+    return atoms_aslist(adpt.getEquivalentAtoms(idx));
 }
 
 
-DECLARE_PYLIST_METHOD_WRAPPER1(expandLatticeAtom, expandLatticeAtom_aslist)
+nb::list expandLatticeAtom_aslist(const CrystalStructureAdapter& adpt,
+        const PythonAtom& atom)
+{
+    return atoms_aslist(adpt.expandLatticeAtom(atom.value()));
+}
 
 }   // namespace nswrap_AtomicStructureAdapter
+
+void prepare_structure_load(diffpy::srreal::StructureAdapter& adapter)
+{
+    if (auto* atoms = dynamic_cast<AtomicStructureAdapter*>(&adapter))
+    {
+        replace_atom_references(*atoms, 0, atoms->size(), 0);
+    }
+}
 
 // declare shared docstrings from wrap_StructureAdapter.cpp
 
@@ -600,18 +741,31 @@ void wrap_AtomicStructureAdapter(nb::module_& m)
     using diffpy::srreal::hash_value;
 
     // class Atom
-    nb::class_<Atom> atom_class(m, "Atom", doc_Atom);
+    nb::class_<PythonAtom> atom_class(m, "Atom", doc_Atom,
+            nb::dynamic_attr(), nb::is_weak_referenceable());
     // first define copy constructor and property helper methods
     atom_class
         .def(nb::init<>())
-        .def(nb::init<const Atom&>(), nb::arg("atom"), doc_Atom_init_copy)
-        .def(nb::self == nb::self)
-        .def(nb::self != nb::self)
-        .def(nb::self < nb::self)
-        .def(nb::self > nb::self)
-        .def(nb::self <= nb::self)
-        .def(nb::self >= nb::self)
-        .def("__hash__", static_cast<size_t (*)(const Atom&)>(&hash_value))
+        .def(nb::init<const PythonAtom&>(), nb::arg("atom"), doc_Atom_init_copy)
+        .def("__eq__", [](const PythonAtom& a, const PythonAtom& b) {
+            return a.value() == b.value();
+        }, nb::is_operator())
+        .def("__ne__", [](const PythonAtom& a, const PythonAtom& b) {
+            return a.value() != b.value();
+        }, nb::is_operator())
+        .def("__lt__", [](const PythonAtom& a, const PythonAtom& b) {
+            return a.value() < b.value();
+        }, nb::is_operator())
+        .def("__gt__", [](const PythonAtom& a, const PythonAtom& b) {
+            return a.value() > b.value();
+        }, nb::is_operator())
+        .def("__le__", [](const PythonAtom& a, const PythonAtom& b) {
+            return a.value() <= b.value();
+        }, nb::is_operator())
+        .def("__ge__", [](const PythonAtom& a, const PythonAtom& b) {
+            return a.value() >= b.value();
+        }, nb::is_operator())
+        .def("__hash__", [](const PythonAtom& a) { return hash_value(a.value()); })
         .def("_get_xyz_cartn",
                 get_xyz_cartn,
                 nb::keep_alive<0,1>())
@@ -621,7 +775,9 @@ void wrap_AtomicStructureAdapter(nb::module_& m)
         ;
     // now we can finalize the Atom class interface
     atom_class
-        .def_rw("atomtype", &Atom::atomtype)
+        .def_prop_rw("atomtype",
+            [](const PythonAtom& a) { return a.value().atomtype; },
+            [](PythonAtom& a, const std::string& value) { a.value().atomtype = value; })
         .def_prop_rw("xyz_cartn",
                 get_xyz_cartn,
                 set_xyz_cartn,
@@ -631,6 +787,7 @@ void wrap_AtomicStructureAdapter(nb::module_& m)
         .def_prop_rw("zc", get_xyz<2>, set_xyz<2>, doc_Atom_xic)
         .def_prop_rw("occupancy", get_occ, set_occ, doc_Atom_occ)
         .def_prop_rw("anisotropy", get_anisotropy, set_anisotropy,
+                nb::for_setter(nb::arg("value").none()),
                 doc_Atom_anisotropy)
         .def_prop_rw("uij_cartn",
                 get_uij_cartn,
@@ -643,14 +800,13 @@ void wrap_AtomicStructureAdapter(nb::module_& m)
         .def_prop_rw("uc13", get_uc<0, 2>, set_uc<0, 2>, doc_Atom_uijc)
         .def_prop_rw("uc23", get_uc<1, 2>, set_uc<1, 2>, doc_Atom_uijc)
         ;
-        SerializationPickleSuite<Atom, DICT_GUARD>::bind(atom_class);
+        AtomPickleSuite::bind(atom_class);
 
     nb::class_<AtomAdapterIterator>(m, "_AtomicStructureAdapterIterator")
         .def("__iter__", [](AtomAdapterIterator& it) -> AtomAdapterIterator& {
             return it;
         }, nb::rv_policy::reference_internal)
-        .def("__next__", &AtomAdapterIterator::next,
-            nb::rv_policy::reference_internal)
+        .def("__next__", &AtomAdapterIterator::next)
         ;
 
     // class AtomicStructureAdapter
@@ -669,32 +825,40 @@ void wrap_AtomicStructureAdapter(nb::module_& m)
         .def(nb::self == nb::self)
         .def(nb::self != nb::self)
         .def("clone",
-                &AtomicStructureAdapter::clone,
+                atomadapter_clone<AtomicStructureAdapter>,
                 doc_AtomicStructureAdapter_clone)
         .def("_customPQConfig",
-                &AtomicStructureAdapter::customPQConfig,
+                atomadapter_customPQConfig<AtomicStructureAdapter>,
                 nb::arg("pqobj"),
                 doc_StructureAdapter__customPQConfig)
         .def("diff",
-                &AtomicStructureAdapter::diff,
-                nb::arg("other"),
+                atomadapter_diff<AtomicStructureAdapter>,
+                nb::arg("other").none(),
                 doc_StructureAdapter_diff)
         .def("insert", atomadapter_insert,
-                nb::arg("index"), nb::arg("atom"),
+                nb::arg("atom"), nb::arg("index"),
                 doc_AtomicStructureAdapter_insert)
-        .def("append", &AtomicStructureAdapter::append,
+        .def("insert", [](AtomicStructureAdapter& adpt, int index, const PythonAtom& atom) {
+                    atomadapter_insert(adpt, atom, index);
+                }, nb::arg("index"), nb::arg("atom"))
+        .def("append", [](AtomicStructureAdapter& adpt, const PythonAtom& atom) {
+                    Atom value = atom.value();
+                    prepare_atom_resize(adpt);
+                    adpt.append(value);
+                },
                 nb::arg("atom"),
                 doc_AtomicStructureAdapter_append)
         .def("pop", atomadapter_pop,
                 nb::arg("index"), doc_AtomicStructureAdapter_pop)
-        .def("clear", &AtomicStructureAdapter::clear,
+        .def("clear", [](AtomicStructureAdapter& adpt) {
+                    replace_atom_references(adpt, 0, adpt.size(), 0);
+                    adpt.clear();
+                },
                 doc_AtomicStructureAdapter_clear)
         .def("reserve", atomadapter_reserve,
                 nb::arg("sz"), doc_AtomicStructureAdapter_reserve)
         ;
-    StructureAdapterPickleSuite<
-        AtomicStructureAdapter,
-        AtomicStructureAdapterWrap>::bind(adapter_class);
+    StructureAdapterPickleSuite<AtomicStructureAdapter>::bind(adapter_class);
 
     // class PeriodicStructureAdapter
     nb::class_<PeriodicStructureAdapter,
@@ -711,15 +875,15 @@ void wrap_AtomicStructureAdapter(nb::module_& m)
         .def(nb::self == nb::self)
         .def(nb::self != nb::self)
         .def("clone",
-                &PeriodicStructureAdapter::clone,
+                atomadapter_clone<PeriodicStructureAdapter>,
                 doc_PeriodicStructureAdapter_clone)
         .def("_customPQConfig",
-                &PeriodicStructureAdapter::customPQConfig,
+                atomadapter_customPQConfig<PeriodicStructureAdapter>,
                 nb::arg("pqobj"),
                 doc_StructureAdapter__customPQConfig)
         .def("diff",
-                &PeriodicStructureAdapter::diff,
-                nb::arg("other"),
+                atomadapter_diff<PeriodicStructureAdapter>,
+                nb::arg("other").none(),
                 doc_StructureAdapter_diff)
         .def("getLatPar", periodicadapter_getlatpar,
                 doc_PeriodicStructureAdapter_getLatPar)
@@ -728,14 +892,16 @@ void wrap_AtomicStructureAdapter(nb::module_& m)
                 nb::arg("alphadeg"), nb::arg("betadeg"),
                 nb::arg("gammadeg"),
                 doc_PeriodicStructureAdapter_setLatPar)
-        .def("toCartesian", &PeriodicStructureAdapter::toCartesian,
+        .def("toCartesian", [](const PeriodicStructureAdapter& adpt, PythonAtom& atom) {
+                    adpt.toCartesian(atom.value());
+                },
                 nb::arg("atom"), doc_PeriodicStructureAdapter_toCartesian)
-        .def("toFractional", &PeriodicStructureAdapter::toFractional,
+        .def("toFractional", [](const PeriodicStructureAdapter& adpt, PythonAtom& atom) {
+                    adpt.toFractional(atom.value());
+                },
                 nb::arg("atom"), doc_PeriodicStructureAdapter_toFractional)
         ;
-    StructureAdapterPickleSuite<
-        PeriodicStructureAdapter,
-        PeriodicStructureAdapterWrap>::bind(periodic_class);
+    StructureAdapterPickleSuite<PeriodicStructureAdapter>::bind(periodic_class);
 
     // class CrystalStructureAdapter
     nb::class_<CrystalStructureAdapter,
@@ -752,15 +918,15 @@ void wrap_AtomicStructureAdapter(nb::module_& m)
         .def(nb::self == nb::self)
         .def(nb::self != nb::self)
         .def("clone",
-                &CrystalStructureAdapter::clone,
+                atomadapter_clone<CrystalStructureAdapter>,
                 doc_CrystalStructureAdapter_clone)
         .def("_customPQConfig",
-                &CrystalStructureAdapter::customPQConfig,
+                atomadapter_customPQConfig<CrystalStructureAdapter>,
                 nb::arg("pqobj"),
                 doc_StructureAdapter__customPQConfig)
         .def("diff",
-                &CrystalStructureAdapter::diff,
-                nb::arg("other"),
+                atomadapter_diff<CrystalStructureAdapter>,
+                nb::arg("other").none(),
                 doc_StructureAdapter_diff)
         .def_prop_rw("symmetryprecision",
             crystaladapter_getsymmetryprecision,
@@ -779,16 +945,14 @@ void wrap_AtomicStructureAdapter(nb::module_& m)
                 crystaladapter_getequivalentatoms, nb::arg("index"),
                 doc_CrystalStructureAdapter_getEquivalentAtoms)
         .def("expandLatticeAtom",
-                expandLatticeAtom_aslist<CrystalStructureAdapter, Atom>,
+                expandLatticeAtom_aslist,
                 nb::arg("atom"),
                 doc_CrystalStructureAdapter_expandLatticeAtom)
         .def("updateSymmetryPositions",
                 &CrystalStructureAdapter::updateSymmetryPositions,
                 doc_CrystalStructureAdapter_updateSymmetryPositions)
         ;
-    StructureAdapterPickleSuite<
-        CrystalStructureAdapter,
-        CrystalStructureAdapterWrap>::bind(crystal_class);
+    StructureAdapterPickleSuite<CrystalStructureAdapter>::bind(crystal_class);
 
 }
 

@@ -36,6 +36,8 @@ namespace nb = nanobind;
 
 namespace srrealmodule {
 
+void prepare_structure_load(diffpy::srreal::StructureAdapter&);
+
 struct PythonTrampolineTag
 {
     virtual ~PythonTrampolineTag() = default;
@@ -494,6 +496,7 @@ class StructureAdapterPickleSuite
             if (!st0.is_none())
             {
                 T& tobj = nb::cast<T&>(obj);
+                prepare_structure_load(tobj);
                 diffpy::serialization_fromstring(tobj, bytes_to_string(st0));
             }
             // restore the object's __dict__
