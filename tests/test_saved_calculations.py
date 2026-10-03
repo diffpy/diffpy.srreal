@@ -1,4 +1,5 @@
-"""Saved calculations retain structures, components, and Python state."""
+"""Saved calculations retain structures, components, and Python
+state."""
 
 import base64
 import copy
