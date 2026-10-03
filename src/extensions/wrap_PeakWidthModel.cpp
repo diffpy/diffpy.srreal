@@ -140,7 +140,7 @@ class PeakWidthModelWrap :
 {
     public:
 
-        NB_TRAMPOLINE(PeakWidthModel, 6);
+        NB_TRAMPOLINE(PeakWidthModel);
 
         // HasClassRegistry methods
 

@@ -111,7 +111,7 @@ class PeakProfileWrap :
 {
     public:
 
-        NB_TRAMPOLINE(PeakProfile, 7);
+        NB_TRAMPOLINE(PeakProfile);
 
         // HasClassRegistry methods
 

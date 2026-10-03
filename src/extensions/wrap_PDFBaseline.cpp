@@ -75,7 +75,7 @@ class PDFBaselineWrap :
 {
     public:
 
-        NB_TRAMPOLINE(PDFBaseline, 4);
+        NB_TRAMPOLINE(PDFBaseline);
 
         // HasClassRegistry methods
 

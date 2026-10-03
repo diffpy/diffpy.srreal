@@ -252,6 +252,9 @@ NumPyArray_DoublePtr createNumPyDoubleArrayLike(nb::object& obj);
 /// helper for creating numpy views on existing double array
 nb::object createNumPyDoubleView(double*, int dim, const int* sz);
 
+/// Retain the storage owner for an array view and any slices made from it.
+void setNumPyArrayBase(nb::handle array, nb::object owner);
+
 
 /// template function for converting iterables to numpy array of doubles
 template <class Iter>

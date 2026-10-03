@@ -96,7 +96,7 @@ class PDFEnvelopeWrap :
 {
     public:
 
-        NB_TRAMPOLINE(PDFEnvelope, 4);
+        NB_TRAMPOLINE(PDFEnvelope);
 
         // HasClassRegistry methods
 

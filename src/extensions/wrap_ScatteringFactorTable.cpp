@@ -216,7 +216,7 @@ class ScatteringFactorTableWrap :
 {
     public:
 
-        NB_TRAMPOLINE(ScatteringFactorTable, 6);
+        NB_TRAMPOLINE(ScatteringFactorTable);
 
         // Copy Constructor
 

@@ -342,17 +342,33 @@ inline std::string from_bytes(nb::bytes b)
 }
 
 
-// representation of QuantityType objects
-nb::object repr_QuantityType(const QuantityType& v)
+// Keep membership conversion consistent with numeric assignment.
+bool contains_QuantityType(const QuantityType& values, nb::object item)
 {
-    nb::list values;
+    double value;
+    if (!nb::try_cast<double>(item, value)) return false;
+    return std::find(values.begin(), values.end(), value) != values.end();
+}
 
-    for (size_t i = 0; i < v.size(); ++i) {
-        values.append(v[i]);
+void set_quantity_slice(QuantityType& values, nb::slice slice, nb::object items)
+{
+    auto [first, last, step, count] = slice.compute(values.size());
+    // Finish conversion before editing, including when items aliases values.
+    QuantityType buffer;
+    QuantityType replacement = extractQuantityType(items, buffer);
+
+    if (step == 1)
+    {
+        // Like a Python list, an ordinary slice can grow, shrink, or insert.
+        values.erase(values.begin() + first, values.begin() + first + count);
+        values.insert(values.begin() + first, replacement.begin(), replacement.end());
+        return;
     }
-
-    nb::object t = nb::module_::import_("builtins").attr("tuple")(values);
-    return nb::str("QuantityType{}").attr("format")(nb::repr(t));
+    if (replacement.size() != count)
+        throw nb::value_error("extended slice and replacement have different sizes");
+    Py_ssize_t index = first;
+    for (size_t i = 0; i < count; ++i, index += step)
+        values[static_cast<size_t>(index)] = replacement[i];
 }
 
 
@@ -443,9 +459,10 @@ std::vector<int> parsepairindex(nb::object i)
 
 std::vector<std::string> parsepairtypes(nb::object smbl)
 {
-    if (nb::isinstance<nb::str>(smbl))
+    std::string symbol;
+    if (nb::try_cast<std::string>(smbl, symbol))
     {
-        return { nb::cast<std::string>(smbl) };
+        return { symbol };
     }
 
     if (!isiterable(smbl))
@@ -459,14 +476,14 @@ std::vector<std::string> parsepairtypes(nb::object smbl)
     std::vector<std::string> rv;
     for (nb::handle item : smbl)
     {
-        if (!nb::isinstance<nb::str>(item))
+        if (!nb::try_cast<std::string>(item, symbol))
         {
             PyErr_SetString(
                 PyExc_TypeError,
                 "atom type iterable must contain strings");
             throw nb::python_error();
         }
-        rv.push_back(nb::cast<std::string>(item));
+        rv.push_back(symbol);
     }
     return rv;
 }
@@ -630,7 +647,7 @@ class PairQuantityWrap :
 {
     public:
 
-        NB_TRAMPOLINE(PairQuantityExposed, 10);
+        NB_TRAMPOLINE(PairQuantityExposed);
 
         // Make getParallelData overridable from Python.
 
@@ -815,8 +832,25 @@ void wrap_PairQuantity(nb::module_& m)
 
     typedef StructureAdapterPtr&(PairQuantity::*getstru)();
 
-    nb::bind_vector<QuantityType>(m, "QuantityType")
-        .def("__repr__", &repr_QuantityType);
+    auto quantity = nb::bind_vector<QuantityType>(m, "QuantityType",
+            nb::dynamic_attr(), nb::is_weak_referenceable());
+    // Replace nanobind's fixed-length slice assignment while retaining its
+    // other vector operations. Remove both generated assignment overloads.
+    nb::delattr(quantity, "__setitem__");
+    // The generated catch-all __contains__ overload bypasses numeric
+    // conversion during overload resolution and reports integers as absent.
+    nb::delattr(quantity, "__contains__");
+    quantity
+        .def("__contains__", contains_QuantityType, nb::arg("item").none())
+        .def("__setitem__", [](QuantityType& values, Py_ssize_t index, double value) {
+            if (index < 0) index += static_cast<Py_ssize_t>(values.size());
+            if (index < 0 || static_cast<size_t>(index) >= values.size())
+                throw nb::index_error("quantity index out of range");
+            values[static_cast<size_t>(index)] = value;
+        })
+        .def("__setitem__", set_quantity_slice);
+    // Value equality on a mutable sequence requires it to be unhashable.
+    quantity.attr("__hash__") = nb::none();
 
     nb::class_<PairQuantity, Attributes>
         basepq(m, "BasePairQuantity", nb::is_weak_referenceable());
@@ -843,7 +877,7 @@ void wrap_PairQuantity(nb::module_& m)
                 {
                     pq.setStructure(stru);
                 },
-                nb::arg("stru"),
+                nb::arg("stru").none(),
                 doc_BasePairQuantity_setStructure)
         .def("getStructure", getstru(&PairQuantity::getStructure),
                 doc_BasePairQuantity_getStructure)
@@ -857,19 +891,19 @@ void wrap_PairQuantity(nb::module_& m)
                 getevaluatortypeused,
                 doc_BasePairQuantity_evaluatortypeused)
         .def("maskAllPairs", mask_all_pairs,
-                nb::arg("mask"),
+                nb::arg("mask").none(),
                 doc_BasePairQuantity_maskAllPairs)
         .def("invertMask", &PairQuantity::invertMask,
                 doc_BasePairQuantity_invertMask)
         .def("setPairMask", set_pair_mask,
-                nb::arg("i"), nb::arg("j"), nb::arg("mask"),
+                nb::arg("i"), nb::arg("j"), nb::arg("mask").none(),
                  nb::arg("others")=nb::none(),
                 doc_BasePairQuantity_setPairMask)
         .def("getPairMask", &PairQuantity::getPairMask,
                 nb::arg("i"), nb::arg("j"),
                 doc_BasePairQuantity_getPairMask)
         .def("setTypeMask", set_type_mask,
-                nb::arg("tpi"), nb::arg("tpj"), nb::arg("mask"),
+                nb::arg("tpi"), nb::arg("tpj"), nb::arg("mask").none(),
                  nb::arg("others")=nb::none(),
                 doc_BasePairQuantity_setTypeMask)
         .def("getTypeMask", &PairQuantity::getTypeMask,
@@ -906,39 +940,54 @@ void wrap_PairQuantity(nb::module_& m)
                 doc_PairQuantity_ticker)
         .def("_getParallelData", [](const PairQuantityExposed &pq)
                 {
-                    return to_bytes(pq.getParallelData());
+                    return to_bytes(pq.PairQuantity::getParallelData());
                 },
                 doc_PairQuantity__getParallelData)
         .def("_resizeValue",
-                &PairQuantityExposed::resizeValue,
+                [](PairQuantityExposed& pq, size_t sz) {
+                    pq.PairQuantityExposed::resizeValue(sz);
+                },
                 nb::arg("sz"),
                 doc_PairQuantity__resizeValue)
         .def("_resetValue",
-                &PairQuantityExposed::resetValue,
+                [](PairQuantityExposed& pq) {
+                    pq.PairQuantityExposed::resetValue();
+                },
                 doc_PairQuantity__resetValue)
         .def("_configureBondGenerator",
-                &PairQuantityExposed::configureBondGenerator,
+                [](const PairQuantityExposed& pq, BaseBondGenerator& bnds) {
+                    pq.PairQuantityExposed::configureBondGenerator(bnds);
+                },
                 nb::arg("bnds"),
                 doc_PairQuantity__configureBondGenerator)
         .def("_addPairContribution",
-                &PairQuantityExposed::addPairContribution,
+                [](PairQuantityExposed& pq, const BaseBondGenerator& bnds,
+                        int sumscale) {
+                    pq.PairQuantityExposed::addPairContribution(bnds, sumscale);
+                },
                 nb::arg("bnds"), nb::arg("sumscale"),
                 doc_PairQuantity__addPairContribution)
         .def("_executeParallelMerge",
                 [](PairQuantityExposed &pq, nb::bytes pdata)
                 {
-                    pq.executeParallelMerge(from_bytes(pdata));
+                    pq.PairQuantityExposed::executeParallelMerge(from_bytes(pdata));
                 },
                 nb::arg("pdata"),
                 doc_PairQuantity__executeParallelMerge)
         .def("_finishValue",
-                &PairQuantityExposed::finishValue,
+                [](PairQuantityExposed& pq) {
+                    pq.PairQuantityExposed::finishValue();
+                },
                 doc_PairQuantity__finishValue)
         .def("_stashPartialValue",
-                &PairQuantityExposed::stashPartialValue,
+                [](PairQuantityExposed& pq) {
+                    pq.PairQuantityExposed::stashPartialValue();
+                },
                 doc_PairQuantity__stashPartialValue)
         .def("_restorePartialValue",
-                &PairQuantityExposed::restorePartialValue,
+                [](PairQuantityExposed& pq) {
+                    pq.PairQuantityExposed::restorePartialValue();
+                },
                 doc_PairQuantity__restorePartialValue)
         .def_prop_ro("_value", [](PairQuantityExposed &pq) -> QuantityType &
                 {
@@ -951,8 +1000,7 @@ void wrap_PairQuantity(nb::module_& m)
         // therefore we can create pickle suite from C++ base class.
         PairQuantityPickleSuite<
             PairQuantity,
-            DICT_PICKLE,
-            PairQuantityExposed>::bind(pq);
+            DICT_PICKLE>::bind(pq);
 
 }
 

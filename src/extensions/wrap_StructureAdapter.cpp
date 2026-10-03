@@ -306,7 +306,7 @@ class StructureAdapterWrap :
 {
     public:
 
-        NB_TRAMPOLINE(StructureAdapter, 13);
+        NB_TRAMPOLINE(StructureAdapter);
 
         StructureAdapterPtr clone() const override
         {

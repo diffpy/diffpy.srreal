@@ -104,6 +104,13 @@ void wrap_exceptions()
             {
                 PyErr_SetString(PyExc_ValueError, e.what());
             }
+            catch (const nb::cast_error&)
+            {
+                // Explicit nb::cast calls bypass nanobind's argument checking.
+                // Match the TypeError raised by Boost.Python extraction.
+                PyErr_SetString(PyExc_TypeError,
+                        "Cannot convert this Python object to the requested C++ type.");
+            }
         }
     );
 }
@@ -167,6 +174,14 @@ createNumPyDoubleView(double* data, int dim, const int* sz)
         throw nb::python_error();
 
     return nb::steal<nb::object>(pobj);
+}
+
+
+void setNumPyArrayBase(nb::handle array, nb::object owner)
+{
+    auto* a = reinterpret_cast<PyArrayObject*>(array.ptr());
+    if (PyArray_SetBaseObject(a, owner.release().ptr()) < 0)
+        throw nb::python_error();
 }
 
 

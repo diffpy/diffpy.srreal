@@ -334,7 +334,7 @@ class MakeWrapper :
 {
     public:
 
-        NB_TRAMPOLINE(T, 3);
+        NB_TRAMPOLINE(T);
 
         StructureAdapterPtr clone() const override
         {

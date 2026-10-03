@@ -156,7 +156,7 @@ class AtomRadiiTableWrap :
 {
     public:
 
-        NB_TRAMPOLINE(AtomRadiiTable, 4);
+        NB_TRAMPOLINE(AtomRadiiTable);
 
         // HasClassRegistry methods
 

@@ -9,16 +9,14 @@ namespace srrealmodule {
 
 // Most overrides use NB_OVERRIDE directly. The overrides that need custom
 // conversion must retain a ticket for the entire Python call (including
-// recursion detection). Isolate the nanobind 2/3 ABI difference here.
+// recursion detection). Keep the low-level dispatch API in one place.
 class OverrideTicket : public nanobind::detail::ticket
 {
     public:
-        template <class Trampoline>
-        OverrideTicket(const Trampoline& trampoline, const char* name, bool pure)
+        OverrideTicket(const nanobind::detail::trampoline& trampoline,
+                const char* name, bool pure)
             : nanobind::detail::ticket(trampoline, name,
-#if NB_VERSION_MAJOR >= 3
                     nanobind::detail::str_hash(name),
-#endif
                     pure)
         { }
 

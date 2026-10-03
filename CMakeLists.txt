@@ -18,7 +18,7 @@ execute_process(
     OUTPUT_STRIP_TRAILING_WHITESPACE
     COMMAND_ERROR_IS_FATAL ANY
 )
-find_package(nanobind CONFIG REQUIRED)
+find_package(nanobind 3.1...<4 CONFIG REQUIRED)
 find_package(Boost CONFIG REQUIRED COMPONENTS serialization)
 find_package(GSL REQUIRED)
 
