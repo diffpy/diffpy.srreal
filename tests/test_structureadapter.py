@@ -2,7 +2,6 @@
 
 """Unit tests for diffpy.srreal.structureadapter."""
 
-
 import pickle
 import unittest
 

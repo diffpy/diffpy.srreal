@@ -16,17 +16,18 @@
 *
 *****************************************************************************/
 
-#include <boost/python/class.hpp>
+#include <nanobind/nanobind.h>
 
 #include <diffpy/srreal/BVSCalculator.hpp>
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
 
+namespace nb = nanobind;
+
 namespace srrealmodule {
 namespace nswrap_BVSCalculator {
 
-using namespace boost::python;
 using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
@@ -81,26 +82,28 @@ void setbvparamtable(BVSCalculator& obj, BVParametersTablePtr bptb)
 
 // Wrapper definition --------------------------------------------------------
 
-void wrap_BVSCalculator()
+void wrap_BVSCalculator(nb::module_& m)
 {
     using namespace nswrap_BVSCalculator;
 
-    class_<BVSCalculator, bases<PairQuantity> >("BVSCalculator",
-            doc_BVSCalculator)
-        .add_property("value", value_asarray<BVSCalculator>,
+    nb::class_<BVSCalculator, PairQuantity> bvscalculator(m, "BVSCalculator",
+            doc_BVSCalculator);
+    bvscalculator
+        .def(nb::init<>())
+        .def_prop_ro("value", value_asarray<BVSCalculator>,
                 doc_BVSCalculator_value)
-        .add_property("valences", valences_asarray<BVSCalculator>,
+        .def_prop_ro("valences", valences_asarray<BVSCalculator>,
                 doc_BVSCalculator_valences)
-        .add_property("bvdiff", bvdiff_asarray<BVSCalculator>,
+        .def_prop_ro("bvdiff", bvdiff_asarray<BVSCalculator>,
                 doc_BVSCalculator_bvdiff)
-        .add_property("bvmsdiff", &BVSCalculator::bvmsdiff,
+        .def_prop_ro("bvmsdiff", &BVSCalculator::bvmsdiff,
                 doc_BVSCalculator_bvmsdiff)
-        .add_property("bvrmsdiff", &BVSCalculator::bvrmsdiff,
+        .def_prop_ro("bvrmsdiff", &BVSCalculator::bvrmsdiff,
                 doc_BVSCalculator_bvrmsdiff)
-        .add_property("bvparamtable", getbvparamtable, setbvparamtable,
+        .def_prop_rw("bvparamtable", getbvparamtable, setbvparamtable,
                 doc_BVSCalculator_bvparamtable)
-        .def_pickle(PairQuantityPickleSuite<BVSCalculator>())
         ;
+        PairQuantityPickleSuite<BVSCalculator>::bind(bvscalculator);
 
 }
 

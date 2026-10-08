@@ -3,7 +3,6 @@
 """Unit tests for the PDFBaseline class from
 diffpy.srreal.pdfcalculator."""
 
-
 import pickle
 import unittest
 

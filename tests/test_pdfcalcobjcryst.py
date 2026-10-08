@@ -2,7 +2,6 @@
 
 """Unit tests for pdfcalculator.py on ObjCryst crystal structures."""
 
-
 import re
 import unittest
 
@@ -43,10 +42,13 @@ def _makePDFCalculator(crst, cfgdict):
     pdfcargs = {k: v for k, v in cfgdict.items() if k not in ("biso", "type")}
     pdfc = PDFCalculator(**pdfcargs)
     if "biso" in cfgdict:
-        reg = crst.GetScatteringPowerRegistry()
-        for i in range(reg.GetNb()):
-            sp = reg.GetObj(i)
-            sp.SetBiso(cfgdict["biso"])
+        # Component access returns the concrete scattering-power type. The
+        # migration branch's generic registry GetObj crosses a virtual base
+        # and can hand nanobind an incorrectly adjusted pointer.
+        for component in crst.GetScatteringComponentList():
+            sp = component.mpScattPow
+            if sp is not None:
+                sp.SetBiso(cfgdict["biso"])
     if "type" in cfgdict:
         pdfc.scatteringfactortable = cfgdict["type"]
     pdfc.eval(crst)

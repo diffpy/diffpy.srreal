@@ -3,7 +3,6 @@
 """Unit tests for the PeakProfile classes from
 diffpy.srreal.peakprofile."""
 
-
 import pickle
 import unittest
 

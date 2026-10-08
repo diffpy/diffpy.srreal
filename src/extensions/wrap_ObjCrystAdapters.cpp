@@ -12,105 +12,30 @@
 *
 ******************************************************************************
 *
-* Support Crystal and Molecule objects from pyobjcryst if libdiffpy
-* has been built with ObjCryst support.
+* Support pyobjcryst Crystal and Molecule objects through its Python API.
 *
 *****************************************************************************/
 
-#include <boost/python/def.hpp>
+#include <nanobind/nanobind.h>
 
-#include <cstdlib>
-
-#include <diffpy/features.hpp>
-#include <diffpy/srreal/StructureAdapter.hpp>
-
-#ifdef DIFFPY_HAS_OBJCRYST
-#include <diffpy/srreal/ObjCrystStructureAdapter.hpp>
-#endif
+namespace nb = nanobind;
 
 namespace srrealmodule {
-namespace nswrap_ObjCrystAdapters {
 
-using namespace boost;
-using namespace diffpy::srreal;
-
-// docstrings ----------------------------------------------------------------
-
-// class Atom
-
-const char* doc_convertObjCrystMolecule = "\
-Convert pyobjcryst Molecule object to AtomicStructureAdapter.\n\
-Instance data:\n\
-\n\
-molecule     -- instance of pyobjcryst Molecule object\n\
-\n\
-Return AtomicStructureAdapter.\n\
-Raise TypeError if ObjCryst was not available at compile time.\n\
-";
-
-const char* doc_convertObjCrystCrystal = "\
-Convert pyobjcryst Crystal object to PeriodicStructureAdapter.\n\
-Instance data:\n\
-\n\
-molecule     -- instance of pyobjcryst Crystal object\n\
-\n\
-Return PeriodicStructureAdapter.\n\
-Raise TypeError if ObjCryst was not available at compile time.\n\
-";
-
-// ObjCryst supported --------------------------------------------------------
-
-#ifdef DIFFPY_HAS_OBJCRYST
-
-using ObjCryst::Molecule;
-using ObjCryst::Crystal;
-
-StructureAdapterPtr convertObjCrystMolecule(const Molecule& mol)
+void wrap_ObjCrystAdapters(nb::module_& m)
 {
-    return createStructureAdapter(mol);
+    // Preserve the extension's public entry points without sharing C++ objects
+    // with pyobjcryst, which now embeds its own private ObjCryst++ library.
+    m.def("convertObjCrystMolecule", [](nb::object molecule) {
+        return nb::module_::import_("diffpy.srreal._objcrystconverters")
+            .attr("convertObjCrystMolecule")(molecule);
+    }, nb::arg("molecule"),
+    "Copy a pyobjcryst Molecule to an AtomicStructureAdapter.");
+    m.def("convertObjCrystCrystal", [](nb::object crystal) {
+        return nb::module_::import_("diffpy.srreal._objcrystconverters")
+            .attr("convertObjCrystCrystal")(crystal);
+    }, nb::arg("crystal"),
+    "Copy a pyobjcryst Crystal to a CrystalStructureAdapter.");
 }
 
-StructureAdapterPtr convertObjCrystCrystal(const Crystal& mol)
-{
-    return createStructureAdapter(mol);
-}
-
-// ObjCryst not available ----------------------------------------------------
-
-#else
-
-StructureAdapterPtr convertObjCrystMolecule(python::object mol)
-{
-    std::string emsg = "ObjCryst support not available.";
-    PyErr_SetString(PyExc_TypeError, emsg.c_str());
-    boost::python::throw_error_already_set();
-    abort();
-}
-
-StructureAdapterPtr convertObjCrystCrystal(python::object cryst)
-{
-    // raise the same exception as for the Molecule
-    return convertObjCrystMolecule(cryst);
-}
-
-#endif  // DIFFPY_HAS_OBJCRYST
-
-}   // namespace nswrap_ObjCrystAdapters
-
-// Wrapper definitions -------------------------------------------------------
-
-void wrap_ObjCrystAdapters()
-{
-    using namespace nswrap_ObjCrystAdapters;
-    using namespace boost::python;
-
-    def("convertObjCrystMolecule",
-            convertObjCrystMolecule, doc_convertObjCrystMolecule);
-    def("convertObjCrystCrystal",
-            convertObjCrystCrystal, doc_convertObjCrystCrystal);
-
-}
-
-}   // namespace srrealmodule
-
-// End of file
+}  // namespace srrealmodule

@@ -16,7 +16,8 @@
 *
 *****************************************************************************/
 
-#include <boost/python/class.hpp>
+#include <nanobind/nanobind.h>
+#include <nanobind/operators.h>
 
 #include <cassert>
 
@@ -24,11 +25,11 @@
 
 #include "srreal_converters.hpp"
 
+namespace nb = nanobind;
+
 namespace srrealmodule {
 namespace nswrap_Attributes {
 
-using std::string;
-using namespace boost;
 using namespace diffpy::attributes;
 
 // docstrings ----------------------------------------------------------------
@@ -103,8 +104,8 @@ class PythonDoubleAttribute : public BaseDoubleAttribute
     public:
 
         // constructor
-        PythonDoubleAttribute(python::object owner,
-                python::object getter, python::object setter)
+        PythonDoubleAttribute(nb::object owner,
+                nb::object getter, nb::object setter)
         {
             // PythonDoubleAttribute needs to know its Python owner, but it
             // has to use a borrowed reference otherwise the owner would be
@@ -116,28 +117,29 @@ class PythonDoubleAttribute : public BaseDoubleAttribute
         }
 
 
-        double getValue(const Attributes* obj) const
+        double getValue(const Attributes* obj) const override
         {
+            nb::gil_scoped_acquire gil;
             // verify that mowner is indeed the obj wrapper
-            python::object owner(python::borrowed(mowner));
-            assert(obj == python::extract<const Attributes*>(owner));
-            python::object pyrv = mgetter(owner);
-            double rv = python::extract<double>(pyrv);
-            return rv;
+            nb::object owner = nb::borrow<nb::object>(mowner);
+            assert(obj == nb::cast<const Attributes*>(owner));
+            nb::object pyrv = mgetter(owner);
+            return nb::cast<double>(pyrv);
         }
 
 
-        void setValue(Attributes* obj, double value)
+        void setValue(Attributes* obj, double value) override
         {
+            nb::gil_scoped_acquire gil;
             if (this->isreadonly())  throwDoubleAttributeReadOnly();
             // verify that mowner is indeed the obj wrapper
-            python::object owner(python::borrowed(mowner));
-            assert(obj == python::extract<Attributes*>(owner));
+            nb::object owner = nb::borrow<nb::object>(mowner);
+            assert(obj == nb::cast<Attributes*>(owner));
             msetter(owner, value);
         }
 
 
-        bool isreadonly() const
+        bool isreadonly() const override
         {
             return (msetter.is_none());
         }
@@ -146,24 +148,24 @@ class PythonDoubleAttribute : public BaseDoubleAttribute
 
         // data
         PyObject* mowner;
-        python::object mgetter;
-        python::object msetter;
+        nb::object mgetter;
+        nb::object msetter;
 
 };  // class PythonDoubleAttribute
 
 
-void registerPythonDoubleAttribute(python::object owner,
-        const string& name, python::object g, python::object s)
+void registerPythonDoubleAttribute(nb::object owner,
+        const std::string& name, nb::object g, nb::object s)
 {
     // when neither getter no setter are specified,
     // make it use normal python attribute access
     if (g.is_none() && s.is_none())
     {
-        python::object mod = python::import("diffpy.srreal.attributes");
+        nb::object mod = nb::module_::import_("diffpy.srreal.attributes");
         g = mod.attr("_pyattrgetter")(name);
         s = mod.attr("_pyattrsetter")(name);
     }
-    Attributes* cowner = python::extract<Attributes*>(owner);
+    Attributes* cowner = nb::cast<Attributes*>(owner);
     BaseDoubleAttribute* pa = new PythonDoubleAttribute(owner, g, s);
     registerBaseDoubleAttribute(cowner, name, pa);
 }
@@ -172,13 +174,16 @@ void registerPythonDoubleAttribute(python::object owner,
 
 // Wrapper definition --------------------------------------------------------
 
-void wrap_Attributes()
+void wrap_Attributes(nb::module_& m)
 {
     using namespace nswrap_Attributes;
-    using namespace boost::python;
-    const python::object None;
     // ready for class definition
-    class_<Attributes>("Attributes", doc_Attributes)
+    nb::class_<Attributes>(
+            m, "Attributes",
+            nb::dynamic_attr(),
+            nb::is_weak_referenceable(),
+            doc_Attributes)
+        .def(nb::init<>())
         .def("_getDoubleAttr", &Attributes::getDoubleAttr,
                 doc_Attributes__getDoubleAttr)
         .def("_setDoubleAttr", &Attributes::setDoubleAttr,
@@ -193,7 +198,9 @@ void wrap_Attributes()
                 doc_Attributes__namesOfWritableDoubleAttributes)
         .def("_registerDoubleAttribute",
                 registerPythonDoubleAttribute,
-                (python::arg("getter")=None, python::arg("setter")=None),
+                nb::arg("name"),
+                nb::arg("getter") = nb::none(),
+                nb::arg("setter") = nb::none(),
                 doc_Attributes__registerDoubleAttribute)
         ;
 }

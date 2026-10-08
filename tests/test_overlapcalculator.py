@@ -2,7 +2,6 @@
 
 """Unit tests for diffpy.srreal.overlapcalculator."""
 
-
 import copy
 import pickle
 import unittest

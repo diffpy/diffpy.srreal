@@ -15,7 +15,6 @@
 """Class PairQuantity    -- base class for Python defined
 calculators."""
 
-
 # exported items
 __all__ = ["PairQuantity"]
 

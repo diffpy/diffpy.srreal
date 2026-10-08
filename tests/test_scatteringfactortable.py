@@ -2,7 +2,6 @@
 
 """Unit tests for diffpy.srreal.scatteringfactortable."""
 
-
 import pickle
 import unittest
 

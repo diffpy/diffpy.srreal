@@ -2,7 +2,6 @@
 
 """Unit tests for diffpy.srreal.bondcalculator."""
 
-
 import pickle
 import unittest
 

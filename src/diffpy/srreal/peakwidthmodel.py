@@ -18,7 +18,6 @@ Classes for configuring peak width evaluation in PDF calculations:
     ConstantPeakWidth, DebyeWallerPeakWidth, JeongPeakWidth
 """
 
-
 # exported items
 __all__ = [
     "PeakWidthModel",
@@ -42,20 +41,17 @@ from diffpy.srreal.wraputils import propertyFromExtDoubleAttr
 
 ConstantPeakWidth.width = propertyFromExtDoubleAttr(
     "width",
-    """Constant FWHM value returned by this model.
-    """,
+    "Constant FWHM value returned by this model.",
 )
 
 ConstantPeakWidth.bisowidth = propertyFromExtDoubleAttr(
     "bisowidth",
-    """Equivalent uniform Biso for this constant `width`.
-    """,
+    "Equivalent uniform Biso for this constant `width`.",
 )
 
 ConstantPeakWidth.uisowidth = propertyFromExtDoubleAttr(
     "uisowidth",
-    """Equivalent uniform Uiso for this constant `width`.
-    """,
+    "Equivalent uniform Uiso for this constant `width`.",
 )
 
 JeongPeakWidth.delta1 = propertyFromExtDoubleAttr(

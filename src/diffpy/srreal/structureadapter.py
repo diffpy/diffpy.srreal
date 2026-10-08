@@ -28,9 +28,9 @@ Constants:
 EMPTY        -- singleton instance of an empty structure.
 """
 
-# import of srreal_ext calls RegisterStructureAdapter, therefore it has
-# to be at the end of this module.
+# Defer extension finalization until RegisterStructureAdapter is defined.
 
+from diffpy.srreal import _final_imports
 from diffpy.srreal.srreal_ext import (
     Atom,
     AtomicStructureAdapter,
@@ -129,5 +129,8 @@ assert all(
         BaseBondGenerator,
     )
 )
+
+_final_imports.import_now()
+del _final_imports
 
 # End of file

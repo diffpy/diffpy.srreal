@@ -15,7 +15,6 @@
 """Class ScatteringFactorTable -- scattering factors for atoms, ions and
 isotopes."""
 
-
 # exported items, these also makes them show in pydoc.
 __all__ = [
     "ScatteringFactorTable",

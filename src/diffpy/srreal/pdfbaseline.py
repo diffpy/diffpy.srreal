@@ -17,7 +17,6 @@ Classes for configuring PDF baseline:
     PDFBaseline, ZeroBaseline, LinearBaseline
 """
 
-
 # exported items
 __all__ = """
     PDFBaseline makePDFBaseline
@@ -40,8 +39,10 @@ ZeroBaseline.__getstate_manages_dict__ = None
 
 LinearBaseline.slope = propertyFromExtDoubleAttr(
     "slope",
-    """Slope of an unscaled linear baseline.  For crystal structures it
-    is preset to (-4 * pi * rho0).""",
+    (
+        "Slope of an unscaled linear baseline.  For crystal structures it"
+        " is preset to (-4 * pi * rho0)."
+    ),
 )
 
 # Python functions wrapper

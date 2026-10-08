@@ -33,7 +33,6 @@ Examples
                                      dpdfc.scatteringfactortable, dpdfc.qgrid)
 """
 
-
 # class SFAverage ------------------------------------------------------------
 
 

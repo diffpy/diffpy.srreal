@@ -14,7 +14,6 @@
 ##############################################################################
 """Class AtomRadiiTable -- storage of empirical atom radii."""
 
-
 # exported items, these also makes them show in pydoc.
 __all__ = ["AtomRadiiTable", "ConstantRadiiTable", "CovalentRadiiTable"]
 
@@ -66,8 +65,9 @@ class CovalentRadiiTable(AtomRadiiTable):
         return copy.copy(self)
 
     def type(self):
-        """Unique string identifier of the CovalentRadiiTable type. This
-        is used for class registration and as an argument for the
+        """Unique string identifier of the CovalentRadiiTable type.
+
+        This is used for class registration and as an argument for the
         createByType function.
 
         Return string.

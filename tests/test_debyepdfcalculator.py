@@ -2,7 +2,6 @@
 
 """Unit tests for pdfcalculator.py."""
 
-
 import pickle
 import unittest
 import warnings

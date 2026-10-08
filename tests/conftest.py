@@ -43,10 +43,6 @@ def has_pyobjcryst():
         has_pyobjcryst = False
         logging.warning("Cannot import pyobjcryst, pyobjcryst tests skipped.")
         print("Cannot import pyobjcryst, pyobjcryst tests skipped.")
-    except TypeError:
-        has_pyobjcryst = False
-        logging.warning("Compiled without ObjCryst, pyobjcryst tests skipped.")
-        print("Compiled without ObjCryst, pyobjcryst tests skipped.")
 
     return has_pyobjcryst
 
