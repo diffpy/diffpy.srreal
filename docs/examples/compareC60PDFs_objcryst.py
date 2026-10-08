@@ -37,11 +37,11 @@ cfg = {
 
 # calculate PDF by real-space summation
 pc0 = PDFCalculator(**cfg)
-r0, g0 = pc0(c60)
+r0, g0 = pc0(mc60)
 
 # calculate PDF using Debye formula
 pc1 = DebyePDFCalculator(**cfg)
-r1, g1 = pc1(c60)
+r1, g1 = pc1(mc60)
 gd = g0 - g1
 
 # plot both results and the difference curve
