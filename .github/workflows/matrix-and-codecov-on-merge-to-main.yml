@@ -17,5 +17,11 @@ jobs:
       project: diffpy.srreal
       c_extension: true
       headless: false
+      run: |
+        set -e
+        if [[ $(uname -s) == Linux ]]; then
+          python -m pip install git+https://github.com/diffpy/pyobjcryst.git@nanobind_migration_test
+          python -c 'import pyobjcryst._pyobjcryst'
+        fi
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

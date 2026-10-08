@@ -16,21 +16,23 @@
 *
 *****************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/copy_const_reference.hpp>
-#include <boost/python/register_ptr_to_python.hpp>
+#include <nanobind/nanobind.h>
+#include "srreal_trampoline.hpp"
+#include <nanobind/operators.h>
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
+#include "srreal_legacy.hpp"
 #include "srreal_registry.hpp"
 
 #include <diffpy/srreal/AtomRadiiTable.hpp>
 #include <diffpy/srreal/ConstantRadiiTable.hpp>
 
+namespace nb = nanobind;
+
 namespace srrealmodule {
 namespace nswrap_AtomRadiiTable {
 
-using namespace boost::python;
 using namespace diffpy::srreal;
 
 // docstrings ----------------------------------------------------------------
@@ -151,42 +153,64 @@ DECLARE_PYDICT_METHOD_WRAPPER(getAllCustom, getAllCustom_asdict)
 
 class AtomRadiiTableWrap :
     public AtomRadiiTable,
-    public wrapper_srreal<AtomRadiiTable>
+    public PythonTrampolineTag
 {
     public:
 
+        NB_TRAMPOLINE(AtomRadiiTable);
+
         // HasClassRegistry methods
 
-        AtomRadiiTablePtr create() const
+        AtomRadiiTablePtr create() const override
         {
-            object rv = this->get_pure_virtual_override("create")();
+            nb::gil_scoped_acquire gil;
+            OverrideTicket ticket(nb_trampoline, "create", true);
+
+            if (!ticket.key.is_valid())
+            {
+                throw nb::type_error(
+                    "pure virtual method AtomRadiiTable.create() called"
+                );
+            }
+
+            nb::object rv = nb_trampoline.base().attr(ticket.key)();
             return mconfigurator.fetch(rv);
         }
 
-        AtomRadiiTablePtr clone() const
+        AtomRadiiTablePtr clone() const override
         {
-            return this->get_pure_virtual_override("clone")();
+            NB_OVERRIDE_PURE(clone);
         }
 
-        const std::string& type() const
+        const std::string& type() const override
         {
-            object tp = this->get_pure_virtual_override("type")();
-            mtype = extract<std::string>(tp);
+            nb::gil_scoped_acquire gil;
+            OverrideTicket ticket(nb_trampoline, "type", true);
+
+            if (!ticket.key.is_valid())
+            {
+                throw nb::type_error(
+                    "pure virtual method AtomRadiiTable.type() called"
+                );
+            }
+
+            nb::object tp = nb_trampoline.base().attr(ticket.key)();
+            mtype = nb::cast<std::string>(tp);
             return mtype;
         }
 
         // own methods
 
-        double standardLookup(const std::string& smbl) const
+        double standardLookup(const std::string& smbl) const override
         {
-            return this->get_pure_virtual_override("_standardLookup")(smbl);
+            NB_OVERRIDE_PURE_NAME("_standardLookup", standardLookup, smbl);
         }
 
     protected:
 
         // HasClassRegistry method
 
-        void setupRegisteredObject(AtomRadiiTablePtr p) const
+        void setupRegisteredObject(AtomRadiiTablePtr p) const override
         {
             mconfigurator.setup(p);
         }
@@ -196,44 +220,37 @@ class AtomRadiiTableWrap :
         mutable std::string mtype;
         wrapper_registry_configurator<AtomRadiiTable> mconfigurator;
 
-        // serialization
-        friend class boost::serialization::access;
-        template<class Archive>
-            void serialize(Archive& ar, const unsigned int version)
-        {
-            using boost::serialization::base_object;
-            ar & base_object<AtomRadiiTable>(*this);
-        }
-
 };  // class AtomRadiiTableWrap
 
 }   // namespace nswrap_AtomRadiiTable
 
 // Wrapper definition --------------------------------------------------------
 
-void wrap_AtomRadiiTable()
+void wrap_AtomRadiiTable(nb::module_& m)
 {
     using namespace nswrap_AtomRadiiTable;
-    using boost::noncopyable;
 
-    class_<AtomRadiiTableWrap, noncopyable>
-        atomradiitable("AtomRadiiTable", doc_AtomRadiiTable);
+    nb::class_<AtomRadiiTable, AtomRadiiTableWrap>
+        atomradiitable(m, "AtomRadiiTable", doc_AtomRadiiTable,
+                   nb::dynamic_attr(), nb::is_weak_referenceable());
     wrap_registry_methods(atomradiitable)
+        .def(nb::init<>())
         .def("lookup",
-                &AtomRadiiTable::lookup, arg("smbl"),
+                &AtomRadiiTable::lookup, nb::arg("smbl"),
                 doc_AtomRadiiTable_lookup)
         .def("_standardLookup",
                 &AtomRadiiTable::standardLookup,
-                arg("smbl"), doc_AtomRadiiTable__standardLookup)
+                nb::arg("smbl"), doc_AtomRadiiTable__standardLookup)
         .def("setCustom",
                 &AtomRadiiTable::setCustom,
-                (arg("smbl"), arg("radius")),
+                nb::arg("smbl"), nb::arg("radius"),
                 doc_AtomRadiiTable_setCustom)
         .def("fromString",
                 &AtomRadiiTable::fromString,
+                nb::arg("s"),
                 doc_AtomRadiiTable_fromString)
         .def("resetCustom",
-                &AtomRadiiTable::resetCustom, arg("smbl"),
+                &AtomRadiiTable::resetCustom, nb::arg("smbl"),
                 doc_AtomRadiiTable_resetCustom)
         .def("resetAll",
                 &AtomRadiiTable::resetAll,
@@ -242,33 +259,35 @@ void wrap_AtomRadiiTable()
                 getAllCustom_asdict<AtomRadiiTable>,
                 doc_AtomRadiiTable_getAllCustom)
         .def("toString",
-                &AtomRadiiTable::toString, arg("separator")=",",
+                &AtomRadiiTable::toString, nb::arg("separator")=",",
                 doc_AtomRadiiTable_toString)
-        .def_pickle(SerializationPickleSuite<AtomRadiiTable,DICT_PICKLE>())
         ;
+        SerializationPickleSuite<
+            AtomRadiiTable,
+            DICT_PICKLE>::bind(atomradiitable);
 
-    register_ptr_to_python<AtomRadiiTablePtr>();
-
-    class_<ConstantRadiiTable, bases<AtomRadiiTable> >(
-            "ConstantRadiiTable", doc_ConstantRadiiTable)
+    nb::class_<ConstantRadiiTable, AtomRadiiTable>
+        constantradiitable(m, "ConstantRadiiTable", doc_ConstantRadiiTable);
         // docstring updates
+    constantradiitable
+        .def(nb::init<>())
         .def("create", &ConstantRadiiTable::create,
                 doc_ConstantRadiiTable_create)
         .def("clone", &ConstantRadiiTable::clone,
                 doc_ConstantRadiiTable_clone)
         .def("_standardLookup",
                 &ConstantRadiiTable::standardLookup,
-                arg("smbl"), doc_ConstantRadiiTable__standardLookup)
+                nb::arg("smbl"), doc_ConstantRadiiTable__standardLookup)
         // own methods
         .def("setDefault",
                 &ConstantRadiiTable::setDefault,
-                arg("radius"),
+                nb::arg("radius"),
                 doc_ConstantRadiiTable_setDefault)
         .def("getDefault",
                 &ConstantRadiiTable::getDefault,
                 doc_ConstantRadiiTable_getDefault)
-        .def_pickle(SerializationPickleSuite<ConstantRadiiTable,DICT_IGNORE>())
         ;
+        SerializationPickleSuite<ConstantRadiiTable, DICT_DISCARD>::bind(constantradiitable);
 
 }
 
@@ -276,6 +295,7 @@ void wrap_AtomRadiiTable()
 
 // Serialization -------------------------------------------------------------
 
-BOOST_CLASS_EXPORT(srrealmodule::nswrap_AtomRadiiTable::AtomRadiiTableWrap)
+BOOST_CLASS_EXPORT_GUID(srrealmodule::LegacyComponent<diffpy::srreal::AtomRadiiTable>,
+    "srrealmodule::nswrap_AtomRadiiTable::AtomRadiiTableWrap")
 
 // End of file

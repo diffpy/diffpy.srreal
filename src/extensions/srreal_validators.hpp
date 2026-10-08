@@ -19,11 +19,15 @@
 #ifndef SRREAL_VALIDATORS_HPP_INCLUDED
 #define SRREAL_VALIDATORS_HPP_INCLUDED
 
+#include <nanobind/nanobind.h>
+
+namespace nb = nanobind;
+
 namespace srrealmodule {
 
 void ensure_index_bounds(int idx, int lo, int hi);
 void ensure_non_negative(int value);
-bool isiterable(boost::python::object obj);
+bool isiterable(nb::object obj);
 
 }   // namespace srrealmodule
 

@@ -12,7 +12,7 @@ jobs:
     with:
       project: diffpy.srreal
       c_extension: true
-      maintainer_GITHUB_username: sbillinge
+      maintainer_github_username: sbillinge
     secrets:
       PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
       PAT_TOKEN: ${{ secrets.PAT_TOKEN }}

@@ -84,7 +84,15 @@ class HasCustomPQConfig(object):
         return
 
 
-class DerivedStructureAdapter(HasCustomPQConfig, StructureAdapter):
+def _installCustomPQConfig(cls):
+    """Install the test custom-PQ hook without using a mixin base."""
+    cls.cpqcount = HasCustomPQConfig.cpqcount
+    cls._customPQConfig = HasCustomPQConfig._customPQConfig
+    return cls
+
+
+@_installCustomPQConfig
+class DerivedStructureAdapter(StructureAdapter):
 
     def __init__(self):
         StructureAdapter.__init__(self)
@@ -137,19 +145,18 @@ class DerivedStructureAdapter(HasCustomPQConfig, StructureAdapter):
 # End of class DerivedStructureAdapter
 
 
-class DerivedAtomicStructureAdapter(HasCustomPQConfig, AtomicStructureAdapter):
+@_installCustomPQConfig
+class DerivedAtomicStructureAdapter(AtomicStructureAdapter):
     pass
 
 
-class DerivedPeriodicStructureAdapter(
-    HasCustomPQConfig, PeriodicStructureAdapter
-):
+@_installCustomPQConfig
+class DerivedPeriodicStructureAdapter(PeriodicStructureAdapter):
     pass
 
 
-class DerivedCrystalStructureAdapter(
-    HasCustomPQConfig, CrystalStructureAdapter
-):
+@_installCustomPQConfig
+class DerivedCrystalStructureAdapter(CrystalStructureAdapter):
     pass
 
 
