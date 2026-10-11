@@ -124,3 +124,38 @@ def test_scalar_and_array_return_types(factory, method, prefix):
         result = function(*prefix, value)
         assert isinstance(result, np.ndarray)
         assert result.shape == np.asarray(value).shape
+
+
+def test_elementwise_arrays_preserve_logical_shape_and_values():
+    baseline = ext.LinearBaseline()
+    baseline.slope = 2
+    values = np.arange(6.0).reshape(2, 3).T[:, ::-1]
+    values.flags.writeable = False
+    result = baseline(values)
+    np.testing.assert_array_equal(result, values * 2)
+    assert result.dtype == np.float64
+    assert result.flags.c_contiguous and result.flags.writeable
+    assert result.flags.owndata
+    assert baseline(np.empty((0, 3))).shape == (0, 3)
+
+
+def test_numpy_casting_distinguishes_scalars_sequences_and_arrays():
+    baseline = ext.LinearBaseline()
+    baseline.slope = 2
+    for value in [
+        np.longdouble(2),
+        np.str_("2"),
+        np.bytes_("2"),
+        b"2",
+        np.datetime64("1970-01-03"),
+        np.timedelta64(2, "D"),
+    ]:
+        result = baseline(value)
+        assert isinstance(result, np.ndarray) and result.shape == ()
+        assert result == 4
+    with pytest.warns(np.exceptions.ComplexWarning):
+        assert baseline(np.complex128(2 + 3j)) == 4
+    for dtype in [object, "U2", np.complex128]:
+        with pytest.raises(TypeError):
+            baseline(np.array([1, 2], dtype=dtype))
+    np.testing.assert_array_equal(baseline(["1", "2"]), [2, 4])

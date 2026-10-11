@@ -11,7 +11,7 @@ if(DEFINED ENV{CONDA_PREFIX})
     list(APPEND CMAKE_PREFIX_PATH "$ENV{CONDA_PREFIX}" "$ENV{CONDA_PREFIX}/Library")
 endif()
 
-find_package(Python 3.12 REQUIRED COMPONENTS Interpreter Development.Module NumPy)
+find_package(Python 3.12 REQUIRED COMPONENTS Interpreter Development.Module)
 execute_process(
     COMMAND "${Python_EXECUTABLE}" -m nanobind --cmake_dir
     OUTPUT_VARIABLE nanobind_DIR
@@ -52,10 +52,9 @@ target_compile_definitions(diffpy_core PRIVATE DIFFPYRUNTIMERELPATH=data)
 target_link_libraries(diffpy_core PUBLIC Boost::serialization GSL::gsl GSL::gslcblas ${CMAKE_DL_LIBS})
 
 file(GLOB SRREAL_SOURCES CONFIGURE_DEPENDS "src/extensions/*.cpp")
-# Keep the CPython-specific ABI while the bindings use the NumPy C API and
-# CPython macros. Do not label these wheels abi3 without porting those calls.
+# Retain CPython-specific wheels; stable-ABI packaging is a separate change.
 nanobind_add_module(srreal_ext NB_STATIC ${SRREAL_SOURCES})
-target_link_libraries(srreal_ext PRIVATE diffpy_core Python::NumPy)
+target_link_libraries(srreal_ext PRIVATE diffpy_core)
 set_target_properties(srreal_ext PROPERTIES INSTALL_RPATH_USE_LINK_PATH ON)
 install(TARGETS srreal_ext LIBRARY DESTINATION diffpy/srreal)
 install(DIRECTORY "${LIBDIFFPY_SOURCE_DIR}/src/runtime/"

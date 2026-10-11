@@ -2,6 +2,7 @@
 
 import gc
 import pickle
+import weakref
 
 import numpy as np
 import pytest
@@ -150,3 +151,24 @@ def test_structure_clone_override_calls_base_once(cls):
     adapter = Derived()
     adapter.append(ext.Atom())
     assert adapter.clone()[0].xc == 1
+
+
+@pytest.mark.parametrize("attached", [False, True])
+@pytest.mark.parametrize("field", ["xyz_cartn", "uij_cartn"])
+def test_view_slices_keep_atom_storage_alive_without_python_owners(
+    attached, field
+):
+    adapter = make_structure()
+    atom = adapter[0] if attached else ext.Atom()
+    reference = weakref.ref(atom)
+    view = getattr(atom, field)
+    view[...] = 3
+    retained = view[..., ::-1]
+    del view, atom, adapter
+    gc.collect()
+    assert reference() is not None
+    retained[...] = 5
+    np.testing.assert_array_equal(retained, 5)
+    del retained
+    gc.collect()
+    assert reference() is None

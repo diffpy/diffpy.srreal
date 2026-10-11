@@ -253,7 +253,7 @@ implicitly called from createBondGenerator.\n\
 
 nb::object get_xyz_cartn(PythonAtom& a)
 {
-    return pin_atom_view(a, viewAsNumPyArray(a.value().xyz_cartn));
+    return viewAsNumPyArray(a.value().xyz_cartn, atom_view_owner(a));
 }
 
 void set_xyz_cartn(PythonAtom& a, nb::object value)
@@ -264,7 +264,7 @@ void set_xyz_cartn(PythonAtom& a, nb::object value)
 
 nb::object get_uij_cartn(PythonAtom& a)
 {
-    return pin_atom_view(a, viewAsNumPyArray(a.value().uij_cartn));
+    return viewAsNumPyArray(a.value().uij_cartn, atom_view_owner(a));
 }
 
 void set_uij_cartn(PythonAtom& a, nb::object& value)
@@ -767,11 +767,9 @@ void wrap_AtomicStructureAdapter(nb::module_& m)
         }, nb::is_operator())
         .def("__hash__", [](const PythonAtom& a) { return hash_value(a.value()); })
         .def("_get_xyz_cartn",
-                get_xyz_cartn,
-                nb::keep_alive<0,1>())
+                get_xyz_cartn)
         .def("_get_uij_cartn",
-                get_uij_cartn,
-                nb::keep_alive<0,1>())
+                get_uij_cartn)
         ;
     // now we can finalize the Atom class interface
     atom_class
@@ -780,8 +778,7 @@ void wrap_AtomicStructureAdapter(nb::module_& m)
             [](PythonAtom& a, const std::string& value) { a.value().atomtype = value; })
         .def_prop_rw("xyz_cartn",
                 get_xyz_cartn,
-                set_xyz_cartn,
-                nb::keep_alive<0,1>())
+                set_xyz_cartn)
         .def_prop_rw("xc", get_xyz<0>, set_xyz<0>, doc_Atom_xic)
         .def_prop_rw("yc", get_xyz<1>, set_xyz<1>, doc_Atom_xic)
         .def_prop_rw("zc", get_xyz<2>, set_xyz<2>, doc_Atom_xic)
@@ -791,8 +788,7 @@ void wrap_AtomicStructureAdapter(nb::module_& m)
                 doc_Atom_anisotropy)
         .def_prop_rw("uij_cartn",
                 get_uij_cartn,
-                set_uij_cartn,
-                nb::keep_alive<0,1>())
+                set_uij_cartn)
         .def_prop_rw("uc11", get_uc<0, 0>, set_uc<0, 0>, doc_Atom_uijc)
         .def_prop_rw("uc22", get_uc<1, 1>, set_uc<1, 1>, doc_Atom_uijc)
         .def_prop_rw("uc33", get_uc<2, 2>, set_uc<2, 2>, doc_Atom_uijc)
