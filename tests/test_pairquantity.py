@@ -89,7 +89,8 @@ class TestPairQuantity(unittest.TestCase):
         return
 
     def test_numpy_index_layouts(self):
-        """Index conversion follows logical values, not physical storage."""
+        """Index conversion follows logical values, not physical
+        storage."""
         values = numpy.arange(6, dtype=numpy.intc)
         swapped = values.astype(values.dtype.newbyteorder("S"))
         unaligned = numpy.ndarray(
