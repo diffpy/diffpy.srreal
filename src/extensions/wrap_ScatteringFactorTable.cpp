@@ -152,19 +152,9 @@ Base class for classes that own ScatteringFactorTable instance.\n\
 
 const char* doc_ScatteringFactorTableOwner_scatteringfactortable = "\
 ScatteringFactorTable object used for a lookup of scattering factors.\n\
-This can be also set with the setScatteringFactorTableByType method.\n\
-";
-
-const char* doc_ScatteringFactorTableOwner_setScatteringFactorTableByType = "\
-Set internal ScatteringFactorTable according to specified string type.\n\
-\n\
-tp   -- string identifier of a registered ScatteringFactorTable type.\n\
-    Use ScatteringFactorTable.getRegisteredTypes for the allowed values.\n\
-\n\
-Deprecated: This method is deprecated and will be removed in the 2.0.0 release.\n\
-Use direct assignment to the `scatteringfactortable` property instead, for example:\n\
-    obj.scatteringfactortable = SFTNeutron()\n\
-No return value.\n\
+This attribute can be assigned either a ScatteringFactorTable-derived object\n\
+or a string name of a registered ScatteringFactorTable class.\n\
+Use ScatteringFactorTable.getRegisteredTypes() for a set of registered names.\n\
 ";
 
 const char* doc_ScatteringFactorTableOwner_getRadiationType = "\
@@ -454,27 +444,6 @@ void wrap_ScatteringFactorTable(nb::module_& m)
                 getsftable,
                 setsftable<ScatteringFactorTableOwner,ScatteringFactorTable>,
                 doc_ScatteringFactorTableOwner_scatteringfactortable)
-        // deprecated: prefer assigning the `scatteringfactortable` property
-        .def("setScatteringFactorTableByType",
-            +[](SFTOwner& obj, const std::string& tp)
-            {
-                try
-                {
-                    nb::object warnings = nb::module_::import_("warnings");
-                    nb::object builtins = nb::module_::import_("builtins");
-                    nb::object DeprecationWarning = builtins.attr("DeprecationWarning");
-                    warnings.attr("warn")(
-                        std::string("setScatteringFactorTableByType is deprecated; "
-                                "assign the 'scatteringfactortable' property directly, for example:\n"
-                                "obj.scatteringfactortable = SFTNeutron()"),
-                        DeprecationWarning,
-                        2);
-                }
-                catch (...) { /* don't let warnings break the binding */ }
-                obj.setScatteringFactorTableByType(tp);
-            },
-            nb::arg("tp"),
-            doc_ScatteringFactorTableOwner_setScatteringFactorTableByType)
         .def("getRadiationType",
                 [](const SFTOwner &obj)
                 {

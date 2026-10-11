@@ -175,19 +175,9 @@ Use PeakWidthModel.getRegisteredTypes() for a set of registered names.\n\
 
 const char* doc_ScatteringFactorTableOwner_scatteringfactortable = "\
 ScatteringFactorTable object used for a lookup of scattering factors.\n\
-This can be also set with the setScatteringFactorTableByType method.\n\
-";
-
-const char* doc_ScatteringFactorTableOwner_setScatteringFactorTableByType = "\
-Set internal ScatteringFactorTable according to specified string type.\n\
-\n\
-tp   -- string identifier of a registered ScatteringFactorTable type.\n\
-    Use ScatteringFactorTable.getRegisteredTypes for the allowed values.\n\
-\n\
-Deprecated: This method is deprecated and will be removed in the 2.0.0 release.\n\
-Use direct assignment to the `scatteringfactortable` property instead, for example:\n\
-    obj.scatteringfactortable = SFTNeutron()\n\
-No return value.\n\
+This attribute can be assigned either a ScatteringFactorTable-derived object\n\
+or a string name of a registered ScatteringFactorTable class.\n\
+Use ScatteringFactorTable.getRegisteredTypes() for a set of registered names.\n\
 ";
 
 const char* doc_ScatteringFactorTableOwner_getRadiationType = "\
@@ -319,25 +309,6 @@ ScatteringFactorTablePtr getscatteringfactortable(T& obj)
 DECLARE_BYTYPE_SETTER_WRAPPER(setScatteringFactorTable, setscatteringfactortable)
 
 template <class T>
-void setscatteringfactortablebytype(T& obj, const std::string& tp)
-{
-    try
-    {
-        nb::object warnings = nb::module_::import_("warnings");
-        nb::object builtins = nb::module_::import_("builtins");
-        nb::object DeprecationWarning = builtins.attr("DeprecationWarning");
-        warnings.attr("warn")(
-            std::string("setScatteringFactorTableByType is deprecated; "
-                    "assign the 'scatteringfactortable' property directly, for example:\n"
-                    "obj.scatteringfactortable = SFTNeutron()"),
-            DeprecationWarning,
-            2);
-    }
-    catch (...) { /* don't let warnings break the binding */ }
-    obj.setScatteringFactorTableByType(tp);
-}
-
-template <class T>
 std::string getradiationtype(T& obj)
 {
     return obj.getRadiationType();
@@ -383,10 +354,6 @@ C& wrap_PDFCommon(C& cls)
                 getscatteringfactortable<W>,
                 setscatteringfactortable<W, ScatteringFactorTable>,
                 doc_ScatteringFactorTableOwner_scatteringfactortable)
-        .def("setScatteringFactorTableByType",
-                setscatteringfactortablebytype<W>,
-                nb::arg("tp"),
-                doc_ScatteringFactorTableOwner_setScatteringFactorTableByType)
         .def("getRadiationType",
                 getradiationtype<W>,
                 doc_ScatteringFactorTableOwner_getRadiationType)
