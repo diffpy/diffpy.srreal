@@ -10,7 +10,7 @@ from testutils import mod_structure
 
 from diffpy.srreal.pairquantity import PairQuantity
 from diffpy.srreal.pdfcalculator import PDFCalculator
-from diffpy.srreal.srreal_ext import BasePairQuantity
+from diffpy.srreal.srreal_ext import BasePairQuantity, StructureDifference
 
 # ----------------------------------------------------------------------------
 
@@ -87,6 +87,71 @@ class TestPairQuantity(unittest.TestCase):
         self.assertFalse(gpm(0, 0))
         self.assertFalse(gpm(2, 7))
         return
+
+    def test_numpy_index_layouts(self):
+        """Index conversion follows logical values, not physical
+        storage."""
+        values = numpy.arange(6, dtype=numpy.intc)
+        swapped = values.astype(values.dtype.newbyteorder("S"))
+        unaligned = numpy.ndarray(
+            (3,), dtype=numpy.int64, buffer=bytearray(25), offset=1
+        )
+        unaligned[:] = [0, 2, 4]
+        for indices in [values[::2], values[::-1], swapped, unaligned]:
+            difference = StructureDifference()
+            difference.pop0 = indices
+            difference.add1 = indices
+            self.assertEqual(difference.pop0, indices.tolist())
+            self.assertEqual(difference.add1, indices.tolist())
+            self.pq.setPairMask(indices, 7, True, others=False)
+            for i in range(6):
+                self.assertEqual(self.pq.getPairMask(i, 7), i in indices)
+
+    def test_numpy_index_bounds(self):
+        """Wide integers must not wrap into valid indices."""
+        limits = numpy.iinfo(numpy.intc)
+        difference = StructureDifference()
+        for dtype in [
+            numpy.int8,
+            numpy.uint8,
+            numpy.int16,
+            numpy.uint16,
+            numpy.int32,
+            numpy.uint32,
+            numpy.int64,
+            numpy.uint64,
+        ]:
+            difference.pop0 = numpy.array([0, 1, 3], dtype=dtype)
+            self.assertEqual(difference.pop0, [0, 1, 3])
+        difference.pop0 = numpy.array(
+            [limits.min, limits.max], dtype=numpy.int64
+        )
+        self.assertEqual(difference.pop0, [limits.min, limits.max])
+        for dtype, values in [
+            (numpy.int64, [limits.min - 1, limits.max + 1, 2**32]),
+            (numpy.uint32, [limits.max + 1, numpy.iinfo(numpy.uint32).max]),
+            (numpy.uint64, [limits.max + 1, numpy.iinfo(numpy.uint64).max]),
+        ]:
+            for value in values:
+                indices = numpy.array([value], dtype=dtype)
+                difference.pop0 = [5]
+                with self.assertRaises(OverflowError):
+                    difference.pop0 = indices
+                self.assertEqual(difference.pop0, [5])
+                with self.assertRaises(OverflowError):
+                    self.pq.setPairMask(indices, 0, True)
+
+    def test_numpy_indices_reject_nonintegers(self):
+        for indices in [
+            numpy.array([1.5]),
+            numpy.array(["1"]),
+            numpy.datetime64("1970-01-03"),
+            numpy.timedelta64(2, "D"),
+        ]:
+            with self.assertRaises(TypeError):
+                StructureDifference().pop0 = indices
+            with self.assertRaises(TypeError):
+                self.pq.setPairMask(indices, 0, True)
 
     def test_getStructure(self):
         """Check PairQuantity.getStructure()"""

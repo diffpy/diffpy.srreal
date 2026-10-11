@@ -18,9 +18,6 @@
 
 #include <nanobind/nanobind.h>
 
-#include "srreal_numpy_symbol.hpp"
-#include <numpy/arrayobject.h>
-
 // Declaration of the external wrappers --------------------------------------
 
 namespace nb = nanobind;
@@ -51,23 +48,11 @@ void wrap_OverlapCalculator(nb::module_& m);
 
 }   // namespace srrealmodule
 
-namespace {
-
-#if PY_MAJOR_VERSION >= 3
-    void* initialize_numpy() { import_array(); return NULL; }
-#else
-    void initialize_numpy() { import_array(); }
-#endif
-
-}   // namespace
-
 // Module Definitions --------------------------------------------------------
 
 NB_MODULE(srreal_ext, m)
 {
     using namespace srrealmodule;
-    // initialize numpy module
-    initialize_numpy();
     // execute external wrappers
     wrap_libdiffpy_version(m);
     wrap_exceptions();

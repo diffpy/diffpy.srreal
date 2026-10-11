@@ -135,16 +135,17 @@ struct AtomViewPin
     }
 };
 
-inline nb::object pin_atom_view(PythonAtom& atom, nb::object view)
+inline nb::object atom_view_owner(PythonAtom& atom)
 {
+    nb::object python_atom = nb::cast(&atom, nb::rv_policy::reference);
     if (atom.references())
     {
         nb::capsule owner(new AtomViewPin(atom.references()), [](void* p) noexcept {
             delete static_cast<AtomViewPin*>(p);
         });
-        setNumPyArrayBase(view, std::move(owner));
+        return nb::make_tuple(python_atom, owner);
     }
-    return view;
+    return python_atom;
 }
 
 inline void preserve_atom_views(const std::shared_ptr<AtomReferences>& refs)

@@ -13,32 +13,24 @@
 ******************************************************************************
 *
 * utilities for conversion between C++ and Python types.
-* boost python converters are prone to conflicts.
 *
 *****************************************************************************/
-
-// TODO: replace Py_DECREF with nb::steal
 
 #include <string>
 #include <stdexcept>
 #include <cassert>
+#include <cstdint>
 #include <cstdlib>
 #include <limits>
 #include <ranges>
+#include <type_traits>
+#include <utility>
 
 #include <diffpy/Attributes.hpp>
 #include <diffpy/srreal/StructureAdapter.hpp>
 
 #include "srreal_converters.hpp"
 #include "srreal_validators.hpp"
-
-#include "srreal_numpy_symbol.hpp"
-// numpy/arrayobject.h needs to be included after srreal_numpy_symbol.hpp,
-// which defines PY_ARRAY_UNIQUE_SYMBOL.  NO_IMPORT_ARRAY indicates
-// import_array will be called in the extension module initializer.
-#define NO_IMPORT_ARRAY
-#include <numpy/arrayobject.h>
-
 
 namespace {
 
@@ -47,38 +39,74 @@ namespace {
 using diffpy::attributes::DoubleAttributeError;
 using std::invalid_argument;
 
-void translate_DoubleAttributeError(const DoubleAttributeError& e)
+template <class Array>
+bool native_array(nb::handle obj, Array& result)
 {
-    PyErr_SetString(PyExc_AttributeError, e.what());
+    // Keep scalars on their conversion path. NumPy datetime/timedelta scalar
+    // buffers omit strides, which nanobind's buffer importer dereferences.
+    if (!PySequence_Check(obj.ptr())) return false;
+    // The importer checks byte order, dtype and layout, but not alignment.
+    return nb::try_cast<Array>(obj, result, false) &&
+        reinterpret_cast<std::uintptr_t>(result.data()) %
+            alignof(typename Array::Scalar) == 0;
 }
 
+using IndexArray = nb::ndarray<nb::numpy, nb::ro, nb::ndim<1>,
+        nb::device::cpu>;
 
-void translate_invalid_argument(const invalid_argument& e)
+template <class T>
+bool copy_index_array(const IndexArray& array, std::vector<int>& result)
 {
-    PyErr_SetString(PyExc_ValueError, e.what());
+    if (array.dtype() != nb::dtype<T>() ||
+            reinterpret_cast<std::uintptr_t>(array.data()) % alignof(T) != 0)
+        return false;
+
+    result.resize(array.size());
+    if constexpr (std::is_same_v<T, int>)
+    {
+        if (array.stride(0) == 1)
+        {
+            if (!result.empty())
+                std::copy_n(static_cast<const int*>(array.data()),
+                        result.size(), result.begin());
+            return true;
+        }
+    }
+    // Typed views also handle slices without boxing each integer.
+    auto values = array.view<const T>();
+    for (size_t i = 0; i < result.size(); ++i)
+    {
+        T value = values(i);
+        if (!std::in_range<int>(value))
+        {
+            PyErr_SetString(PyExc_OverflowError, "integer index out of range");
+            nb::raise_python_error();
+        }
+        result[i] = static_cast<int>(value);
+    }
+    return true;
 }
 
-
-nb::object newNumPyArray(int dim, const int* sz, int typenum)
+nb::object newNumPyArray(size_t dim, const size_t* shape,
+        const char* dtype, size_t itemsize)
 {
-    std::vector<npy_intp> dims(static_cast<size_t>(dim));
-    std::transform(
-        sz,
-        sz + dim,
-        dims.begin(),
-        [](int v) { return static_cast<npy_intp>(v); }
-    );
-
-    PyObject *arr = PyArray_SimpleNew(
-        dim,
-        dims.empty() ? nullptr : dims.data(),
-        typenum
-    );
-
-    if (!arr)
-        throw nb::python_error();
-
-    return nb::steal<nb::object>(arr);
+    // NumPy dimensions and byte counts must fit in Py_ssize_t, even though
+    // ndarray metadata uses size_t. Check before multiplying or allocating.
+    const size_t limit = static_cast<size_t>(PY_SSIZE_T_MAX);
+    size_t count = 1;
+    nb::tuple_builder dimensions(dim);
+    for (size_t i = 0; i < dim; ++i)
+    {
+        if (shape[i] > limit || (count && shape[i] > limit / itemsize / count))
+        {
+            PyErr_SetString(PyExc_OverflowError, "array size is out of range");
+            nb::raise_python_error();
+        }
+        count *= shape[i];
+        dimensions.put(shape[i]);
+    }
+    return nb::module_::import_("numpy").attr("empty")(
+            dimensions.commit(), nb::arg("dtype") = dtype);
 }
 
 }   // namespace
@@ -116,167 +144,91 @@ void wrap_exceptions()
 }
 
 
-/// helper for creating numpy array of doubles
-NumPyArray_DoublePtr createNumPyDoubleArray(int dim, const int* sz)
+NumPyOutput<double> createNumPyDoubleArray(size_t dim, const size_t* sz)
 {
-    nb::object rvobj = newNumPyArray(dim, sz, NPY_DOUBLE);
-    PyArrayObject* a = reinterpret_cast<PyArrayObject*>(rvobj.ptr());
-    double* rvdata = static_cast<double*>(PyArray_DATA(a));
-    NumPyArray_DoublePtr rv(rvobj, rvdata);
-    return rv;
+    nb::object array = newNumPyArray(dim, sz, "float64", sizeof(double));
+    return {array, nb::cast<decltype(NumPyOutput<double>::array)>(array, false)};
 }
 
 
-/// helper for creating numpy array of the same shape as the argument
-NumPyArray_DoublePtr createNumPyDoubleArrayLike(nb::object& obj)
+NumPyOutput<double> createNumPyDoubleArrayLike(const NumPyDoubleInput& array)
 {
-    assert(PyArray_Check(obj.ptr()));
-    PyArrayObject* a = reinterpret_cast<PyArrayObject*>(obj.ptr());
-    // create numpy array
-    PyObject *pobj = PyArray_NewLikeArray(
-        a,
-        NPY_CORDER,
-        PyArray_DescrFromType(NPY_DOUBLE),
-        0
-    );
-
-    if (!pobj)
-        throw nb::python_error();
-
-    nb::object rvobj = nb::steal<nb::object>(pobj);
-    PyArrayObject* a1 = reinterpret_cast<PyArrayObject*>(rvobj.ptr());
-    double* rvdata = static_cast<double*>(PyArray_DATA(a1));
-    NumPyArray_DoublePtr rv(rvobj, rvdata);
-    return rv;
+    std::vector<size_t> shape(array.ndim());
+    for (size_t i = 0; i < shape.size(); ++i) shape[i] = array.shape(i);
+    return createNumPyDoubleArray(shape.size(), shape.data());
 }
 
 
-/// helper for creating a numpy array view on a double array
-nb::object
-createNumPyDoubleView(double* data, int dim, const int* sz)
+NumPyOutput<int> createNumPyIntArray(size_t dim, const size_t* sz)
 {
-    std::vector<npy_intp> dims(static_cast<size_t>(dim));
-    std::transform(
-        sz,
-        sz + dim,
-        dims.begin(),
-        [](int v) { return static_cast<npy_intp>(v); }
-    );
-
-    PyObject* pobj = PyArray_SimpleNewFromData(
-        dim,
-        dims.data(),
-        NPY_DOUBLE,
-        data
-    );
-
-    if (!pobj)
-        throw nb::python_error();
-
-    return nb::steal<nb::object>(pobj);
+    nb::object array = newNumPyArray(dim, sz, "intc", sizeof(int));
+    return {array, nb::cast<decltype(NumPyOutput<int>::array)>(array, false)};
 }
 
 
-void setNumPyArrayBase(nb::handle array, nb::object owner)
+nb::object viewAsNumPyArray(::diffpy::srreal::R3::Vector& v, nb::handle owner)
 {
-    auto* a = reinterpret_cast<PyArrayObject*>(array.ptr());
-    if (PyArray_SetBaseObject(a, owner.release().ptr()) < 0)
-        throw nb::python_error();
+    using View = nb::ndarray<nb::numpy, double, nb::shape<3>,
+            nb::c_contig, nb::device::cpu>;
+    return View(&v[0], {3}, owner).cast(nb::rv_policy::reference);
 }
 
 
-/// NumPy array view specializations for R3::Vector
-nb::object viewAsNumPyArray(::diffpy::srreal::R3::Vector& v)
+nb::object viewAsNumPyArray(::diffpy::srreal::R3::Matrix& mx, nb::handle owner)
 {
-    using namespace diffpy::srreal;
-    double* data = &(v[0]);
-    int sz = R3::Ndim;
-    return createNumPyDoubleView(data, 1, &sz);
+    using View = nb::ndarray<nb::numpy, double, nb::shape<3, 3>,
+            nb::c_contig, nb::device::cpu>;
+    return View(&mx(0, 0), {3, 3}, owner).cast(nb::rv_policy::reference);
 }
 
 
-/// NumPy array view specializations for R3::Matrix
-nb::object viewAsNumPyArray(::diffpy::srreal::R3::Matrix& mx)
+void assignR3Vector(::diffpy::srreal::R3::Vector& dst, nb::object& value)
 {
-    using namespace diffpy::srreal;
-    double* data = &(mx(0, 0));
-    int sz[2] = {R3::Ndim, R3::Ndim};
-    return createNumPyDoubleView(data, 2, sz);
-}
-
-
-/// Copy NumPy array to R3::Vector
-void assignR3Vector(
-        ::diffpy::srreal::R3::Vector& dst, nb::object& value)
-{
-    using diffpy::srreal::R3::Ndim;
-    // If value is numpy array, try direct data access
-    if (PyArray_Check(value.ptr()))
+    using VectorInput = nb::ndarray<nb::numpy, const double, nb::shape<3>,
+            nb::c_contig, nb::device::cpu>;
+    VectorInput source;
+    if (native_array(value, source))
     {
-        PyArrayObject* a = reinterpret_cast<PyArrayObject*>(
-                PyArray_ContiguousFromAny(value.ptr(), NPY_DOUBLE, 1, 1));
-        if (a && Ndim == PyArray_DIM(a, 0))
-        {
-            double* p = static_cast<double*>(PyArray_DATA(a));
-            std::ranges::copy(p, p + Ndim, dst.data().begin());
-            Py_DECREF(a);
-            return;
-        }
-        Py_XDECREF(a);
+        std::copy_n(source.data(), 3, dst.data().begin());
+        return;
     }
-    // handle scalar assignment
     double scalar;
     if (nb::try_cast<double>(value, scalar))
     {
         std::ranges::fill(dst.data().begin(), dst.data().end(), scalar);
         return;
     }
-    // finally assign using array view
-    nb::object dstview = viewAsNumPyArray(dst);
-    dstview[nb::slice(nb::none(), nb::none(), nb::none())] = value;
+    // Assign into temporary NumPy storage to preserve broadcasting, dtype
+    // conversion and warnings without partially updating the atom on failure.
+    const size_t shape[] = {3};
+    auto temporary = createNumPyDoubleArray(1, shape);
+    temporary.object[nb::slice(nb::none(), nb::none(), nb::none())] = value;
+    source = nb::cast<VectorInput>(temporary.object, false);
+    std::copy_n(source.data(), 3, dst.data().begin());
 }
 
 
-/// Copy possible NumPy array to R3::Matrix
-void assignR3Matrix(
-        ::diffpy::srreal::R3::Matrix& dst, nb::object& value)
+void assignR3Matrix(::diffpy::srreal::R3::Matrix& dst, nb::object& value)
 {
-    using diffpy::srreal::R3::Ndim;
-    // If value is numpy array, try direct data access
-    if (PyArray_Check(value.ptr()))
+    using MatrixInput = nb::ndarray<nb::numpy, const double, nb::shape<3, 3>,
+            nb::c_contig, nb::device::cpu>;
+    MatrixInput source;
+    if (native_array(value, source))
     {
-        PyArrayObject* a = reinterpret_cast<PyArrayObject*>(
-                PyArray_ContiguousFromAny(value.ptr(), NPY_DOUBLE, 2, 2));
-        if (a && Ndim == PyArray_DIM(a, 0) && Ndim == PyArray_DIM(a, 1))
-        {
-            double* p = static_cast<double*>(PyArray_DATA(a));
-            std::ranges::copy(p, p + Ndim * Ndim, dst.data().begin());
-            Py_DECREF(a);
-            return;
-        }
-        Py_XDECREF(a);
+        std::copy_n(source.data(), 9, dst.data().begin());
+        return;
     }
-    // handle scalar assignment
     double scalar;
     if (nb::try_cast<double>(value, scalar))
     {
         std::ranges::fill(dst.data().begin(), dst.data().end(), scalar);
         return;
     }
-    // finally assign using array view
-    nb::object dstview = viewAsNumPyArray(dst);
-    dstview[nb::slice(nb::none(), nb::none(), nb::none())] = value;
-}
-
-
-/// helper for creating numpy array of integers
-NumPyArray_IntPtr createNumPyIntArray(int dim, const int* sz)
-{
-    nb::object rvobj = newNumPyArray(dim, sz, NPY_INT);
-    PyArrayObject* a = reinterpret_cast<PyArrayObject*>(rvobj.ptr());
-    int* rvdata = static_cast<int*>(PyArray_DATA(a));
-    NumPyArray_IntPtr rv(rvobj, rvdata);
-    return rv;
+    const size_t shape[] = {3, 3};
+    auto temporary = createNumPyDoubleArray(2, shape);
+    temporary.object[nb::slice(nb::none(), nb::none(), nb::none())] = value;
+    source = nb::cast<MatrixInput>(temporary.object, false);
+    std::copy_n(source.data(), 9, dst.data().begin());
 }
 
 
@@ -291,38 +243,35 @@ extractQuantityType(
     QuantityType* qt = nullptr;
     if (nb::try_cast<QuantityType*>(obj, qt) && qt)
         return *qt;
-    // copy data directly if it is a numpy array of doubles
-    PyArrayObject* a = PyArray_Check(obj.ptr()) ?
-        reinterpret_cast<PyArrayObject*>(obj.ptr()) : NULL;
-    bool isdoublenumpyarray = a &&
-        (1 == PyArray_NDIM(a)) &&
-        (NPY_DOUBLE == PyArray_TYPE(a));
-    if (isdoublenumpyarray)
+    // Normalize layout before typed access, including byte order and alignment.
+    // Other dtypes retain the elementwise conversion used by this endpoint.
+    using QuantityInput = nb::ndarray<nb::numpy, const double, nb::ndim<1>,
+            nb::c_contig, nb::device::cpu>;
+    QuantityInput direct;
+    if (native_array(obj, direct))
     {
-        double* src = static_cast<double*>(PyArray_DATA(a));
-        npy_intp stride = PyArray_STRIDE(a, 0) / PyArray_ITEMSIZE(a);
-        rv.resize(PyArray_SIZE(a));
-        QuantityType::iterator dst = rv.begin();
-        for (; dst != rv.end(); ++dst, src += stride)  *dst = *src;
+        rv.resize(direct.size());
+        if (direct.size()) std::copy_n(direct.data(), direct.size(), rv.begin());
+        return rv;
+    }
+    nb::module_ numpy = nb::module_::import_("numpy");
+    if (nb::isinstance(obj, numpy.attr("ndarray")) &&
+            nb::cast<int>(obj.attr("ndim")) == 1 &&
+            nb::cast<std::string>(obj.attr("dtype").attr("kind")) == "f" &&
+            nb::cast<size_t>(obj.attr("itemsize")) == sizeof(double))
+    {
+        nb::object normalized = numpy.attr("require")(obj,
+                nb::arg("dtype") = "=f8",
+                nb::arg("requirements") = nb::make_tuple("C", "A"));
+        auto array = nb::cast<NumPyDoubleInput>(normalized, false);
+        rv.resize(array.size());
+        if (array.size()) std::copy_n(array.data(), array.size(), rv.begin());
         return rv;
     }
     // otherwise copy elementwise converting each element to a double
     std::vector<double> tmp;
-
-    PyObject* iter = PyObject_GetIter(obj.ptr());
-    if (!iter)
-        throw nb::python_error();
-
-    nb::object it = nb::steal<nb::object>(iter);
-
-    while (PyObject* item = PyIter_Next(it.ptr()))
-    {
-        nb::object item_obj = nb::steal<nb::object>(item);
-        tmp.push_back(nb::cast<double>(item_obj));
-    }
-
-    if (PyErr_Occurred())
-        throw nb::python_error();
+    for (nb::handle item : obj)
+        tmp.push_back(nb::cast<double>(item));
 
     rv.assign(tmp.begin(), tmp.end());
     return rv;
@@ -330,19 +279,45 @@ extractQuantityType(
 
 
 /// efficient conversion of Python object to a numpy array of doubles
-NumPyArray_DoublePtr extractNumPyDoubleArray(::nb::object& obj)
+NumPyDoubleInput extractNumPyDoubleArray(nb::object obj)
 {
-    PyObject* pobj = PyArray_ContiguousFromAny(obj.ptr(), NPY_DOUBLE, 0, 0);
-    if (!pobj)
+    NumPyDoubleInput direct;
+    if (native_array(obj, direct)) return direct;
+    nb::module_ numpy = nb::module_::import_("numpy");
+    try
     {
-        PyErr_Clear();
+        // NumPy's old FromAny path used safe casting for existing arrays,
+        // but constructed Python sequences directly in the requested dtype.
+        nb::object array;
+        if (nb::isinstance(obj, numpy.attr("generic")))
+        {
+            // NumPy scalars historically use scalar casting, which permits
+            // e.g. longdouble and complex-to-real with a ComplexWarning.
+            array = numpy.attr("asarray")(obj).attr("astype")("float64");
+        }
+        else if (nb::isinstance<nb::bytes>(obj))
+        {
+            array = numpy.attr("asarray")(obj, nb::arg("dtype") = "float64");
+        }
+        else if (nb::isinstance(obj, numpy.attr("ndarray")) ||
+                nb::hasattr(obj, "__array__") || PyObject_CheckBuffer(obj.ptr()))
+        {
+            array = numpy.attr("asarray")(obj).attr("astype")("float64",
+                    nb::arg("casting") = "safe", nb::arg("copy") = false);
+        }
+        else
+        {
+            array = numpy.attr("asarray")(obj, nb::arg("dtype") = "float64");
+        }
+        array = numpy.attr("require")(array,
+                nb::arg("dtype") = "=f8",
+                nb::arg("requirements") = nb::make_tuple("C", "A"));
+        return nb::cast<NumPyDoubleInput>(array, false);
+    }
+    catch (const nb::python_error&)
+    {
         throw nb::type_error("Cannot convert this object to numpy array.");
     }
-    nb::object rvobj = nb::steal<nb::object>(pobj);
-    PyArrayObject* a = reinterpret_cast<PyArrayObject*>(pobj);
-    double* rvdata = static_cast<double*>(PyArray_DATA(a));
-    NumPyArray_DoublePtr rv(rvobj, rvdata);
-    return rv;
 }
 
 
@@ -353,20 +328,16 @@ double extractdouble(nb::object obj)
     if (nb::try_cast<double>(obj, x))
         return x;
 
-    PyObject* pobj = obj.ptr();
-    if (PyArray_CheckScalar(pobj))
+    nb::module_ numpy = nb::module_::import_("numpy");
+    if (nb::isinstance(obj, numpy.attr("generic")) ||
+            (nb::isinstance(obj, numpy.attr("ndarray")) &&
+             nb::cast<int>(obj.attr("ndim")) == 0))
     {
-        PyArray_Descr* descr = PyArray_DescrFromType(NPY_DOUBLE);
-        if (!descr)
-            throw nb::python_error();
-
-        int ok = PyArray_CastScalarToCtype(pobj, &x, descr);
-        Py_DECREF(descr);
-
-        if (ok < 0)
-            throw nb::python_error();
-
-        return x;
+        // Preserve NumPy scalar casting (including its ComplexWarning),
+        // without accepting Python strings as numeric arguments.
+        nb::object scalar = numpy.attr("asarray")(obj)
+                .attr("astype")("float64").attr("item")();
+        return nb::cast<double>(scalar);
     }
     // nothing worked, call default behavior which will raise an exception
     return nb::cast<double>(obj);
@@ -377,14 +348,6 @@ double extractdouble(nb::object obj)
 int extractint(nb::object obj)
 {
     PyObject* pobj = obj.ptr();
-    if (PyArray_CheckScalar(pobj))
-    {
-        int rv = PyArray_PyIntAsInt(pobj);
-        if (rv == -1 && PyErr_Occurred())
-            throw nb::python_error();
-        return rv;
-    }
-
     PyObject* idx = PyNumber_Index(pobj);
     if (!idx)
         throw nb::python_error();
@@ -409,35 +372,25 @@ int extractint(nb::object obj)
 std::vector<int> extractintvector(nb::object obj)
 {
     std::vector<int> rv;
+    IndexArray array;
+    // Import once, then dispatch on the native dtype without boxing elements.
+    // As in native_array(), leave scalar buffers to the scalar converter.
+    if (PySequence_Check(obj.ptr()) &&
+            nb::try_cast<IndexArray>(obj, array, false) &&
+            (copy_index_array<std::int32_t>(array, rv) ||
+             copy_index_array<std::int64_t>(array, rv) ||
+             copy_index_array<std::uint32_t>(array, rv) ||
+             copy_index_array<std::uint64_t>(array, rv) ||
+             copy_index_array<std::int16_t>(array, rv) ||
+             copy_index_array<std::uint16_t>(array, rv) ||
+             copy_index_array<std::int8_t>(array, rv) ||
+             copy_index_array<std::uint8_t>(array, rv)))
+        return rv;
     // iterable of integers
     if (isiterable(obj))
     {
-        PyArrayObject* a = PyArray_Check(obj.ptr()) ?
-            reinterpret_cast<PyArrayObject*>(obj.ptr()) : NULL;
-        // handle numpy array of integers
-        bool isintegernumpyarray =
-            a && (1 == PyArray_NDIM(a)) && PyArray_ISINTEGER(a);
-        if (isintegernumpyarray)
-        {
-            nb::object aobj = obj;
-            if (NPY_INT != PyArray_TYPE(a))
-            {
-                PyObject* casted = PyArray_Cast(a, NPY_INT);
-                if (!casted)
-                    throw nb::python_error();
-
-                aobj = nb::steal<nb::object>(casted);
-            }
-            PyArrayObject* a1 = reinterpret_cast<PyArrayObject*>(aobj.ptr());
-            assert(NPY_INT == PyArray_TYPE(a1));
-            int* pfirst = static_cast<int*>(PyArray_DATA(a1));
-            int* plast = pfirst + PyArray_SIZE(a1);
-            rv.assign(pfirst, plast);
-            return rv;
-        }
-        // otherwise translate every item in the iterable
-        rv.reserve(len(obj));
-
+        // Never narrow an array before checking each integer. Iterating also
+        // handles non-native byte order and unaligned data.
         for (nb::handle item : obj)
             rv.push_back(extractint(nb::borrow<nb::object>(item)));
 

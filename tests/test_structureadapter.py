@@ -627,6 +627,30 @@ class TestAtom(unittest.TestCase):
         self.assertEqual(0.023, a.uc23)
         return
 
+    def test_array_assignment_broadcasts_and_validates_before_writing(self):
+        values = numpy.arange(3.0)[::-1]
+        for field, shape in [("xyz_cartn", (3,)), ("uij_cartn", (3, 3))]:
+            setattr(self.a, field, values)
+            numpy.testing.assert_array_equal(
+                getattr(self.a, field), numpy.broadcast_to(values, shape)
+            )
+            setattr(self.a, field, numpy.array(7.0))
+            with self.assertRaises(TypeError):
+                setattr(self.a, field, [1, 2, object()])
+            numpy.testing.assert_array_equal(getattr(self.a, field), 7)
+        matrix = numpy.arange(9.0).reshape(3, 3).T
+        self.a.uij_cartn = matrix
+        numpy.testing.assert_array_equal(self.a.uij_cartn, matrix)
+
+    def test_numpy_scalar_casting_preserves_warnings(self):
+        self.a.xc = numpy.str_("2")
+        self.assertEqual(self.a.xc, 2)
+        with self.assertWarns(numpy.exceptions.ComplexWarning):
+            self.a.xc = numpy.complex128(2 + 3j)
+        self.assertEqual(self.a.xc, 2)
+        with self.assertRaises(TypeError):
+            self.a.xc = "2"
+
     def test_xc_yc_zc(self):
         "check Atom properties xc, yc, zc."
         a = self.a

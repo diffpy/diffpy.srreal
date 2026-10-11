@@ -13,17 +13,14 @@
 ******************************************************************************
 *
 * utilities for conversion between C++ and Python types.
-* boost python converters are prone to conflicts.
 *
 *****************************************************************************/
-
-// TODO: Go through type casters, some of which are found redundant or could be
-// replaced with nanobind builtins.
 
 #ifndef SRREAL_CONVERTERS_HPP_INCLUDED
 #define SRREAL_CONVERTERS_HPP_INCLUDED
 
 #include <nanobind/nanobind.h>
+#include <nanobind/ndarray.h>
 #include <nanobind/stl/string.h>
 #include <nanobind/stl/shared_ptr.h>
 
@@ -56,6 +53,9 @@ createStructureAdapter(nb::object);
 namespace srrealmodule {
 
 using diffpy::srreal::createStructureAdapter;
+
+using NumPyDoubleInput = nb::ndarray<nb::numpy, const double,
+        nb::c_contig, nb::device::cpu>;
 
 /// this macro creates a setter for overloaded method that can accept
 /// either instance or a type string
@@ -237,23 +237,22 @@ void fillPyListWithSets(nb::list lst, const T& value)
 }
 
 
-/// Type for numpy array object and a raw pointer to its double data
-typedef std::pair<nb::object, double*> NumPyArray_DoublePtr;
+// Keep the original NumPy allocation so returned copies retain OWNDATA.
+// The typed handle validates storage and keeps it alive during C++ access.
+template <class T>
+struct NumPyOutput
+{
+    nb::object object;
+    nb::ndarray<nb::numpy, T, nb::c_contig, nb::device::cpu> array;
+};
 
 
 /// helper for creating numpy array of doubles
-NumPyArray_DoublePtr createNumPyDoubleArray(int dim, const int* sz);
+NumPyOutput<double> createNumPyDoubleArray(size_t dim, const size_t* sz);
 
 
 /// helper for creating numpy array of the same shape as the argument
-NumPyArray_DoublePtr createNumPyDoubleArrayLike(nb::object& obj);
-
-
-/// helper for creating numpy views on existing double array
-nb::object createNumPyDoubleView(double*, int dim, const int* sz);
-
-/// Retain the storage owner for an array view and any slices made from it.
-void setNumPyArrayBase(nb::handle array, nb::object owner);
+NumPyOutput<double> createNumPyDoubleArrayLike(const NumPyDoubleInput& array);
 
 
 /// template function for converting iterables to numpy array of doubles
@@ -261,10 +260,10 @@ template <class Iter>
 nb::object
 convertToNumPyArray(Iter first, Iter last)
 {
-    int sz = last - first;
-    NumPyArray_DoublePtr ap = createNumPyDoubleArray(1, &sz);
-    std::copy(first, last, ap.second);
-    return ap.first;
+    size_t sz = static_cast<size_t>(last - first);
+    NumPyOutput<double> ap = createNumPyDoubleArray(1, &sz);
+    std::copy(first, last, ap.array.data());
+    return ap.object;
 }
 
 
@@ -281,13 +280,13 @@ inline nb::object
 convertToNumPyArray(const ::diffpy::srreal::R3::Matrix& mx)
 {
     using namespace diffpy::srreal;
-    int sz[2] = {R3::Ndim, R3::Ndim};
-    NumPyArray_DoublePtr ap = createNumPyDoubleArray(2, sz);
-    double* xo = ap.second;
+    size_t sz[2] = {R3::Ndim, R3::Ndim};
+    NumPyOutput<double> ap = createNumPyDoubleArray(2, sz);
+    double* xo = ap.array.data();
     *(xo++) = mx(0, 0); *(xo++) = mx(0, 1); *(xo++) = mx(0, 2);
     *(xo++) = mx(1, 0); *(xo++) = mx(1, 1); *(xo++) = mx(1, 2);
     *(xo++) = mx(2, 0); *(xo++) = mx(2, 1); *(xo++) = mx(2, 2);
-    return ap.first;
+    return ap.object;
 }
 
 
@@ -296,10 +295,9 @@ inline nb::object
 convertToNumPyArray(const ::std::vector<diffpy::srreal::R3::Vector>& vr3v)
 {
     using namespace diffpy::srreal;
-    int n = vr3v.size();
-    int sz[2] = {n, R3::Ndim};
-    NumPyArray_DoublePtr ap = createNumPyDoubleArray(2, sz);
-    double* p = ap.second;
+    size_t sz[2] = {vr3v.size(), R3::Ndim};
+    NumPyOutput<double> ap = createNumPyDoubleArray(2, sz);
+    double* p = ap.array.data();
     std::vector<R3::Vector>::const_iterator v = vr3v.begin();
     for (; v != vr3v.end(); ++v)
     {
@@ -307,8 +305,8 @@ convertToNumPyArray(const ::std::vector<diffpy::srreal::R3::Vector>& vr3v)
         const double* pvlast = pv + R3::Ndim;
         for (; pv != pvlast; ++p, ++pv)  *p = *pv;
     }
-    assert(p == ap.second + sz[0] * sz[1]);
-    return ap.first;
+    assert(p == ap.array.data() + sz[0] * sz[1]);
+    return ap.object;
 }
 
 
@@ -322,12 +320,12 @@ convertToNumPyArray(const ::diffpy::srreal::QuantityType& value)
 
 /// NumPy array view specializations for R3::Vector
 nb::object
-viewAsNumPyArray(::diffpy::srreal::R3::Vector&);
+viewAsNumPyArray(::diffpy::srreal::R3::Vector&, nb::handle owner);
 
 
 /// NumPy array view specializations for R3::Matrix
 nb::object
-viewAsNumPyArray(::diffpy::srreal::R3::Matrix&);
+viewAsNumPyArray(::diffpy::srreal::R3::Matrix&, nb::handle owner);
 
 
 /// Copy possible NumPy array to R3::Vector
@@ -340,22 +338,18 @@ void assignR3Matrix(
         ::diffpy::srreal::R3::Matrix& dst, nb::object& value);
 
 
-/// Type for numpy array object and a raw pointer to its double data
-typedef std::pair<nb::object, int*> NumPyArray_IntPtr;
-
-
 /// helper for creating numpy array of integers
-NumPyArray_IntPtr createNumPyIntArray(int dim, const int* sz);
+NumPyOutput<int> createNumPyIntArray(size_t dim, const size_t* sz);
 
 
 /// specialization for a vector of integers
 inline nb::object
 convertToNumPyArray(const ::std::vector<int>& value)
 {
-    int sz = value.size();
-    NumPyArray_IntPtr ap = createNumPyIntArray(1, &sz);
-    std::copy(value.begin(), value.end(), ap.second);
-    return ap.first;
+    size_t sz = value.size();
+    NumPyOutput<int> ap = createNumPyIntArray(1, &sz);
+    std::copy(value.begin(), value.end(), ap.array.data());
+    return ap.object;
 }
 
 
@@ -392,7 +386,7 @@ extractQuantityType(nb::object obj,
 
 
 /// efficient conversion of Python object to a numpy array of doubles
-NumPyArray_DoublePtr extractNumPyDoubleArray(nb::object& obj);
+NumPyDoubleInput extractNumPyDoubleArray(nb::object obj);
 
 
 /// extract double with a support for numpy numeric types

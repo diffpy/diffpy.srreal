@@ -26,12 +26,7 @@
 #include <diffpy/srreal/SFTNeutron.hpp>
 #include <diffpy/srreal/SFTElectronNumber.hpp>
 
-#include "srreal_numpy_symbol.hpp"
-// numpy/arrayobject.h needs to be included after srreal_numpy_symbol.hpp,
-// which defines PY_ARRAY_UNIQUE_SYMBOL.  NO_IMPORT_ARRAY indicates
-// import_array will be called in the extension module initializer.
-#define NO_IMPORT_ARRAY
-#include <numpy/arrayobject.h>
+
 
 
 #include "srreal_converters.hpp"
@@ -328,18 +323,18 @@ class ScatteringFactorTableWrap :
 nb::object lookupnparray(const ScatteringFactorTable& sftb,
         std::string smbl, nb::object& qobj)
 {
-    if (PyFloat_Check(qobj.ptr()) || PyLong_Check(qobj.ptr()))
+    if (nb::isinstance<nb::float_>(qobj) || nb::isinstance<nb::int_>(qobj))
         return nb::float_(sftb.lookup(smbl, extractdouble(qobj)));
-    NumPyArray_DoublePtr aa = extractNumPyDoubleArray(qobj);
-    NumPyArray_DoublePtr bb = createNumPyDoubleArrayLike(aa.first);
-    double* src = aa.second;
-    double* last = aa.second + PyArray_Size(aa.first.ptr());
-    double* dst = bb.second;
+    NumPyDoubleInput aa = extractNumPyDoubleArray(qobj);
+    auto bb = createNumPyDoubleArrayLike(aa);
+    const double* src = aa.data();
+    const double* last = src + aa.size();
+    double* dst = bb.array.data();
     for (; src != last; ++src, ++dst)
     {
         *dst = sftb.lookup(smbl, *src);
     }
-    return bb.first;
+    return bb.object;
 }
 
 

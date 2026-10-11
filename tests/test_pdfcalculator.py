@@ -352,6 +352,24 @@ class TestFFTRoutines(unittest.TestCase):
         self.assertEqual(dq0, dq2)
         return
 
+    def test_fft_swapped_and_unaligned_buffers(self):
+        """Normalize FFT input byte order and alignment."""
+        values = numpy.arange(4.0)
+        swapped = values.astype(values.dtype.newbyteorder("S"))
+        unaligned = numpy.ndarray(
+            values.shape,
+            dtype=float,
+            buffer=bytearray(values.nbytes + 1),
+            offset=1,
+        )
+        unaligned[:] = values
+        unaligned.flags.writeable = False
+        expected, step = fftgtof(values, 0.1)
+        for source in [swapped, unaligned]:
+            actual, actual_step = fftgtof(source, 0.1)
+            numpy.testing.assert_array_equal(actual, expected)
+            self.assertEqual(actual_step, step)
+
     def test_fft_roundtrip(self):
         """Check if forward and inverse transformation recover the
         input."""

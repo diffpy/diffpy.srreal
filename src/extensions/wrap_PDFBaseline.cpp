@@ -24,12 +24,7 @@
 #include <diffpy/srreal/ZeroBaseline.hpp>
 #include <diffpy/srreal/LinearBaseline.hpp>
 
-#include "srreal_numpy_symbol.hpp"
-// numpy/arrayobject.h needs to be included after srreal_numpy_symbol.hpp,
-// which defines PY_ARRAY_UNIQUE_SYMBOL.  NO_IMPORT_ARRAY indicates
-// import_array will be called in the extension module initializer.
-#define NO_IMPORT_ARRAY
-#include <numpy/arrayobject.h>
+
 
 #include "srreal_converters.hpp"
 #include "srreal_pickling.hpp"
@@ -145,15 +140,15 @@ class PDFBaselineWrap :
 nb::object callnparray(const PDFBaseline* obj, nb::object& x)
 {
     // Return a float for Python scalars and an array for array-like inputs.
-    if (PyFloat_Check(x.ptr()) || PyLong_Check(x.ptr()))
+    if (nb::isinstance<nb::float_>(x) || nb::isinstance<nb::int_>(x))
         return nb::float_((*obj)(extractdouble(x)));
-    NumPyArray_DoublePtr xx = extractNumPyDoubleArray(x);
-    NumPyArray_DoublePtr yy = createNumPyDoubleArrayLike(xx.first);
-    double* src = xx.second;
-    double* last = xx.second + PyArray_Size(xx.first.ptr());
-    double* dst = yy.second;
+    NumPyDoubleInput xx = extractNumPyDoubleArray(x);
+    auto yy = createNumPyDoubleArrayLike(xx);
+    const double* src = xx.data();
+    const double* last = src + xx.size();
+    double* dst = yy.array.data();
     for (; src != last; ++src, ++dst)  *dst = (*obj)(*src);
-    return yy.first;
+    return yy.object;
 }
 
 }   // namespace nswrap_PDFBaseline

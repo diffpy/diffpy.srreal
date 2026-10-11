@@ -354,8 +354,9 @@ void set_quantity_slice(QuantityType& values, nb::slice slice, nb::object items)
 {
     auto [first, last, step, count] = slice.compute(values.size());
     // Finish conversion before editing, including when items aliases values.
-    QuantityType buffer;
-    QuantityType replacement = extractQuantityType(items, buffer);
+    QuantityType replacement;
+    const QuantityType& source = extractQuantityType(items, replacement);
+    if (&source != &replacement) replacement = source;
 
     if (step == 1)
     {
@@ -377,7 +378,7 @@ void set_quantity_slice(QuantityType& values, nb::slice slice, nb::object items)
 
 nb::object eval_asarray(PairQuantity& obj, nb::object& a)
 {
-    QuantityType value = (a.is_none()) ? obj.eval() : obj.eval(a);
+    const QuantityType& value = (a.is_none()) ? obj.eval() : obj.eval(a);
     nb::object rv = convertToNumPyArray(value);
     return rv;
 }
