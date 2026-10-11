@@ -11,10 +11,10 @@ name = "diffpy.srreal"
 dynamic = ["version"]
 dependencies = ["numpy"]
 authors = [
-  { name="Simon Billinge", email="sb2896@columbia.edu" },
+  {name='Simon Billinge', email='sbillinge@ucsb.edu'},
 ]
 maintainers = [
-  { name="Simon Billinge", email="sb2896@columbia.edu" },
+  {name='Simon Billinge', email='sbillinge@ucsb.edu'},
 ]
 description = "Calculators for PDF, bond valence sum, and other quantities based on atom pair interaction."
 keywords = ['PDF', 'BVS', 'atom', 'overlap', 'calculator', 'real-space']
