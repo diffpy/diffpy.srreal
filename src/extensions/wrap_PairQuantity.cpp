@@ -354,8 +354,11 @@ void set_quantity_slice(QuantityType& values, nb::slice slice, nb::object items)
 {
     auto [first, last, step, count] = slice.compute(values.size());
     // Finish conversion before editing, including when items aliases values.
-    QuantityType buffer;
-    QuantityType replacement = extractQuantityType(items, buffer);
+    // Convert elements as the original vector binding did, so NumPy handles
+    // byte order and strides instead of using extractQuantityType's raw buffer.
+    QuantityType replacement;
+    for (nb::handle item : items)
+        replacement.push_back(nb::cast<double>(item));
 
     if (step == 1)
     {
