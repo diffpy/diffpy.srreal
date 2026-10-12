@@ -3,7 +3,6 @@ requires = [
     "scikit-build-core>=0.10",
     "setuptools-scm>=8",
     "nanobind>=3.1,<4",
-    "setuptools>=62.0",
 ]
 build-backend = "scikit_build_core.build"
 
