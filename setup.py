@@ -3,9 +3,6 @@
 # Extensions script for diffpy.srreal
 
 import glob
-import os
-import re
-import sys
 
 from setuptools import Extension, setup
 
