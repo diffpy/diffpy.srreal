@@ -229,7 +229,7 @@ class OverlapCalculatorPickleSuite :
         {
             ensure_tuple_length(state, 2);
             // restore the state using boost serialization
-            nb::tuple state0(state[0]);
+            nb::tuple state0(nb::handle(state[0].ptr()));
             Super::setstate(obj, state0);
             // restore component that was kept out of Boost serialization
             OverlapCalculator& calc = nb::cast<OverlapCalculator&>(obj);

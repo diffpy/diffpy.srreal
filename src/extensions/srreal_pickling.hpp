@@ -455,7 +455,7 @@ class PairQuantityPickleSuite :
             using namespace diffpy::srreal;
             ensure_tuple_length(state, 2);
             // restore the state using boost serialization
-            nb::tuple state0(state[0]);
+            nb::tuple state0(nb::handle(state[0].ptr()));
             Super::setstate(obj, state0);
             // restore the structure object
             StructureAdapterPtr pstru = nb::cast<StructureAdapterPtr>(state[1]);

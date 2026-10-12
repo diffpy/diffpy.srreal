@@ -112,18 +112,18 @@ and run the following ::
 
         pip install .
 
-Source builds use CMake to download libdiffpy at the commit recorded in
-``cmake/LibdiffpyVersion.cmake`` and verify the archive's SHA-256 checksum.
-This applies to both repository checkouts and source distributions; no Git
-submodule initialization is needed. A C++23 compiler, Boost.Serialization,
-and GSL must be installed separately.
+Source builds compile the Python extension and link to an independently
+installed libdiffpy. A C++23 compiler, libdiffpy headers and library,
+Boost.Serialization, and GSL must be installed separately.
 
-To build without downloading libdiffpy, extract the pinned archive or check
-out that exact commit locally, then supply its absolute path ::
+CMake searches the active Conda environment and standard system locations.
+For a separate libdiffpy installation, specify its installation prefix ::
 
-        pip install . -Ccmake.define.FETCHCONTENT_SOURCE_DIR_LIBDIFFPY=/absolute/path/to/libdiffpy
+        pip install . -Ccmake.define.CMAKE_PREFIX_PATH=/absolute/path/to/libdiffpy-prefix
 
-Other build dependencies must also be available for a fully offline build.
+Use matching libdiffpy headers and binaries, built with compatible compiler
+and Boost versions. The shared library and its runtime data must remain
+installed when using diffpy.srreal.
 
 Getting Started
 ---------------
