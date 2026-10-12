@@ -1,4 +1,5 @@
 libboost-devel
+libdiffpy>=1.5.0
 gsl
 diffpy.structure
 periodictable
