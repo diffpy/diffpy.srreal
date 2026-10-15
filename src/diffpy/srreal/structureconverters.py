@@ -41,7 +41,7 @@ RegisterStructureAdapter(
 @RegisterStructureAdapter("diffpy.structure.structure.Structure")
 def convertDiffPyStructure(stru):
     """Adapt Structure class from diffpy.structure package."""
-    haslattice = (1, 1, 1, 90, 90, 90) != stru.lattice.abcABG()
+    haslattice = (1, 1, 1, 90, 90, 90) != stru.lattice.cell_parms()
     isperiodic = haslattice
     hasmeta = _DiffPyStructureMetadata.hasMetadata(stru)
     if hasmeta:
@@ -173,7 +173,7 @@ def _fetchDiffPyStructureData(adpt, stru):
         aa.uij_cartn = a0.U
         adpt.append(aa)
     if hasattr(adpt, "setLatPar"):
-        adpt.setLatPar(*stru.lattice.abcABG())
+        adpt.setLatPar(*stru.lattice.cell_parms())
         for aa in adpt:
             adpt.toCartesian(aa)
     return
