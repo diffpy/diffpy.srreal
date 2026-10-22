@@ -48,7 +48,7 @@ NI          0.50000000        0.50000000        0.00000000       0.1000
 """
 
 nickel = Structure()
-nickel.readStr(nickel_discus_data, format="discus")
+nickel.read_structure(nickel_discus_data, format="discus")
 
 
 def Gpdffit2(qmax):

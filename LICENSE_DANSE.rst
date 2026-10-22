@@ -14,7 +14,7 @@ For more information please visit the project web-page at
 
     http://www.diffpy.org
 
-or email Prof. Simon Billinge at sb2896@columbia.edu.
+or email Prof. Simon Billinge at sbillinge@ucsb.edu.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:

@@ -74,7 +74,7 @@ class TestBVSCalculator(unittest.TestCase):
         # check mixed occupancy
         rutilemix = self.rutile.copy()
         for a in self.rutile:
-            rutilemix.addNewAtom(a)
+            rutilemix.add_new_atom(a)
         for a in rutilemix:
             a.occupancy = 0.5
         self.bvc(rutilemix)
