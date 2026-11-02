@@ -60,6 +60,6 @@ install(TARGETS srreal_ext LIBRARY DESTINATION diffpy/srreal)
 install(DIRECTORY "${LIBDIFFPY_SOURCE_DIR}/src/runtime/"
         DESTINATION diffpy/srreal/data
         FILES_MATCHING PATTERN "*.dat" PATTERN "bvparm2011sel.cif")
-install(FILES "${LIBDIFFPY_SOURCE_DIR}/LICENSE.txt"
-              "${LIBDIFFPY_SOURCE_DIR}/LICENSE_DANSE.txt"
+install(FILES "${LIBDIFFPY_SOURCE_DIR}/LICENSE.rst"
+              "${LIBDIFFPY_SOURCE_DIR}/LICENSE_DANSE.rst"
         DESTINATION diffpy/srreal/licenses/libdiffpy)
