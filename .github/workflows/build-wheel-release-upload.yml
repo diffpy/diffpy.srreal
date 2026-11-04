@@ -41,11 +41,13 @@ jobs:
       PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
 
   get-python-version:
-    needs: [check-tag-privilege, check-pat-token-validity, check-pypi-token-validity]
+    needs:
+      [check-tag-privilege, check-pat-token-validity, check-pypi-token-validity]
     uses: scikit-package/release-scripts/.github/workflows/_get-python-version-latest.yml@v0
 
   build-wheels:
-    needs: [check-tag-privilege, check-pat-token-validity, check-pypi-token-validity]
+    needs:
+      [check-tag-privilege, check-pat-token-validity, check-pypi-token-validity]
     uses: ./.github/workflows/build-wheels.yml
 
   release-github:
