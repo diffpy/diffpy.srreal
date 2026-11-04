@@ -13,6 +13,8 @@ $ErrorActionPreference = "Stop"
 
 function Invoke-Checked {
     $command, $arguments = $args
+    # Destructuring unwraps a single argument; keep splatting an array.
+    $arguments = @($arguments)
     & $command @arguments
     if ($LASTEXITCODE -ne 0) { throw "$command failed with exit code $LASTEXITCODE" }
 }
