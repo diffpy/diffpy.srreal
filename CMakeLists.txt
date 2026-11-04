@@ -66,8 +66,34 @@ execute_process(
     COMMAND_ERROR_IS_FATAL ANY
 )
 find_package(nanobind 3.1...<4 CONFIG REQUIRED)
+
+# PyPI wheels link Boost and GSL statically so they install without conda or
+# system libraries. Conda and system builds keep the default shared linking.
+option(SRREAL_STATIC_DEPS "Link Boost.Serialization and GSL statically" OFF)
+set(SRREAL_DEPS_LICENSE_DIR "" CACHE PATH
+    "Third-party license files to ship in the wheel with SRREAL_STATIC_DEPS")
+
+if(SRREAL_STATIC_DEPS)
+    set(Boost_USE_STATIC_LIBS ON)
+endif()
 find_package(Boost CONFIG REQUIRED COMPONENTS serialization)
+
+if(SRREAL_STATIC_DEPS AND NOT WIN32)
+    # FindGSL has no static switch; restrict the search to static archives.
+    set(_srreal_saved_suffixes "${CMAKE_FIND_LIBRARY_SUFFIXES}")
+    set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+endif()
 find_package(GSL REQUIRED)
+if(DEFINED _srreal_saved_suffixes)
+    set(CMAKE_FIND_LIBRARY_SUFFIXES "${_srreal_saved_suffixes}")
+    get_target_property(_srreal_boost_lib Boost::serialization LOCATION)
+    foreach(_srreal_lib IN ITEMS "${_srreal_boost_lib}" "${GSL_LIBRARY}" "${GSL_CBLAS_LIBRARY}")
+        if(NOT _srreal_lib MATCHES "\\.a$")
+            message(FATAL_ERROR
+                "SRREAL_STATIC_DEPS requires static libraries, found ${_srreal_lib}")
+        endif()
+    endforeach()
+endif()
 
 set(DIFFPY_HAS_OBJCRYST 0)
 configure_file("${LIBDIFFPY_SOURCE_DIR}/src/diffpy/features.tpl"
@@ -110,3 +136,9 @@ install(DIRECTORY "${LIBDIFFPY_SOURCE_DIR}/src/runtime/"
 install(FILES "${LIBDIFFPY_SOURCE_DIR}/LICENSE.rst"
               "${LIBDIFFPY_SOURCE_DIR}/LICENSE_DANSE.rst"
         DESTINATION diffpy/srreal/licenses/libdiffpy)
+# Statically linked Boost and GSL code ships inside the extension, so their
+# licenses ship with it.
+if(SRREAL_STATIC_DEPS AND SRREAL_DEPS_LICENSE_DIR)
+    install(DIRECTORY "${SRREAL_DEPS_LICENSE_DIR}/"
+            DESTINATION diffpy/srreal/licenses)
+endif()
