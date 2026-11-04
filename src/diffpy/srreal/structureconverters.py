@@ -43,18 +43,9 @@ def convertDiffPyStructure(stru):
     """Adapt Structure class from diffpy.structure package."""
     haslattice = (1, 1, 1, 90, 90, 90) != stru.lattice.abcABG()
     isperiodic = haslattice
-    hasmeta = _DiffPyStructureMetadata.hasMetadata(stru)
-    if hasmeta:
-        if isperiodic:
-            adpt = DiffPyStructurePeriodicAdapter()
-        else:
-            adpt = DiffPyStructureAtomicAdapter()
-        adpt._fetchMetadata(stru)
-    else:
-        if isperiodic:
-            adpt = PeriodicStructureAdapter()
-        else:
-            adpt = AtomicStructureAdapter()
+    adpt = (
+        PeriodicStructureAdapter() if isperiodic else AtomicStructureAdapter()
+    )
     _fetchDiffPyStructureData(adpt, stru)
     return adpt
 
@@ -62,88 +53,14 @@ def convertDiffPyStructure(stru):
 # Adapter classes and helpers for diffpy.structure class ---------------------
 
 
-class _DiffPyStructureMetadata(object):
-    """Base class for handling metadata information in the pdffit
-    attribute."""
-
-    pdffit = None
-
-    @staticmethod
-    def hasMetadata(stru):
-        """True if Structure object carries data in its pdffit
-        attribute."""
-        rv = hasattr(stru, "pdffit") and bool(stru.pdffit)
-        return rv
-
-    def _customPQConfig(self, pqobj):
-        """Apply PDF-related metadata if defined in PDFFit structure
-        format."""
-        pqname = type(pqobj).__name__
-        if pqname not in ("PDFCalculator", "DebyePDFCalculator"):
-            return
-        if not self.pdffit:
-            return
-        # scale
-        envtps = pqobj.usedenvelopetypes
-        if "scale" not in envtps:
-            pqobj.addEnvelope("scale")
-        pqobj.scale = self.pdffit["scale"]
-        # spdiameter
-        if "spdiameter" in self.pdffit:
-            if "sphericalshape" not in envtps:
-                pqobj.addEnvelope("sphericalshape")
-            pqobj.spdiameter = self.pdffit["spdiameter"]
-        # stepcut
-        if "stepcut" in self.pdffit:
-            if "stepcut" not in envtps:
-                pqobj.addEnvelope("stepcut")
-            pqobj.stepcut = self.pdffit["stepcut"]
-        # delta1, delta2 - set these only when using JeongPeakWidth model
-        if pqobj.peakwidthmodel.type() == "jeong":
-            pqobj.delta1 = self.pdffit["delta1"]
-            pqobj.delta2 = self.pdffit["delta2"]
-        return
-
-    def _fetchMetadata(self, stru):
-        """Copy data from the pdffit attribute of diffpy Structure
-        object.
-
-        Attributes
-        ----------
-        stru
-            instance of Structure class from diffpy.structure
-
-        No return value.
-        """
-        # get PDF-related metadata
-        self.pdffit = {}
-        if self.hasMetadata(stru):
-            self.pdffit.update(scale=1.0, delta1=0.0, delta2=0.0)
-            self.pdffit.update(stru.pdffit)
-        return
-
-
-# end of class _DiffPyStructureMetadata
-
-
-def _installDiffPyStructureMetadata(cls):
-    """Install diffpy.structure metadata hooks without multiple
-    inheritance."""
-    cls.pdffit = _DiffPyStructureMetadata.pdffit
-    cls.hasMetadata = staticmethod(_DiffPyStructureMetadata.hasMetadata)
-    cls._customPQConfig = _DiffPyStructureMetadata._customPQConfig
-    cls._fetchMetadata = _DiffPyStructureMetadata._fetchMetadata
-    return cls
-
-
-@_installDiffPyStructureMetadata
+# Keep the historical class paths so saved adapters can still be restored.
+# Their pdffit state, if present in a pickle, is inert.
 class DiffPyStructureAtomicAdapter(AtomicStructureAdapter):
-    pass
+    """Legacy adapter retained for pickle compatibility."""
 
 
-@_installDiffPyStructureMetadata
 class DiffPyStructurePeriodicAdapter(PeriodicStructureAdapter):
-    pass
+    """Legacy adapter retained for pickle compatibility."""
 
 
 def _fetchDiffPyStructureData(adpt, stru):

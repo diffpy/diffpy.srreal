@@ -54,13 +54,8 @@ class TestRoutines(unittest.TestCase):
 
     def test_createStructureAdapterTypes(self):
         """Check types returned by conversion from diffpy.structure."""
-        from diffpy.srreal.structureconverters import (
-            DiffPyStructureAtomicAdapter,
-            DiffPyStructurePeriodicAdapter,
-        )
-
         adpt = createStructureAdapter(self.nickel)
-        self.assertTrue(type(adpt) is DiffPyStructurePeriodicAdapter)
+        self.assertTrue(type(adpt) is PeriodicStructureAdapter)
         self.nickel.pdffit = None
         adpt1 = createStructureAdapter(self.nickel)
         self.assertTrue(type(adpt1) is PeriodicStructureAdapter)
@@ -69,7 +64,7 @@ class TestRoutines(unittest.TestCase):
         self.assertTrue(type(adpt2) is AtomicStructureAdapter)
         self.nickel.pdffit = dict(scale=1)
         adpt3 = createStructureAdapter(self.nickel)
-        self.assertTrue(type(adpt3) is DiffPyStructureAtomicAdapter)
+        self.assertTrue(type(adpt3) is AtomicStructureAdapter)
         return
 
     def test_createStructureAdapter_int64_occupancy(self):
@@ -129,28 +124,13 @@ class TestDerivedAdapter(unittest.TestCase):
         self.adpt = self.DerivedCls()
         return
 
-    def test__customPQConfig(self):
-        """Check if DerivedCls._customPQConfig gets called."""
-        self.assertEqual(0, self.adpt.cpqcount)
-        pc = PDFCalculator()
-        pc.setStructure(self.adpt)
-        self.assertEqual(1, self.adpt.cpqcount)
-        pc(self.adpt)
-        self.assertEqual(2, self.adpt.cpqcount)
-        return
-
     def test_pickling(self):
         """Check pickling of DerivedCls instances."""
-        self.adpt.cpqcount = 1
+        self.adpt.label = "saved adapter"
         adpt1 = pickle.loads(pickle.dumps(self.adpt))
         self.assertTrue(self.DerivedCls is type(adpt1))
         self.assertFalse(self.adpt is adpt1)
-        self.assertEqual(1, adpt1.cpqcount)
-        pc = PDFCalculator()
-        pc.setStructure(adpt1)
-        self.assertEqual(2, adpt1.cpqcount)
-        pc(adpt1)
-        self.assertEqual(3, adpt1.cpqcount)
+        self.assertEqual("saved adapter", adpt1.label)
         return
 
 
@@ -179,48 +159,62 @@ class TestNoMeta(unittest.TestCase):
         return
 
     def test_nometa(self):
-        """Check NoMetaStructureAdapter."""
-        r0, g0 = PDFCalculator()(self.nickel)
-        ni1 = self.nickel.copy()
-        ni1.pdffit["scale"] = 2.0
-        r1, g1 = PDFCalculator()(ni1)
-        self.assertTrue(numpy.array_equal(r0, r1))
-        self.assertTrue(numpy.allclose(2 * g0, g1))
-        ni1nm = nometa(ni1)
-        self.assertTrue(ni1nm is nometa(ni1nm))
-        r1nm, g1nm = PDFCalculator()(ni1nm)
-        self.assertTrue(numpy.array_equal(r0, r1nm))
-        self.assertTrue(numpy.allclose(g0, g1nm))
-        ni2 = self.nickel.copy()
-        ni2.pdffit["delta2"] = 4
-        r2, g2 = PDFCalculator()(ni2)
-        r2, g2nm = PDFCalculator()(nometa(ni2))
-        self.assertFalse(numpy.allclose(g0, g2))
-        self.assertTrue(numpy.allclose(g0, g2nm))
-        adpt2 = createStructureAdapter(ni2)
-        ra2, ga2 = PDFCalculator()(adpt2)
-        ra2, ga2nm = PDFCalculator()(nometa(adpt2))
-        self.assertTrue(numpy.allclose(g2, ga2))
-        self.assertTrue(numpy.allclose(g0, ga2nm))
-        return
+        """Compatibility conversion creates no metadata proxy."""
+        from diffpy.srreal.structureadapter import EMPTY
+
+        adpt = createStructureAdapter(self.nickel)
+        self.assertIs(adpt, nometa(adpt))
+        self.assertIs(EMPTY, nometa(None))
+        converted = nometa(self.nickel)
+        self.assertIs(type(converted), PeriodicStructureAdapter)
+        self.assertEqual(adpt.countSites(), converted.countSites())
+        self.assertIs(converted, nometa(converted))
+        for invalid in (77, {}, [1, 2]):
+            with self.assertRaises(TypeError):
+                nometa(invalid)
 
     def test_nometa_pickling(self):
-        """Check pickling of the NoMetaStructureAdapter wrapper."""
+        """An adapter returned by nometa can still be pickled."""
         r0, g0 = PDFCalculator()(self.nickel)
-        ni1 = self.nickel.copy()
-        ni1.pdffit["scale"] = 2.0
-        ni1nm = pickle.loads(pickle.dumps(nometa(ni1)))
-        self.assertFalse(ni1nm is ni1)
-        r1nm, g1nm = PDFCalculator()(ni1nm)
-        self.assertTrue(numpy.array_equal(r0, r1nm))
-        self.assertTrue(numpy.array_equal(g0, g1nm))
-        return
+        self.nickel.pdffit["scale"] = 2.0
+        restored = pickle.loads(pickle.dumps(nometa(self.nickel)))
+        self.assertIs(type(restored), PeriodicStructureAdapter)
+        r1, g1 = PDFCalculator()(restored)
+        numpy.testing.assert_array_equal(r0, r1)
+        numpy.testing.assert_array_equal(g0, g1)
 
     def test_nometa_twice(self):
         """Check that second call of nometa returns the same object."""
         adpt1 = nometa(self.nickel)
-        adpt2 = nometa(adpt1)
-        self.assertTrue(adpt1 is adpt2)
+        self.assertIs(adpt1, nometa(adpt1))
+
+    def test_nometa_proxy_deprecated(self):
+        """Check that NoMetaStructureAdapter warns and stays usable."""
+        from diffpy.srreal.srreal_ext import NoMetaStructureAdapter
+
+        adpt = createStructureAdapter(self.nickel)
+        with self.assertWarns(DeprecationWarning):
+            proxy = NoMetaStructureAdapter(adpt)
+        self.assertEqual(adpt.countSites(), proxy.countSites())
+        self.assertIs(proxy, nometa(proxy))
+
+    def test_legacy_metadata_adapters(self):
+        """Check that pre-removal adapter classes still unpickle."""
+        from diffpy.srreal.structureconverters import (
+            DiffPyStructureAtomicAdapter,
+            DiffPyStructurePeriodicAdapter,
+        )
+
+        legacy = (DiffPyStructureAtomicAdapter, DiffPyStructurePeriodicAdapter)
+        for cls in legacy:
+            adpt = cls()
+            adpt.pdffit = {"scale": 25}
+            adpt1 = pickle.loads(pickle.dumps(adpt))
+            self.assertIs(cls, type(adpt1))
+            self.assertEqual({"scale": 25}, adpt1.pdffit)
+            pc = PDFCalculator(scale=3)
+            pc(adpt1)
+            self.assertEqual(3, pc.scale)
 
 
 # End of class TestNoMeta
@@ -497,11 +491,6 @@ class TestStructureAdapter(unittest.TestCase):
         self.adpt = StructureAdapter()
         return
 
-    #   def test__customPQConfig(self):
-    #       """check StructureAdapter._customPQConfig()
-    #       """
-    #       return
-    #
     #   def test_countSites(self):
     #       """check StructureAdapter.countSites()
     #       """

@@ -18,9 +18,8 @@ interface expected by srreal PairQuantity calculators.
 Routines:
 
 createStructureAdapter -- create StructureAdapter from a Python object
-nometa       -- create StructureAdapter with disabled _customPQConfig method
-                this prevents copying of diffpy.structure pdffit metadata
-                to PDFCalculator object
+nometa       -- return or convert a StructureAdapter without a proxy;
+                structure metadata no longer configures calculators
 nosymmetry   -- create StructureAdapter with disabled symmetry expansion.
 
 Constants:

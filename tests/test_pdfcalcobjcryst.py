@@ -52,9 +52,6 @@ def _makePDFCalculator(crst, cfgdict):
     if "type" in cfgdict:
         pdfc.scatteringfactortable = cfgdict["type"]
     pdfc.eval(crst)
-    # avoid metadata override by PDFFitStructure
-    for k, v in pdfcargs.items():
-        setattr(pdfc, k, v)
     return pdfc
 
 

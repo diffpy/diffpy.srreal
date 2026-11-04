@@ -19,6 +19,7 @@
 *****************************************************************************/
 
 #include <nanobind/nanobind.h>
+#include <new>
 #include "srreal_trampoline.hpp"
 #include <nanobind/stl/shared_ptr.h>
 
@@ -129,18 +130,6 @@ i    -- zero-based atom site index.\n\
 Return a 3 by 3 array.\n\
 ";
 
-const char* doc_StructureAdapter__customPQConfig = "\
-Support for optional custom configuration of the PairQuantity object.\n\
-This method is called from the setStructure and eval methods of the owner\n\
-PairQuantity object.\n\
-\n\
-pqobj    -- the owner PairQuantity object.  The function should check for the\n\
-            exact type of pqobj and apply configuration accordingly.\n\
-\n\
-No return value.  This method can be overloaded in a derived class.\n\
-No action by default.\n\
-";
-
 const char* doc_StructureAdapter_diff = "\
 Evaluate difference between this and other StructureAdapter.\n\
 \n\
@@ -153,14 +142,14 @@ This method can be overloaded in a derived class.\n\
 ";
 
 const char* doc_NoMetaStructureAdapter = "\
-StructureAdapter proxy which disables _customPQConfig method.\n\
+Deprecated structure proxy retained for compatibility with saved objects.\n\
+Structure metadata no longer configures calculators.\n\
 ";
 
 const char* doc_NoMetaStructureAdapter_init = "\
-Create proxy to StructureAdapter that disables _customPQConfig.\n\
+Create a deprecated proxy. Use the source adapter directly instead.\n\
 \n\
-adapter  -- StructureAdapter object to be proxied.  The new adapter\n\
-            will avoid calling of adapter._customPQConfig method.\n\
+adapter -- source StructureAdapter, or None for an empty structure.\n\
 ";
 
 const char* doc_NoSymmetryStructureAdapter = "\
@@ -176,13 +165,10 @@ adapter  -- StructureAdapter object to be proxied.  Any iteration over\n\
 ";
 
 const char* doc_nometa = "\
-Return a proxy to StructureAdapter with _customPQConfig method disabled.\n\
-This creates a thin wrapper over a source StructureAdapter object that\n\
-disables _customPQConfig.\n\
+Return the structure adapter without creating a metadata proxy.\n\
 \n\
-stru -- StructureAdapter object or an object convertible to StructureAdapter.\n\
-\n\
-Return a proxy StructureAdapter with disabled _customPQConfig.\n\
+Existing adapters are returned unchanged. Other supported structures are\n\
+converted normally; None returns EMPTY. Structure metadata is not applied.\n\
 ";
 
 const char* doc_nosymmetry = "\
@@ -482,19 +468,6 @@ class StructureAdapterWrap :
         }
 
 
-        void customPQConfig(PairQuantity* pq) const override
-        {
-            if (mserialized) return mserialized->customPQConfig(pq);
-            NB_OVERRIDE_NAME("_customPQConfig", customPQConfig, pq);
-        }
-
-        void default_customPQConfig(PairQuantity* pq) const
-        {
-            if (mserialized) return mserialized->customPQConfig(pq);
-            this->StructureAdapter::customPQConfig(pq);
-        }
-
-
         StructureDifference diff(StructureAdapterConstPtr other) const override
         {
             nb::gil_scoped_acquire gil;
@@ -571,13 +544,6 @@ double siteOccupancy_dispatch(const StructureAdapter& adpt, int i)
 BaseBondGeneratorPtr createBondGenerator_shared(StructureAdapterPtr adpt)
 {
     return adpt->createBondGenerator();
-}
-
-void customPQConfig_dispatch(const StructureAdapter& adpt, PairQuantity* pq)
-{
-    auto* wrap = dynamic_cast<const StructureAdapterWrap*>(&adpt);
-    if (wrap) wrap->default_customPQConfig(pq);
-    else adpt.customPQConfig(pq);
 }
 
 
@@ -681,10 +647,6 @@ void wrap_StructureAdapter(nb::module_& m)
         .def("siteCartesianUij",
                 siteCartesianUij_safe,
                 doc_StructureAdapter_siteCartesianUij)
-        .def("_customPQConfig",
-                customPQConfig_dispatch,
-                nb::arg("pqobj"),
-                doc_StructureAdapter__customPQConfig)
         .def("diff",
                 structure_diff_shared,
                 nb::arg("other").none(),
@@ -698,8 +660,14 @@ void wrap_StructureAdapter(nb::module_& m)
     nb::class_<NoMetaStructureAdapter, StructureAdapter> nometastructureadapter(m,
             "NoMetaStructureAdapter", doc_NoMetaStructureAdapter);
     nometastructureadapter
-        .def(nb::init<StructureAdapterPtr>(), nb::arg("adapter").none(),
-                    doc_NoMetaStructureAdapter_init)
+        .def("__init__", [](NoMetaStructureAdapter* self, StructureAdapterPtr source) {
+                    if (PyErr_WarnEx(PyExc_DeprecationWarning,
+                            "NoMetaStructureAdapter is deprecated; use the source "
+                            "adapter directly. Structure metadata no longer "
+                            "configures calculators.", 1) < 0)
+                        nb::raise_python_error();
+                    new (self) NoMetaStructureAdapter(source);
+                }, nb::arg("adapter").none(), doc_NoMetaStructureAdapter_init)
         ;
         StructureProxyPickleSuite<NoMetaStructureAdapter>::bind(nometastructureadapter);
 
@@ -734,8 +702,6 @@ void wrap_StructureAdapter(nb::module_& m)
 
 const char* doc_StructureAdapter___init__fromstring =
     nswrap_StructureAdapter::doc_StructureAdapter___init__fromstring;
-const char* doc_StructureAdapter__customPQConfig =
-    nswrap_StructureAdapter::doc_StructureAdapter__customPQConfig;
 const char* doc_StructureAdapter_diff =
     nswrap_StructureAdapter::doc_StructureAdapter_diff;
 

@@ -75,23 +75,6 @@ def _maxNormDiff(yobs, ycalc):
 # helper class for testing overloading of StructureAdapter
 
 
-class HasCustomPQConfig(object):
-
-    cpqcount = 0
-
-    def _customPQConfig(self, pqobj):
-        self.cpqcount += 1
-        return
-
-
-def _installCustomPQConfig(cls):
-    """Install the test custom-PQ hook without using a mixin base."""
-    cls.cpqcount = HasCustomPQConfig.cpqcount
-    cls._customPQConfig = HasCustomPQConfig._customPQConfig
-    return cls
-
-
-@_installCustomPQConfig
 class DerivedStructureAdapter(StructureAdapter):
 
     def __init__(self):
@@ -145,17 +128,14 @@ class DerivedStructureAdapter(StructureAdapter):
 # End of class DerivedStructureAdapter
 
 
-@_installCustomPQConfig
 class DerivedAtomicStructureAdapter(AtomicStructureAdapter):
     pass
 
 
-@_installCustomPQConfig
 class DerivedPeriodicStructureAdapter(PeriodicStructureAdapter):
     pass
 
 
-@_installCustomPQConfig
 class DerivedCrystalStructureAdapter(CrystalStructureAdapter):
     pass
 
