@@ -82,7 +82,9 @@ archs = ["AMD64"]
 before-all = "powershell -NoProfile -ExecutionPolicy Bypass -File {project}/tools/install-vcpkg-deps.ps1 C:/srreal-deps srreal-x64-windows"
 config-settings = { "cmake.define.SRREAL_STATIC_DEPS" = "ON", "cmake.define.SRREAL_DEPS_LICENSE_DIR" = "C:/srreal-deps/licenses", "cmake.define.CMAKE_TOOLCHAIN_FILE" = "C:/srreal-deps/vcpkg/scripts/buildsystems/vcpkg.cmake", "cmake.define.VCPKG_INSTALLED_DIR" = "C:/srreal-deps/installed", "cmake.define.VCPKG_MANIFEST_INSTALL" = "OFF", "cmake.define.VCPKG_TARGET_TRIPLET" = "srreal-x64-windows" }
 before-build = "pip install delvewheel"
-repair-wheel-command = "delvewheel repair -w {dest_dir} {wheel}"
+# Other diffpy distributions also install diffpy/__init__.py. Keep the DLL
+# loader in diffpy.srreal and use the runtime matching the build toolset.
+repair-wheel-command = "delvewheel repair --namespace-pkg diffpy --add-path C:/srreal-deps/redist -w {dest_dir} {wheel}"
 
 # One vcpkg triplet per architecture; see tools/vcpkg-triplets.
 [[tool.cibuildwheel.overrides]]

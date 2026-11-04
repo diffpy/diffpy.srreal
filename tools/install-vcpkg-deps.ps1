@@ -24,6 +24,19 @@ $baseline = (Get-Content (Join-Path $project "vcpkg.json") -Raw | ConvertFrom-Js
 $vcpkgRoot = Join-Path $Prefix "vcpkg"
 $vcpkg = Join-Path $vcpkgRoot "vcpkg.exe"
 
+# Prefer the current compiler's runtime over older DLLs elsewhere on PATH.
+$vswhere = Join-Path ${env:ProgramFiles(x86)} "Microsoft Visual Studio\Installer\vswhere.exe"
+$vsRoot = & $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+if ($LASTEXITCODE -ne 0 -or -not $vsRoot) { throw "Cannot locate the Visual C++ toolset." }
+$redistVersion = (Get-Content (Join-Path $vsRoot "VC\Auxiliary\Build\Microsoft.VCRedistVersion.default.txt") -Raw).Trim()
+$redistRoot = Join-Path $vsRoot "VC\Redist\MSVC\$redistVersion\x64"
+$crt = Get-ChildItem $redistRoot -Directory -Filter "Microsoft.VC*.CRT" | Select-Object -First 1
+if (-not $crt) { throw "Cannot locate the x64 Visual C++ runtime in $redistRoot." }
+$redist = Join-Path $Prefix "redist"
+New-Item -ItemType Directory -Force -Path $redist | Out-Null
+Copy-Item (Join-Path $crt.FullName "*.dll") $redist -Force
+Write-Host "Staged Visual C++ runtime $redistVersion from $($crt.FullName)"
+
 if (-not (Test-Path $vcpkg)) {
     Invoke-Checked git init -q $vcpkgRoot
     Invoke-Checked git -C $vcpkgRoot fetch -q --depth 1 https://github.com/microsoft/vcpkg.git $baseline
