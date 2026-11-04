@@ -492,7 +492,7 @@ class DebyePDFCalculatorPickleSuite :
         {
             ensure_tuple_length(state, 4);
             // restore the state using boost serialization
-            nb::tuple st0(state[0]);
+            nb::tuple st0(nb::handle(state[0].ptr()));
             Super::setstate(obj, st0);
             // restore components that were kept out of Boost serialization
             DebyePDFCalculator& calc = nb::cast<DebyePDFCalculator&>(obj);
@@ -571,7 +571,7 @@ class PDFCalculatorPickleSuite :
         {
             ensure_tuple_length(state, 6);
             // restore the state using boost serialization
-            nb::tuple st0(state[0]);
+            nb::tuple st0(nb::handle(state[0].ptr()));
             Super::setstate(obj, st0);
             // restore components that were kept out of Boost serialization
             PDFCalculator& calc = nb::cast<PDFCalculator&>(obj);

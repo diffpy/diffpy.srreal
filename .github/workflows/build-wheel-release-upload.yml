@@ -1,7 +1,7 @@
 name: Build Wheel and Release
 
 # Trigger on tag push or manual dispatch.
-# Tag and release privilege are verified inside the reusable workflow.
+# Tag and release privilege are verified by the check-* jobs below.
 on:
   workflow_dispatch:
   push:
@@ -9,29 +9,70 @@ on:
       - "*"
 
 # ── Release modality ──────────────────────────────────────────────────────────
-# Three options are provided below. Only ONE job should be active at a time.
-# To switch: comment out the active job and uncomment your preferred option,
+# Three options are provided below. Only ONE option should be active at a time.
+# To switch: comment out the active jobs and uncomment your preferred option,
 # then commit the change to main before tagging a release.
 # ─────────────────────────────────────────────────────────────────────────────
 
 jobs:
   # Option 1 (default): Release to GitHub, publish to PyPI, and deploy docs.
   #
-  # The wheel is uploaded to PyPI so users can install with `pip install`.
-  # A GitHub release is created with the changelog as the release body, and
-  # the Sphinx documentation is rebuilt and deployed to GitHub Pages.
+  # The sdist and wheels are uploaded to PyPI so users can install with
+  # `pip install`. A GitHub release is created with the changelog as the
+  # release body, and the Sphinx documentation is rebuilt and deployed to
+  # GitHub Pages.
   #
-  # Choose this for open-source packages distributed via PyPI and/or
-  # conda-forge where broad public availability is the goal.
-  build-release:
-    uses: scikit-package/release-scripts/.github/workflows/_build-wheel-release-upload.yml@v0
+  # The wheels come from build-wheels.yml rather than the shared
+  # scikit-package workflow: they link Boost and GSL statically, so they
+  # work without a conda environment.
+  check-tag-privilege:
+    uses: scikit-package/release-scripts/.github/workflows/_check-tag-privilege.yml@v0
     with:
-      project: diffpy.srreal
-      c_extension: true
       maintainer_github_username: sbillinge
+
+  check-pat-token-validity:
+    uses: scikit-package/release-scripts/.github/workflows/_check-pat-token-validity.yml@v0
+    secrets:
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+
+  check-pypi-token-validity:
+    uses: scikit-package/release-scripts/.github/workflows/_check-pypi-token-validity.yml@v0
     secrets:
       PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+
+  get-python-version:
+    needs:
+      [check-tag-privilege, check-pat-token-validity, check-pypi-token-validity]
+    uses: scikit-package/release-scripts/.github/workflows/_get-python-version-latest.yml@v0
+
+  build-wheels:
+    needs:
+      [check-tag-privilege, check-pat-token-validity, check-pypi-token-validity]
+    uses: ./.github/workflows/build-wheels.yml
+
+  release-github:
+    needs: [build-wheels]
+    uses: scikit-package/release-scripts/.github/workflows/_release-github.yml@v0
+    secrets:
       PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+
+  # Uploads every artifact of this run: the sdist and all wheels.
+  release-pypi:
+    needs: [release-github, get-python-version]
+    uses: scikit-package/release-scripts/.github/workflows/_release-pypi.yml@v0
+    with:
+      python_version: ${{ fromJSON(needs.get-python-version.outputs.latest_python_version) }}
+    secrets:
+      PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+
+  docs-release:
+    needs: [release-github, get-python-version]
+    uses: scikit-package/release-scripts/.github/workflows/_release-docs.yml@v0
+    with:
+      submodules: recursive
+      project: diffpy.srreal
+      c_extension: true
+      python_version: ${{ fromJSON(needs.get-python-version.outputs.latest_python_version) }}
 
   # Option 2: Release to GitHub and deploy docs, without publishing to PyPI.
   #

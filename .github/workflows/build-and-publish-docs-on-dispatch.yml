@@ -10,9 +10,11 @@ jobs:
       python_version: 0
 
   docs:
+    needs: get-python-version
     uses: scikit-package/release-scripts/.github/workflows/_release-docs.yml@v0
     with:
       project: diffpy.srreal
+      submodules: recursive
       c_extension: true
       headless: false
       python_version: ${{ fromJSON(needs.get-python-version.outputs.latest_python_version) }}

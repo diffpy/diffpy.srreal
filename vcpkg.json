@@ -1,0 +1,12 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "diffpy-srreal",
+  "description": "Static Boost.Serialization and GSL for the diffpy.srreal PyPI wheels.",
+  "dependencies": [
+    "boost-container-hash",
+    "boost-serialization",
+    "boost-ublas",
+    "gsl"
+  ],
+  "builtin-baseline": "9e593bb18ea69cc5095e012465dcd675a822ed0d"
+}

@@ -106,24 +106,28 @@ To install using ``pip`` into your ``diffpy.srreal_env`` environment, type ::
 
         pip install diffpy.srreal
 
-If you prefer to install from sources, after installing the dependencies, obtain the source archive from
-`GitHub <https://github.com/diffpy/diffpy.srreal/>`_. Once installed, ``cd`` into your ``diffpy.srreal`` directory
-and run the following ::
+To build from Git, install the dependencies, then clone the repository with
+its libdiffpy submodule ::
 
+        git clone --recurse-submodules https://github.com/diffpy/diffpy.srreal.git
+        cd diffpy.srreal
         pip install .
 
-Source builds use CMake to download libdiffpy at the commit recorded in
-``cmake/LibdiffpyVersion.cmake`` and verify the archive's SHA-256 checksum.
-This applies to both repository checkouts and source distributions; no Git
-submodule initialization is needed. A C++23 compiler, Boost.Serialization,
-and GSL must be installed separately.
+For an existing checkout, initialize or update the submodule before building ::
 
-To build without downloading libdiffpy, extract the pinned archive or check
-out that exact commit locally, then supply its absolute path ::
+        git submodule update --init --recursive
 
-        pip install . -Ccmake.define.FETCHCONTENT_SOURCE_DIR_LIBDIFFPY=/absolute/path/to/libdiffpy
+The parent repository pins the libdiffpy commit in ``extern/libdiffpy``.
+CMake compiles those sources directly without downloading them or updating
+the submodule. Version information is read from the submodule and included
+in source distributions as a generated header.
 
-Other build dependencies must also be available for a fully offline build.
+Packaged source distributions (sdists) include libdiffpy, so they can be
+extracted and built with ``pip install .`` without Git or a separate
+libdiffpy download. GitHub's automatically generated source archives omit
+submodule contents; use a recursive clone or a packaged sdist instead.
+A C++23 compiler, Boost.Serialization, GSL, and the Python build dependencies
+must still be installed separately, including for an offline build.
 
 Getting Started
 ---------------

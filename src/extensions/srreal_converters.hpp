@@ -280,7 +280,8 @@ inline nb::object
 convertToNumPyArray(const ::diffpy::srreal::R3::Matrix& mx)
 {
     using namespace diffpy::srreal;
-    size_t sz[2] = {R3::Ndim, R3::Ndim};
+    const size_t ndim = static_cast<size_t>(R3::Ndim);
+    size_t sz[2] = {ndim, ndim};
     NumPyOutput<double> ap = createNumPyDoubleArray(2, sz);
     double* xo = ap.array.data();
     *(xo++) = mx(0, 0); *(xo++) = mx(0, 1); *(xo++) = mx(0, 2);
@@ -295,7 +296,7 @@ inline nb::object
 convertToNumPyArray(const ::std::vector<diffpy::srreal::R3::Vector>& vr3v)
 {
     using namespace diffpy::srreal;
-    size_t sz[2] = {vr3v.size(), R3::Ndim};
+    size_t sz[2] = {vr3v.size(), static_cast<size_t>(R3::Ndim)};
     NumPyOutput<double> ap = createNumPyDoubleArray(2, sz);
     double* p = ap.array.data();
     std::vector<R3::Vector>::const_iterator v = vr3v.begin();
