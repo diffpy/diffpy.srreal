@@ -120,7 +120,8 @@ target_include_directories(diffpy_core PUBLIC
 )
 target_compile_definitions(diffpy_core PRIVATE DIFFPYRUNTIMERELPATH=data)
 if(WIN32)
-    target_compile_definitions(diffpy_core PUBLIC _USE_MATH_DEFINES NOMINMAX)
+    # libdiffpy and its Python wrappers are compiled into the same extension.
+    target_compile_definitions(diffpy_core PUBLIC BUILD_DLL _USE_MATH_DEFINES NOMINMAX)
 endif()
 target_link_libraries(diffpy_core PUBLIC Boost::serialization GSL::gsl GSL::gslcblas ${CMAKE_DL_LIBS})
 
