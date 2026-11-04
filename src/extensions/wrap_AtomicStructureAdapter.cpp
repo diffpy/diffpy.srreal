@@ -346,7 +346,7 @@ class AtomPickleSuite : public SerializationPickleSuite<Atom>
         }
 };
 
-// template wrapper class for overloading of clone and _customPQConfig
+// template wrapper class for overloading of clone and diff
 
 template <class T>
 class MakeWrapper :
@@ -365,17 +365,6 @@ class MakeWrapper :
         StructureAdapterPtr default_clone() const
         {
             return this->T::clone();
-        }
-
-
-        void customPQConfig(PairQuantity* pq) const override
-        {
-            NB_OVERRIDE_NAME("_customPQConfig", customPQConfig, pq);
-        }
-
-        void default_customPQConfig(PairQuantity* pq) const
-        {
-            this->T::customPQConfig(pq);
         }
 
 
@@ -426,14 +415,6 @@ StructureAdapterPtr atomadapter_clone(const T& self)
 {
     auto* wrapper = dynamic_cast<const MakeWrapper<T>*>(&self);
     return wrapper ? wrapper->default_clone() : self.clone();
-}
-
-template <class T>
-void atomadapter_customPQConfig(const T& self, PairQuantity* pq)
-{
-    auto* wrapper = dynamic_cast<const MakeWrapper<T>*>(&self);
-    if (wrapper) wrapper->default_customPQConfig(pq);
-    else self.customPQConfig(pq);
 }
 
 // Wrapper helpers for class AtomicStructureAdapter
@@ -730,7 +711,6 @@ void prepare_structure_load(diffpy::srreal::StructureAdapter& adapter)
 // declare shared docstrings from wrap_StructureAdapter.cpp
 
 extern const char* doc_StructureAdapter___init__fromstring;
-extern const char* doc_StructureAdapter__customPQConfig;
 extern const char* doc_StructureAdapter_diff;
 
 // Wrapper definitions -------------------------------------------------------
@@ -823,10 +803,6 @@ void wrap_AtomicStructureAdapter(nb::module_& m)
         .def("clone",
                 atomadapter_clone<AtomicStructureAdapter>,
                 doc_AtomicStructureAdapter_clone)
-        .def("_customPQConfig",
-                atomadapter_customPQConfig<AtomicStructureAdapter>,
-                nb::arg("pqobj"),
-                doc_StructureAdapter__customPQConfig)
         .def("diff",
                 atomadapter_diff<AtomicStructureAdapter>,
                 nb::arg("other").none(),
@@ -873,10 +849,6 @@ void wrap_AtomicStructureAdapter(nb::module_& m)
         .def("clone",
                 atomadapter_clone<PeriodicStructureAdapter>,
                 doc_PeriodicStructureAdapter_clone)
-        .def("_customPQConfig",
-                atomadapter_customPQConfig<PeriodicStructureAdapter>,
-                nb::arg("pqobj"),
-                doc_StructureAdapter__customPQConfig)
         .def("diff",
                 atomadapter_diff<PeriodicStructureAdapter>,
                 nb::arg("other").none(),
@@ -916,10 +888,6 @@ void wrap_AtomicStructureAdapter(nb::module_& m)
         .def("clone",
                 atomadapter_clone<CrystalStructureAdapter>,
                 doc_CrystalStructureAdapter_clone)
-        .def("_customPQConfig",
-                atomadapter_customPQConfig<CrystalStructureAdapter>,
-                nb::arg("pqobj"),
-                doc_StructureAdapter__customPQConfig)
         .def("diff",
                 atomadapter_diff<CrystalStructureAdapter>,
                 nb::arg("other").none(),

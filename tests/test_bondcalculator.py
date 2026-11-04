@@ -84,15 +84,16 @@ class TestBondCalculator(unittest.TestCase):
 
         bdc = self.bdc
         stru0 = DerivedStructureAdapter()
+        stru0.label = "saved structure"
         bdc.setStructure(stru0)
-        self.assertEqual(1, stru0.cpqcount)
+        self.assertEqual("saved structure", stru0.label)
         spkl = pickle.dumps(bdc)
         bdc1 = pickle.loads(spkl)
         self.assertTrue(stru0 is bdc.getStructure())
         stru1 = bdc1.getStructure()
         self.assertTrue(type(stru1) is DerivedStructureAdapter)
         self.assertFalse(stru1 is stru0)
-        self.assertEqual(1, stru1.cpqcount)
+        self.assertEqual("saved structure", stru1.label)
         return
 
     def test_distances(self):

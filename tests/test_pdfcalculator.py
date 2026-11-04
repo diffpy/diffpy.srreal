@@ -53,15 +53,30 @@ class TestPDFCalculator(unittest.TestCase):
         r1, g1 = self.pdfcalc(self.tio2rutile, scale=7)
         self.assertAlmostEqual(7.0, g1[0] / g0[0])
         # check application of spdiameter
-        rutile2 = self.tio2rutile.copy()
-        # work around Structure bug of shared pdffit dictionary
-        rutile2.pdffit = dict(self.tio2rutile.pdffit)
-        rutile2.pdffit["spdiameter"] = 5.0
-        r3, g3 = self.pdfcalc(rutile2)
+        self.pdfcalc.addEnvelope("sphericalshape")
+        r3, g3 = self.pdfcalc(self.tio2rutile, spdiameter=5.0)
         self.assertEqual(0.0, sum(g3[r3 >= 5] ** 2))
-        r4, g4 = self.pdfcalc(rutile2, scale=1, spdiameter=0)
+        r4, g4 = self.pdfcalc(self.tio2rutile, scale=1, spdiameter=0)
         self.assertTrue(numpy.all(r4 == r0))
         self.assertTrue(numpy.all(g4 == g0))
+        return
+
+    def test_structure_metadata_ignored(self):
+        """Check that pdffit metadata does not configure the
+        calculator."""
+        bare = self.tio2rutile.copy()
+        bare.pdffit = {}
+        meta = self.tio2rutile.copy()
+        meta.pdffit = dict(scale=2.5, delta1=0.1, delta2=4.0, spdiameter=5.0)
+        r0, g0 = PDFCalculator()(bare)
+        r1, g1 = PDFCalculator()(meta)
+        self.assertTrue(numpy.array_equal(r0, r1))
+        self.assertTrue(numpy.array_equal(g0, g1))
+        pdfc = PDFCalculator(scale=3, delta2=0.5)
+        pdfc(meta)
+        self.assertEqual(3, pdfc.scale)
+        self.assertEqual(0.5, pdfc.delta2)
+        self.assertNotIn("sphericalshape", pdfc.usedenvelopetypes)
         return
 
     def test__getDoubleAttr(self):
@@ -113,6 +128,10 @@ class TestPDFCalculator(unittest.TestCase):
         dscale = 0.655857
         self.pdfcalc.rmin = 1
         self.pdfcalc.rmax = 30.0001
+        # Apply the historical structure settings explicitly.
+        self.pdfcalc.delta1 = self.tio2rutile.pdffit["delta1"]
+        self.pdfcalc.delta2 = self.tio2rutile.pdffit["delta2"]
+        self.pdfcalc.scale = self.tio2rutile.pdffit["scale"]
         # apply data scale
         self.pdfcalc(self.tio2rutile)
         self.pdfcalc.scale *= dscale
@@ -276,15 +295,16 @@ class TestPDFCalculator(unittest.TestCase):
 
         pdfc = self.pdfcalc
         stru0 = DerivedStructureAdapter()
+        stru0.label = "saved structure"
         pdfc.setStructure(stru0)
-        self.assertEqual(1, stru0.cpqcount)
+        self.assertEqual("saved structure", stru0.label)
         spkl = pickle.dumps(pdfc)
         pdfc1 = pickle.loads(spkl)
         self.assertTrue(stru0 is pdfc.getStructure())
         stru1 = pdfc1.getStructure()
         self.assertTrue(type(stru1) is DerivedStructureAdapter)
         self.assertFalse(stru1 is stru0)
-        self.assertEqual(1, stru1.cpqcount)
+        self.assertEqual("saved structure", stru1.label)
         return
 
     def test_envelopes(self):

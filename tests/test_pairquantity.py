@@ -239,15 +239,16 @@ class TestPairQuantity(unittest.TestCase):
         from testutils import DerivedStructureAdapter
 
         stru0 = DerivedStructureAdapter()
+        stru0.label = "saved structure"
         self.pq.setStructure(stru0)
-        self.assertEqual(1, stru0.cpqcount)
+        self.assertEqual("saved structure", stru0.label)
         spkl = pickle.dumps(self.pq)
         pq1 = pickle.loads(spkl)
         self.assertTrue(stru0 is self.pq.getStructure())
         stru1 = pq1.getStructure()
         self.assertTrue(type(stru1) is DerivedStructureAdapter)
         self.assertFalse(stru1 is stru0)
-        self.assertEqual(1, stru1.cpqcount)
+        self.assertEqual("saved structure", stru1.label)
         # check pickling of attributes
         pcnt = PQCounter()
         pcnt.foo = "asdf"

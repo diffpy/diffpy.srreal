@@ -48,6 +48,23 @@ class TestDebyePDFCalculator(unittest.TestCase):
         self.assertEqual(1.23, self.dpdfc.qmin)
         return
 
+    def test_structure_metadata_ignored(self):
+        """Check that pdffit metadata does not configure the
+        calculator."""
+        bare = self.tio2rutile.copy()
+        bare.pdffit = {}
+        meta = self.tio2rutile.copy()
+        meta.pdffit = dict(scale=2.5, delta1=0.1, delta2=4.0, spdiameter=5.0)
+        r0, g0 = DebyePDFCalculator(rmax=10)(bare)
+        r1, g1 = DebyePDFCalculator(rmax=10)(meta)
+        self.assertTrue(numpy.array_equal(r0, r1))
+        self.assertTrue(numpy.array_equal(g0, g1))
+        dpdfc = DebyePDFCalculator(scale=3, delta2=0.5)
+        dpdfc.eval(meta)
+        self.assertEqual(3, dpdfc.scale)
+        self.assertEqual(0.5, dpdfc.delta2)
+        return
+
     def test___setattr__(self):
         """Check DebyePDFCalculator.__setattr__()"""
         self.assertNotEqual(1.23, self.dpdfc._getDoubleAttr("rmin"))
@@ -196,15 +213,16 @@ class TestDebyePDFCalculator(unittest.TestCase):
 
         dpdfc = self.dpdfc
         stru0 = DerivedStructureAdapter()
+        stru0.label = "saved structure"
         dpdfc.setStructure(stru0)
-        self.assertEqual(1, stru0.cpqcount)
+        self.assertEqual("saved structure", stru0.label)
         spkl = pickle.dumps(dpdfc)
         dpdfc1 = pickle.loads(spkl)
         self.assertTrue(stru0 is dpdfc.getStructure())
         stru1 = dpdfc1.getStructure()
         self.assertTrue(type(stru1) is DerivedStructureAdapter)
         self.assertFalse(stru1 is stru0)
-        self.assertEqual(1, stru1.cpqcount)
+        self.assertEqual("saved structure", stru1.label)
         return
 
 

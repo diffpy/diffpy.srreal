@@ -144,15 +144,16 @@ class TestBVSCalculator(unittest.TestCase):
 
         bvc = self.bvc
         stru0 = DerivedStructureAdapter()
+        stru0.label = "saved structure"
         bvc.setStructure(stru0)
-        self.assertEqual(1, stru0.cpqcount)
+        self.assertEqual("saved structure", stru0.label)
         spkl = pickle.dumps(bvc)
         bvc1 = pickle.loads(spkl)
         self.assertTrue(stru0 is bvc.getStructure())
         stru1 = bvc1.getStructure()
         self.assertTrue(type(stru1) is DerivedStructureAdapter)
         self.assertFalse(stru1 is stru0)
-        self.assertEqual(1, stru1.cpqcount)
+        self.assertEqual("saved structure", stru1.label)
         return
 
     def test_table_atom_valence(self):

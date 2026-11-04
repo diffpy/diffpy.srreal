@@ -80,36 +80,6 @@ def test_finish_value_customization_applies_once_from_python_and_cpp():
     assert calc.calls == 2
 
 
-@pytest.mark.parametrize(
-    "cls",
-    [
-        ext.StructureAdapter,
-        *[
-            ext.AtomicStructureAdapter,
-            ext.PeriodicStructureAdapter,
-            ext.CrystalStructureAdapter,
-        ],
-    ],
-)
-def test_custom_config_super_runs_once(cls):
-    class Derived(cls):
-        calls = 0
-
-        def countSites(self):
-            return 0
-
-        def _customPQConfig(self, calc):
-            self.calls += 1
-            super()._customPQConfig(calc)
-
-    adapter = Derived()
-    calc = ext.PairQuantity()
-    adapter._customPQConfig(calc)
-    assert adapter.calls == 1
-    calc.setStructure(adapter)
-    assert adapter.calls == 2
-
-
 class CallbackAnisotropyAdapter(ext.StructureAdapter):
     anisotropy = False
 

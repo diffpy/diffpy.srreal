@@ -163,8 +163,8 @@ def _defineCommonInterface(cls):
     def _call_kwargs(self, structure=None, **kwargs):
         """Calculate PDF for the given structure as an (r, G) tuple.
         Keyword arguments can be used to configure calculator
-        attributes, these override any properties that may be passed
-        from the structure, such as spdiameter.
+        attributes. Structure pdffit metadata is ignored; pass any
+        desired settings explicitly.
 
         Attributes
         ----------
@@ -180,9 +180,6 @@ def _defineCommonInterface(cls):
         """
         setattrFromKeywordArguments(self, **kwargs)
         self.eval(structure)
-        # apply kwargs again if structure contained any attribute
-        # that may affect the result.
-        setattrFromKeywordArguments(self, **kwargs)
         rv = (self.rgrid, self.pdf)
         return rv
 
