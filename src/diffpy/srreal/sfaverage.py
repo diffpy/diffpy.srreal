@@ -25,10 +25,10 @@ Examples
     sfavg1 = SFAverage.fromComposition({'Na' : 1, 'Cl' : 1}, xtb, qa)
     sfavg2 = SFAverage.fromComposition([('Mn', 1), ('O', 2)], xtb, qa)
 
-    from diffpy.structure import loadStructure
+    from diffpy.structure import load_structure
     from diffpy.srreal.pdfcalculator import DebyePDFCalculator
     dpdfc = DebyePDFCalculator()
-    dpdfc(loadStructure('rutile.cif'))
+    dpdfc(load_structure('rutile.cif'))
     sfavg3 = SFAverage.fromStructure(dpdfc.getStructure(),
                                      dpdfc.scatteringfactortable, dpdfc.qgrid)
 """

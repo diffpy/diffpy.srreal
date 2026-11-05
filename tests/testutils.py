@@ -14,7 +14,7 @@ from diffpy.srreal.structureadapter import (
     PeriodicStructureAdapter,
     StructureAdapter,
 )
-from diffpy.structure.parsers import getParser
+from diffpy.structure.parsers import get_parser
 
 # helper functions
 
@@ -36,7 +36,7 @@ def loadObjCrystCrystal(filename):
 
 def loadDiffPyStructure(filename):
     fullpath = datafile(filename)
-    stru = mod_structure.loadStructure(fullpath)
+    stru = mod_structure.load_structure(fullpath)
     return stru
 
 
@@ -44,8 +44,8 @@ def loadCrystalStructureAdapter(filename):
     from diffpy.srreal.structureconverters import _fetchDiffPyStructureData
 
     fullpath = datafile(filename)
-    pcif = getParser("cif")
-    stru = pcif.parseFile(fullpath)
+    pcif = get_parser("cif")
+    stru = pcif.parse_file(fullpath)
     asu = stru[:0] + pcif.asymmetric_unit
     adpt = CrystalStructureAdapter()
     _fetchDiffPyStructureData(adpt, asu)

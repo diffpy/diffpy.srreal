@@ -59,7 +59,7 @@ class TestRoutines(unittest.TestCase):
         self.nickel.pdffit = None
         adpt1 = createStructureAdapter(self.nickel)
         self.assertTrue(type(adpt1) is PeriodicStructureAdapter)
-        self.nickel.lattice.setLatPar(1, 1, 1, 90, 90, 90)
+        self.nickel.lattice.set_latt_parms(1, 1, 1, 90, 90, 90)
         adpt2 = createStructureAdapter(self.nickel)
         self.assertTrue(type(adpt2) is AtomicStructureAdapter)
         self.nickel.pdffit = dict(scale=1)
