@@ -6,17 +6,17 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>compareC60PDFs.py &mdash; diffpy.srreal 1.4.0 documentation</title>
+  <title>compareC60PDFs.py &mdash; diffpy.srreal 1.5.0rc1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=06f1c677"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=682278e4"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../_static/copybutton.js?v=cca77546"></script>
     <script src="../_static/js/theme.js"></script>
@@ -87,10 +87,10 @@
 <span id="comparec60pdfs-rst"></span><h1>compareC60PDFs.py<a class="headerlink" href="#comparec60pdfs-py" title="Link to this heading"></a></h1>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
 
-<span class="sd">&quot;&quot;&quot;Plot C60 PDFs calculated with PDFCalculator and DebyePDFCalculator.</span>
+<span class="sd">"""Plot C60 PDFs calculated with PDFCalculator and DebyePDFCalculator.</span>
 
 <span class="sd">The C60 molecule is held in a diffpy Structure object.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
@@ -101,14 +101,14 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">diffpy.structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Structure</span>
 
 <span class="n">mydir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-<span class="n">buckyfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mydir</span><span class="p">,</span> <span class="s2">&quot;datafiles&quot;</span><span class="p">,</span> <span class="s2">&quot;C60bucky.stru&quot;</span><span class="p">)</span>
+<span class="n">buckyfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mydir</span><span class="p">,</span> <span class="s2">"datafiles"</span><span class="p">,</span> <span class="s2">"C60bucky.stru"</span><span class="p">)</span>
 
 <span class="c1"># load C60 molecule as a diffpy.structure object</span>
 <span class="n">bucky</span> <span class="o">=</span> <span class="n">Structure</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">buckyfile</span><span class="p">)</span>
 <span class="n">cfg</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;qmax&quot;</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span>
-    <span class="s2">&quot;rmin&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="s2">&quot;rmax&quot;</span><span class="p">:</span> <span class="mf">10.001</span><span class="p">,</span>
+    <span class="s2">"qmax"</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span>
+    <span class="s2">"rmin"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">"rmax"</span><span class="p">:</span> <span class="mf">10.001</span><span class="p">,</span>
 <span class="p">}</span>
 
 <span class="c1"># calculate PDF by real-space summation</span>
@@ -139,7 +139,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2025, The Trustees of Columbia University in the City of New York.</p>
+    <p>&#169; Copyright 2026, The Trustees of Columbia University in the City of New York.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

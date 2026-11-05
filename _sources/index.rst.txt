@@ -57,7 +57,7 @@ If you use this program for a scientific research that leads
 to publication, we ask that you acknowledge use of the program
 by citing the following paper in your publication:
 
-   diffpy.srreal Package, https://github.com/diffpy/diffpy.srreal
+   Juhás, P.; Farrow, C. L.; Yang, X.; Knox, K. R.; Billinge, S. J. L. Complex Modeling: A Strategy and Software Program for Combining Multiple Information Sources to Solve Ill Posed Structure and Nanostructure Inverse Problems. Acta Crystallogr A Found Adv 2015, 71 (6), 562–568. https://doi.org/10.1107/S2053273315014473.
 
 ============
 Installation

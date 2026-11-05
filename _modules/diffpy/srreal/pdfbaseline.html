@@ -1,0 +1,216 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>diffpy.srreal.pdfbaseline &mdash; diffpy.srreal 1.5.0rc1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=682278e4"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=cca77546"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            diffpy.srreal
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/diffpy.srreal.html">Package API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">diffpy.srreal</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">diffpy.srreal.pdfbaseline</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for diffpy.srreal.pdfbaseline</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1">##############################################################################</span>
+<span class="c1">#</span>
+<span class="c1"># diffpy.srreal     by DANSE Diffraction group</span>
+<span class="c1">#                   Simon J. L. Billinge</span>
+<span class="c1">#                   (c) 2010 The Trustees of Columbia University</span>
+<span class="c1">#                   in the City of New York.  All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># File coded by:    Pavol Juhas</span>
+<span class="c1">#</span>
+<span class="c1"># See AUTHORS.txt for a list of people who contributed.</span>
+<span class="c1"># See LICENSE_DANSE.txt for license information.</span>
+<span class="c1">#</span>
+<span class="c1">##############################################################################</span>
+<span class="sd">"""</span>
+<span class="sd">Classes for configuring PDF baseline:</span>
+<span class="sd">    PDFBaseline, ZeroBaseline, LinearBaseline</span>
+<span class="sd">"""</span>
+
+<span class="c1"># exported items</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">    PDFBaseline makePDFBaseline</span>
+<span class="s2">    ZeroBaseline</span>
+<span class="s2">    LinearBaseline</span>
+<span class="s2">    """</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">diffpy.srreal</span><span class="w"> </span><span class="kn">import</span> <span class="n">_final_imports</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">diffpy.srreal.srreal_ext</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearBaseline</span><span class="p">,</span> <span class="n">PDFBaseline</span><span class="p">,</span> <span class="n">ZeroBaseline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">diffpy.srreal.wraputils</span><span class="w"> </span><span class="kn">import</span> <span class="n">propertyFromExtDoubleAttr</span>
+
+<span class="c1"># class PDFBaseline ----------------------------------------------------------</span>
+
+<span class="c1"># disable dictionary pickling for wrapped C++ classes</span>
+
+<span class="n">LinearBaseline</span><span class="o">.</span><span class="n">__getstate_manages_dict__</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">ZeroBaseline</span><span class="o">.</span><span class="n">__getstate_manages_dict__</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="c1"># attribute wrapper</span>
+
+<span class="n">LinearBaseline</span><span class="o">.</span><span class="n">slope</span> <span class="o">=</span> <span class="n">propertyFromExtDoubleAttr</span><span class="p">(</span>
+    <span class="s2">"slope"</span><span class="p">,</span>
+    <span class="p">(</span>
+        <span class="s2">"Slope of an unscaled linear baseline.  For crystal structures it"</span>
+        <span class="s2">" is preset to (-4 * pi * rho0)."</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Python functions wrapper</span>
+
+
+<div class="viewcode-block" id="makePDFBaseline">
+<a class="viewcode-back" href="../../../api/diffpy.srreal.html#diffpy.srreal.pdfbaseline.makePDFBaseline">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">makePDFBaseline</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">fnc</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">dbattrs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Helper function for registering Python function as a PDFBaseline.</span>
+<span class="sd">    This is required for using Python function as</span>
+<span class="sd">    PDFCalculator.baseline.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name</span>
+<span class="sd">        unique string name for registering Python function in the</span>
+<span class="sd">        global registry of PDFBaseline types.  This will be the</span>
+<span class="sd">        string identifier for the createByType factory.</span>
+<span class="sd">    fnc</span>
+<span class="sd">        Python function of a floating point argument and optional</span>
+<span class="sd">        float parameters.  The parameters need to be registered as</span>
+<span class="sd">        double attributes in the functor class.  The function fnc</span>
+<span class="sd">        must be picklable and it must return a float.</span>
+<span class="sd">    replace</span>
+<span class="sd">        when set replace any PDFBaseline type already registered</span>
+<span class="sd">        under the name.  Otherwise raise RuntimeError when the</span>
+<span class="sd">        name is taken.</span>
+<span class="sd">    dbattrs</span>
+<span class="sd">        optional float parameters of the wrapped function.</span>
+<span class="sd">        These will be registered as double attributes in the</span>
+<span class="sd">        functor class.  The wrapped function must be callable as</span>
+<span class="sd">        fnc(x, **dbattrs).  Make sure to pick attribute names that</span>
+<span class="sd">        do not conflict with other PDFCalculator attributes.</span>
+
+<span class="sd">    Return an instance of the new PDFBaseline class.</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">        # Python baseline function</span>
+<span class="sd">        def fshiftedline(x, aline, bline):</span>
+<span class="sd">            return aline * x + bline</span>
+<span class="sd">        # wrap it as a PDFBaseline and register as a "shiftedline" type</span>
+<span class="sd">        makePDFBaseline("shiftedline", fshiftedline, aline=-1, bline=0)</span>
+<span class="sd">        baseline = PDFBaseline.createByType("shiftedline")</span>
+<span class="sd">        print map(baseline, range(5))</span>
+<span class="sd">        # use it in PDFCalculator</span>
+<span class="sd">        pdfc = PDFCalculator()</span>
+<span class="sd">        pdfc.baseline = baseline</span>
+<span class="sd">        # or pdfc.baseline = "shiftedline"</span>
+<span class="sd">    """</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">diffpy.srreal.wraputils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_wrapAsRegisteredUnaryFunction</span>
+
+    <span class="n">rv</span> <span class="o">=</span> <span class="n">_wrapAsRegisteredUnaryFunction</span><span class="p">(</span>
+        <span class="n">PDFBaseline</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">fnc</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">replace</span><span class="p">,</span> <span class="o">**</span><span class="n">dbattrs</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">rv</span></div>
+
+
+
+<span class="c1"># Import delayed tweaks of the extension classes.</span>
+
+<span class="n">_final_imports</span><span class="o">.</span><span class="n">import_now</span><span class="p">()</span>
+<span class="k">del</span> <span class="n">_final_imports</span>
+
+<span class="c1"># End of file</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, The Trustees of Columbia University in the City of New York.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

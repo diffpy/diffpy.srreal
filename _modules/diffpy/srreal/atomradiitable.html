@@ -1,0 +1,199 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>diffpy.srreal.atomradiitable &mdash; diffpy.srreal 1.5.0rc1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=682278e4"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=cca77546"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            diffpy.srreal
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/diffpy.srreal.html">Package API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">diffpy.srreal</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">diffpy.srreal.atomradiitable</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for diffpy.srreal.atomradiitable</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1">##############################################################################</span>
+<span class="c1">#</span>
+<span class="c1"># diffpy.srreal     by DANSE Diffraction group</span>
+<span class="c1">#                   Simon J. L. Billinge</span>
+<span class="c1">#                   (c) 2011 The Trustees of Columbia University</span>
+<span class="c1">#                   in the City of New York.  All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># File coded by:    Pavol Juhas</span>
+<span class="c1">#</span>
+<span class="c1"># See AUTHORS.txt for a list of people who contributed.</span>
+<span class="c1"># See LICENSE_DANSE.txt for license information.</span>
+<span class="c1">#</span>
+<span class="c1">##############################################################################</span>
+<span class="sd">"""Class AtomRadiiTable -- storage of empirical atom radii."""</span>
+
+<span class="c1"># exported items, these also makes them show in pydoc.</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"AtomRadiiTable"</span><span class="p">,</span> <span class="s2">"ConstantRadiiTable"</span><span class="p">,</span> <span class="s2">"CovalentRadiiTable"</span><span class="p">]</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">diffpy.srreal.srreal_ext</span><span class="w"> </span><span class="kn">import</span> <span class="n">AtomRadiiTable</span><span class="p">,</span> <span class="n">ConstantRadiiTable</span>
+
+<span class="c1"># class CovalentRadiiTable ---------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="CovalentRadiiTable">
+<a class="viewcode-back" href="../../../api/diffpy.srreal.html#diffpy.srreal.atomradiitable.CovalentRadiiTable">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CovalentRadiiTable</span><span class="p">(</span><span class="n">AtomRadiiTable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Covalent radii from Cordero et al., 2008, doi:10.1039/b801115j.</span>
+
+<span class="sd">    Instantiation of this class requires the periodictable module.</span>
+<span class="sd">    """</span>
+
+    <span class="c1"># class variable that holds the periodictable.elements object</span>
+    <span class="n">_elements</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_standardLookup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">smbl</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return covalent atom radius in Angstroms.</span>
+
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+<span class="sd">        smbl</span>
+<span class="sd">            string symbol of an element</span>
+
+<span class="sd">        Return float.  Raise ValueError for unknown element symbol.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">CovalentRadiiTable</span><span class="o">.</span><span class="n">_elements</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">periodictable</span><span class="w"> </span><span class="kn">import</span> <span class="n">elements</span>
+
+            <span class="n">CovalentRadiiTable</span><span class="o">.</span><span class="n">_elements</span> <span class="o">=</span> <span class="n">elements</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span><span class="o">.</span><span class="n">isotope</span><span class="p">(</span><span class="n">smbl</span><span class="p">)</span>
+        <span class="n">rv</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">covalent_radius</span>
+        <span class="k">if</span> <span class="n">rv</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">emsg</span> <span class="o">=</span> <span class="s2">"Undefined covalent radius for </span><span class="si">%r</span><span class="s2">."</span> <span class="o">%</span> <span class="n">smbl</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">rv</span>
+
+    <span class="c1"># HasClassRegistry overloads:</span>
+
+<div class="viewcode-block" id="CovalentRadiiTable.create">
+<a class="viewcode-back" href="../../../api/diffpy.srreal.html#diffpy.srreal.atomradiitable.CovalentRadiiTable.create">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Create new instance of the CovalentRadiiTable."""</span>
+        <span class="k">return</span> <span class="n">CovalentRadiiTable</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="CovalentRadiiTable.clone">
+<a class="viewcode-back" href="../../../api/diffpy.srreal.html#diffpy.srreal.atomradiitable.CovalentRadiiTable.clone">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return a new duplicate instance of self."""</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CovalentRadiiTable.type">
+<a class="viewcode-back" href="../../../api/diffpy.srreal.html#diffpy.srreal.atomradiitable.CovalentRadiiTable.type">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Unique string identifier of the CovalentRadiiTable type.</span>
+
+<span class="sd">        This is used for class registration and as an argument for the</span>
+<span class="sd">        createByType function.</span>
+
+<span class="sd">        Return string.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="s2">"covalent"</span></div>
+</div>
+
+
+
+<span class="c1"># End of class CovalentRadiiTable</span>
+<span class="n">CovalentRadiiTable</span><span class="p">()</span><span class="o">.</span><span class="n">_registerThisType</span><span class="p">()</span>
+
+<span class="c1"># End of file</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, The Trustees of Columbia University in the City of New York.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

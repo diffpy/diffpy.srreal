@@ -6,17 +6,17 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>compareC60PDFs_ObjCryst.py &mdash; diffpy.srreal 1.4.0 documentation</title>
+  <title>compareC60PDFs_ObjCryst.py &mdash; diffpy.srreal 1.5.0rc1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=06f1c677"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=682278e4"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../_static/copybutton.js?v=cca77546"></script>
     <script src="../_static/js/theme.js"></script>
@@ -87,10 +87,10 @@
 <span id="id1"></span><h1>compareC60PDFs_ObjCryst.py<a class="headerlink" href="#comparec60pdfs-objcryst-py" title="Link to this heading"></a></h1>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
 
-<span class="sd">&quot;&quot;&quot;Plot C60 PDFs calculated with PDFCalculator and DebyePDFCalculator.</span>
+<span class="sd">"""Plot C60 PDFs calculated with PDFCalculator and DebyePDFCalculator.</span>
 
 <span class="sd">The C60 molecule are stored in a pyobjcryst object.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="kn">import</span> <span class="n">clf</span><span class="p">,</span> <span class="n">plot</span><span class="p">,</span> <span class="n">show</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyobjcryst.crystal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crystal</span>
@@ -101,34 +101,34 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">diffpy.structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Structure</span>
 
 <span class="c1"># load C60 molecule as a diffpy.structure object</span>
-<span class="n">bucky_diffpy</span> <span class="o">=</span> <span class="n">Structure</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s2">&quot;datafiles/C60bucky.stru&quot;</span><span class="p">)</span>
+<span class="n">bucky_diffpy</span> <span class="o">=</span> <span class="n">Structure</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s2">"datafiles/C60bucky.stru"</span><span class="p">)</span>
 
 <span class="c1"># convert to an ObjCryst molecule</span>
-<span class="n">c60</span> <span class="o">=</span> <span class="n">Crystal</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;P1&quot;</span><span class="p">)</span>
-<span class="n">mc60</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">c60</span><span class="p">,</span> <span class="s2">&quot;C60&quot;</span><span class="p">)</span>
+<span class="n">c60</span> <span class="o">=</span> <span class="n">Crystal</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"P1"</span><span class="p">)</span>
+<span class="n">mc60</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">c60</span><span class="p">,</span> <span class="s2">"C60"</span><span class="p">)</span>
 <span class="n">c60</span><span class="o">.</span><span class="n">AddScatterer</span><span class="p">(</span><span class="n">mc60</span><span class="p">)</span>
 <span class="c1"># Create the scattering power object for the carbon atoms</span>
-<span class="n">sp</span> <span class="o">=</span> <span class="n">ScatteringPowerAtom</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
+<span class="n">sp</span> <span class="o">=</span> <span class="n">ScatteringPowerAtom</span><span class="p">(</span><span class="s2">"C"</span><span class="p">,</span> <span class="s2">"C"</span><span class="p">)</span>
 <span class="n">sp</span><span class="o">.</span><span class="n">SetBiso</span><span class="p">(</span><span class="n">bucky_diffpy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">Bisoequiv</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">bucky_diffpy</span><span class="p">):</span>
-    <span class="n">cname</span> <span class="o">=</span> <span class="s2">&quot;C</span><span class="si">%i</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">cname</span> <span class="o">=</span> <span class="s2">"C</span><span class="si">%i</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">mc60</span><span class="o">.</span><span class="n">AddAtom</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">xyz_cartn</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">a</span><span class="o">.</span><span class="n">xyz_cartn</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">a</span><span class="o">.</span><span class="n">xyz_cartn</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">sp</span><span class="p">,</span> <span class="n">cname</span><span class="p">)</span>
 
 <span class="c1"># PDF configuration</span>
 <span class="n">cfg</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;qmax&quot;</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span>
-    <span class="s2">&quot;rmin&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="s2">&quot;rmax&quot;</span><span class="p">:</span> <span class="mf">10.001</span><span class="p">,</span>
-    <span class="s2">&quot;rstep&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span>
+    <span class="s2">"qmax"</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span>
+    <span class="s2">"rmin"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">"rmax"</span><span class="p">:</span> <span class="mf">10.001</span><span class="p">,</span>
+    <span class="s2">"rstep"</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span>
 <span class="p">}</span>
 
 <span class="c1"># calculate PDF by real-space summation</span>
 <span class="n">pc0</span> <span class="o">=</span> <span class="n">PDFCalculator</span><span class="p">(</span><span class="o">**</span><span class="n">cfg</span><span class="p">)</span>
-<span class="n">r0</span><span class="p">,</span> <span class="n">g0</span> <span class="o">=</span> <span class="n">pc0</span><span class="p">(</span><span class="n">c60</span><span class="p">)</span>
+<span class="n">r0</span><span class="p">,</span> <span class="n">g0</span> <span class="o">=</span> <span class="n">pc0</span><span class="p">(</span><span class="n">mc60</span><span class="p">)</span>
 
 <span class="c1"># calculate PDF using Debye formula</span>
 <span class="n">pc1</span> <span class="o">=</span> <span class="n">DebyePDFCalculator</span><span class="p">(</span><span class="o">**</span><span class="n">cfg</span><span class="p">)</span>
-<span class="n">r1</span><span class="p">,</span> <span class="n">g1</span> <span class="o">=</span> <span class="n">pc1</span><span class="p">(</span><span class="n">c60</span><span class="p">)</span>
+<span class="n">r1</span><span class="p">,</span> <span class="n">g1</span> <span class="o">=</span> <span class="n">pc1</span><span class="p">(</span><span class="n">mc60</span><span class="p">)</span>
 <span class="n">gd</span> <span class="o">=</span> <span class="n">g0</span> <span class="o">-</span> <span class="n">g1</span>
 
 <span class="c1"># plot both results and the difference curve</span>
@@ -150,7 +150,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2025, The Trustees of Columbia University in the City of New York.</p>
+    <p>&#169; Copyright 2026, The Trustees of Columbia University in the City of New York.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
