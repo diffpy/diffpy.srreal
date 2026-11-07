@@ -47,7 +47,8 @@ cmake.build-type = "Release"
 wheel.packages = ["src/diffpy"]
 sdist.cmake = true
 sdist.include = [
-    "_build/libdiffpy-version.hpp",
+    "extern/libdiffpy/CMakeLists.txt",
+    "extern/libdiffpy/cmake/**",
     "extern/libdiffpy/src/diffpy/**",
     "extern/libdiffpy/src/runtime/**",
     "extern/libdiffpy/LICENSE.rst",

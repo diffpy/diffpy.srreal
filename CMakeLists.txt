@@ -1,13 +1,13 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.22)
 project(diffpy_srreal LANGUAGES NONE)
 
-# Keep this aligned with the pinned libdiffpy's src/SConscript.
+# Keep this aligned with the pinned libdiffpy's CMakeLists.txt.
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(LIBDIFFPY_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/extern/libdiffpy")
-if(NOT EXISTS "${LIBDIFFPY_SOURCE_DIR}/src/diffpy/version.tpl")
+if(NOT EXISTS "${LIBDIFFPY_SOURCE_DIR}/CMakeLists.txt")
     message(FATAL_ERROR
         "Missing libdiffpy sources. Initialize the submodule with "
         "'git submodule update --init --recursive', or use a source distribution "
@@ -15,41 +15,27 @@ if(NOT EXISTS "${LIBDIFFPY_SOURCE_DIR}/src/diffpy/version.tpl")
     )
 endif()
 
-# Read version information from the submodule; sdists carry the generated header.
-set(LIBDIFFPY_VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/include/diffpy/version.hpp")
-set(LIBDIFFPY_SDIST_VERSION_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/_build/libdiffpy-version.hpp")
-if(EXISTS "${LIBDIFFPY_SOURCE_DIR}/.git")
-    file(STRINGS "${LIBDIFFPY_SOURCE_DIR}/site_scons/fallback_version.py"
-         LIBDIFFPY_FALLBACK_VERSION REGEX "^FALLBACK_VERSION =")
-    if(NOT LIBDIFFPY_FALLBACK_VERSION MATCHES "([0-9]+)\\.([0-9]+)\\.([0-9]+)")
-        message(FATAL_ERROR "Cannot read the libdiffpy base version.")
-    endif()
-    set(DIFFPY_VERSION_MAJOR "${CMAKE_MATCH_1}")
-    set(DIFFPY_VERSION_MINOR "${CMAKE_MATCH_2}")
-    set(DIFFPY_VERSION_MICRO "${CMAKE_MATCH_3}")
-    set(DIFFPY_VERSION_PATCH 0)
-    set(DIFFPY_VERSION_STR "${DIFFPY_VERSION_MAJOR}.${DIFFPY_VERSION_MINOR}.${DIFFPY_VERSION_MICRO}")
-    math(EXPR DIFFPY_VERSION "${DIFFPY_VERSION_MAJOR} * 1000000000 + ${DIFFPY_VERSION_MINOR} * 1000000 + ${DIFFPY_VERSION_MICRO} * 1000")
-    set(DIFFPY_VERSION "${DIFFPY_VERSION}LL")
-    find_package(Git REQUIRED)
-    execute_process(
-        COMMAND "${GIT_EXECUTABLE}" -C "${LIBDIFFPY_SOURCE_DIR}" log -1 "--format=%H;%ci"
-        OUTPUT_VARIABLE LIBDIFFPY_COMMIT_INFO
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-        COMMAND_ERROR_IS_FATAL ANY
-    )
-    list(GET LIBDIFFPY_COMMIT_INFO 0 DIFFPY_GIT_SHA)
-    list(GET LIBDIFFPY_COMMIT_INFO 1 DIFFPY_VERSION_DATE)
-    configure_file("${LIBDIFFPY_SOURCE_DIR}/src/diffpy/version.tpl"
-                   "${LIBDIFFPY_VERSION_HEADER}")
-else()
-    configure_file("${LIBDIFFPY_SDIST_VERSION_HEADER}"
-                   "${LIBDIFFPY_VERSION_HEADER}" COPYONLY)
-endif()
+# libdiffpy resolves its version from git unless src/diffpy/version.hpp exists,
+# as in its own source distribution. The srreal sdist has no git, so write that
+# header here and ship it.
+set(LIBDIFFPY_SDIST_VERSION_HEADER "${LIBDIFFPY_SOURCE_DIR}/src/diffpy/version.hpp")
 if(SKBUILD_STATE STREQUAL "sdist")
-    configure_file("${LIBDIFFPY_VERSION_HEADER}"
-                   "${LIBDIFFPY_SDIST_VERSION_HEADER}" COPYONLY)
+    # Refresh git checkouts; preserve the header when repacking an sdist.
+    if(EXISTS "${LIBDIFFPY_SOURCE_DIR}/.git" OR
+       NOT EXISTS "${LIBDIFFPY_SDIST_VERSION_HEADER}")
+        include("${LIBDIFFPY_SOURCE_DIR}/cmake/LibdiffpyVersion.cmake")
+        libdiffpy_resolve_version()
+        libdiffpy_write_version_header(
+            "${LIBDIFFPY_SOURCE_DIR}/src/diffpy/version.tpl"
+            "${LIBDIFFPY_SDIST_VERSION_HEADER}")
+    endif()
     return()
+endif()
+# A header left over from a local sdist build would freeze the git checkout's
+# version, so remove it.
+if(EXISTS "${LIBDIFFPY_SOURCE_DIR}/.git" AND EXISTS "${LIBDIFFPY_SDIST_VERSION_HEADER}")
+    message(STATUS "Removing stale ${LIBDIFFPY_SDIST_VERSION_HEADER}")
+    file(REMOVE "${LIBDIFFPY_SDIST_VERSION_HEADER}")
 endif()
 enable_language(CXX)
 
@@ -95,40 +81,30 @@ if(DEFINED _srreal_saved_suffixes)
     endforeach()
 endif()
 
-set(DIFFPY_HAS_OBJCRYST 0)
-configure_file("${LIBDIFFPY_SOURCE_DIR}/src/diffpy/features.tpl"
-               "include/diffpy/features.hpp")
-
-file(GLOB LIBDIFFPY_SOURCES CONFIGURE_DEPENDS
-    "${LIBDIFFPY_SOURCE_DIR}/src/diffpy/*.cpp"
-    "${LIBDIFFPY_SOURCE_DIR}/src/diffpy/srreal/*.cpp"
-)
+# Embed libdiffpy as an OBJECT library: every object is linked, so its static
+# factory/serialization registrars are kept.
+set(LIBDIFFPY_BUILD_OBJECT_LIB ON)
+set(LIBDIFFPY_INSTALL OFF)
 # ObjCryst conversion uses the public Python API, so it does not depend on
 # pyobjcryst's private static library, compiler, REAL precision, or nanobind ABI.
-list(FILTER LIBDIFFPY_SOURCES EXCLUDE REGEX "ObjCryst")
-# Include every object: libdiffpy has static factory/serialization registrars
-# that an ordinary static archive link can otherwise discard.
-add_library(diffpy_core OBJECT ${LIBDIFFPY_SOURCES})
-set_target_properties(diffpy_core PROPERTIES
+set(LIBDIFFPY_ENABLE_OBJCRYST OFF)
+set(LIBDIFFPY_BUILD_TESTS OFF)
+# Runtime data installs next to the extension, in diffpy/srreal/data.
+set(LIBDIFFPY_RUNTIME_RELPATH data)
+add_subdirectory("${LIBDIFFPY_SOURCE_DIR}" libdiffpy EXCLUDE_FROM_ALL)
+set_target_properties(diffpy PROPERTIES
     POSITION_INDEPENDENT_CODE ON
     CXX_VISIBILITY_PRESET hidden
     VISIBILITY_INLINES_HIDDEN ON
 )
-target_include_directories(diffpy_core PUBLIC
-    "${CMAKE_CURRENT_BINARY_DIR}/include"
-    "${LIBDIFFPY_SOURCE_DIR}/src"
-)
-target_compile_definitions(diffpy_core PRIVATE DIFFPYRUNTIMERELPATH=data)
-if(WIN32)
-    # libdiffpy and its Python wrappers are compiled into the same extension.
-    target_compile_definitions(diffpy_core PUBLIC BUILD_DLL _USE_MATH_DEFINES NOMINMAX)
-endif()
-target_link_libraries(diffpy_core PUBLIC Boost::serialization GSL::gsl GSL::gslcblas ${CMAKE_DL_LIBS})
 
 file(GLOB SRREAL_SOURCES CONFIGURE_DEPENDS "src/extensions/*.cpp")
 # Retain CPython-specific wheels; stable-ABI packaging is a separate change.
 nanobind_add_module(srreal_ext NB_STATIC ${SRREAL_SOURCES})
-target_link_libraries(srreal_ext PRIVATE diffpy_core)
+target_link_libraries(srreal_ext PRIVATE libdiffpy::diffpy)
+if(WIN32)
+    target_compile_definitions(srreal_ext PRIVATE NOMINMAX)
+endif()
 set_target_properties(srreal_ext PROPERTIES INSTALL_RPATH_USE_LINK_PATH ON)
 install(TARGETS srreal_ext LIBRARY DESTINATION diffpy/srreal)
 install(DIRECTORY "${LIBDIFFPY_SOURCE_DIR}/src/runtime/"
