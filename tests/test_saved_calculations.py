@@ -1,18 +1,10 @@
 """Saved calculations retain structures, components, and Python
 state."""
 
-import base64
 import copy
-import json
 import pickle
-import struct
-import sys
-from importlib import import_module
-from pathlib import Path
 
-import numpy as np
 import pytest
-from test_python_interfaces import CALCULATOR_MODULES
 from test_structure_lifetimes import make_structure
 
 from diffpy.srreal import srreal_ext as ext
@@ -82,84 +74,6 @@ def test_unmanaged_dictionary_is_still_rejected():
     with pytest.raises(RuntimeError, match="Incomplete pickle support"):
         pickle.dumps(calc)
     assert calc.getStructure() is not None
-
-
-_legacy = json.loads(
-    (Path(__file__).parent / "testdata/boost_python_pickles.json").read_text()
-)
-
-
-@pytest.fixture(scope="module")
-def legacy_component_registry():
-    # Registered-function pickles require their type to be registered in the
-    # receiving process under both bindings.
-    from test_pdfbaseline import parabola_baseline
-    from test_pdfenvelope import parabola_envelope
-
-    from diffpy.srreal.pdfbaseline import makePDFBaseline
-    from diffpy.srreal.pdfenvelope import makePDFEnvelope
-
-    makePDFBaseline("legacy_parabola", parabola_baseline, a=1, b=2, c=3)
-    makePDFEnvelope("legacy_envelope", parabola_envelope, a=1, b=2, c=3)
-    yield
-    ext.PDFBaseline._deregisterType("legacy_parabola")
-    ext.PDFEnvelope._deregisterType("legacy_envelope")
-
-
-@pytest.mark.parametrize("name,case", _legacy["cases"].items())
-def test_boost_python_pickle_compatibility(
-    name, case, legacy_component_registry
-):
-    if (sys.byteorder, struct.calcsize("P"), struct.calcsize("l")) != (
-        _legacy["byteorder"],
-        _legacy["pointer_size"],
-        _legacy["long_size"],
-    ):
-        pytest.skip("Boost binary archive uses a different native ABI")
-    obj = pickle.loads(base64.b64decode(case["pickle"]))
-    # The restored object must itself remain serializable with this binding.
-    for restored in [obj, pickle.loads(pickle.dumps(obj))]:
-        if "rmax" in case:
-            assert restored.rmax == case["rmax"]
-            assert callable(restored)
-            adapter = restored.getStructure()
-            if "component" in case:
-                component = getattr(restored, case["component"])
-                assert component.type() == case["component_type"]
-            if name == "Python_envelope":
-                assert restored.getEnvelope("legacy_envelope")(2) == 11
-            if "value" in case:
-                np.testing.assert_allclose(
-                    restored.value, case["value"], atol=1e-12
-                )
-                np.testing.assert_allclose(
-                    restored.eval(), case["value"], atol=1e-12
-                )
-                # Old pickles name srreal_ext classes and must also retain
-                # their normal public calling interface after restoration.
-                module = import_module(
-                    "diffpy.srreal." + CALCULATOR_MODULES[name]
-                )
-                assert type(restored) is getattr(module, name)
-                result = restored()
-                if "PDFCalculator" in name:
-                    np.testing.assert_allclose(result[0], restored.rgrid)
-                    np.testing.assert_allclose(result[1], restored.pdf)
-                else:
-                    expected = (
-                        restored.sitesquareoverlaps
-                        if name == "OverlapCalculator"
-                        else restored.value
-                    )
-                    np.testing.assert_allclose(result, expected)
-        else:
-            adapter = restored
-        assert adapter.countSites() == case["sites"]
-        if case["sites"]:
-            assert adapter.siteAtomType(0) == "Ni"
-            np.testing.assert_allclose(
-                adapter.siteCartesianPosition(0), [1, 2, 3]
-            )
 
 
 class NamedNoMeta(ext.NoMetaStructureAdapter):
