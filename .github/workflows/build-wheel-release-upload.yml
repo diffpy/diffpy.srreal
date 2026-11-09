@@ -22,16 +22,17 @@ jobs:
   # release body, and the Sphinx documentation is rebuilt and deployed to
   # GitHub Pages.
   #
-  # The shared workflow builds the wheels with cibuildwheel using
+  # build_c_ext_with_cibw builds the wheels with cibuildwheel using
   # [tool.cibuildwheel] in pyproject.toml.
-  # TODO: switch to scikit-package/release-scripts@v0 once the cibuildwheel
+  # TODO: switch to scikit-package/release-scripts@v0 once the cibw
   # branch is merged and released there.
   build-release:
-    uses: SYMSCAE/release-scripts/.github/workflows/_build-wheel-release-upload.yml@cibuildwheel
+    uses: SYMSCAE/release-scripts/.github/workflows/_build-wheel-release-upload.yml@cibw
     with:
       project: diffpy.srreal
       submodules: recursive
       c_extension: true
+      build_c_ext_with_cibw: true
       maintainer_github_username: sbillinge
     secrets:
       PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
