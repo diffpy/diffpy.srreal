@@ -27,7 +27,7 @@ jobs:
   # TODO: switch to scikit-package/release-scripts@v0 once the cibw
   # branch is merged and released there.
   build-release:
-    uses: SYMSCAE/release-scripts/.github/workflows/_build-wheel-release-upload.yml@cibw
+    uses: scikit-package/release-scripts/.github/workflows/_build-wheel-release-upload.yml@v0
     with:
       project: diffpy.srreal
       submodules: recursive
