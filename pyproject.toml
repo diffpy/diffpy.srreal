@@ -73,9 +73,12 @@ test-command = "pytest {project}/tests"
 
 [tool.cibuildwheel.linux]
 archs = ["x86_64"]
+environment = { CUDACXX = "/usr/local/cuda-13.5/bin/nvcc" }
+test-environment = { CUDA_VISIBLE_DEVICES = "-1" }
 inherit.config-settings = "append"
 
 [tool.cibuildwheel.linux.config-settings]
+"cmake.define.SRREAL_CUDA" = "ON"
 "cmake.define.SRREAL_DEPS_LICENSE_DIR" = "/opt/srreal-deps/licenses"
 "cmake.define.CMAKE_TOOLCHAIN_FILE" = "/opt/srreal-deps/vcpkg/scripts/buildsystems/vcpkg.cmake"
 "cmake.define.VCPKG_INSTALLED_DIR" = "/opt/srreal-deps/installed"
@@ -94,7 +97,12 @@ inherit.config-settings = "append"
 # No Windows ARM64 wheels.
 [tool.cibuildwheel.windows]
 archs = ["AMD64"]
-before-all = "powershell -NoProfile -ExecutionPolicy Bypass -File {project}/tools/install-vcpkg-deps.ps1 C:/srreal-deps srreal-x64-windows"
+environment = { CUDA_PATH_V13_5 = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.5" }
+test-environment = { CUDA_VISIBLE_DEVICES = "-1" }
+before-all = [
+    "pwsh -NoProfile -ExecutionPolicy Bypass -File {project}/tools/install-wheel-cuda.ps1 C:/srreal-deps",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File {project}/tools/install-vcpkg-deps.ps1 C:/srreal-deps srreal-x64-windows",
+]
 inherit.config-settings = "append"
 before-build = "pip install delvewheel"
 # Other diffpy distributions also install diffpy/__init__.py. Keep the DLL
@@ -102,6 +110,7 @@ before-build = "pip install delvewheel"
 repair-wheel-command = "delvewheel repair --namespace-pkg diffpy --add-path C:/srreal-deps/redist -w {dest_dir} {wheel}"
 
 [tool.cibuildwheel.windows.config-settings]
+"cmake.define.SRREAL_CUDA" = "ON"
 "cmake.define.SRREAL_DEPS_LICENSE_DIR" = "C:/srreal-deps/licenses"
 "cmake.define.CMAKE_TOOLCHAIN_FILE" = "C:/srreal-deps/vcpkg/scripts/buildsystems/vcpkg.cmake"
 "cmake.define.VCPKG_INSTALLED_DIR" = "C:/srreal-deps/installed"
@@ -111,7 +120,10 @@ repair-wheel-command = "delvewheel repair --namespace-pkg diffpy --add-path C:/s
 [[tool.cibuildwheel.overrides]]
 select = "*-manylinux_x86_64"
 inherit.config-settings = "append"
-before-all = "bash {project}/tools/install-vcpkg-deps.sh /opt/srreal-deps srreal-x64-linux"
+before-all = [
+    "bash {project}/tools/install-wheel-cuda.sh /opt/srreal-deps",
+    "bash {project}/tools/install-vcpkg-deps.sh /opt/srreal-deps srreal-x64-linux",
+]
 config-settings = { "cmake.define.VCPKG_TARGET_TRIPLET" = "srreal-x64-linux" }
 
 [[tool.cibuildwheel.overrides]]

@@ -27,7 +27,10 @@ namespace nswrap_CalculationKernel {
 // docstrings ----------------------------------------------------------------
 
 const char* doc_availableCalculationKernels = "\
-Return the CPU kernels this machine can run, in order of preference.\n\
+Return the kernels this machine can run, CPU kernels first in order of\n\
+preference.  CUDA builds add 'cuda' and 'cuda-mixed' on compatible\n\
+devices; these fall back to the CPU for masked sums, custom peak\n\
+profiles and per-bond evaluations.\n\
 ";
 
 const char* doc_getCalculationKernel = "\

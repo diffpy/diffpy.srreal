@@ -2,6 +2,9 @@
 
 * The ``diffpy.srreal.calculationkernel`` module selects the kernel of PDF
   and Debye calculations.
+* Optional ``cuda`` and ``cuda-mixed`` kernels, included in the Windows and
+  Linux x86-64 wheels (which also run without a GPU) and enabled in source
+  builds with ``SRREAL_CUDA=ON``.
 * ``AtomicStructureAdapter.getAtomArrays`` and ``setAtomArrays`` read and
   replace all atom data in bulk.
 

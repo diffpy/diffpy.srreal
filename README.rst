@@ -130,6 +130,13 @@ A C++23 compiler, Boost.Serialization, GSL, and the Python build dependencies
 must still be installed separately, including for an offline build.
 CMake builds the SIMD kernels when it finds xsimd 14 or newer.
 
+To enable the optional CUDA kernels in a source build, install the CUDA
+toolkit with ``nvcc`` and run ::
+
+    pip install . -C cmake.define.SRREAL_CUDA=ON
+
+Set ``CUDACXX`` if ``nvcc`` is not in the ``PATH``.
+
 Getting Started
 ---------------
 
@@ -149,7 +156,10 @@ directory ::
 
         pip install -e .
 
-The default build type is Release.
+The default build type is Release. For example, to test a debug CUDA build ::
+
+        python -m pip install -e ".[test]" -C cmake.build-type=Debug -C cmake.define.SRREAL_CUDA=ON
+        python -m pytest
 
 To ensure code quality and to prevent accidental commits into the default branch, please set up the use of our pre-commit
 hooks.

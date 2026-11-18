@@ -15,7 +15,9 @@
 """Selection of the kernel that sums the contributions of atom pairs.
 
 PDFCalculator and DebyePDFCalculator send full pair sums to the selected
-kernel, by default the best one the CPU supports.
+kernel, by default the best one the CPU supports.  For refinements with
+'cuda-mixed', use larger finite-difference steps and verify the fit in
+double precision.
 """
 
 # exported items
