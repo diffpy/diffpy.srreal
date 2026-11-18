@@ -19,6 +19,14 @@
 *
 *****************************************************************************/
 
+#include <algorithm>
+#include <initializer_list>
+#include <span>
+#include <stdexcept>
+#include <string>
+#include <utility>
+#include <vector>
+
 #include <nanobind/nanobind.h>
 #include "srreal_trampoline.hpp"
 #include <nanobind/operators.h>
@@ -116,6 +124,45 @@ Return the removed Atom.\n\
 
 const char* doc_AtomicStructureAdapter_clear = "\
 Remove all atoms from the structure.\n\
+";
+
+const char* doc_AtomicStructureAdapter_getAtomArrays = "\
+Return the data of all atoms as arrays.\n\
+\n\
+Return a tuple (atomtypes, xyz_cartn, occupancy, anisotropy, uij_cartn)\n\
+with a list of N type strings and NumPy arrays of the shapes (N, 3), (N,),\n\
+(N,) and (N, 3, 3).  The arrays are copies of the atom data.\n\
+";
+
+const char* doc_AtomicStructureAdapter_setAtomArrays = "\
+Replace all atoms with the atoms given as arrays.\n\
+\n\
+atomtypes    -- sequence of N type strings\n\
+xyz_cartn    -- Cartesian coordinates, shape (N, 3)\n\
+occupancy    -- occupancies, shape (N,)\n\
+anisotropy   -- flags of anisotropic displacements, shape (N,)\n\
+uij_cartn    -- Cartesian displacement parameters, shape (N, 3, 3)\n\
+\n\
+No return value.  Atom objects obtained from this adapter before are\n\
+detached from it.\n\
+";
+
+const char* doc_PeriodicStructureAdapter_setLatticeAtomArrays = "\
+Replace all atoms with the atoms given as arrays in lattice coordinates.\n\
+\n\
+The arguments are those of setAtomArrays in lattice coordinates, which\n\
+are converted by toCartesian.\n\
+\n\
+isotropic_cartesian  -- when True, keep isotropic displacements as given.\n\
+";
+
+const char* doc_CrystalStructureAdapter_setSymOps = "\
+Replace the symmetry operations with those given as arrays.\n\
+\n\
+rotations    -- rotation matrices in fractional coordinates, shape (N, 3, 3)\n\
+translations -- translation vectors in fractional coordinates, shape (N, 3)\n\
+\n\
+No return value.  Unchanged operations keep the symmetry positions.\n\
 ";
 
 const char* doc_AtomicStructureAdapter_reserve = "\
@@ -631,6 +678,113 @@ void atomadapter_reserve(AtomicStructureAdapter& adpt, int sz)
     adpt.reserve(sz);
 }
 
+// Atom data of the whole adapter as arrays
+
+/// Throw ValueError unless the array has the given shape.
+template <class Array>
+void ensure_array_shape(const Array& array,
+        std::initializer_list<size_t> shape, const char* name)
+{
+    // Any empty array will do for no atoms, for example an empty list.
+    if (std::ranges::equal(std::span(array.shape_ptr(), array.ndim()), shape) ||
+            (array.size() == 0 && std::ranges::find(shape, 0) != shape.end()))
+        return;
+    std::string emsg = name;
+    emsg += " must have the shape (";
+    const char* sep = "";
+    for (size_t sz : shape)
+    {
+        emsg += sep + std::to_string(sz);
+        sep = ", ";
+    }
+    emsg += (shape.size() == 1) ? ",)." : ").";
+    throw std::invalid_argument(emsg);
+}
+
+
+/// Atoms from the arrays of setAtomArrays.
+std::vector<Atom> atoms_from_arrays(nb::object atomtypes, nb::object xyz,
+        nb::object occupancy, nb::object anisotropy, nb::object uij)
+{
+    std::vector<Atom> atoms;
+    for (nb::handle atomtype : atomtypes)
+    {
+        atoms.emplace_back();
+        atoms.back().atomtype = nb::cast<std::string>(atomtype);
+    }
+    const size_t n = atoms.size();
+    NumPyDoubleInput axyz = extractNumPyDoubleArray(xyz);
+    NumPyDoubleInput aocc = extractNumPyDoubleArray(occupancy);
+    NumPyDoubleInput auij = extractNumPyDoubleArray(uij);
+    using BoolInput = nb::ndarray<nb::numpy, const bool,
+            nb::c_contig, nb::device::cpu>;
+    nb::object flags = nb::module_::import_("numpy").attr("asarray")(
+            anisotropy, nb::arg("dtype") = "bool", nb::arg("order") = "C");
+    auto aaniso = nb::cast<BoolInput>(flags, false);
+    ensure_array_shape(axyz, {n, 3}, "xyz_cartn");
+    ensure_array_shape(aocc, {n}, "occupancy");
+    ensure_array_shape(aaniso, {n}, "anisotropy");
+    ensure_array_shape(auij, {n, 3, 3}, "uij_cartn");
+    const double* pxyz = axyz.data();
+    const double* pocc = aocc.data();
+    // NumPy permits any nonzero byte in a boolean array.
+    const auto paniso = std::as_bytes(std::span(aaniso.data(), n));
+    const double* puij = auij.data();
+    for (size_t i = 0; i < n; ++i, pxyz += 3, puij += 9)
+    {
+        Atom& a = atoms[i];
+        a.xyz_cartn = R3::Vector(pxyz[0], pxyz[1], pxyz[2]);
+        a.occupancy = pocc[i];
+        a.anisotropy = paniso[i] != std::byte{};
+        std::copy_n(puij, a.uij_cartn.data().size(), a.uij_cartn.data().begin());
+    }
+    return atoms;
+}
+
+
+void assign_atoms(AtomicStructureAdapter& adpt, std::vector<Atom>&& atoms)
+{
+    replace_atom_references(adpt, 0, adpt.size(), atoms.size());
+    adpt.assign(std::move(atoms));
+}
+
+
+void atomadapter_setatomarrays(AtomicStructureAdapter& adpt,
+        nb::object atomtypes, nb::object xyz, nb::object occupancy,
+        nb::object anisotropy, nb::object uij)
+{
+    assign_atoms(adpt,
+            atoms_from_arrays(atomtypes, xyz, occupancy, anisotropy, uij));
+}
+
+
+nb::tuple atomadapter_getatomarrays(const AtomicStructureAdapter& adpt)
+{
+    const size_t n = adpt.size();
+    const size_t ndim = static_cast<size_t>(R3::Ndim);
+    const size_t szxyz[2] = {n, ndim};
+    const size_t szuij[3] = {n, ndim, ndim};
+    nb::list atomtypes;
+    auto anisotropy = createNumPyBoolArray(n);
+    bool* flags = anisotropy.array.data();
+    NumPyOutput<double> xyz = createNumPyDoubleArray(2, szxyz);
+    NumPyOutput<double> occupancy = createNumPyDoubleArray(1, &n);
+    NumPyOutput<double> uij = createNumPyDoubleArray(3, szuij);
+    double* pxyz = xyz.array.data();
+    double* pocc = occupancy.array.data();
+    double* puij = uij.array.data();
+    for (const Atom& a : adpt)
+    {
+        atomtypes.append(a.atomtype);
+        *flags++ = a.anisotropy;
+        pxyz = std::copy(a.xyz_cartn.begin(), a.xyz_cartn.end(), pxyz);
+        *(pocc++) = a.occupancy;
+        puij = std::ranges::copy(a.uij_cartn.data(), puij).out;
+    }
+    return nb::make_tuple(
+            atomtypes, xyz.object, occupancy.object, anisotropy.object, uij.object);
+}
+
 // Wrapper helpers for class PeriodicStructureAdapter
 
 typedef MakeWrapper<PeriodicStructureAdapter> PeriodicStructureAdapterWrap;
@@ -642,6 +796,21 @@ nb::tuple periodicadapter_getlatpar(const PeriodicStructureAdapter& adpt)
     nb::tuple rv = nb::make_tuple(
             L.a(), L.b(), L.c(), L.alpha(), L.beta(), L.gamma());
     return rv;
+}
+
+void periodicadapter_setlatticeatomarrays(PeriodicStructureAdapter& adpt,
+        nb::object atomtypes, nb::object xyz, nb::object occupancy,
+        nb::object anisotropy, nb::object uij, bool isotropic_cartesian)
+{
+    std::vector<Atom> atoms =
+        atoms_from_arrays(atomtypes, xyz, occupancy, anisotropy, uij);
+    for (Atom& a : atoms)
+    {
+        const R3::Matrix ucartesian = a.uij_cartn;
+        adpt.toCartesian(a);
+        if (isotropic_cartesian && !a.anisotropy)  a.uij_cartn = ucartesian;
+    }
+    assign_atoms(adpt, std::move(atoms));
 }
 
 // Wrapper helpers for class CrystalStructureAdapter
@@ -666,6 +835,36 @@ void crystaladapter_addsymop(CrystalStructureAdapter& adpt,
 }
 
 
+void crystaladapter_setsymops(CrystalStructureAdapter& adpt,
+        nb::object rotations, nb::object translations)
+{
+    NumPyDoubleInput ar = extractNumPyDoubleArray(rotations);
+    NumPyDoubleInput at = extractNumPyDoubleArray(translations);
+    const size_t n = (ar.ndim() > 0) ? ar.shape(0) : 0;
+    ensure_array_shape(ar, {n, 3, 3}, "rotations");
+    ensure_array_shape(at, {n, 3}, "translations");
+    std::vector<SymOpRotTrans> ops(n);
+    const double* pr = ar.data();
+    const double* pt = at.data();
+    for (SymOpRotTrans& op : ops)
+    {
+        std::copy_n(pr, op.R.data().size(), op.R.data().begin());
+        std::copy_n(pt, op.t.size(), op.t.begin());
+        pr += op.R.data().size();
+        pt += op.t.size();
+    }
+    // Keep the expanded symmetry positions for unchanged operations.
+    bool same = (int(n) == adpt.countSymOps());
+    for (size_t i = 0; same && i < n; ++i)
+    {
+        same = (ops[i] == adpt.getSymOp(i));
+    }
+    if (same) return;
+    adpt.clearSymOps();
+    for (const SymOpRotTrans& op : ops)  adpt.addSymOp(op);
+}
+
+
 nb::tuple
 crystaladapter_getsymop(const CrystalStructureAdapter& adpt, int idx)
 {
@@ -687,7 +886,7 @@ nb::list atoms_aslist(const Range& atoms)
 nb::object crystaladapter_getequivalentatoms(
         const CrystalStructureAdapter& adpt, int idx)
 {
-    ensure_index_bounds(idx, 0, adpt.countSymOps());
+    ensure_index_bounds(idx, 0, adpt.countSites());
     return atoms_aslist(adpt.getEquivalentAtoms(idx));
 }
 
@@ -829,6 +1028,13 @@ void wrap_AtomicStructureAdapter(nb::module_& m)
                 doc_AtomicStructureAdapter_clear)
         .def("reserve", atomadapter_reserve,
                 nb::arg("sz"), doc_AtomicStructureAdapter_reserve)
+        .def("getAtomArrays", atomadapter_getatomarrays,
+                doc_AtomicStructureAdapter_getAtomArrays)
+        .def("setAtomArrays", atomadapter_setatomarrays,
+                nb::arg("atomtypes"), nb::arg("xyz_cartn"),
+                nb::arg("occupancy"), nb::arg("anisotropy"),
+                nb::arg("uij_cartn"),
+                doc_AtomicStructureAdapter_setAtomArrays)
         ;
     StructureAdapterPickleSuite<AtomicStructureAdapter>::bind(adapter_class);
 
@@ -868,6 +1074,11 @@ void wrap_AtomicStructureAdapter(nb::module_& m)
                     adpt.toFractional(atom.value());
                 },
                 nb::arg("atom"), doc_PeriodicStructureAdapter_toFractional)
+        .def("_setLatticeAtomArrays", periodicadapter_setlatticeatomarrays,
+                nb::arg("atomtypes"), nb::arg("xyz"),
+                nb::arg("occupancy"), nb::arg("anisotropy"),
+                nb::arg("uij"), nb::arg("isotropic_cartesian") = false,
+                doc_PeriodicStructureAdapter_setLatticeAtomArrays)
         ;
     StructureAdapterPickleSuite<PeriodicStructureAdapter>::bind(periodic_class);
 
@@ -905,6 +1116,9 @@ void wrap_AtomicStructureAdapter(nb::module_& m)
                 doc_CrystalStructureAdapter_addSymOp)
         .def("getSymOp", crystaladapter_getsymop, nb::arg("index"),
                 doc_CrystalStructureAdapter_getSymOp)
+        .def("_setSymOps", crystaladapter_setsymops,
+                nb::arg("rotations"), nb::arg("translations"),
+                doc_CrystalStructureAdapter_setSymOps)
         .def("getEquivalentAtoms",
                 crystaladapter_getequivalentatoms, nb::arg("index"),
                 doc_CrystalStructureAdapter_getEquivalentAtoms)

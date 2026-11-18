@@ -249,6 +249,7 @@ struct NumPyOutput
 
 /// helper for creating numpy array of doubles
 NumPyOutput<double> createNumPyDoubleArray(size_t dim, const size_t* sz);
+NumPyOutput<bool> createNumPyBoolArray(size_t size);
 
 
 /// helper for creating numpy array of the same shape as the argument

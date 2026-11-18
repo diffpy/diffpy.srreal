@@ -128,6 +128,7 @@ libdiffpy download. GitHub's automatically generated source archives omit
 submodule contents; use a recursive clone or a packaged sdist instead.
 A C++23 compiler, Boost.Serialization, GSL, and the Python build dependencies
 must still be installed separately, including for an offline build.
+CMake builds the SIMD kernels when it finds xsimd 14 or newer.
 
 Getting Started
 ---------------
@@ -147,6 +148,8 @@ rather than copied to a package directory, use the following in the root
 directory ::
 
         pip install -e .
+
+The default build type is Release.
 
 To ensure code quality and to prevent accidental commits into the default branch, please set up the use of our pre-commit
 hooks.

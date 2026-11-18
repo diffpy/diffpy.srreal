@@ -398,11 +398,11 @@ nb::tuple getstate_super(nb::object obj)
     {
         obj.attr("clearEnvelopes")();
         needs_restore = true;
-        assert(nb::len(obj.attr("envelopes")) == 0);
+        assert(nb::len(nb::getattr(obj, "envelopes")) == 0);
         nb::tuple super_state = Super::getstate(obj);
         obj.attr("envelopes") = envlps;
         needs_restore = false;
-        assert(nb::len(obj.attr("envelopes")) == nb::len(envlps));
+        assert(nb::len(nb::getattr(obj, "envelopes")) == nb::len(envlps));
         return nb::make_tuple(super_state);
     }
     catch (...)
@@ -433,7 +433,7 @@ void setstate_common(T& calc, nb::object obj, nb::tuple state, size_t& pos)
 {
     assign_pointer_state(calc.getPeakWidthModel(), state[pos++]);
     assign_pointer_state(calc.getScatteringFactorTable(), state[pos++]);
-    assert(nb::len(obj.attr("envelopes")) == 0);
+    assert(nb::len(nb::getattr(obj, "envelopes")) == 0);
     obj.attr("envelopes") = nb::borrow<nb::object>(state[pos++]);
 }
 

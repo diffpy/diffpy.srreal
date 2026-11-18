@@ -6,7 +6,7 @@ import multiprocessing
 import unittest
 
 import numpy
-from testutils import loadDiffPyStructure
+from testutils import _maxNormDiff, loadDiffPyStructure
 
 from diffpy.srreal.parallel import createParallelCalculator
 
@@ -67,7 +67,7 @@ class TestRoutines(unittest.TestCase):
         ppdfc1 = createParallelCalculator(PDFCalculator(), 3, map)
         r1, g1 = ppdfc1(self.cdse)
         self.assertTrue(numpy.array_equal(r0, r1))
-        self.assertTrue(numpy.allclose(g0, g1))
+        self.assertLess(_maxNormDiff(g0, g1), 1e-12)
         ppdfc2 = createParallelCalculator(
             PDFCalculator(), self.ncpu, self.pool.imap_unordered
         )

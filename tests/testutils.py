@@ -64,12 +64,9 @@ def pickle_with_attr(obj, **attr):
 
 
 def _maxNormDiff(yobs, ycalc):
-    """Returned maximum difference normalized by RMS of the yobs."""
-    yobsa = numpy.array(yobs)
-    obsmax = numpy.max(numpy.fabs(yobsa)) or 1
-    ynmdiff = (yobsa - ycalc) / obsmax
-    rv = max(numpy.fabs(ynmdiff))
-    return rv
+    """Maximum absolute difference, scaled by max(abs(yobs)) or 1."""
+    scale = numpy.max(numpy.abs(yobs)) or 1
+    return numpy.max(numpy.abs(numpy.asarray(yobs) - ycalc)) / scale
 
 
 # helper class for testing overloading of StructureAdapter

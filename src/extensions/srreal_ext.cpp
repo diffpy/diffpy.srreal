@@ -45,6 +45,7 @@ void wrap_PDFCalculators(nb::module_& m);
 void wrap_BondCalculator(nb::module_& m);
 void wrap_AtomRadiiTable(nb::module_& m);
 void wrap_OverlapCalculator(nb::module_& m);
+void wrap_CalculationKernel(nb::module_& m);
 
 }   // namespace srrealmodule
 
@@ -75,6 +76,7 @@ NB_MODULE(srreal_ext, m)
     wrap_BondCalculator(m);
     wrap_AtomRadiiTable(m);
     wrap_OverlapCalculator(m);
+    wrap_CalculationKernel(m);
     // load Python modules that tweak the wrapped classes
     nb::module_ srreal = nb::module_::import_("diffpy.srreal");
     if (!nb::hasattr(srreal, "_final_imports"))

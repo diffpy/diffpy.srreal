@@ -54,6 +54,15 @@ diffpy.srreal.bvscalculator module
     :undoc-members:
     :show-inheritance:
 
+diffpy.srreal.calculationkernel module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: diffpy.srreal.calculationkernel
+
+.. autofunction:: diffpy.srreal.calculationkernel.availableCalculationKernels()
+.. autofunction:: diffpy.srreal.calculationkernel.getCalculationKernel()
+.. autofunction:: diffpy.srreal.calculationkernel.setCalculationKernel(name)
+
 diffpy.srreal.eventticker module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

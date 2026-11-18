@@ -151,6 +151,13 @@ NumPyOutput<double> createNumPyDoubleArray(size_t dim, const size_t* sz)
 }
 
 
+NumPyOutput<bool> createNumPyBoolArray(size_t size)
+{
+    nb::object array = newNumPyArray(1, &size, "bool", sizeof(bool));
+    return {array, nb::cast<decltype(NumPyOutput<bool>::array)>(array, false)};
+}
+
+
 NumPyOutput<double> createNumPyDoubleArrayLike(const NumPyDoubleInput& array)
 {
     std::vector<size_t> shape(array.ndim());
