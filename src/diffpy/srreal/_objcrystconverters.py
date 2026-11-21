@@ -66,10 +66,9 @@ def _crystal_components(crystal):
         "GetScatterer",
     ):
         method = getattr(crystal, name)
-        if (
-            getattr(method, "__self__", None) is not crystal
-            or getattr(method, "__func__", None) is not getattr(Crystal, name)
-        ):
+        if getattr(method, "__self__", None) is not crystal or getattr(
+            method, "__func__", None
+        ) is not getattr(Crystal, name):
             return crystal.GetScatteringComponentList()
     return [
         component
