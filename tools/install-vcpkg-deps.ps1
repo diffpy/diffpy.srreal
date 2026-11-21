@@ -52,6 +52,7 @@ Invoke-Checked $vcpkg install `
 
 $share = Join-Path $Prefix "installed\$Triplet\share"
 $licenses = Join-Path $Prefix "licenses"
-New-Item -ItemType Directory -Force -Path (Join-Path $licenses "boost"), (Join-Path $licenses "gsl") | Out-Null
+New-Item -ItemType Directory -Force -Path (Join-Path $licenses "boost"), (Join-Path $licenses "gsl"), (Join-Path $licenses "xsimd") | Out-Null
 Copy-Item (Join-Path $share "boost-serialization\copyright") (Join-Path $licenses "boost\LICENSE_1_0.txt")
 Copy-Item (Join-Path $share "gsl\copyright") (Join-Path $licenses "gsl\COPYING")
+Copy-Item (Join-Path $share "xsimd\copyright") (Join-Path $licenses "xsimd\LICENSE")

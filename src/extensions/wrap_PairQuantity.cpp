@@ -125,7 +125,8 @@ const char* doc_BasePairQuantity_evaluatortypeused = "\
 String type of evaluation procedure used in the last calculation.\n\
 \n\
 Possible values are 'BASIC', 'OPTIMIZED', 'CHECK', and 'NONE'\n\
-when calculator that has not been used yet.\n\
+when calculator that has not been used yet.  'OPTIMIZED' reports 'BASIC'\n\
+when it recalculated from scratch, for example because that was cheaper.\n\
 ";
 
 const char* doc_BasePairQuantity_maskAllPairs = "\

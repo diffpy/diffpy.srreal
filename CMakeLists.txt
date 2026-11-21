@@ -81,6 +81,10 @@ if(DEFINED _srreal_saved_suffixes)
     endforeach()
 endif()
 
+# Needs nvcc to build; without a CUDA device the CPU kernels are used.
+option(SRREAL_CUDA "Build the CUDA calculation kernels" OFF)
+set(LIBDIFFPY_CUDA ${SRREAL_CUDA})
+
 # Embed libdiffpy as an OBJECT library: every object is linked, so its static
 # factory/serialization registrars are kept.
 set(LIBDIFFPY_BUILD_OBJECT_LIB ON)

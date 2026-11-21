@@ -15,6 +15,10 @@
 """Converters from other structure representations in Python to
 diffpy.srreal StructureAdapter classes."""
 
+import sys
+
+import numpy
+
 from diffpy.srreal.srreal_ext import (
     AtomicStructureAdapter,
     PeriodicStructureAdapter,
@@ -76,6 +80,39 @@ def _fetchDiffPyStructureData(adpt, stru):
     No return value.
     """
     from diffpy.srreal.srreal_ext import Atom as AdapterAtom
+
+    # Batch isotropic tensors only when the atoms use standard properties,
+    # the structure's lattice, and coordinates and occupancies in native form.
+    lattice = stru.lattice
+    standard_atom = getattr(sys.modules.get("diffpy.structure"), "Atom", None)
+    if (
+        len(stru) > 1
+        and all(
+            type(a) is standard_atom
+            and a.lattice is lattice
+            and type(a.occupancy) is float
+            and type(a.xyz) is numpy.ndarray
+            and a.xyz.shape == (3,)
+            for a in stru
+        )
+        and not all(a.anisotropy for a in stru)
+    ):
+        atomtypes = [a.element for a in stru]
+        xyz = [a.xyz for a in stru]
+        occupancy = [a.occupancy for a in stru]
+        anisotropy = [a.anisotropy for a in stru]
+        uiso = [0.0 if f else a.Uisoequiv for a, f in zip(stru, anisotropy)]
+        uij = numpy.multiply.outer(uiso, lattice.isotropicunit)
+        if any(anisotropy):
+            uij[anisotropy] = [a.U for a, f in zip(stru, anisotropy) if f]
+        if hasattr(adpt, "setLatPar"):
+            adpt.setLatPar(*lattice.cell_parms())
+            adpt._setLatticeAtomArrays(
+                atomtypes, xyz, occupancy, anisotropy, uij
+            )
+        else:
+            adpt.setAtomArrays(atomtypes, xyz, occupancy, anisotropy, uij)
+        return
 
     # copy atoms
     adpt.clear()

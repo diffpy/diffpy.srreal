@@ -422,6 +422,26 @@ class TestCrystalAdapter(IndexRangeTests, TestCase):
         self.assertEqual(2, len(eqatoms1))
         self.assertTrue(all(a.atomtype == "Cd" for a in eqatoms0))
         self.assertTrue(all(a.atomtype == "Se" for a in eqatoms1))
+        self.assertRaises(IndexError, cdse.getEquivalentAtoms, 2)
+        self.assertRaises(IndexError, cdse.getEquivalentAtoms, -1)
+        return
+
+    def test_getEquivalentAtoms_more_sites_than_symops(self):
+        """Check getEquivalentAtoms for every site of a P1 structure."""
+        adpt = CrystalStructureAdapter()
+        adpt.setLatPar(4, 5, 6, 90, 90, 90)
+        adpt.addSymOp(numpy.identity(3), numpy.zeros(3))
+        a = Atom()
+        for i, atomtype in enumerate(["Na", "Cl", "O"]):
+            a.atomtype = atomtype
+            a.xyz_cartn = (0.5 * i, 0.1, 0.2)
+            adpt.append(a)
+        self.assertEqual(1, adpt.countSymOps())
+        for i, atomtype in enumerate(["Na", "Cl", "O"]):
+            eqatoms = adpt.getEquivalentAtoms(i)
+            self.assertEqual(1, len(eqatoms))
+            self.assertEqual(atomtype, eqatoms[0].atomtype)
+        self.assertRaises(IndexError, adpt.getEquivalentAtoms, 3)
         return
 
 

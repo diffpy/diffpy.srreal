@@ -1,5 +1,6 @@
 libboost-devel
 gsl
+xsimd>=14
 diffpy.structure
 periodictable
 nanobind>=3.1,<4

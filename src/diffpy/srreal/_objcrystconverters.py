@@ -9,7 +9,6 @@ ObjCrystStructureAdapter.
 import numpy as np
 
 from diffpy.srreal.srreal_ext import (
-    Atom,
     AtomicStructureAdapter,
     CrystalStructureAdapter,
 )
@@ -23,18 +22,20 @@ def _check_type(obj, name):
         raise TypeError(f"Expected a pyobjcryst {name} object.")
 
 
-def _atom_from_scattering_power(sp):
-    atom = Atom()
-    atom.atomtype = sp.GetSymbol()
-    atom.anisotropy = not sp.IsIsotropic()
-    if atom.anisotropy:
-        bij = np.array(
-            [[sp.GetBij(i, j) for j in range(1, 4)] for i in range(1, 4)]
-        )
-    else:
-        bij = np.eye(3) * sp.GetBiso()
-    atom.uij_cartn = bij / (8 * np.pi**2)
-    return atom
+def _power_arrays(powers):
+    """Return atom types, anisotropy flags and U tensors of scattering
+    powers, in pyobjcryst coordinates."""
+    n = len(powers)
+    atomtypes = [sp.GetSymbol() for sp in powers]
+    anisotropy = np.fromiter((not sp.IsIsotropic() for sp in powers), bool, n)
+    biso = np.fromiter((sp.GetBiso() for sp in powers), float, n)
+    bij = np.zeros((n, 3, 3))
+    for k in range(3):
+        bij[:, k, k] = biso
+    for i in np.flatnonzero(anisotropy):
+        sp = powers[i]
+        bij[i] = [[sp.GetBij(j, k) for k in (1, 2, 3)] for j in (1, 2, 3)]
+    return atomtypes, anisotropy, bij / (8 * np.pi**2)
 
 
 def convertObjCrystMolecule(molecule):
@@ -42,42 +43,62 @@ def convertObjCrystMolecule(molecule):
     dummies."""
     _check_type(molecule, "Molecule")
     adapter = AtomicStructureAdapter()
-    adapter.reserve(molecule.GetNbComponent())
+    powers, xyz, occupancy = [], [], []
     for i in range(molecule.GetNbComponent()):
         source = molecule.GetAtom(i)
         if source.IsDummy():
             continue
-        atom = _atom_from_scattering_power(source.GetScatteringPower())
-        atom.xyz_cartn = [source.X, source.Y, source.Z]
-        atom.occupancy = source.Occupancy
-        adapter.append(atom)
+        powers.append(source.GetScatteringPower())
+        xyz.append((source.X, source.Y, source.Z))
+        occupancy.append(source.Occupancy)
+    atomtypes, anisotropy, uij = _power_arrays(powers)
+    adapter.setAtomArrays(atomtypes, xyz, occupancy, anisotropy, uij)
     return adapter
+
+
+def _crystal_components(crystal):
+    """Read the asymmetric unit in crystal order."""
+    from pyobjcryst._pyobjcryst import Crystal
+
+    for name in (
+        "GetScatteringComponentList",
+        "GetNbScatterer",
+        "GetScatterer",
+    ):
+        method = getattr(crystal, name)
+        if getattr(method, "__self__", None) is not crystal or getattr(
+            method, "__func__", None
+        ) is not getattr(Crystal, name):
+            return crystal.GetScatteringComponentList()
+    return [
+        component
+        for i in range(crystal.GetNbScatterer())
+        for component in crystal.GetScatterer(i).GetScatteringComponentList()
+    ]
 
 
 def convertObjCrystCrystal(crystal):
     """Copy the asymmetric unit and complete space-group symmetry
     operations."""
     _check_type(crystal, "Crystal")
+    # The master clock does not track all changes to the crystal's children.
     adapter = CrystalStructureAdapter()
     lattice = [crystal.GetLatticePar(i) for i in range(6)]
     lattice[3:] = np.degrees(lattice[3:])
     adapter.setLatPar(*lattice)
-    components = crystal.GetScatteringComponentList()
-    adapter.reserve(len(components))
-    for source in components:
+    powers, xyz, occupancy = [], [], []
+    for source in _crystal_components(crystal):
         sp = source.mpScattPow
         if sp is None:
             continue
-        atom = _atom_from_scattering_power(sp)
-        atom.xyz_cartn = [source.mX, source.mY, source.mZ]
-        atom.occupancy = source.mOccupancy
-        # Isotropic U is already Cartesian. Only anisotropic U follows the
-        # lattice transformation; coordinates always need that transformation.
-        uij = atom.uij_cartn.copy()
-        adapter.toCartesian(atom)
-        if not atom.anisotropy:
-            atom.uij_cartn = uij
-        adapter.append(atom)
+        powers.append(sp)
+        xyz.append((source.mX, source.mY, source.mZ))
+        occupancy.append(source.mOccupancy)
+    atomtypes, anisotropy, uij = _power_arrays(powers)
+    # isotropic U is already Cartesian
+    adapter._setLatticeAtomArrays(
+        atomtypes, xyz, occupancy, anisotropy, uij, isotropic_cartesian=True
+    )
 
     sg = crystal.GetSpaceGroup()
     operations = [
@@ -90,7 +111,5 @@ def convertObjCrystCrystal(crystal):
         operations += [(-r, inversion - t) for r, t in operations]
     if len(operations) != sg.GetNbSymmetrics():
         raise ValueError("Inconsistent pyobjcryst space-group operations.")
-    for rotation, translation in operations:
-        adapter.addSymOp(rotation, translation)
-    adapter.updateSymmetryPositions()
+    adapter._setSymOps([r for r, t in operations], [t for r, t in operations])
     return adapter

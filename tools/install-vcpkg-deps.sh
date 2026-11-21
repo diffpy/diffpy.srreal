@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Install static Boost.Serialization and GSL with vcpkg for PyPI wheels.
+# Install static Boost.Serialization and GSL and the xsimd headers with vcpkg
+# for PyPI wheels.
 #
 # Usage: tools/install-vcpkg-deps.sh PREFIX TRIPLET
 #
@@ -35,6 +36,7 @@ fi
     --triplet="$TRIPLET"
 
 share="$PREFIX/installed/$TRIPLET/share"
-mkdir -p "$PREFIX/licenses/boost" "$PREFIX/licenses/gsl"
+mkdir -p "$PREFIX/licenses/boost" "$PREFIX/licenses/gsl" "$PREFIX/licenses/xsimd"
 cp "$share/boost-serialization/copyright" "$PREFIX/licenses/boost/LICENSE_1_0.txt"
 cp "$share/gsl/copyright" "$PREFIX/licenses/gsl/COPYING"
+cp "$share/xsimd/copyright" "$PREFIX/licenses/xsimd/LICENSE"
