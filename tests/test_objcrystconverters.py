@@ -3,11 +3,16 @@ API."""
 
 import subprocess
 import sys
+from concurrent.futures import ThreadPoolExecutor, wait
+from threading import Event
 
 import numpy as np
 import pytest
 
-from diffpy.srreal.structureadapter import createStructureAdapter
+from diffpy.srreal.structureadapter import (
+    CrystalStructureAdapter,
+    createStructureAdapter,
+)
 from diffpy.srreal.structureconverters import (
     convertObjCrystCrystal,
     convertObjCrystMolecule,
@@ -124,7 +129,7 @@ def test_structureadapter_can_be_imported_first():
 
 def reference_crystal_adapter(crystal):
     """Convert a crystal atom by atom from its list of components."""
-    from diffpy.srreal.structureadapter import Atom, CrystalStructureAdapter
+    from diffpy.srreal.structureadapter import Atom
 
     adapter = CrystalStructureAdapter()
     lattice = [crystal.GetLatticePar(i) for i in range(6)]
@@ -230,7 +235,7 @@ def test_crystal_without_occupancy_correction(objcryst):
 
 
 def test_crystal_changes_after_conversion(objcryst):
-    """Check the cached conversion of one crystal after each change."""
+    """Check repeated conversion of one crystal after each change."""
     crystal = make_crystal(objcryst)
     first = check_as_reference(crystal)
     again = createStructureAdapter(crystal)
@@ -255,6 +260,7 @@ def test_crystal_changes_after_conversion(objcryst):
         lambda: setattr(o2, "Y", 0.25),
         lambda: setattr(o2, "Y", 0.1),
         lambda: crystal.ChangeSpaceGroup("P 21/c"),
+        lambda: crystal.GetSpaceGroup().ChangeSpaceGroup("P -1"),
         lambda: crystal.RemoveScatterer(o1),
         lambda: crystal.AddScatterer(
             objcryst.Atom(0.1, 0.6, 0.2, "O3", spo, 0.4)
@@ -280,6 +286,71 @@ def test_renamed_sphere_changes_atom_type(objcryst):
     power.SetName("Ni")
     assert createStructureAdapter(crystal)[0].atomtype == "Ni"
     assert original[0].atomtype == "C"
+
+
+def test_refinement_parameter_with_independent_clock(objcryst):
+    from pyobjcryst.refinableobj import RefinableObjClock
+
+    clock = RefinableObjClock()
+    crystal = make_crystal(objcryst, "P1")
+    power = crystal.GetScatterer(0).GetScatteringPower()
+    biso = power.GetPar("Biso")
+    biso.AssignClock(clock)
+    original = createStructureAdapter(crystal)
+    biso.SetValue(2.4)
+    updated = createStructureAdapter(crystal)
+    assert updated[0].uij_cartn[0, 0] == pytest.approx(2.4 / (8 * np.pi**2))
+    assert original[0].uij_cartn[0, 0] == pytest.approx(0.6 / (8 * np.pi**2))
+
+
+def test_change_symbol_and_remove_power_in_use(objcryst):
+    crystal = make_crystal(objcryst, "P1")
+    power = crystal.GetScatterer(0).GetScatteringPower()
+    original = createStructureAdapter(crystal)
+    power.SetSymbol("Mg")
+    assert createStructureAdapter(crystal)[0].atomtype == "Mg"
+    crystal.RemoveScatteringPower(power)
+    power.SetBiso(1.7)
+    atom = createStructureAdapter(crystal)[0]
+    assert atom.atomtype == "Mg"
+    assert atom.uij_cartn[0, 0] == pytest.approx(1.7 / (8 * np.pi**2))
+    assert original[0].atomtype == "Ca"
+
+
+def test_concurrent_crystal_snapshots(objcryst, monkeypatch):
+    crystal = make_crystal(objcryst, "P1")
+    original = createStructureAdapter(crystal)
+    site = crystal.GetScatterer(0)
+    site.Occupancy = 0.25
+    read_first = Event()
+    resume = Event()
+    set_symops = CrystalStructureAdapter._setSymOps
+
+    def set_symops_after_read(adapter, rotations, translations):
+        # All source reads are complete before the main thread changes it.
+        if len(rotations) == 1:
+            read_first.set()
+            resume.wait()
+        set_symops(adapter, rotations, translations)
+
+    monkeypatch.setattr(
+        CrystalStructureAdapter, "_setSymOps", set_symops_after_read
+    )
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        first = pool.submit(createStructureAdapter, crystal)
+        try:
+            assert read_first.wait(timeout=5)
+            site.Occupancy = 0.75
+            crystal.ChangeSpaceGroup("P -1")
+            second = pool.submit(createStructureAdapter, crystal)
+            # A converter that serializes calls can finish after resume.
+            wait([second], timeout=1)
+        finally:
+            resume.set()
+    first, second = first.result(), second.result()
+    assert (first[0].occupancy, first.countSymOps()) == (0.25, 1)
+    assert (second[0].occupancy, second.countSymOps()) == (0.75, 2)
+    assert original[0].occupancy == 1
 
 
 @pytest.mark.parametrize("previously_registered", [False, True])

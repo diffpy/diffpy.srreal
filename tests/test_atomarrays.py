@@ -82,6 +82,8 @@ def test_set_atom_arrays(cls):
     # new arrays replace all atoms
     adpt.setAtomArrays(*make_arrays(3))
     assert append_atoms(cls(), make_arrays(3)) == adpt
+    adpt.setAtomArrays(*make_arrays(0))
+    assert cls() == adpt
     adpt.setAtomArrays([], [], [], [], [])
     assert cls() == adpt
     return
@@ -154,6 +156,29 @@ def test_set_atom_arrays_invalid():
     # a failed call leaves the atoms as they were
     assert expected == adpt
     return
+
+
+def test_set_atom_arrays_rejects_string():
+    adpt = AtomicStructureAdapter()
+    arrays = make_arrays(2)
+    with pytest.raises(TypeError, match="atomtypes"):
+        adpt.setAtomArrays("Ni", *arrays[1:])
+    assert adpt.countSites() == 0
+
+
+@pytest.mark.parametrize(
+    "index, shape",
+    [(1, (0, 5)), (2, (1, 0)), (3, (0, 1)), (4, (0, 3, 2)), (4, (0,))],
+)
+def test_set_atom_arrays_rejects_misshaped_empty_arrays(index, shape):
+    adpt = AtomicStructureAdapter()
+    adpt.setAtomArrays(*make_arrays(2))
+    expected = adpt.clone()
+    arrays = list(make_arrays(0))
+    arrays[index] = numpy.zeros(shape)
+    with pytest.raises(ValueError):
+        adpt.setAtomArrays(*arrays)
+    assert adpt == expected
 
 
 def test_set_atom_arrays_detaches_atoms():
@@ -229,6 +254,25 @@ def test_set_symops():
         adpt._setSymOps(rotations[:, :2], translations)
     assert 1 == adpt.countSymOps()
     return
+
+
+def test_set_atom_arrays_refreshes_equivalent_atoms():
+    adpt = CrystalStructureAdapter()
+    rotations = [numpy.eye(3), -numpy.eye(3)]
+    translations = numpy.zeros((2, 3))
+    adpt._setSymOps(rotations, translations)
+    atomtypes, xyz, occupancy, anisotropy, uij = make_arrays(1)
+    xyz[0] = [0, 0, 0]
+    adpt.setAtomArrays(atomtypes, xyz, occupancy, anisotropy, uij)
+    assert len(adpt.getEquivalentAtoms(0)) == 1
+
+    xyz[0] = [0.1, 0.2, 0.3]
+    adpt.setAtomArrays(atomtypes, xyz, occupancy, anisotropy, uij)
+    adpt._setSymOps(rotations, translations)
+    equivalents = adpt.getEquivalentAtoms(0)
+    numpy.testing.assert_allclose(
+        [a.xyz_cartn for a in equivalents], [xyz[0], 1 - xyz[0]]
+    )
 
 
 def reference_adapter(stru):

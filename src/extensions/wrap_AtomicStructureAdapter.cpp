@@ -682,12 +682,13 @@ void atomadapter_reserve(AtomicStructureAdapter& adpt, int sz)
 
 /// Throw ValueError unless the array has the given shape.
 template <class Array>
-void ensure_array_shape(const Array& array,
+void ensure_array_shape(nb::handle input, const Array& array,
         std::initializer_list<size_t> shape, const char* name)
 {
-    // Any empty array will do for no atoms, for example an empty list.
+    // An empty sequence such as [] has no explicit trailing dimensions.
     if (std::ranges::equal(std::span(array.shape_ptr(), array.ndim()), shape) ||
-            (array.size() == 0 && std::ranges::find(shape, 0) != shape.end()))
+            (*shape.begin() == 0 && array.ndim() == 1 && array.shape(0) == 0 &&
+             !nb::hasattr(input, "shape")))
         return;
     std::string emsg = name;
     emsg += " must have the shape (";
@@ -706,6 +707,8 @@ void ensure_array_shape(const Array& array,
 std::vector<Atom> atoms_from_arrays(nb::object atomtypes, nb::object xyz,
         nb::object occupancy, nb::object anisotropy, nb::object uij)
 {
+    if (nb::isinstance<nb::str>(atomtypes) || nb::isinstance<nb::bytes>(atomtypes))
+        throw nb::type_error("atomtypes must be a sequence of type strings.");
     std::vector<Atom> atoms;
     for (nb::handle atomtype : atomtypes)
     {
@@ -721,10 +724,10 @@ std::vector<Atom> atoms_from_arrays(nb::object atomtypes, nb::object xyz,
     nb::object flags = nb::module_::import_("numpy").attr("asarray")(
             anisotropy, nb::arg("dtype") = "bool", nb::arg("order") = "C");
     auto aaniso = nb::cast<BoolInput>(flags, false);
-    ensure_array_shape(axyz, {n, 3}, "xyz_cartn");
-    ensure_array_shape(aocc, {n}, "occupancy");
-    ensure_array_shape(aaniso, {n}, "anisotropy");
-    ensure_array_shape(auij, {n, 3, 3}, "uij_cartn");
+    ensure_array_shape(xyz, axyz, {n, 3}, "xyz_cartn");
+    ensure_array_shape(occupancy, aocc, {n}, "occupancy");
+    ensure_array_shape(anisotropy, aaniso, {n}, "anisotropy");
+    ensure_array_shape(uij, auij, {n, 3, 3}, "uij_cartn");
     const double* pxyz = axyz.data();
     const double* pocc = aocc.data();
     // NumPy permits any nonzero byte in a boolean array.
@@ -841,8 +844,8 @@ void crystaladapter_setsymops(CrystalStructureAdapter& adpt,
     NumPyDoubleInput ar = extractNumPyDoubleArray(rotations);
     NumPyDoubleInput at = extractNumPyDoubleArray(translations);
     const size_t n = (ar.ndim() > 0) ? ar.shape(0) : 0;
-    ensure_array_shape(ar, {n, 3, 3}, "rotations");
-    ensure_array_shape(at, {n, 3}, "translations");
+    ensure_array_shape(rotations, ar, {n, 3, 3}, "rotations");
+    ensure_array_shape(translations, at, {n, 3}, "translations");
     std::vector<SymOpRotTrans> ops(n);
     const double* pr = ar.data();
     const double* pt = at.data();
