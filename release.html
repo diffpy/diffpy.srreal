@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Release notes &mdash; diffpy.srreal 1.5.1rc1 documentation</title>
+  <title>Release notes &mdash; diffpy.srreal 1.5.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=19f732bd"></script>
+      <script src="_static/documentation_options.js?v=cb7e6255"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -79,7 +79,40 @@
   <section id="release-notes">
 <span id="index-0"></span><h1>Release notes<a class="headerlink" href="#release-notes" title="Link to this heading"></a></h1>
 <section id="id1">
-<h2>1.5.0<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<h2>1.5.1<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<p><strong>Added:</strong></p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">diffpy.srreal.calculationkernel</span></code> module selects the kernel of PDF</p></li>
+</ul>
+<p>and Debye calculations.
+* Optional <code class="docutils literal notranslate"><span class="pre">cuda</span></code> and <code class="docutils literal notranslate"><span class="pre">cuda-mixed</span></code> kernels, included in the Windows and
+Linux x86-64 wheels (which also run without a GPU) and enabled in source
+builds with <code class="docutils literal notranslate"><span class="pre">SRREAL_CUDA=ON</span></code>.
+* <code class="docutils literal notranslate"><span class="pre">AtomicStructureAdapter.getAtomArrays</span></code> and <code class="docutils literal notranslate"><span class="pre">setAtomArrays</span></code> read and
+replace all atom data in bulk.</p>
+<p><strong>Changed:</strong></p>
+<ul class="simple">
+<li><p>Build the embedded libdiffpy through its own CMake project</p></li>
+</ul>
+<p>(<code class="docutils literal notranslate"><span class="pre">add_subdirectory</span></code>) instead of duplicating its build logic.
+* Switched to shared wheel workflow.
+* Full PDF and Debye calculations use multithreaded, batched CPU sums, with
+SIMD kernels when built with xsimd (always in wheels).
+* <code class="docutils literal notranslate"><span class="pre">OPTIMIZED</span></code> can choose a full calculation when it costs less than updating
+changed atoms. <code class="docutils literal notranslate"><span class="pre">evaluatortypeused</span></code> then reports <code class="docutils literal notranslate"><span class="pre">&quot;BASIC&quot;</span></code>.
+* Conversion of <code class="docutils literal notranslate"><span class="pre">diffpy.structure</span></code> and <code class="docutils literal notranslate"><span class="pre">pyobjcryst</span></code> structures is faster.</p>
+<p><strong>Fixed:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">DebyePDFCalculator</span></code> uses each site’s own occupancy when several sites</p></li>
+</ul>
+<p>share an element.
+* <code class="docutils literal notranslate"><span class="pre">CrystalStructureAdapter.getEquivalentAtoms</span></code> now checks the index against
+the number of sites, fixing incorrect exceptions and a possible crash.
+* <code class="docutils literal notranslate"><span class="pre">OPTIMIZED</span></code> recalculates when a change of adapter class changes the
+structure, for example when a cluster becomes periodic.</p>
+</section>
+<section id="id2">
+<h2>1.5.0<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
 <p><strong>Added:</strong></p>
 <ul class="simple">
 <li><p>Publish self-contained wheels to PyPI for Linux (x86_64),</p></li>
@@ -196,8 +229,8 @@ pickle hooks.
 * The <code class="docutils literal notranslate"><span class="pre">_customPQConfig</span></code> bindings and Python callback dispatch, including
 automatic application of structure metadata to PDF calculators.</p>
 </section>
-<section id="id2">
-<h2>1.4.0<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<section id="id3">
+<h2>1.4.0<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
 <p><strong>Added:</strong></p>
 <ul class="simple">
 <li><p>Update linelength to sk-package standard of 79 characters.</p></li>
