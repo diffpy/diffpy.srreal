@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>diffpy.srreal package &mdash; diffpy.srreal 1.5.1rc0 documentation</title>
+  <title>diffpy.srreal package &mdash; diffpy.srreal 1.5.1rc1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=b0b746db"></script>
+      <script src="../_static/documentation_options.js?v=19f732bd"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -553,6 +553,41 @@ ref_id   – optional reference code in bvparm2011.cif</p>
 <dd><p>Cutoff value for valence contributions at long distances. [1e-5]</p>
 </dd></dl>
 
+</dd></dl>
+
+</section>
+<section id="module-diffpy.srreal.calculationkernel">
+<span id="diffpy-srreal-calculationkernel-module"></span><h3>diffpy.srreal.calculationkernel module<a class="headerlink" href="#module-diffpy.srreal.calculationkernel" title="Link to this heading"></a></h3>
+<p>Selection of the kernel that sums the contributions of atom pairs.</p>
+<p>PDFCalculator and DebyePDFCalculator send full pair sums to the selected
+kernel, by default the best one the CPU supports.  For refinements with
+‘cuda-mixed’, use larger finite-difference steps and verify the fit in
+double precision.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="diffpy.srreal.calculationkernel.availableCalculationKernels">
+<span class="sig-prename descclassname"><span class="pre">diffpy.srreal.calculationkernel.</span></span><span class="sig-name descname"><span class="pre">availableCalculationKernels</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.calculationkernel.availableCalculationKernels" title="Link to this definition"></a></dt>
+<dd><p>availableCalculationKernels() -&gt; list[str]</p>
+<p>Return the kernels this machine can run, CPU kernels first in order of
+preference.  CUDA builds add ‘cuda’ and ‘cuda-mixed’ on compatible
+devices; these fall back to the CPU for masked sums, custom peak
+profiles and per-bond evaluations.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="diffpy.srreal.calculationkernel.getCalculationKernel">
+<span class="sig-prename descclassname"><span class="pre">diffpy.srreal.calculationkernel.</span></span><span class="sig-name descname"><span class="pre">getCalculationKernel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.calculationkernel.getCalculationKernel" title="Link to this definition"></a></dt>
+<dd><p>getCalculationKernel() -&gt; str</p>
+<p>Return the name of the calculation kernel in use.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="diffpy.srreal.calculationkernel.setCalculationKernel">
+<span class="sig-prename descclassname"><span class="pre">diffpy.srreal.calculationkernel.</span></span><span class="sig-name descname"><span class="pre">setCalculationKernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#diffpy.srreal.calculationkernel.setCalculationKernel" title="Link to this definition"></a></dt>
+<dd><p>setCalculationKernel(name: str) -&gt; None</p>
+<p>Use the named calculation kernel in all calculators.</p>
+<p>name     – one of the names from availableCalculationKernels</p>
+<p>Raise ValueError when the kernel is not available.  Do not call this
+while a calculator evaluates in another thread.</p>
 </dd></dl>
 
 </section>
