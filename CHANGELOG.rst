@@ -4,6 +4,40 @@ Release notes
 
 .. current developments
 
+1.5.1
+=====
+
+**Added:**
+
+* The ``diffpy.srreal.calculationkernel`` module selects the kernel of PDF
+and Debye calculations.
+* Optional ``cuda`` and ``cuda-mixed`` kernels, included in the Windows and
+Linux x86-64 wheels (which also run without a GPU) and enabled in source
+builds with ``SRREAL_CUDA=ON``.
+* ``AtomicStructureAdapter.getAtomArrays`` and ``setAtomArrays`` read and
+replace all atom data in bulk.
+
+**Changed:**
+
+* Build the embedded libdiffpy through its own CMake project
+(``add_subdirectory``) instead of duplicating its build logic.
+* Switched to shared wheel workflow.
+* Full PDF and Debye calculations use multithreaded, batched CPU sums, with
+SIMD kernels when built with xsimd (always in wheels).
+* ``OPTIMIZED`` can choose a full calculation when it costs less than updating
+changed atoms. ``evaluatortypeused`` then reports ``"BASIC"``.
+* Conversion of ``diffpy.structure`` and ``pyobjcryst`` structures is faster.
+
+**Fixed:**
+
+* ``DebyePDFCalculator`` uses each site's own occupancy when several sites
+share an element.
+* ``CrystalStructureAdapter.getEquivalentAtoms`` now checks the index against
+the number of sites, fixing incorrect exceptions and a possible crash.
+* ``OPTIMIZED`` recalculates when a change of adapter class changes the
+structure, for example when a cluster becomes periodic.
+
+
 1.5.0
 =====
 
